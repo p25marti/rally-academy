@@ -10,8 +10,11 @@ read_globals = {
   "vec3", "quat", "quatFromDir",
   "jsonReadFile", "jsonWriteFile", "readFile", "writeFile", "FS",
   "deepcopy", "tableSize", "scenetree", "core_vehicles", "core_input_actions",
-  "spawn", "getPlayerVehicle",
+  "spawn", "getPlayerVehicle", "setExtensionUnloadMode",
 }
+
+-- modScript.lua calls BeamNG's global `load(extName)`, which shadows Lua's builtin.
+files["mod/scripts/**"] = { read_globals = { "load", "setExtensionUnloadMode" } }
 
 files["tests/lua/**"] = {
   globals = { "_G", "vec3", "quatFromDir", "log", "dump", "be", "guihooks", "jsonReadFile", "jsonWriteFile" },

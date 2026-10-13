@@ -62,7 +62,8 @@ Typical cycle:
 1. `python tools/dev.py check` — fast feedback before touching the game.
 2. Edit Lua / JS / JSON under `mod/`.
 3. In BeamNG, reload what changed:
-   - **GE Lua** (`mod/lua/ge/...`): reload Lua — `Ctrl+L` by default.
+   - **GE Lua** (`mod/lua/ge/...`): reload just our extension from the Lua console (`~`)
+     with `extensions.reload("rallyAcademy")`, or reload all Lua with `Ctrl+L`.
    - **HUD app** (`mod/ui/...`): reload the UI. From the Lua console (`~`):
      `reloadUI()`.
    - **Drill data** (`exercises.json`): it's read when the extension loads, so

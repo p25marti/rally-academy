@@ -25,6 +25,7 @@ Target build: **BeamNG.drive 0.39.x** (update when you upgrade, and re-run the s
 | API | Used for | Status |
 | --- | --- | --- |
 | Extension at `lua/ge/extensions/rallyAcademy.lua`, loaded by `extensions.load('rallyAcademy')`, reachable as `extensions.rallyAcademy` | entry point | unverified |
+| `scripts/rally_academy/modScript.lua` runs on mod activation; `load(name)` + `setExtensionUnloadMode(name, "manual")` load the extension and keep it loaded | auto-load | unverified |
 | Hooks `onExtensionLoaded()`, `onUpdate(dtReal, dtSim, dtRaw)` | lifecycle, timing | unverified |
 | `dtSim` is 0 while physics is paused | pause-safe timer | unverified |
 | `be:getPlayerVehicle(0)` | player vehicle | unverified |
@@ -54,6 +55,7 @@ Target build: **BeamNG.drive 0.39.x** (update when you upgrade, and re-run the s
 
 | Assumption | Status |
 | --- | --- |
+| `extensions.reload("rallyAcademy")` in the console reloads only our extension | unverified |
 | `Ctrl+L` reloads GE Lua | unverified |
 | `reloadUI()` in the Lua console reloads the UI | unverified |
 | `~` opens the Lua console | unverified |

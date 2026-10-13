@@ -5,6 +5,7 @@
 ```
 mod/
 ├── gameplay/rallyAcademy/exercises.json        48 drills (data only)
+├── scripts/rally_academy/modScript.lua         runs on mod activation: loads the extension
 ├── lua/ge/extensions/rallyAcademy.lua          GE extension: state, timing, retry, progress
 ├── lua/ge/extensions/core/input/actions/
 │   └── rallyAcademy_actions.json               bindable actions: Retry / Pass / Miss
@@ -21,7 +22,8 @@ mod/
  GE Lua ──jsonReadFile / jsonWriteFile──▶ exercises.json (read) · settings/rallyAcademyProgress.json (r/w)
 ```
 
-- The **GE extension** owns all state. The HUD opening calls
+- `modScript.lua` loads the extension when the mod is enabled (unload mode
+  `manual`, so it stays loaded). The **GE extension** owns all state. The HUD opening also calls
   `extensions.load('rallyAcademy')` then `publish()`, so the panel can be closed
   and reopened without losing a session.
 - **State machine:** `idle → setup → ready → running → review → scored → ready …`
