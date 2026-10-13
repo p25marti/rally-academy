@@ -1,0 +1,52 @@
+name: Release
+
+# Push a tag like v0.2.0 (matching VERSION) to publish a GitHub Release
+# with the installable zip attached. See docs/RELEASING.md.
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install LuaJIT + luacheck
+        run: PREFIX="$HOME/.lua-toolchain" tools/ci/setup-lua.sh
+
+      - name: Tag must match VERSION
+        run: |
+          v="$(tr -d '[:space:]' < VERSION)"
+          if [ "v$v" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match VERSION $v"; exit 1
+          fi
+
+      - name: Validate, lint, test, build
+        run: |
+          T="$HOME/.lua-toolchain"
+          export PATH="$T/bin:$PATH"
+          export LUA_PATH="$T/share/lua/5.1/?.lua;$T/share/lua/5.1/?/init.lua;;"
+          export LUA_CPATH="$T/lib/lua/5.1/?.so;;"
+          python tools/dev.py check --strict
+
+      - name: Extract release notes from CHANGELOG.md
+        run: python tools/release_notes.py "${GITHUB_REF_NAME#v}" > dist/RELEASE_NOTES.md
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pre=""
+          case "${GITHUB_REF_NAME}" in *-*) pre="--prerelease";; esac
+          gh release create "${GITHUB_REF_NAME}" \
+            dist/rally_academy.zip dist/rally_academy.zip.sha256 \
+            --title "Rally Academy ${GITHUB_REF_NAME}" \
+            --notes-file dist/RELEASE_NOTES.md $pre

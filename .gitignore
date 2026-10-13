@@ -1,0 +1,22 @@
+# Build output
+dist/
+*.zip
+!reference/**/*.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Editors / OS
+.vscode/*
+!.vscode/settings.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local BeamNG artefacts that sometimes get copied in while debugging
+beamng.log
+*.log

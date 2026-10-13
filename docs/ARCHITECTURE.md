@@ -1,0 +1,79 @@
+# Architecture
+
+## Today (v0.1, imported scaffold)
+
+```
+mod/
+├── gameplay/rallyAcademy/exercises.json        48 drills (data only)
+├── lua/ge/extensions/rallyAcademy.lua          GE extension: state, timing, retry, progress
+├── lua/ge/extensions/core/input/actions/
+│   └── rallyAcademy_actions.json               bindable actions: Retry / Pass / Miss
+└── ui/modules/apps/RallyAcademy/               HUD app (AngularJS directive)
+    ├── app.json  app.js  app.png
+```
+
+**Data flow**
+
+```
+ HUD (app.js) ──bngApi.engineLua("extensions.rallyAcademy.retry()")──▶ GE Lua
+ Controls (actions.json) ──onDown "extensions.rallyAcademy.retry()"──▶ GE Lua
+ GE Lua ──guihooks.trigger('rallyAcademyState', {...})──────────────▶ HUD
+ GE Lua ──jsonReadFile / jsonWriteFile──▶ exercises.json (read) · settings/rallyAcademyProgress.json (r/w)
+```
+
+- The **GE extension** owns all state. The HUD opening calls
+  `extensions.load('rallyAcademy')` then `publish()`, so the panel can be closed
+  and reopened without losing a session.
+- **State machine:** `idle → setup → ready → running → review → scored → ready …`
+  - `select(id)` → `setup`; `markStart()` captures position and orientation;
+    `markFinish()` captures a 5 m finish circle.
+  - `retry()` teleports to the start → `ready`; moving faster than 1 m/s → `running`.
+  - `onUpdate(dtReal, dtSim)` adds **simulation** time (pausing physics stops
+    the clock) and checks the finish circle → `review`.
+  - `recordAttempt(passed)` → `scored`, updates and saves progress.
+- HUD updates are throttled to about 4 Hz while running.
+
+Known gaps are listed in [ROADMAP.md](ROADMAP.md).
+
+## Target architecture
+
+Carried over from the original technical roadmap, refined:
+
+**Layers.** Keep a pure-Lua core (no engine globals) behind thin adapters:
+
+```
+lua/ge/extensions/rallyAcademy.lua            entry point; wires adapters to the core; engine hooks
+lua/ge/extensions/rallyAcademy/session.lua    state machine (pure)
+lua/ge/extensions/rallyAcademy/rules/*.lua    one evaluator per rule type (pure)
+lua/ge/extensions/rallyAcademy/telemetry.lua  vehicle sampling adapter (engine-facing)
+lua/ge/extensions/rallyAcademy/store.lua      progress persistence + schema migrations
+```
+
+Pure modules are unit-tested directly; adapters are covered by the stubs and
+the in-game smoke test.
+
+**Telemetry.** Sample at a fixed, rate-limited interval into a canonical run
+record: `simTime, pos, orientation, vel, steering, throttle, brake, handbrake,
+wheelSlip, damage`. Engine-side position and velocity come from GE. Driver
+inputs and wheel data live in the vehicle's own Lua VM and must be pulled
+across (e.g. `queueLuaCommand` with a callback, or electrics streams). Which
+mechanism to use gets decided and recorded in BEAMNG_API_NOTES before building on it.
+
+**Scoring.** Each drill's `assessment.rules` becomes a list of typed rules
+evaluated over the run record: `gate`, `speed_range`, `brake_profile`,
+`no_handbrake`, `slip_angle_range`, `no_collision`, `exit_heading`. A drill is
+`automatic` (all rules machine-checked), `hybrid` (machine rules plus a human
+Pass/Miss), or `selfAssessment` (today's behaviour).
+
+**Authoring.** Start poses and gates are captured in-game and saved per
+`levelId`, then promoted into `exercises.json` (`startTransform`,
+`finishGate`, later gate lists). Longer stages can build on BeamNG's own
+race/rally path tooling.
+
+**Progress.** Attempt summaries and mastery are stored separately and
+schema-versioned, with forward migrations in `store.lua`.
+
+**Edge cases to design for:** UI focus/menus open, physics paused, vehicle
+switched mid-run, damage reset, leaving the map, teleports breaking the
+trajectory, UI reloaded mid-session, conflicts with built-in missions/scenarios,
+unknown vehicle configs.

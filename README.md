@@ -1,45 +1,59 @@
-# Rally Academy for BeamNG — developer starter (alpha)
+# Rally Academy for BeamNG.drive
 
-This package is a *prototype and source scaffold*, **not** a validated/complete game mod.
-Developed against the *published* BeamNG 0.39 modding conventions; it has **not been launched or tested inside BeamNG**.
+A BeamNG.drive mod for structured rally-driving practice: 48 progressive drills
+(foundations → braking → rotation → complex cornering → terrain → full stages),
+instant retry to a marked start, run timing, and per-drill progress tracking.
 
-## What works conceptually
-- Imports **all 48 drills** from the earlier Excel workbook into data-only JSON.
-- Uses a single **Game Engine Lua extension** and a **native HUD app** (AngularJS directive, per official docs).
-- Adds three mod-specific controller actions (Retry / Pass / Miss) for keyboard, wheel, Stream Deck or button-box binding.
-- Uses an explicit reusable start transform, a manually marked finish circle, sim-time timing, retry without mission reload.
-- Saves manually assessed session results to `settings/rallyAcademyProgress.json` (verify write path in-game).
+> **Status: alpha, not yet verified in-game.** The current code is the starter
+> scaffold imported from the original planning work. It is a timer with
+> self-assessed Pass/Miss; automatic telemetry-based grading is on the
+> [roadmap](docs/ROADMAP.md).
 
-## What is NOT implemented
-- Auto map loading, exact car/config spawning, predefined start coordinates, visual cone courses.
-- Real telemetry validation: wheel lock, lateral slip, handbrake input, cone impacts, brake pressure, collision damage, steering traces, coaching insights.
-- Real grades for the 48 different driving mechanics. A finish gate *only ends timing*; a person must judge Pass/Miss.
-- Native mission cards, achievement/badge UI, sync, replay ghosts, detailed persistent attempts.
+## Quick start (developers)
 
-## Installation / first smoke test
-1. Make sure `mod/rallyAcademy` isn't used as a wrapper inside the zip. The final zip must open directly with `gameplay/`, `lua/` and `ui/`.
-2. Put `rally_academy_prototype.zip` under your BeamNG **user folder** `/mods/`, or unpack the `mod` *contents* to `userFolder/mods/unpacked/rally_academy/`.
-3. Load Free Roam on any map with any existing vehicle.
-4. From the HUD Apps editor, add **Rally Academy (Prototype)**. It loads the Lua extension on initialization. If absent, restart game; check Lua console for errors.
-5. Select `A01`, drive to a starting point, click **Mark start**. Optionally drive to a finish spot and click **Mark finish**.
-6. Click **Retry**. Drive forward; if a finish was marked, driving within 5 m of it stops the timer. Use **Pass** or **Miss** to manually grade a repetition, then Retry.
-7. Bind `Rally Academy: Retry` to a spare wheel button in `Options > Controls`. Don't overwrite your steering/pedal maps.
+Requirements: Python 3.9+ and git. LuaJIT + luacheck are optional locally
+(CI always runs them) — see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#tooling).
 
-## Key development tasks to make it production quality
-- **P0** Correct the smoke test until UI init, Lua event delivery, and retry work reliably on the latest game build.
-- **P1** Author stable `levelId`, vehicle model/config, 3D start pose and finish gate in the World Editor.
-- **P2** Implement generic gates/route deviation/penalties plus one automatically scored drill with validated telemetry.
-- **P3** Make 48 definitions fully machine-executable; implement objective rule evaluators and separate human-review rules.
-- **P4** Build stage assessments with the first-party Rally Editor / `rallyStage` for pacenotes and stages.
-- **P5** Add persistence migrations, warmup detection, coach feedback, difficulty progression and optional ghost comparisons.
+```sh
+python tools/dev.py check      # validate data, lint, unit-test, build dist/rally_academy.zip
+python tools/dev.py link       # live-link ./mod into your BeamNG mods folder
+python tools/dev.py log        # tail beamng.log, filtered to Rally Academy + errors
+```
 
-## Useful API docs
-- https://documentation.beamng.com/modding/programming/extensions/
-- https://documentation.beamng.com/modding/ui/app_creation/
-- https://documentation.beamng.com/modding/input/actions/
-- https://documentation.beamng.com/world_editor/windows/race_path_editor/
-- https://www.beamng.com/game/news/patch/beamng-drive-v0-39/
-- https://docs.beamng.com/modding/mod-support/mod_packing/
+Then in BeamNG: Free Roam → UI Apps → add **Rally Academy (Prototype)**.
 
-## Attribution
-The imported 48 drill definitions are adapted from a user-specific curriculum, not official BeamNG missions or licensed reproduction of any rally driving school's teaching materials.
+## Install (players)
+
+Download `rally_academy.zip` from the latest GitHub Release and drop it, still
+zipped, into `<BeamNG user folder>/mods/`. Don't keep an older copy or the
+unpacked dev link alongside it.
+
+## Repository map
+
+| Path | What lives there |
+| --- | --- |
+| `mod/` | Exactly what ships. Its contents become the zip root (`gameplay/`, `lua/`, `ui/`). |
+| `mod/gameplay/rallyAcademy/exercises.json` | The 48 drills — the source of truth for drill data ([schema](docs/DRILL_DATA.md)). |
+| `tests/lua/` | Unit tests that run the mod's Lua under LuaJIT with stubbed BeamNG globals. |
+| `tools/dev.py` | One CLI for check / build / link / log / bump. |
+| `.github/workflows/` | CI on every push/PR; release on `v*` tags. |
+| `docs/` | How everything works — start with [DEVELOPMENT](docs/DEVELOPMENT.md). |
+| `reference/` | Source material: the original drill spreadsheet and planning history. |
+
+## Documentation
+
+- [DEVELOPMENT.md](docs/DEVELOPMENT.md) — setup, the in-game edit/reload loop, git workflow
+- [TESTING.md](docs/TESTING.md) — unit tests, in-game smoke test, what CI checks
+- [RELEASING.md](docs/RELEASING.md) — versioning, GitHub Releases, publishing to the BeamNG repository
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the mod is put together, and where it's heading
+- [DRILL_DATA.md](docs/DRILL_DATA.md) — drill schema and how to edit drills
+- [BEAMNG_API_NOTES.md](docs/BEAMNG_API_NOTES.md) — every engine API we rely on, and whether it's verified
+- [ROADMAP.md](docs/ROADMAP.md) — priorities and known issues
+- [decisions/](docs/decisions/) — short records of why things are the way they are
+
+## Credits
+
+Drill curriculum adapted from public rally-school syllabi (Richard Burns Rally,
+EA SPORTS WRC, DiRT Rally 2.0 / Jon Armstrong, DirtFish, Team O'Neil). These are
+original exercises inspired by them, not reproductions of any school's material
+and not official BeamNG missions.

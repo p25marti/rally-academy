@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache Lua toolchain
+        id: lua-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.lua-toolchain
+          key: lua-${{ runner.os }}-${{ hashFiles('tools/ci/setup-lua.sh') }}
+
+      - name: Install LuaJIT + luacheck
+        if: steps.lua-cache.outputs.cache-hit != 'true'
+        run: PREFIX="$HOME/.lua-toolchain" tools/ci/setup-lua.sh
+
+      - name: Put Lua toolchain on PATH
+        run: |
+          T="$HOME/.lua-toolchain"
+          echo "$T/bin" >> "$GITHUB_PATH"
+          echo "LUA_PATH=$T/share/lua/5.1/?.lua;$T/share/lua/5.1/?/init.lua;;" >> "$GITHUB_ENV"
+          echo "LUA_CPATH=$T/lib/lua/5.1/?.so;;" >> "$GITHUB_ENV"
+
+      - name: Validate, lint, test, build
+        run: python tools/dev.py check --strict
+
+      - name: Upload mod zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: rally_academy-${{ github.sha }}
+          path: |
+            dist/rally_academy.zip
+            dist/rally_academy.zip.sha256
+          retention-days: 30
