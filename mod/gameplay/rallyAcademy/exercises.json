@@ -1,0 +1,1589 @@
+{
+  "schemaVersion": 1,
+  "exercises": [
+    {
+      "id": "A01",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Steering and spatial awareness",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — Student Driver (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "East-side open skidpad: mark a 3 m wide gate and parking box"
+      },
+      "instructions": "Drive through entry gate, steer around one cone, and stop entirely inside a parking box.",
+      "resetInstructions": "Stationary, 8 m before entry gate; face straight into the box. Save there.",
+      "props": "Use six cones to mark entry, turn and box.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No cone contact; all four wheels finish inside box; no reversing.",
+        "metricToRecord": "Successful precise parks / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "A02",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Clutch engagement and launches",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — Student Driver (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Aerodrome runway: quiet straight section"
+      },
+      "instructions": "Launch from 0 to 40 km/h; shift 1→2; then roll to a controlled stop.",
+      "resetInstructions": "Stationary in 1st gear at fixed start cone; save with clutch disengaged.",
+      "props": "Manual gearbox; retain identical clutch-assist settings.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No stall, no missed shift and no sustained wheelspin (>1 s).",
+        "metricToRecord": "Successful smooth launches / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "A03",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Gear selection and downshifting",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — Student Driver (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Aerodrome runway: 250 m straight"
+      },
+      "instructions": "Accelerate to 60 km/h and downshift progressively to 2nd as you slow before the end gate.",
+      "resetInstructions": "Stationary at start cone; mark 50 m end gate.",
+      "props": "Use tachometer HUD; no racing downshifts.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Correct shifts without over-rev, wheel lock, stall or missed shift; stop before gate.",
+        "metricToRecord": "Clean gear sequences / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "A04",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Throttle modulation",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — Student Driver (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Runway: mark three 25 m timing zones"
+      },
+      "instructions": "Bring car to 30 km/h, then hold that speed across three cone-marked 25 m zones.",
+      "resetInstructions": "Stationary 30 m before first speed zone; save facing down runway.",
+      "props": "Use speedometer; initial speed build-up is unscored.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Speed at each of three markers between 27–33 km/h; no braking once inside zones.",
+        "metricToRecord": "Runs with all three markers in band",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "A05",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Braking accuracy",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — Student Driver (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "East skidpad: straight approach to a stop box"
+      },
+      "instructions": "Brake once from 40 km/h and stop at a cone-marked line.",
+      "resetInstructions": "Stationary 80 m before stop line; accelerate to 40 km/h at approach marker.",
+      "props": "Use visible cone pair to indicate line; adjust start distance for runway available.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Front bumper ends 0–2 m before line; no contact, overshoot or wheel lock.",
+        "metricToRecord": "Accurate stops / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "A06",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Vision and looking ahead",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — Student Driver (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Handling Circuit: one pair of linked bends"
+      },
+      "instructions": "Drive bends while speaking the *next* turn direction and apex marker aloud before current apex.",
+      "resetInstructions": "Stationary 50 m before first bend; fix start direction.",
+      "props": "Voice-record or self-score; course layout fixed, no visual eye-tracking assumed.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Name the following bend and its target before the first apex; complete both cleanly.",
+        "metricToRecord": "Correct look-ahead calls / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "A07",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Basic racing lines",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Handling Circuit: choose one medium-speed corner"
+      },
+      "instructions": "Compare early, middle and late-apex lines; finish with 10 scored laps using the most repeatable line.",
+      "resetInstructions": "Stationary 60 m before braking marker, same approach line.",
+      "props": "Run 3 exploratory passes per line before 10 scored attempts.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Clean corner, all wheels on pavement and through a 3 m exit gate.",
+        "metricToRecord": "Clean exits and exit speed at gate",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "A08",
+      "module": "01  FOUNDATION & PRECISION",
+      "title": "Apex and exit selection",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Handling Circuit: same corner as A07"
+      },
+      "instructions": "Move the apex gate slightly later and target a stable, straight corner exit.",
+      "resetInstructions": "Reuse A07 checkpoint and exit gate.",
+      "props": "Place paired cones at apex and exit; preserve cone layout.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Pass a 3 m apex gate without touching either cone, then a 3 m exit gate, with no corrections after exit.",
+        "metricToRecord": "Gate success / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "B01",
+      "module": "02  GRIP & BRAKING",
+      "title": "Threshold braking",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — 1.5 DX (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Runway: long paved braking straight"
+      },
+      "instructions": "From 70 km/h, brake progressively to the stop zone; adjust brake pressure near grip limit.",
+      "resetInstructions": "Stationary 150 m before braking line; accelerate to 70 km/h at trigger cone.",
+      "props": "Keep any ABS settings unchanged; watch front wheels / brake HUD.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Stop within a 5 m cone zone without sustained lockup or cone contact.",
+        "metricToRecord": "Successful threshold stops / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "B02",
+      "module": "02  GRIP & BRAKING",
+      "title": "Wheel lockup recognition and correction",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — 1.5 DX (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Same runway braking zone as B01"
+      },
+      "instructions": "Briefly provoke lockup using heavy braking, release enough to restore rolling grip and stop.",
+      "resetInstructions": "Stationary 150 m upstream; fixed 60 km/h trigger.",
+      "props": "Verify ABS is absent/disabled; if ABS cannot be removed use another non-ABS configuration.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Recognize/stop locking within ~1 s and recover steering; finish within road width.",
+        "metricToRecord": "Correct lockup recoveries / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "B03",
+      "module": "02  GRIP & BRAKING",
+      "title": "Stopping-distance estimation",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet — 1.5 DX (M), FWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Runway paved straight + Rally Track gravel approach"
+      },
+      "instructions": "Before each run, estimate stopping spot, then brake from exactly 50 km/h; six runs per surface.",
+      "resetInstructions": "Set a saved start in each location; use same 50 km/h trigger and same car/tires.",
+      "props": "Record separate pavement/gravel observations; surface runs need two saved positions.",
+      "assessment": {
+        "attempts": 12,
+        "requiredPasses": 9,
+        "successDefinition": "Actual bumper stops within 3 m of your predicted stopping marker; no collision.",
+        "metricToRecord": "Prediction error (metres), by surface",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "B04",
+      "module": "02  GRIP & BRAKING",
+      "title": "Trail braking",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Handling Circuit: medium-radius turn with safe runoff"
+      },
+      "instructions": "Begin braking on approach and ease pressure off progressively while steering toward apex.",
+      "resetInstructions": "Stationary 75 m before chosen corner; brake marker unchanged.",
+      "props": "Choose safe low/medium-speed corner first; use brake input HUD.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Brake fully released by apex, no sustained lock, all four wheels on roadway and clean exit.",
+        "metricToRecord": "Successful trail-braking corners / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "B05",
+      "module": "02  GRIP & BRAKING",
+      "title": "Left-foot braking",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "East skidpad: broad semicircle around marker cones"
+      },
+      "instructions": "With right foot steady on light throttle, apply short left-foot brake pressure to adjust rotation.",
+      "resetInstructions": "Stationary 50 m before semicircle; approach 30 km/h.",
+      "props": "Maintain same initial speed; pedal overlay recommended.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Track the intended circle without hitting markers, spinning or stopping throttle entirely.",
+        "metricToRecord": "Clean brake-assisted arcs / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "B06",
+      "module": "02  GRIP & BRAKING",
+      "title": "Understeer recognition and correction",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "East skidpad: marked 15–20 m radius circle"
+      },
+      "instructions": "Enter too fast to create safe, mild understeer; reduce speed/steering demand to regain front grip.",
+      "resetInstructions": "Stationary 40 m before circle; approach at repeatable 35 km/h.",
+      "props": "Start with large runoff; do not deliberately induce at roadside cliff.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Front regains intended arc before second exit cone; no loss of control or obstacle contact.",
+        "metricToRecord": "Understeer recoveries / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "B07",
+      "module": "02  GRIP & BRAKING",
+      "title": "Oversteer recognition and correction",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu BX-Series — 200BX Type-LS (M), RWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "East skidpad: large clear arc"
+      },
+      "instructions": "Use a modest throttle pulse to rotate rear, then countersteer and settle the car.",
+      "resetInstructions": "Stationary 40 m before arc; target 25–35 km/h.",
+      "props": "Rear-drive street car; begin at low speed. Disable ESC only if you document the setting.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No full spin; car aligned with marked exit lane and countersteer unwound before lane end.",
+        "metricToRecord": "Correctly caught slides / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "B08",
+      "module": "02  GRIP & BRAKING",
+      "title": "Longitudinal weight transfer",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track: broad gravel bend"
+      },
+      "instructions": "Do 4 lift-only, 4 light-brake and 4 neutral-entry runs; compare rotation and exit line.",
+      "resetInstructions": "Stationary 60 m before gravel turn, same approach speed.",
+      "props": "Keep steering entry point identical; compare only input timing.",
+      "assessment": {
+        "attempts": 12,
+        "requiredPasses": 9,
+        "successDefinition": "Complete entry and exit without cone strike/spin; identify which input increased front bite.",
+        "metricToRecord": "Clean runs and rotation observation",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "C01",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Lift-off oversteer",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Handling Circuit: safe paved sweeper"
+      },
+      "instructions": "Approach under light throttle, lift just before turn-in to rotate, then stabilize smoothly.",
+      "resetInstructions": "Stationary 70 m before sweeper; fixed 40 km/h entry.",
+      "props": "If the chosen FWD setup barely rotates, use slightly higher safe entry speed, then fix it.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Observable small rotation without handbrake; no spin or pavement departure.",
+        "metricToRecord": "Controlled lift-rotation attempts / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "C02",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Brake-induced rotation",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track: open gravel 90-degree corner"
+      },
+      "instructions": "Initiate mild turn-in then apply a short controlled brake pulse for rotation.",
+      "resetInstructions": "Stationary 60 m before turn; fixed brake cone.",
+      "props": "Brake pulse duration adjustable; throttle steady after release.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Rotate into corner without handbrake or full spin; clean exit between two cones.",
+        "metricToRecord": "Successful brake-rotation attempts",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "C03",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Throttle-induced oversteer",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu BX-Series — 200BX Type-LS (M), RWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "Eastern skidpad: large painted circle"
+      },
+      "instructions": "Use small power pulses to provoke rear slip while turning; then reduce power to regain balance.",
+      "resetInstructions": "Stationary 40 m before 20 m radius circle; low gear.",
+      "props": "Use wide runoff; avoid measuring drifting angle without sensors.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Rear breaks traction briefly and is caught; no spin, opposite lock held <3 s.",
+        "metricToRecord": "Caught power slides / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "C04",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Handbrake rotation",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Gravel hairpin on accessible canyon road"
+      },
+      "instructions": "Brake before entry, briefly apply handbrake to rotate, release, and drive through exit gate.",
+      "resetInstructions": "Stationary 70 m before 160–180° gravel bend; face uphill/downhill as chosen.",
+      "props": "Select one broad, safe hairpin; preserve same approach speed.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Make hairpin within road edges; one handbrake application; no stall, spin or barrier touch.",
+        "metricToRecord": "Clean hairpin rotations / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "C05",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Countersteering and recovery",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu BX-Series — 200BX Type-LS (M), RWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "Eastern skidpad: large open arc"
+      },
+      "instructions": "Deliberately create mild rear-wheel slide, steer into slide, then unwind to straight exit.",
+      "resetInstructions": "Stationary 50 m before arc, identical 30 km/h entry.",
+      "props": "Replay steering input if uncertain; count only obvious rear slips.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No spin, opposite lock unwound by exit marker, final trajectory inside 3 m exit lane.",
+        "metricToRecord": "Recovered slides / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
+      }
+    },
+    {
+      "id": "C06",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Maintaining a controlled slip angle",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track: steady gravel sweeper"
+      },
+      "instructions": "Initiate moderate slide before apex; balance throttle/countersteer through a marked 20 m arc.",
+      "resetInstructions": "Stationary 70 m before sweeper; fixed 40–50 km/h entry band.",
+      "props": "Use side camera replay to judge duration; no need exact angle telemetry.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Continuous visible controlled rotation through arc, no spin or four-wheel off-course.",
+        "metricToRecord": "Maintained-slide passes / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "C07",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Lateral weight transfer",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "Skidpad: figure-eight around two cones 20 m apart"
+      },
+      "instructions": "Steer figure-eight alternating left/right; use lift/brake timing to manage direction change.",
+      "resetInstructions": "Stationary 25 m before first cone, centered on approach.",
+      "props": "Keep marker spacing identical; test one full figure-eight per attempt.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Complete both lobes cleanly; no cone contact, spin or abrupt stop.",
+        "metricToRecord": "Clean figure-eight sequences / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "C08",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Scandinavian flicks",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Wide gravel hairpin with clear outside runoff"
+      },
+      "instructions": "Briefly steer away from turn, reverse steering to build rotation, catch slide without handbrake.",
+      "resetInstructions": "Stationary 100 m before hairpin, same approach lane.",
+      "props": "Start around 35–45 km/h; only increase after 8/10 passes.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Correct-direction rotation followed by clean exit; no handbrake, spin or road-edge contact.",
+        "metricToRecord": "Successful flicks / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D01",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Slaloms and rapid transitions",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "Eastern skidpad: six-cone slalom, 12 m cone spacing"
+      },
+      "instructions": "Weave alternating around all six cones while maintaining smooth steering and continuous motion.",
+      "resetInstructions": "Stationary 30 m before first cone; wheel centered.",
+      "props": "Cones spaced approx. 12 m; record exact positions in screenshot.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No cone contact, no spin; minimum 25 km/h through final gate.",
+        "metricToRecord": "Clean slaloms / 10, exit speed",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D02",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Linked-corner sequencing",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track: two bends in quick succession"
+      },
+      "instructions": "Prioritize second bend exit even if first apex is compromised; compare with single-corner focus.",
+      "resetInstructions": "Stationary 80 m before first bend; RSC start gate at vehicle reset.",
+      "props": "Use Rally Stage Creator (RSC) 20–40 s custom section; create finish past bend two.",
+      "assessment": {
+        "attempts": 6,
+        "requiredPasses": 5,
+        "successDefinition": "No contact/off-road, and timed segment within +8% of fastest clean attempt.",
+        "metricToRecord": "Clean times / 6, best & median",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D03",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Decreasing-radius corners",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Italy",
+        "levelId": null,
+        "areaHint": "Choose a rural paved bend that visibly tightens toward exit"
+      },
+      "instructions": "Enter conservatively, delay apex, progressively reduce speed as radius tightens.",
+      "resetInstructions": "Stationary 80 m before tightening bend, before sightline changes.",
+      "props": "Choose and screenshot exact corner once; not a preloaded waypoint.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No midcorner emergency stop, barrier contact or two-wheel road departure; clear exit gate.",
+        "metricToRecord": "Clean tightening-corner attempts / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D04",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Increasing-radius corners",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Italy",
+        "levelId": null,
+        "areaHint": "Choose a rural paved curve that opens on exit"
+      },
+      "instructions": "Enter at a safe speed, then unwind steering and progressively accelerate as radius opens.",
+      "resetInstructions": "Stationary 60 m before opening bend; mark start and exit.",
+      "props": "Use speedometer/replay if observing acceleration pickup.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Exit in lane; throttle increases after apex without wheelspin, spin or boundary contact.",
+        "metricToRecord": "Progressive-exit runs / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D05",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Blind corners",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Choose canyon gravel turn obscured by rock or crest"
+      },
+      "instructions": "Drive the turn from the cockpit at a conservative fixed approach speed, using visible cues.",
+      "resetInstructions": "Stationary 100 m before blind turn; avoid using freecam while scoring.",
+      "props": "Treat map familiarity as a limitation; eventually transfer to unseen routes.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No roadside contact or wheels beyond road boundary; correct direction chosen before sightline opens.",
+        "metricToRecord": "Clean blind entries / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D06",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Uphill and downhill corners",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Gradient Test hills and their paved connector bends"
+      },
+      "instructions": "Alternate five uphill and five downhill turns at comparable entry speeds.",
+      "resetInstructions": "Two starts: 60 m before uphill curve and 60 m before downhill curve.",
+      "props": "Five attempts per direction; keep two saved checkpoints/screenshots.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Clean exit and no late brake lock on downhill; correct gear and control uphill.",
+        "metricToRecord": "Clean uphill/downhill turns / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D07",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Road camber",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "ETK Driver Experience Center",
+        "levelId": null,
+        "areaHint": "West training tracks: banked/slanted road sections"
+      },
+      "instructions": "Drive inside- and outside-camber arcs; note how line and speed change available grip.",
+      "resetInstructions": "Stationary 50 m before first cambered segment; direction fixed.",
+      "props": "Pick two actual cambered segments on the west training area.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Stay inside lane and avoid severe understeer/oversteer; identify which side reduced grip.",
+        "metricToRecord": "Clean runs and camber observation",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D08",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Mixed-surface transitions",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Paved access road meeting gravel Rally Track"
+      },
+      "instructions": "Cross tarmac→gravel while turning gently; adapt braking point and steering to lower grip.",
+      "resetInstructions": "Stationary 80 m before identified pavement/gravel boundary.",
+      "props": "If geometry differs, select a different confirmed paved-to-gravel interface.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No drift beyond marked road edge and no last-second correction that hits cones.",
+        "metricToRecord": "Clean transitions / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "E01",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "Snow vs gravel vs tarmac",
+      "difficulty": "Optional mod",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Winter West Coast, USA [OPTIONAL MOD]",
+        "levelId": null,
+        "areaHint": "Winter West Coast + West Coast dry; gravel on Automation Rally Track"
+      },
+      "instructions": "Perform 4 controlled corners on snow, 4 on tarmac, 4 on gravel; record safe approach speed and braking behavior.",
+      "resetInstructions": "Three saved starts, one on each surface (not identical geometry).",
+      "props": "OPTIONAL Winter West Coast 0.39.1 mod; check compatibility and actual traction. Fall back to 2-surface comparison if unavailable.",
+      "assessment": {
+        "attempts": 12,
+        "requiredPasses": 9,
+        "successDefinition": "Complete each turn with all wheels on road and no collision; log safe speed for all three surfaces.",
+        "metricToRecord": "Clean turns per surface + observations",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/resources/winter-west-coast-usa.34794/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "E02",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "FWD driving technique",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track: moderate gravel corner with runoff"
+      },
+      "instructions": "Use a small lift/brake to rotate before apex; reapply throttle to stabilize FWD exit.",
+      "resetInstructions": "Stationary 70 m before turn, lower entry speed due to road tires.",
+      "props": "Keep all car parts/tires stock so lesson is about drivetrain.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No power-on plowing past outer boundary and no handbrake; exit aligned.",
+        "metricToRecord": "Clean FWD corners / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "E03",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "RWD driving technique",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi SBR4 — NGRC2 Rally Gravel (M), RWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track: open gravel sweeper"
+      },
+      "instructions": "Use steering and moderate power to create rear slip, then meter throttle to stabilize exit.",
+      "resetInstructions": "Stationary 70 m before turn; 35–45 km/h entry.",
+      "props": "NGRC2 RWD gravel configuration is an official vehicle preset.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No full spin, off-road excursion or sustained wheelspin that stalls progress.",
+        "metricToRecord": "Clean RWD exits / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "E04",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "AWD driving technique",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Same gravel sweeper as E03"
+      },
+      "instructions": "Compare AWD corner rotation and exit traction with E03; use progressive throttle.",
+      "resetInstructions": "Reuse exact E03 start location and timing markers.",
+      "props": "Different car means comparison is qualitative; keep tire classes appropriate.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No front-end washout or outside-road excursion; clean, accelerating exit.",
+        "metricToRecord": "Clean AWD exits and exit speed",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "E05",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "Crest management",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track hill / gravel approach near Gradient Test area"
+      },
+      "instructions": "Approach crest in a straight line with light, stable inputs; avoid sudden steering at unloading.",
+      "resetInstructions": "Stationary 120 m before chosen accessible crest; straight line at summit.",
+      "props": "Choose an actual safe crest and mark 20 m recovery zone.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Car stays aligned after crest; no spin, crash or large landing bounce.",
+        "metricToRecord": "Stable crest crossings / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "E06",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "Jump takeoff and landing",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Cherrier Vivace — NGRC1 Gravel Rally (Sequential), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Accessible jump on NGRC Rally Utah 2026 gravel route"
+      },
+      "instructions": "Approach square, stabilize car before takeoff and land while maintaining road alignment.",
+      "resetInstructions": "Stationary 150 m before jump; same approach direction/speed band.",
+      "props": "Find jump by recce in Freeroam first; official Utah Rally loop confirms jumps.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Four wheels land on intended road, no roll or damage, vehicle continues under control.",
+        "metricToRecord": "Controlled landings / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/cherrier/"
+      }
+    },
+    {
+      "id": "E07",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "Rough terrain and suspension unloading",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Cherrier Vivace — NGRC1 Gravel Rally (Sequential), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Johnson Valley",
+        "levelId": null,
+        "areaHint": "Rutted, corrugated off-road trail with no large cliffs"
+      },
+      "instructions": "Traverse uneven road with smooth throttle and minimal large steering corrections.",
+      "resetInstructions": "Stationary 80 m before 150–250 m rough section.",
+      "props": "Keep segment and approach gear fixed; avoid very rocky rock-crawler lines.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No puncture, broken suspension, roll or departure from chosen trail.",
+        "metricToRecord": "Clean rough-ground traversals / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/cherrier/"
+      }
+    },
+    {
+      "id": "E08",
+      "module": "05  TERRAIN & DRIVETRAINS",
+      "title": "Water crossings and hazards",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Shallow crossing found on official NGRC Rally Utah route"
+      },
+      "instructions": "Approach with modest speed, cross without stopping midstream, exit onto dry track.",
+      "resetInstructions": "Stationary 80 m before ford; choose shallow driveable section.",
+      "props": "Select safe ford during recce; depth depends on position and vehicle.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No engine stall, major impact, off-course travel or recovery use.",
+        "metricToRecord": "Clean ford crossings / 10",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F01",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Pacenote interpretation",
+      "difficulty": "Mission",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Official NGRC Rally Utah 2026 special stage"
+      },
+      "instructions": "Choose one official stage with co-driver calls. Drive 5 scored runs, calling the next instruction before executing.",
+      "resetInstructions": "Official rally-stage starting line; use mission start/restart rather than Home.",
+      "props": "Official Rally Mode for actual voiced pacenotes. Mission restarts may have menus/loading.",
+      "assessment": {
+        "attempts": 5,
+        "requiredPasses": 4,
+        "successDefinition": "No major wrong-direction error or recovery; finish stage with no severe damage.",
+        "metricToRecord": "Clean stage finishes / 5; note errors",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F02",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Timed consistency runs",
+      "difficulty": "Timed",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "40–90-second section of the Rally Track"
+      },
+      "instructions": "Complete 6 scored runs through exactly the same start, checkpoints and finish.",
+      "resetInstructions": "Stationary at custom RSC start gate, ~10 m before segment timing begins.",
+      "props": "RSC recommended; save stage definition and use quick restart.",
+      "assessment": {
+        "attempts": 6,
+        "requiredPasses": 5,
+        "successDefinition": "At least 5 runs are clean and within +7% of the fastest clean time in the block.",
+        "metricToRecord": "Seconds per run; spread %; clean runs",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F03",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Speed management and regularity",
+      "difficulty": "Timed",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Runway: custom 200–300 m regularity route"
+      },
+      "instructions": "Complete fixed-distance route at a target time set after two practice passes.",
+      "resetInstructions": "Stationary 15 m before timing start; fix one target time for whole segment.",
+      "props": "RSC recommended for timing; example target 24 s must be calibrated for route.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Finish within ±2.0 seconds of target time without reversing or exceeding chosen speed cap.",
+        "metricToRecord": "Absolute time error (seconds)",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F04",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Driving unfamiliar stages",
+      "difficulty": "Timed",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Five different short routes on Rally Track + Handling access roads"
+      },
+      "instructions": "Drive 5 distinct short, previously unused courses once each; focus on road reading.",
+      "resetInstructions": "Each new route has its own start gate; no prior timed recce before scored first run.",
+      "props": "Prepare 5 RSC routes in advance or ask a friend to create/share routes.",
+      "assessment": {
+        "attempts": 5,
+        "requiredPasses": 4,
+        "successDefinition": "Finish first encounter cleanly on at least four routes without recovery or off-course excursion.",
+        "metricToRecord": "First-try clean finishes / 5",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F05",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Long-stage concentration",
+      "difficulty": "Mission",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Official NGRC Rally Utah 2026 full loop (four gravel stages)"
+      },
+      "instructions": "Complete the entire multi-stage loop, maintaining focus and minimizing cumulative mistakes.",
+      "resetInstructions": "Use actual Rally Mode loop start; mission restart between scored assessments.",
+      "props": "Long assessment; schedule on its own day. The official Utah loop totals 16.4 km of special stages.",
+      "assessment": {
+        "attempts": 3,
+        "requiredPasses": 2,
+        "successDefinition": "Two complete loops with no recoveries and no major vehicle damage.",
+        "metricToRecord": "Loop completions, recoveries, total elapsed time",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F06",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Puncture and damage adaptation",
+      "difficulty": "Special",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "Straight and moderate corners on a low-risk gravel road"
+      },
+      "instructions": "Induce one random tire deflation and drive slowly to finish, adapting steering/braking.",
+      "resetInstructions": "Stationary 40 m before 200–300 m chosen training stretch.",
+      "props": "Ctrl + Shift + H deflates a random tire in default keyboard mappings; wheel differs by run.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "No additional crash/roll; keep speed below 35 km/h and reach exit under control.",
+        "metricToRecord": "Safe limps / 10; record which tire",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F07",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Vehicle setup comparisons",
+      "difficulty": "Timed",
+      "vehicle": {
+        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Automation Test Track",
+        "levelId": null,
+        "areaHint": "Rally Track: same 40–60 s segment for A/B comparison"
+      },
+      "instructions": "Alternate four runs on base config and four on one changed parameter (spring rate if tunable).",
+      "resetInstructions": "Stationary at RSC start; save two named car configurations and never move start gate.",
+      "props": "Vehicle Config > Parts/Tuning > Save & Load; only change what this car allows.",
+      "assessment": {
+        "attempts": 8,
+        "requiredPasses": 6,
+        "successDefinition": "At least 6 clean passes; record median time for both setups and state one handling difference.",
+        "metricToRecord": "A/B clean count, median time A vs B",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "F08",
+      "module": "06  RALLY STAGE PERFORMANCE",
+      "title": "Full-stage technique integration",
+      "difficulty": "Mission",
+      "vehicle": {
+        "displayName": "Cherrier Vivace — NGRC1 Gravel Rally (Sequential), AWD",
+        "modelId": null,
+        "configPath": null
+      },
+      "environment": {
+        "mapDisplayName": "Utah, USA",
+        "levelId": null,
+        "areaHint": "One official NGRC Rally Utah 2026 special stage"
+      },
+      "instructions": "Complete three stage attempts combining notes, braking, rotation, hazards and pace.",
+      "resetInstructions": "Use official stage start; establish a clean reference time before scoring.",
+      "props": "Use Rally Mode co-driver calls; reserve full event for F05.",
+      "assessment": {
+        "attempts": 3,
+        "requiredPasses": 2,
+        "successDefinition": "At least two clean, no-recovery runs within +8% of personal clean reference time.",
+        "metricToRecord": "Clean finishes / 3 and % over reference",
+        "mode": "selfAssessment",
+        "rules": []
+      },
+      "startTransform": null,
+      "finishGate": null,
+      "references": {
+        "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/cherrier/"
+      }
+    }
+  ]
+}

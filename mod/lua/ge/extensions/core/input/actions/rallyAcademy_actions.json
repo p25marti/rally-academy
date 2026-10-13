@@ -1,0 +1,26 @@
+{
+  "rally_academy_retry": {
+    "cat": "vehicle",
+    "order": 101,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.retry() end",
+    "title": "Rally Academy: Retry",
+    "desc": "Return immediately to the marked training start."
+  },
+  "rally_academy_pass": {
+    "cat": "vehicle",
+    "order": 102,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.recordAttempt(true) end",
+    "title": "Rally Academy: Score pass",
+    "desc": "Record a passing attempt after assessing the manoeuvre."
+  },
+  "rally_academy_miss": {
+    "cat": "vehicle",
+    "order": 103,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.recordAttempt(false) end",
+    "title": "Rally Academy: Score miss",
+    "desc": "Record an unsuccessful attempt after assessing the manoeuvre."
+  }
+}

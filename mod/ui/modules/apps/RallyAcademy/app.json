@@ -1,0 +1,15 @@
+{
+  "name": "Rally Academy (Prototype)",
+  "author": "Starter scaffold",
+  "version": "0.1.0",
+  "description": "48-drill rally training HUD, instant retry and manual assessment",
+  "directive": "rallyAcademy",
+  "domElement": "<rally-academy></rally-academy>",
+  "css": {
+    "width": "390px",
+    "height": "340px",
+    "right": "20px",
+    "top": "120px"
+  },
+  "preserveAspectRatio": false
+}
