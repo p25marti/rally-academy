@@ -118,9 +118,19 @@ function M.retry()
 end
 
 -- MVP scoring is intentionally *self-assessed*. Crossing a finish gate only stops the timer.
+-- Only a driven run can be scored: one that reached the finish, or one the driver
+-- ends with Pass/Miss when the drill has no finish gate. With a finish gate, a
+-- run in progress can only be abandoned (Miss), so a partial time never counts.
 function M.recordAttempt(passed)
-  if not selected or (phase ~= 'review' and phase ~= 'running' and phase ~= 'ready') then return end
-  if phase == 'running' then lastTime = elapsed end
+  if not selected then return end
+  local finished = phase == 'review' or (phase == 'running' and not finishGate)
+  local abandoned = phase == 'running' and finishGate ~= nil
+  if not finished and not abandoned then return end
+  if abandoned and passed then
+    lastReason = 'Finish the run to score a pass, or press Miss to abandon it.'
+    output(); return
+  end
+  if phase == 'running' then lastTime = finished and elapsed or nil end
   attempts = attempts + 1
   if passed == true then successes = successes + 1 end
   phase = 'scored'

@@ -21,6 +21,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   uses the global `bngApi` like the stock apps.
 - HUD app is listed under the **Rally** category instead of "Unknown".
 - Retry put the car back facing backwards.
+- Pass/Miss only score a driven run. Pressing them before driving does
+  nothing; with a finish gate, Pass mid-run is refused (Miss abandons the run
+  without a time), so a partial time can no longer become your best.
 - The run timer started the moment you pressed Retry (a one-frame velocity
   spike after the teleport); it now starts when the car leaves the start.
 

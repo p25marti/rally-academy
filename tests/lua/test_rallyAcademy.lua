@@ -149,13 +149,16 @@ function T.finish_gate_stops_timer_and_requests_review()
   assert(s.lastTime and s.lastTime > 4 and s.lastTime < 5.5, 'finish time ~4.8 s, got ' .. tostring(s.lastTime))
 end
 
+-- A01 has no finish gate here, so the driver ends each run with Pass/Miss.
 function T.record_attempt_persists_progress()
   local h, M = setup()
   M.select('A01')
   M.markStart()
   M.retry()
+  drive(h, M, 1.0, {x = 0, y = 10, z = 0})
   M.recordAttempt(true)
   M.retry()
+  drive(h, M, 1.0, {x = 0, y = 10, z = 0})
   M.recordAttempt(false)
   local s = h.lastState()
   eq(s.attempts, 2, 'attempts')
@@ -163,6 +166,57 @@ function T.record_attempt_persists_progress()
   local saved = jsonReadFile('settings/rallyAcademyProgress.json')
   eq(saved.lessons.A01.totalAttempts, 2, 'saved attempts')
   eq(saved.lessons.A01.totalPasses, 1, 'saved passes')
+end
+
+function T.no_finish_gate_pass_records_run_time_as_best()
+  local h, M = setup()
+  M.select('A01')
+  M.markStart()
+  M.retry()
+  drive(h, M, 2.0, {x = 0, y = 10, z = 0})
+  M.recordAttempt(true)
+  local best = jsonReadFile('settings/rallyAcademyProgress.json').lessons.A01.bestTime
+  assert(best and math.abs(best - 2.0) < 1e-6, 'best 2.0 s, got ' .. tostring(best))
+end
+
+function T.scoring_before_driving_is_ignored()
+  local h, M = setup()
+  M.select('A01')
+  M.markStart()
+  M.retry()
+  M.recordAttempt(true)
+  M.recordAttempt(false)
+  local s = h.lastState()
+  eq(s.phase, 'ready', 'still ready')
+  eq(s.attempts, 0, 'nothing recorded')
+  eq(jsonReadFile('settings/rallyAcademyProgress.json'), nil, 'nothing saved')
+end
+
+-- With a finish gate, a run in progress can't be passed (its time is partial);
+-- Miss abandons it and records no time.
+function T.pass_mid_run_with_finish_gate_is_refused()
+  local h, M = setup()
+  M.select('B01')
+  h.vehicle.pos = stubs.vec3(0, 0, 0)
+  M.markStart()
+  h.vehicle.pos = stubs.vec3(0, 100, 0)
+  M.markFinish()
+  M.retry()
+  drive(h, M, 1.0, {x = 0, y = 10, z = 0})
+  M.recordAttempt(true)
+  local s = h.lastState()
+  eq(s.phase, 'running', 'run continues')
+  eq(s.attempts, 0, 'pass not recorded')
+  eq(jsonReadFile('settings/rallyAcademyProgress.json'), nil, 'nothing saved')
+
+  M.recordAttempt(false)
+  s = h.lastState()
+  eq(s.phase, 'scored', 'abandoned run scored as a miss')
+  eq(s.attempts, 1, 'miss recorded')
+  eq(s.lastTime, nil, 'no time for an abandoned run')
+  local saved = jsonReadFile('settings/rallyAcademyProgress.json').lessons.B01
+  eq(saved.totalAttempts, 1, 'saved attempt')
+  eq(saved.bestTime, nil, 'no best time')
 end
 
 return T
