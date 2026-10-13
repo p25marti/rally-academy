@@ -1,0 +1,16 @@
+# Packaged builds
+*.zip
+dist/
+
+# BeamNG/editor caches
+*.cdae
+*.dts.cache
+*.ter.depth.dds
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*.blend1
