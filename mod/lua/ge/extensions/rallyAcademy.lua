@@ -21,7 +21,9 @@ local function snapshotVehicle()
   local pos = veh:getPosition()
   local forward = vec3(veh:getDirectionVector()):normalized()
   local up = vec3(veh:getDirectionVectorUp()):normalized()
-  local rot = quatFromDir(forward, up)
+  -- setPositionRotation expects the rotation built from the *negated* direction
+  -- vector (as core_checkpoints does); without it Retry faces the car backwards.
+  local rot = quatFromDir(-forward, up)
   return {
     vehicleId = veh:getID(),
     pos = {x=pos.x, y=pos.y, z=pos.z},
@@ -144,7 +146,11 @@ function M.onUpdate(dtReal, dtSim)
   if not veh or veh:getID() ~= activeVehicleId then return end
   uiAccum = uiAccum + (dtReal or 0)
   local speed = veh:getVelocity():length()
-  if phase == 'ready' and speed > 1 then
+  -- The frame after a teleport reports a huge velocity (~430 m/s seen in 0.39.4),
+  -- so also require the car to have actually left the start.
+  local s = startState.pos
+  local leftStart = (veh:getPosition() - vec3(s.x, s.y, s.z)):length() > 0.5
+  if phase == 'ready' and speed > 1 and leftStart then
     phase = 'running'
     lastReason = 'Run started.'
     output()

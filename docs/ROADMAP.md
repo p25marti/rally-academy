@@ -5,9 +5,12 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 ## P0 — Runs reliably in-game
 
 - [ ] First in-game smoke test on the current build; record results in BEAMNG_API_NOTES.
-- [ ] **Retry resets the car properly**: zero velocity, optionally repair, no
-      leftover momentum. Pinned by `known_issue_retry_keeps_velocity`. Candidate:
-      BeamNG's own save/load-home recovery, or a teleport with a physics reset.
+      2026-10-13 on 0.39.4: steps 1–8 and 10 pass; 9 (progress survives a
+      restart) still to do.
+- [x] ~~Retry keeps velocity~~: not reproducible on 0.39.4, `setPositionRotation`
+      leaves the car at rest. Retry also faced the car backwards (fixed).
+- [ ] **Retry repairs damage** (`resetBrokenFlexMesh` + vehicle-side reset, as
+      `core_checkpoints` does), so a crashed run restarts clean.
 - [ ] **Persist start/finish per drill and map** (`levelId`) so setup survives
       reloads and restarts.
 - [ ] Log lines with a recognisable prefix so `dev.py log` finds them.
@@ -17,6 +20,10 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 
 - [ ] Capture and store `levelId`, vehicle model/config, start pose and finish gate in-game.
 - [ ] Promote captured setups into `exercises.json` for drills with fixed locations.
+- [ ] **Ship a "Rally Academy" HUD layout** with the mod (the game reads
+      `/settings/ui_apps/originalLayouts/*.uilayout.json` from the virtual FS)
+      and switch to it on drill start / back on exit via
+      `ui_appLayouts.setUsedLayout`, so players never edit their Freeroam layout.
 
 ## P2 — First automatically graded drill
 
@@ -44,7 +51,9 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 
 | Issue | Impact | Tracked by |
 | --- | --- | --- |
-| Retry teleports but keeps velocity/damage | Car arrives at the start still moving | `known_issue_retry_keeps_velocity` |
+| Retry doesn't repair damage | A crashed car restarts the drill still damaged | — |
+| After `extensions.reload("rallyAcademy")` the HUD keeps showing the old drill while Lua is back to `idle` | Buttons do nothing until you pick a drill again | — |
+| The HUD never shows the run time | Timing is invisible to the driver | — |
 | Start/finish are in memory only | Setup lost on reload/restart | — |
 | No in-game verification yet | Any engine API assumption may be wrong | BEAMNG_API_NOTES |
 | Pass/Miss is self-assessed | No objective grading | P2/P3 |

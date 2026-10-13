@@ -1,4 +1,5 @@
-angular.module('beamng.apps').directive('rallyAcademy', ['bngApi', function (bngApi) {
+// bngApi is a global in 0.39 (not an injectable service), like the stock apps use it.
+angular.module('beamng.apps').directive('rallyAcademy', [function () {
   return {
     restrict: 'EA',
     replace: true,

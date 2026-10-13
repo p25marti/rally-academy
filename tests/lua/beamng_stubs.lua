@@ -18,6 +18,7 @@ local function vec3(x, y, z)
 end
 function vec3mt.__sub(a, b) return vec3(a.x - b.x, a.y - b.y, a.z - b.z) end
 function vec3mt.__add(a, b) return vec3(a.x + b.x, a.y + b.y, a.z + b.z) end
+function vec3mt.__unm(a) return vec3(-a.x, -a.y, -a.z) end
 function vec3mt:length() return math.sqrt(self.x ^ 2 + self.y ^ 2 + self.z ^ 2) end
 function vec3mt:normalized()
   local l = self:length()
@@ -48,6 +49,7 @@ local function newVehicle(id)
   function v:setPositionRotation(x, y, z, rx, ry, rz, rw)
     table.insert(self.teleports, {x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, rw = rw})
     self.pos = vec3(x, y, z)
+    self.vel = vec3(0, 0, 0) -- verified 0.39.4: teleporting a moving car leaves it at rest
   end
   function v:queueLuaCommand(cmd) table.insert(self.luaCommands, cmd) end
   return v

@@ -3,6 +3,9 @@
   "author": "Starter scaffold",
   "version": "0.1.0",
   "description": "48-drill rally training HUD, instant retry and manual assessment",
+  "types": [
+    "ui.apps.categories.rally"
+  ],
   "directive": "rallyAcademy",
   "domElement": "<rally-academy></rally-academy>",
   "css": {

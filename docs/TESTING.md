@@ -47,7 +47,10 @@ BeamNG version and result in the PR.
 
 1. `python tools/dev.py status`: link present, no conflicting zip.
 2. Launch BeamNG → Free Roam → any map (Automation Test Track is a good default) → any car.
-3. UI Apps → add **Rally Academy (Prototype)**. Panel appears; drill list shows 48 entries.
+3. Add the panel. In 0.39: `Alt+Shift+U` (HUD Layouts) → select a layout →
+   **Edit Layout** → **＋ Add** → search "academy" → add **Rally Academy (Prototype)**.
+   Tip: first **Layout Actions → Duplicate** your Freeroam layout and **Use Layout**
+   on the copy, so your normal layout stays untouched. Panel appears; drill list shows 48 entries.
 4. `python tools/dev.py log`: no errors mentioning `rallyAcademy`.
 5. Select a drill → **Mark start** → drive ~50 m → **Mark finish** → **Retry**.
    The car returns to the start facing the same way.

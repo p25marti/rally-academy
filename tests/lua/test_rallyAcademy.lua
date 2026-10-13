@@ -68,15 +68,30 @@ function T.retry_teleports_to_marked_start()
   eq(h.lastState().phase, 'ready', 'phase ready')
 end
 
--- Known issue (docs/ROADMAP.md, P0): retry does not zero velocity or repair.
--- This test documents today's behaviour; flip it when the fix lands.
-function T.known_issue_retry_keeps_velocity()
+-- Verified in-game on 0.39.4: quatFromDir(forward) made Retry face the car
+-- backwards; the game's own checkpoint reset negates the direction vector.
+function T.start_rotation_uses_negated_direction_vector()
+  local h, M = setup()
+  local captured
+  local real = _G.quatFromDir
+  _G.quatFromDir = function(dir, up) captured = dir; return real(dir, up) end
+  M.select('A01')
+  h.vehicle.dir = stubs.vec3(0, 1, 0)
+  M.markStart()
+  _G.quatFromDir = real
+  eq(captured.y, -1, 'rotation built from -forward')
+end
+
+-- Formerly known_issue_retry_keeps_velocity. In-game on 0.39.4, Retry at
+-- 4.25 m/s left the car at 0.03 m/s: setPositionRotation already stops it.
+-- (Damage is still not repaired; see ROADMAP.)
+function T.retry_leaves_car_at_rest()
   local h, M = setup()
   M.select('A01')
   M.markStart()
   h.vehicle.vel = stubs.vec3(0, 25, 0)
   M.retry()
-  eq(h.vehicle.vel.y, 25, 'velocity untouched by retry (bug)')
+  eq(h.vehicle.vel:length(), 0, 'car at rest after retry')
 end
 
 function T.run_starts_when_moving_and_times_with_sim_dt()
@@ -89,6 +104,21 @@ function T.run_starts_when_moving_and_times_with_sim_dt()
   local s = h.lastState()
   eq(s.phase, 'running', 'phase')
   assert(math.abs(s.elapsed - 2.0) < 1e-6, 'elapsed 2.0 s, got ' .. tostring(s.elapsed))
+end
+
+-- Seen in-game on 0.39.4: the first frame after setPositionRotation reports
+-- ~430 m/s while the car is sitting at the start. That must not start the run.
+function T.teleport_velocity_spike_does_not_start_run()
+  local h, M = setup()
+  M.select('A04')
+  h.vehicle.pos = stubs.vec3(5, 5, 0)
+  M.markStart()
+  M.retry()
+  h.vehicle.vel = stubs.vec3(0, 430, 0) -- spike, but the car has not moved
+  M.onUpdate(0.016, 0.016)
+  h.vehicle.vel = stubs.vec3(0, 0.3, 0) -- suspension settling
+  M.onUpdate(0.016, 0.016)
+  eq(h.lastState().phase, 'ready', 'still waiting for the driver')
 end
 
 function T.paused_physics_does_not_add_time()
