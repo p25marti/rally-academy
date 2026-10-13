@@ -53,7 +53,7 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 | --- | --- | --- |
 | Retry doesn't repair damage | A crashed car restarts the drill still damaged | — |
 | After `extensions.reload("rallyAcademy")` the HUD keeps showing the old drill while Lua is back to `idle` | Buttons do nothing until you pick a drill again | — |
-| The HUD never shows the run time | Timing is invisible to the driver | — |
+| Pass/Miss accepted while `running` | Passing mid-run saves the partial time as the drill's best | — |
 | Start/finish are in memory only | Setup lost on reload/restart | — |
 | No in-game verification yet | Any engine API assumption may be wrong | BEAMNG_API_NOTES |
 | Pass/Miss is self-assessed | No objective grading | P2/P3 |

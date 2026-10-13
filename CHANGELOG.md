@@ -13,6 +13,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - `modScript.lua` loads the extension automatically when the mod is enabled
   (ported from the earlier skeleton repo), so key bindings work before the HUD is opened.
 
+- HUD shows the run time: a live clock while driving (tenths), the final
+  time after the finish (hundredths), and the drill's best time.
+
 ### Fixed
 - HUD panel failed to load on 0.39 (`Unknown provider: bngApiProvider`); it now
   uses the global `bngApi` like the stock apps.
