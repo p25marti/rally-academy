@@ -10,9 +10,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   build, live-link into BeamNG, log viewer, version bump), LuaJIT unit tests
   with BeamNG stubs, luacheck config, CI and tag-driven GitHub Releases.
 - Developer documentation under `docs/` and decision records.
+- `dev.py lint`/`test` on Windows use a LuaJIT + luacheck toolchain built in
+  WSL (`tools/ci/setup-lua.sh`), so `check --strict` runs locally without CI.
 - `modScript.lua` loads the extension automatically when the mod is enabled
   (ported from the earlier skeleton repo), so key bindings work before the HUD is opened.
-
 - HUD shows the run time: a live clock while driving (tenths), the final
   time after the finish (hundredths), and the drill's best time.
 

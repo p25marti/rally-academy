@@ -45,15 +45,15 @@ LOG_PATTERN = re.compile(r"rallyAcademy|RallyAcademy|rally_academy|\|E\||\bERROR
 # --------------------------------------------------------------------------- output
 
 def info(msg: str) -> None:
-    print(f"  {msg}")
+    print(f"  {msg}", flush=True)
 
 
 def ok(msg: str) -> None:
-    print(f"[ok]   {msg}")
+    print(f"[ok]   {msg}", flush=True)
 
 
 def skip(msg: str) -> None:
-    print(f"[skip] {msg}")
+    print(f"[skip] {msg}", flush=True)
 
 
 class CheckFailed(Exception):
@@ -160,35 +160,72 @@ def cmd_bump(args) -> None:
 # --------------------------------------------------------------------------- lint / test
 
 def lua_files() -> list[str]:
-    files = [str(p) for p in sorted(MOD_DIR.rglob("*.lua"))]
-    files += [str(p) for p in sorted((ROOT / "tests" / "lua").rglob("*.lua"))]
-    return files
+    # Repo-relative POSIX paths: valid both natively and inside WSL (run with cwd=ROOT).
+    files = sorted(MOD_DIR.rglob("*.lua")) + sorted((ROOT / "tests" / "lua").rglob("*.lua"))
+    return [p.relative_to(ROOT).as_posix() for p in files]
+
+
+# Inside WSL, tools/ci/setup-lua.sh installs to this prefix (as CI does). This
+# sh snippet puts the toolchain on PATH/LUA_PATH, then execs the tool ("$@").
+WSL_LUA_ENV = (
+    "T=$HOME/.lua-toolchain; PATH=$T/bin:$PATH; "
+    "LUA_PATH=$T'/share/lua/5.1/?.lua;'$T'/share/lua/5.1/?/init.lua;;'; "
+    "LUA_CPATH=$T'/lib/lua/5.1/?.so;;'; export PATH LUA_PATH LUA_CPATH; exec \"$@\""
+)
+_wsl_toolchain: bool | None = None
+
+
+def wsl_has_lua_toolchain() -> bool:
+    global _wsl_toolchain
+    if _wsl_toolchain is None:
+        _wsl_toolchain = False
+        if os.name == "nt" and shutil.which("wsl.exe"):
+            try:
+                r = subprocess.run(["wsl.exe", "-e", "sh", "-c", "test -x $HOME/.lua-toolchain/bin/luajit"],
+                                   capture_output=True, timeout=60)
+                _wsl_toolchain = r.returncode == 0
+            except (OSError, subprocess.TimeoutExpired):
+                pass
+    return _wsl_toolchain
+
+
+def lua_tool(name: str) -> tuple[list[str], str] | None:
+    """Command prefix for a Lua tool and where it came from: native PATH first,
+    then (on Windows) the WSL toolchain from tools/ci/setup-lua.sh."""
+    exe = shutil.which(name)
+    if exe:
+        return [exe], "native"
+    if wsl_has_lua_toolchain():
+        return ["wsl.exe", "-e", "sh", "-c", WSL_LUA_ENV, "sh", name], "WSL"
+    return None
 
 
 def cmd_lint(args=None) -> None:
-    exe = shutil.which("luacheck")
-    if not exe:
+    tool = lua_tool("luacheck")
+    if not tool:
         if args is not None and getattr(args, "strict", False):
             fail("luacheck not found (see docs/DEVELOPMENT.md#tooling)")
         skip("lint: luacheck not installed (CI runs it)")
         return
-    result = subprocess.run([exe, "--config", str(ROOT / ".luacheckrc"), *lua_files()], cwd=ROOT)
+    cmd, where = tool
+    result = subprocess.run([*cmd, "--config", ".luacheckrc", *lua_files()], cwd=ROOT)
     if result.returncode != 0:
         fail("luacheck reported problems")
-    ok("luacheck clean")
+    ok(f"luacheck clean ({where})")
 
 
 def cmd_test(args=None) -> None:
-    exe = shutil.which("luajit")
-    if not exe:
+    tool = lua_tool("luajit")
+    if not tool:
         if args is not None and getattr(args, "strict", False):
             fail("luajit not found (see docs/DEVELOPMENT.md#tooling)")
         skip("test: luajit not installed (CI runs it)")
         return
-    result = subprocess.run([exe, str(ROOT / "tests" / "lua" / "run.lua"), str(ROOT)], cwd=ROOT)
+    cmd, where = tool
+    result = subprocess.run([*cmd, "tests/lua/run.lua", "."], cwd=ROOT)
     if result.returncode != 0:
         fail("Lua tests failed")
-    ok("Lua tests pass")
+    ok(f"Lua tests pass ({where})")
 
 
 # --------------------------------------------------------------------------- build

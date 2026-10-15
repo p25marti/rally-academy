@@ -6,8 +6,8 @@
 | --- | --- | --- |
 | Python 3.9+ | `tools/dev.py` (validate, build, link, log) | Yes |
 | git | version control | Yes |
-| LuaJIT 2.1 | `dev.py test` — runs unit tests in the same Lua flavour as BeamNG | Optional (CI runs it) |
-| luacheck | `dev.py lint` — static analysis of Lua | Optional (CI runs it) |
+| LuaJIT 2.1 | `dev.py test` — runs unit tests in the same Lua flavour as BeamNG | Recommended — native, or via WSL on Windows (below); CI always runs it |
+| luacheck | `dev.py lint` — static analysis of Lua | Recommended — as above |
 | BeamNG.drive | real testing | Yes, for anything that touches the game |
 
 `dev.py lint` / `test` print `[skip]` when their tool is missing; `--strict`
@@ -17,9 +17,20 @@ Installing the Lua tools:
 
 - **Linux / macOS / WSL:** `tools/ci/setup-lua.sh` builds LuaJIT and luacheck
   from source (needs a C compiler). Same script CI uses, so versions match.
-- **Windows (native):** easiest is to run the script inside WSL. Alternatively,
-  install LuaJIT and luacheck with your package manager of choice and make sure
-  both are on `PATH`. If you skip this, just rely on CI.
+- **Windows:** build the toolchain inside WSL once; `dev.py` then uses it
+  automatically from native Windows Python (`[ok] Lua tests pass (WSL)`):
+
+  ```powershell
+  wsl -- bash -c "sudo apt-get update && sudo apt-get install -y build-essential git"
+  wsl -- bash -c 'cd "$(wslpath "$PWD")" && PREFIX="$HOME/.lua-toolchain" tools/ci/setup-lua.sh'
+  python tools/dev.py check --strict
+  ```
+
+  Run the second line from the repo root. The script ends with
+  `luajit: command not found`; that's harmless (the prefix isn't on WSL's PATH,
+  and `dev.py` sets it up itself). Tools on the native `PATH` take precedence.
+  Keep the repo and BeamNG on the Windows side: the game needs the Windows
+  junction, and its MCP server on `127.0.0.1` isn't reachable from WSL2 by default.
 
 All `dev.py` commands are run from the repo root:
 
