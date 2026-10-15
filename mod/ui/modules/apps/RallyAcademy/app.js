@@ -25,7 +25,7 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
       '<p style="color:#64748b;font-size:11px">{{vm.prototypeWarning}}</p>',
       '</div>'
     ].join(''),
-    link: function (scope) {
+    link: function (scope, element) {
       scope.vm = { lessons: [], phase: 'loading', successes: 0, attempts: 0 };
       scope.selectedId = null;
       // Seconds -> "12.3" or "1:02.34". Lua sends elapsed at ~4 Hz, so the live
@@ -59,6 +59,10 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
         if (scope.selectedId) bngApi.engineLua('extensions.rallyAcademy.select(' + JSON.stringify(scope.selectedId) + ')');
       };
       scope.$on('rallyAcademyState', function (event, data) {
+        // 0.39.4 can leave orphaned copies of the panel alive when it remounts HUD apps
+        // (4 live scopes, 1 visible, seen after map loads). An orphan must not act on
+        // updates: it would send duplicate commands to Lua. Clean it up instead.
+        if (!document.body.contains(element[0])) { scope.$destroy(); return; }
         scope.vm = Object.assign({}, scope.vm, data);
         if (data.selected) scope.selectedId = data.selected;
         else if (data.lessons && data.lessons.length) {

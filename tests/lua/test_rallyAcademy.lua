@@ -351,4 +351,43 @@ function T.map_change_swaps_in_that_maps_setup()
   eq(h.lastState().hasStart, true, 'saved setup back when returning to the map')
 end
 
+-- Logging -------------------------------------------------------------------
+
+local function has(text, needle) return text:find(needle, 1, true) ~= nil end
+
+function T.key_events_are_logged_with_the_rallyAcademy_tag()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'B01')
+  M.retry()
+  h.vehicle.pos = stubs.vec3(10, 20, 30)
+  drive(h, M, 8.0, {x = 0, y = 20, z = 0})
+  M.recordAttempt(true)
+  local text = h.logText('rallyAcademy')
+  for _, needle in ipairs({'loaded 48 drills on map driver_training', 'selected B01 on driver_training',
+                           'start marked for B01', 'finish marked for B01', 'retry: B01',
+                           'B01: run started', 'B01: finish reached in', 'B01: PASS, time'}) do
+    assert(has(text, needle), 'missing log line: ' .. needle .. '\n--- got:\n' .. text)
+  end
+end
+
+function T.missing_drill_file_is_logged_as_an_error()
+  local h = stubs.install()
+  local real = _G.jsonReadFile
+  _G.jsonReadFile = function(path) if path:find('exercises') then return nil end return real(path) end
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  _G.jsonReadFile = real
+  assert(has(h.logText('rallyAcademy'), 'E could not read drills'), 'error logged')
+end
+
+function T.onUpdate_does_not_log_every_frame()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'A01')
+  M.retry()
+  drive(h, M, 1.0, {x = 0, y = 10, z = 0})
+  local before = #h.logs
+  for _ = 1, 100 do M.onUpdate(0.016, 0.016) end
+  eq(#h.logs, before, 'no log spam while driving')
+end
+
 return T

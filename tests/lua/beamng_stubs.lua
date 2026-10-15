@@ -59,11 +59,11 @@ end
 -- ---------------------------------------------------------------- install
 -- Installs fresh globals; returns a handle for inspecting side effects.
 function S.install()
-  local h = {events = {}, files = {}, vehicle = newVehicle(1), level = 'driver_training'}
+  local h = {events = {}, files = {}, logs = {}, vehicle = newVehicle(1), level = 'driver_training'}
 
   _G.vec3 = vec3
   _G.quatFromDir = quatFromDir
-  _G.log = function() end
+  _G.log = function(level, tag, msg) table.insert(h.logs, {level = level, tag = tag, msg = msg}) end
   _G.dump = function() end
   _G.be = {getPlayerVehicle = function(_, idx) if idx == 0 then return h.vehicle end end}
   _G.getCurrentLevelIdentifier = function() return h.level end -- verified 0.39.4
@@ -95,6 +95,13 @@ function S.install()
     for i = #h.events, 1, -1 do
       if h.events[i].name == 'rallyAcademyState' then return h.events[i].data end
     end
+  end
+
+  -- Messages logged with the given tag, joined with newlines.
+  function h.logText(tag)
+    local out = {}
+    for _, l in ipairs(h.logs) do if l.tag == tag then table.insert(out, l.level .. ' ' .. l.msg) end end
+    return table.concat(out, '\n')
   end
 
   return h

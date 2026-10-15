@@ -16,10 +16,15 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   (ported from the earlier skeleton repo), so key bindings work before the HUD is opened.
 - Start and finish are saved per drill and map (`settings/rallyAcademySetups.json`)
   and restored when you select the drill again, even after a restart.
+- The mod logs its key events to `beamng.log` (tag `rallyAcademy`): load, drill
+  selection, marks, Retry, run start/finish times, scoring, abandoned runs.
+  `python tools/dev.py log --ours` shows just those.
 - HUD shows the run time: a live clock while driving (tenths), the final
   time after the finish (hundredths), and the drill's best time.
 
 ### Fixed
+- Orphaned copies of the HUD panel (left alive by the game after map loads)
+  sent duplicate commands to Lua; they now clean themselves up.
 - Switching car mid-run froze the timer; the run is now abandoned and you're
   asked to press Retry in the new car.
 - Changing map kept the old map's start; now each map loads its own saved setup.

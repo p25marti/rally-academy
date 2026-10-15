@@ -14,6 +14,13 @@ local lastTime, lastReason = nil, ''
 local attempts, successes = 0, 0
 local activeVehicleId = nil
 
+-- beamng.log lines read `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension + tag);
+-- `python tools/dev.py log --ours` shows only these.
+local LOG_TAG = 'rallyAcademy'
+local function logf(level, fmt, ...)
+  log(level, LOG_TAG, string.format(fmt, ...))
+end
+
 local function currentVehicle()
   return be and be:getPlayerVehicle(0) or nil
 end
@@ -70,15 +77,19 @@ end
 
 local function load()
   local data = jsonReadFile(LESSONS_FILE)
+  if not (data and data.exercises) then logf('E', 'could not read drills from %s', LESSONS_FILE) end
   lessons, byId, lessonSummary = (data and data.exercises) or {}, {}, {}
   for _, lesson in ipairs(lessons) do
     byId[lesson.id] = lesson
     table.insert(lessonSummary, {id=lesson.id, title=lesson.title, module=lesson.module})
   end
   local saved = jsonReadFile(SAVE_FILE)
-  if type(saved) == 'table' and type(saved.lessons) == 'table' then progress = saved end
+  if type(saved) == 'table' and type(saved.lessons) == 'table' then progress = saved
+  elseif saved ~= nil then logf('W', 'ignoring unreadable %s', SAVE_FILE) end
   local savedSetups = jsonReadFile(SETUPS_FILE)
-  if type(savedSetups) == 'table' and type(savedSetups.levels) == 'table' then setups = savedSetups end
+  if type(savedSetups) == 'table' and type(savedSetups.levels) == 'table' then setups = savedSetups
+  elseif savedSetups ~= nil then logf('W', 'ignoring unreadable %s', SETUPS_FILE) end
+  logf('I', 'loaded %d drills on map %s', #lessons, levelId())
 end
 
 local function saveProgress()
@@ -117,6 +128,7 @@ end
 
 -- Abandon the current run (nothing is scored) but keep the drill and its setup.
 local function backToSetup(reason)
+  logf('I', '%s: run abandoned (%s)', tostring(selected), reason)
   phase, elapsed, lastTime = 'setup', 0, nil
   activeVehicleId = nil
   lastReason = reason
@@ -129,6 +141,7 @@ function M.select(id)
   phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
   activeVehicleId = nil
   loadSetup()
+  logf('I', 'selected %s on %s (%s)', id, levelId(), startState and 'saved setup loaded' or 'no saved setup')
   output()
 end
 
@@ -140,6 +153,7 @@ function M.markStart()
   activeVehicleId = snap.vehicleId
   phase = 'setup'
   saveSetup()
+  logf('I', 'start marked for %s on %s at (%.1f, %.1f, %.1f)', selected, levelId(), snap.pos.x, snap.pos.y, snap.pos.z)
   lastReason = 'Start position and orientation captured and saved for this map.'
   output()
 end
@@ -150,6 +164,7 @@ function M.markFinish()
   if not snap then lastReason = 'No player vehicle'; output(); return end
   finishGate = {pos=snap.pos, radius=5}
   saveSetup()
+  logf('I', 'finish marked for %s on %s at (%.1f, %.1f, %.1f)', selected, levelId(), snap.pos.x, snap.pos.y, snap.pos.z)
   lastReason = '5 m finish circle captured and saved; retry to return to your start.'
   output()
 end
@@ -162,6 +177,7 @@ function M.retry()
   end
   activeVehicleId = veh:getID() -- the run follows whichever car was reset
   teleportToStart(veh, startState)
+  logf('I', 'retry: %s, vehicle %s reset to start', selected, tostring(activeVehicleId))
   elapsed, lastTime = 0, nil
   phase = 'ready'
   lastReason = 'Car reset and repaired. Accelerate to begin; Retry again any time.'
@@ -197,6 +213,8 @@ function M.recordAttempt(passed)
   end
   progress.lessons[selected] = entry
   saveProgress()
+  logf('I', '%s: %s, time %s, session %d/%d', selected, passed and 'PASS' or 'MISS',
+    lastTime and string.format('%.2f s', lastTime) or '-', successes, attempts)
   lastReason = (passed and 'Recorded a clean attempt.' or 'Recorded an unsuccessful attempt.')
   output()
 end
@@ -217,6 +235,7 @@ function M.onUpdate(dtReal, dtSim)
   local leftStart = (veh:getPosition() - vec3(s.x, s.y, s.z)):length() > 0.5
   if phase == 'ready' and speed > 1 and leftStart then
     phase = 'running'
+    logf('I', '%s: run started', selected)
     lastReason = 'Run started.'
     output()
   end
@@ -229,6 +248,7 @@ function M.onUpdate(dtReal, dtSim)
     if (vpos - gate):length() <= finishGate.radius then
       lastTime = elapsed
       phase = 'review'
+      logf('I', '%s: finish reached in %.2f s', selected, lastTime)
       lastReason = 'Finish reached. Grade the technique using Pass/Miss.'
       output()
       return
@@ -256,8 +276,9 @@ function M.onClientEndMission(_levelPath)
 end
 
 -- Map fully loaded (car spawned): bring in the selected drill's setup for it.
-function M.onClientPostStartMission(_levelPath)
+function M.onClientPostStartMission(levelPath)
   if not selected then return end
+  logf('I', 'map loaded (%s), reloading setup for %s', tostring(levelPath), selected)
   M.select(selected)
 end
 

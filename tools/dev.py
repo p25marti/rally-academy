@@ -39,6 +39,8 @@ EXERCISES_JSON = Path("gameplay/rallyAcademy/exercises.json")
 ALLOWED_TOP_LEVEL = {"gameplay", "lua", "ui", "art", "levels", "vehicles", "settings", "scripts"}
 ZIP_EPOCH = (2020, 1, 1, 0, 0, 0)  # fixed timestamp => reproducible zips
 SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
+# The mod logs as `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension name + tag).
+OUR_LOG_PATTERN = re.compile(r"rallyAcademy|RallyAcademy|rally_academy")
 LOG_PATTERN = re.compile(r"rallyAcademy|RallyAcademy|rally_academy|\|E\||\bERROR\b|stack traceback", re.I)
 
 
@@ -404,7 +406,9 @@ def cmd_log(args) -> None:
     if not log.exists():
         fail(f"{log} not found (start the game once)")
     lines = log.read_text(encoding="utf-8", errors="replace").splitlines()
-    if not args.all:
+    if args.ours:
+        lines = [ln for ln in lines if OUR_LOG_PATTERN.search(ln)]
+    elif not args.all:
         lines = [ln for ln in lines if LOG_PATTERN.search(ln)]
     for ln in lines[-args.n:]:
         print(ln)
@@ -446,6 +450,8 @@ def main(argv: list[str] | None = None) -> int:
         if name == "log":
             p.add_argument("-n", type=int, default=80, help="number of lines (default 80)")
             p.add_argument("--all", action="store_true", help="do not filter")
+            p.add_argument("--ours", action="store_true",
+                           help="only Rally Academy lines (the mod's own log tag and UI messages), no other game errors")
         p.set_defaults(func=func)
 
     args = parser.parse_args(argv)

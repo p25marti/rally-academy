@@ -11,7 +11,7 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
       leaves the car at rest. Retry also faced the car backwards (fixed).
 - [x] Retry repairs damage (`spawn.safeTeleport` with vehicle reset).
 - [x] Persist start/finish per drill and map (`settings/rallyAcademySetups.json`).
-- [ ] Log lines with a recognisable prefix so `dev.py log` finds them.
+- [x] Log lines with a recognisable tag (`GELua.rallyAcademy.rallyAcademy`); `dev.py log --ours`.
 - [x] Handle vehicle switch / level exit cleanly: a run in progress drops back to
       `setup`; leaving a map clears its start/finish; loading one brings in that map's setup.
 

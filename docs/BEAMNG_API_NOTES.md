@@ -18,7 +18,8 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | A directory junction there is followed | verified 0.39.4 | `dev.py link` (junction) works; `--copy` not needed |
 | Mod files are visible at the virtual FS root (`gameplay/...` readable via `jsonReadFile`) | verified 0.39.4 | 48 drills load |
 | User folder: `%LOCALAPPDATA%\BeamNG\BeamNG.drive\current` | verified 0.39.4 | override with `BEAMNG_USER_FOLDER` |
-| Log at `<user folder>/beamng.log` | verified 0.39.4 | |
+| Log at `<user folder>/beamng.log` | verified 0.39.4 | written in buffered chunks: the newest lines can lag a minute or more behind the game |
+| `log(level, tag, msg)` from extension `rallyAcademy` appears as `|I|GELua.rallyAcademy.<tag>| msg` | verified 0.39.4 | we use tag `rallyAcademy` |
 
 ## Game Engine (GE) Lua
 
@@ -59,6 +60,7 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | `app.json` without `types` is filed under "Unknown" | verified 0.39.4 | we set `ui.apps.categories.rally` |
 | Adding an app: `Alt+Shift+U` (HUD Layouts) → layout → **Edit Layout** → **＋ Add app** | verified 0.39.4 | Layout Actions → Duplicate makes a separate layout; Use Layout switches |
 | Angular `element.scope()` is available for debugging | broken 0.39.4 | debug info is disabled; read the DOM instead |
+| Remounting HUD apps cleans up the old Angular scope | **broken 0.39.4** | after map loads/vehicle swaps, orphaned panel scopes stay alive and still receive events (4 scopes, 1 visible). The panel destroys itself on the next event if its element is detached |
 | Angular apps mount via `window.UIAppsServiceShim.mountDirective(slotId, appData)` (`ui/modules/apps/app-service.js`) into `.ui-angular-app-slot#bng-app-slot_<directive>_<instance>` | verified 0.39.4 | Angular's injector lives on `#angular-root` (`.data('$injector')`) |
 | Panel survives a UI reload | **broken 0.39.4** | the shim can mount into a slot Vue then replaces (same id) and ignores later mounts; ~½ of reloads left an empty panel. `app.js` self-heals (unmount + mount after 3 s empty, max 2 tries) — 0 failures in 15 reloads after the fix |
 | A mod `app.js` is loaded once per page | **broken 0.39.4** | often injected twice (two `?_dc=` script tags ms apart); don't keep per-load state that breaks if the file runs twice |
