@@ -47,6 +47,9 @@ unpacked dev link alongside it.
 - [RELEASING.md](docs/RELEASING.md) — versioning, GitHub Releases, publishing to the BeamNG repository
 - [ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the mod is put together, and where it's heading
 - [DRILL_DATA.md](docs/DRILL_DATA.md) — drill schema and how to edit drills
+- [GRADING.md](docs/GRADING.md) — what automatic grading needs, drill by drill
+- [PRIOR_ART.md](docs/PRIOR_ART.md) — BeamNG systems, tools and mods we can reuse
+- [VEHICLES.md](docs/VEHICLES.md) — drill cars, what to look for, drivetrain options
 - [BEAMNG_API_NOTES.md](docs/BEAMNG_API_NOTES.md) — every engine API we rely on, and whether it's verified
 - [ROADMAP.md](docs/ROADMAP.md) — priorities and known issues
 - [decisions/](docs/decisions/) — short records of why things are the way they are

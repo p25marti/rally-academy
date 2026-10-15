@@ -75,3 +75,10 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | Electrics (`throttle`, `brake`, `parkingbrake`, `steering`, wheel speeds) from vehicle Lua | P2 telemetry | needs a VLua → GE bridge |
 | `getCurrentLevelIdentifier()` | per-map persistence | |
 | `ui_appLayouts.setUsedLayout(filename)` + shipped `/settings/ui_apps/originalLayouts/*.uilayout.json` | own HUD layout | see ROADMAP P1 |
+| `electrics.values.wheelspeed`, `avgWheelAV` (rad/s); no fixed list of electrics per vehicle | P2 telemetry | from the [electrics docs](https://documentation.beamng.com/modding/vehicle/vehicle_system/electrics/); check with `dump(electrics.values)` in the vehicle console |
+| Per-wheel slip, contact material, deflated/broken state from vehicle Lua (e.g. `wheels.wheels[i]`) | P2 telemetry, punctures, surface | table names from memory; [BeamNG-Telemetry](PRIOR_ART.md#telemetry) reads these on 0.35 |
+| Race path / checkpoints / time-trial system | gates and timing | see [PRIOR_ART](PRIOR_ART.md#built-into-beamng); module names unknown |
+| Built-in drift detection (drift spots) | slip angle, spins (module C) | module names unknown |
+| Rally mode and pacenotes | module F | experimental in-game feature; 0.39 added a 30 km stage |
+| Stock cone prefabs are physics objects that move on contact | cone contact | from a community tutorial |
+| Game input setting "automatic clutch" can be read | A02/A03 clutch drills | see [VEHICLES](VEHICLES.md#what-to-look-for-in-a-drill-car) |

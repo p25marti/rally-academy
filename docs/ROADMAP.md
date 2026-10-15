@@ -20,12 +20,17 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 
 - [ ] Capture and store `levelId`, vehicle model/config, start pose and finish gate in-game.
 - [ ] Promote captured setups into `exercises.json` for drills with fixed locations.
+- [ ] Match every drill car to a real config (`modelId`, `configPath`) and check ABS/ESC/TCS
+      and gearbox per [VEHICLES.md](VEHICLES.md#to-check-in-game).
 - [ ] **Ship a "Rally Academy" HUD layout** with the mod (the game reads
       `/settings/ui_apps/originalLayouts/*.uilayout.json` from the virtual FS)
       and switch to it on drill start / back on exit via
       `ui_appLayouts.setUsedLayout`, so players never edit their Freeroam layout.
 
 ## P2 — First automatically graded drill
+
+Capabilities, drill-by-drill needs and build order: [GRADING.md](GRADING.md).
+Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 
 - [ ] Telemetry sampling adapter (see ARCHITECTURE → Telemetry).
 - [ ] Generic gates, route deviation, penalties.
@@ -43,6 +48,9 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 - [ ] Stage assessments (F-module) built on BeamNG's rally/race tooling and pacenotes.
 
 ## P5 — Coaching and progression
+
+- [ ] Drivetrain options per drill (FWD/RWD/AWD), with per-option progress and
+      thresholds. Proposal: [VEHICLES.md](VEHICLES.md#drivetrain-options); needs a decision record.
 
 - [ ] Progress migrations, warm-up detection, coaching feedback, difficulty
       progression, optional ghost comparison.
