@@ -199,8 +199,11 @@ Each step unlocks graded drills:
 
 Each needs an in-game check, recorded in BEAMNG_API_NOTES:
 
-- [ ] How to pull per-wheel speed and driver inputs from vehicle Lua, and at what rate
-- [ ] Whether the surface type under each wheel is readable
+- [x] How to pull per-wheel speed and driver inputs from vehicle Lua, and at what rate:
+      our own vehicle extension sends one batched sample per frame (30 Hz unfocused,
+      60 Hz focused); see BEAMNG_API_NOTES → Vehicle Lua
+- [ ] Whether the surface type under each wheel is readable: `contactMaterialID1` per wheel
+      is readable (id 10 on tarmac); the id → surface mapping is still open
 - [ ] Whether cone positions can be read reliably from separate prop objects
 - [ ] Whether gearbox state exposes missed shifts directly
 - [ ] How to detect use of the game's own recovery and reset

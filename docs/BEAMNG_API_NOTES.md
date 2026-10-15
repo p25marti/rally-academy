@@ -44,6 +44,21 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | Writing `settings/rallyAcademyProgress.json` lands in the user folder | persistence | verified 0.39.4, survives a game restart |
 | `getCurrentLevelIdentifier()` returns the level folder name (e.g. `driver_training`) | per-map setups in `settings/rallyAcademySetups.json` | verified 0.39.4 |
 
+## Vehicle Lua (telemetry)
+
+Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRADING.md open question 1.
+
+| Assumption | Status | Notes |
+| --- | --- | --- |
+| Electrics keys `throttle`, `brake`, `parkingbrake`, `steering`, `clutch` (+ `_input` raw variants), `gearIndex`, `rpm`, `wheelspeed`, `airspeed`, `abs`, `absActive`, `engineRunning`, `ignitionLevel` | verified 0.39.4 | 121 keys on the Covet; no `esc`/`tcs` on that car |
+| Per-wheel data in `wheels.wheelRotators[0..wheelRotatorCount-1]`: `name` (FR/FL/RR/RL), `wheelSpeed` (m/s), `angularVelocity`, `radius`, `contactMaterialID1/2`, `downForce` (N, 0 = airborne), `isTireDeflated` | verified 0.39.4 | **not** in electrics |
+| `core_vehicleBridge.registerValueChangeNotification` / `getCachedVehicleData` | read, not used | electrics only, one GE message per changed key per frame; can't deliver per-wheel data |
+| A mod vehicle extension at `lua/vehicle/extensions/rallyAcademy/telemetry.lua` loads with `extensions.load('rallyAcademy/telemetry')`, reached as `extensions.rallyAcademy_telemetry` | verified 0.39.4 | in-memory modules via `package.loaded` are rejected ("extension unavailable") |
+| Vehicle extensions survive a reset (`safeTeleport` with repair) | verified 0.39.4 | kept loaded and sending after Retry |
+| `obj:queueGameEngineLua(code)` from `updateGFX` delivers to GE every frame | verified 0.39.4 | rate = frame rate: 30 fps with the window unfocused (background cap), 60 focused (vsync); stamp samples with summed `dt` |
+| Lockup is visible per wheel | verified 0.39.4 | 40 km/h full brake, no ABS: all 4 wheels < 30% of `airspeed` within ~0.2 s |
+| `contactMaterialID1` gives the surface | partly | id `10` on Driver Training tarmac; the id → surface name table is still to find |
+
 ## Input actions
 
 | Assumption | Status |

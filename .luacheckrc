@@ -13,6 +13,9 @@ read_globals = {
   "spawn", "getPlayerVehicle", "setExtensionUnloadMode", "getCurrentLevelIdentifier",
 }
 
+-- Vehicle Lua (runs inside each car's own VM), verified 0.39.4.
+files["mod/lua/vehicle/**"] = { read_globals = { "electrics", "wheels", "obj" } }
+
 -- modScript.lua calls BeamNG's global `load(extName)`, which shadows Lua's builtin.
 files["mod/scripts/**"] = { read_globals = { "load", "setExtensionUnloadMode" } }
 
