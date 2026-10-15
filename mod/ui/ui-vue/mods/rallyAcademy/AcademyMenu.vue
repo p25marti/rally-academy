@@ -25,13 +25,14 @@
               v-for="l in m.lessons"
               :key="l.id"
               class="ra-card"
-              :class="{ selected: l.id === chosenId, parked: l.parked }"
+              :class="{ selected: l.id === chosenId, soon: !isAuto(l) }"
               @click="chosenId = l.id">
               <div class="ra-card-title">{{ l.id }} · {{ l.title }}</div>
               <div class="ra-card-sub">{{ l.environment && l.environment.mapDisplayName }}</div>
               <div class="ra-card-tags">
-                <span v-if="isAuto(l)" class="ra-tag auto">auto-graded</span>
-                <span v-if="l.parked" class="ra-tag parked">needs RWD/AWD</span>
+                <span v-if="isAuto(l)" class="ra-tag ready">Auto-graded</span>
+                <span v-else class="ra-tag soon">Coming soon</span>
+                <span v-if="l.parked" class="ra-tag parked">Needs RWD/AWD</span>
                 <span class="ra-status">{{ statusText(l) }}</span>
               </div>
             </div>
@@ -41,6 +42,10 @@
         <aside v-if="chosen" class="ra-details">
           <div class="ra-details-title">{{ chosen.id }} · {{ chosen.title }}</div>
           <div class="ra-details-meta">{{ chosen.difficulty }} · {{ moduleName(chosen) }}</div>
+          <div v-if="!isAuto(chosen)" class="ra-soon-note">
+            <strong>Coming soon.</strong> Automatic grading for this drill isn't built yet. You can
+            still practise it and grade yourself with Pass/Miss.
+          </div>
           <p>{{ chosen.instructions }}</p>
           <div class="ra-section">Pass when</div>
           <p>{{ chosen.assessment.successDefinition }}</p>
@@ -53,8 +58,8 @@
           <p>{{ progressText(chosen) }}</p>
           <p v-if="chosen.parked" class="ra-parked-note">{{ chosen.parked }}</p>
           <div class="ra-actions">
-            <BngButton :accent="ACCENTS.main" :disabled="starting" @click="start">
-              {{ starting ? "Loading…" : "Start drill" }}
+            <BngButton :accent="isAuto(chosen) ? ACCENTS.main : ACCENTS.secondary" :disabled="starting" @click="start">
+              {{ starting ? "Loading…" : isAuto(chosen) ? "Start drill" : "Practise (Pass/Miss)" }}
             </BngButton>
             <BngButton :accent="ACCENTS.secondary" @click="back">Back</BngButton>
           </div>
@@ -161,6 +166,10 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped lang="scss">
+// Readability: everything sits on one dark backing (never straight on the menu scenery),
+// cards are opaque, and secondary text uses the light grey. Implemented (auto-graded)
+// drills carry the orange accent; coming-soon drills are neutral, not faded.
+
 // LayoutSingle lays its children out in a row: keep everything under the heading in one column.
 .ra-page {
   flex: 1 1 auto;
@@ -168,6 +177,9 @@ onBeforeMount(async () => {
   flex-direction: column;
   min-height: 0;
   min-width: 0;
+  background-color: rgba(var(--bng-off-black-rgb), 0.82);
+  border-radius: var(--bng-corners-3);
+  color: var(--bng-off-white);
 }
 
 .ra-body {
@@ -191,11 +203,17 @@ onBeforeMount(async () => {
   gap: 0.6rem;
   padding: 0.35rem 0.8rem;
   border-radius: var(--bng-corners-2);
-  background-color: rgba(var(--bng-cool-gray-900-rgb), 0.85);
+  background-color: rgb(var(--bng-cool-gray-800-rgb));
   cursor: pointer;
-  &.active,
   &:hover {
-    background-color: rgba(var(--bng-cool-gray-700-rgb), 0.95);
+    background-color: rgb(var(--bng-cool-gray-700-rgb));
+  }
+  &.active {
+    background-color: var(--bng-orange-500);
+    color: var(--bng-off-black);
+    .ra-count {
+      color: var(--bng-off-black);
+    }
   }
   .ra-count {
     color: var(--bng-cool-gray-100);
@@ -215,7 +233,6 @@ onBeforeMount(async () => {
 .ra-group-label {
   grid-column: 1 / -1;
   margin-top: 0.75rem;
-  text-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.9);
   font-size: 1.25em;
   font-weight: 600;
   color: var(--bng-off-white);
@@ -224,22 +241,26 @@ onBeforeMount(async () => {
 .ra-card {
   padding: 0.75rem;
   border-radius: var(--bng-corners-2);
-  background-color: rgba(var(--bng-cool-gray-800-rgb), 0.92);
-  border: 2px solid transparent;
+  background-color: rgb(var(--bng-cool-gray-800-rgb));
+  border: 2px solid rgb(var(--bng-cool-gray-700-rgb));
+  border-left: 4px solid var(--bng-orange-500);
   cursor: pointer;
+  &.soon {
+    background-color: rgb(var(--bng-cool-gray-900-rgb));
+    border-left-color: rgb(var(--bng-cool-gray-600-rgb));
+  }
   &:hover {
-    background-color: rgba(var(--bng-cool-gray-700-rgb), 0.95);
+    background-color: rgb(var(--bng-cool-gray-700-rgb));
   }
   &.selected {
     border-color: var(--bng-orange);
-  }
-  &.parked {
-    opacity: 0.7;
+    border-left-color: var(--bng-orange);
   }
 }
 
 .ra-card-title {
   font-weight: 600;
+  color: var(--bng-off-white);
 }
 
 .ra-card-sub,
@@ -253,19 +274,25 @@ onBeforeMount(async () => {
   flex-wrap: wrap;
   gap: 0.35rem;
   align-items: center;
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
 }
 
 .ra-tag {
   font-size: 0.75em;
-  padding: 0 0.4rem;
+  font-weight: 600;
+  padding: 0.05rem 0.45rem;
   border-radius: var(--bng-corners-1);
-  &.auto {
+  &.ready {
     background-color: var(--bng-orange-500);
     color: var(--bng-off-black);
   }
+  &.soon {
+    background-color: var(--bng-cool-gray-100);
+    color: var(--bng-off-black);
+  }
   &.parked {
-    background-color: var(--bng-cool-gray-600);
+    border: 1px solid var(--bng-cool-gray-100);
+    color: var(--bng-off-white);
   }
 }
 
@@ -275,11 +302,13 @@ onBeforeMount(async () => {
   flex-direction: column;
   padding: 1rem;
   border-radius: var(--bng-corners-2);
-  background-color: rgba(var(--bng-cool-gray-900-rgb), 0.92);
+  background-color: rgb(var(--bng-cool-gray-900-rgb));
+  border: 1px solid rgb(var(--bng-cool-gray-700-rgb));
   overflow-y: auto;
   p {
     margin: 0 0 0.5rem;
-    line-height: 1.4;
+    line-height: 1.45;
+    color: var(--bng-off-white);
   }
 }
 
@@ -293,11 +322,21 @@ onBeforeMount(async () => {
   margin-bottom: 0.75rem;
 }
 
+.ra-soon-note {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--bng-corners-1);
+  background-color: rgb(var(--bng-cool-gray-800-rgb));
+  border-left: 4px solid var(--bng-cool-gray-100);
+  line-height: 1.4;
+}
+
 .ra-section {
   margin-top: 0.5rem;
   font-size: 0.8em;
+  font-weight: 600;
   text-transform: uppercase;
-  color: var(--bng-cool-gray-100);
+  color: var(--bng-orange-400);
 }
 
 .ra-parked-note {
