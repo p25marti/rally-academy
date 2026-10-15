@@ -227,4 +227,69 @@ function T.pass_mid_run_with_finish_gate_is_refused()
   eq(saved.bestTime, nil, 'no best time')
 end
 
+-- Start/finish persistence: settings/rallyAcademySetups.json, per map then drill.
+local SETUPS = 'settings/rallyAcademySetups.json'
+
+local function markStartAndFinish(h, M, id)
+  M.select(id)
+  h.vehicle.pos = stubs.vec3(10, 20, 30)
+  M.markStart()
+  h.vehicle.pos = stubs.vec3(10, 120, 30)
+  M.markFinish()
+end
+
+-- Simulates an extension reload / game restart: fresh module, same files on disk.
+local function reloadExtension()
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  return M
+end
+
+function T.marks_are_saved_per_map_and_drill()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'A01')
+  local saved = jsonReadFile(SETUPS).levels.driver_training.A01
+  eq(saved.start.pos.y, 20, 'start saved')
+  eq(saved.finish.pos.y, 120, 'finish saved')
+  eq(saved.start.vehicleId, nil, 'vehicle id not saved')
+end
+
+function T.saved_setup_is_restored_after_reload()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'A01')
+  M = reloadExtension()
+  M.select('A01')
+  local s = h.lastState()
+  eq(s.hasStart, true, 'start restored')
+  eq(s.hasFinish, true, 'finish restored')
+  h.vehicle.pos = stubs.vec3(500, 0, 0)
+  M.retry()
+  eq(h.lastState().phase, 'ready', 'retry works straight away')
+  eq(h.vehicle.teleports[#h.vehicle.teleports].y, 20, 'teleported to the saved start')
+end
+
+function T.each_map_has_its_own_setup()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'A01')
+  h.level = 'west_coast_usa'
+  M.select('A01')
+  eq(h.lastState().hasStart, false, 'no start on the other map')
+  h.level = 'driver_training'
+  M.select('A01')
+  eq(h.lastState().hasStart, true, 'back on the first map, start is there')
+end
+
+-- Vehicle ids change every session; a saved start must work with today's car.
+function T.retry_uses_the_current_car()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'A01')
+  M = reloadExtension()
+  h.vehicle.id = 42
+  M.select('A01')
+  M.retry()
+  eq(h.lastState().phase, 'ready', 'retry accepted with a different vehicle id')
+  drive(h, M, 1.0, {x = 0, y = 10, z = 0})
+  eq(h.lastState().phase, 'running', 'run tracks the current car')
+end
+
 return T

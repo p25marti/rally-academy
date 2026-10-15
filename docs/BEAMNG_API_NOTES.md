@@ -38,7 +38,8 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | `vec3(...)`, `:length()`, `:normalized()`, vector subtraction | maths | verified 0.39.4 |
 | `guihooks.trigger(name, table)` → Angular `$scope.$on(name, fn(event, data))` | Lua → HUD | verified 0.39.4 |
 | `jsonReadFile(path)` / `jsonWriteFile(path, table, pretty)` | data and progress | verified 0.39.4 |
-| Writing `settings/rallyAcademyProgress.json` lands in the user folder | persistence | verified 0.39.4 (survival across a restart: unverified) |
+| Writing `settings/rallyAcademyProgress.json` lands in the user folder | persistence | verified 0.39.4, survives a game restart |
+| `getCurrentLevelIdentifier()` returns the level folder name (e.g. `driver_training`) | per-map setups in `settings/rallyAcademySetups.json` | verified 0.39.4 |
 
 ## Input actions
 
@@ -76,7 +77,6 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | API | For | Notes |
 | --- | --- | --- |
 | Electrics (`throttle`, `brake`, `parkingbrake`, `steering`, wheel speeds) from vehicle Lua | P2 telemetry | needs a VLua → GE bridge |
-| `getCurrentLevelIdentifier()` | per-map persistence | |
 | `ui_appLayouts.setUsedLayout(filename)` + shipped `/settings/ui_apps/originalLayouts/*.uilayout.json` | own HUD layout | see ROADMAP P1 |
 | `electrics.values.wheelspeed`, `avgWheelAV` (rad/s); no fixed list of electrics per vehicle | P2 telemetry | from the [electrics docs](https://documentation.beamng.com/modding/vehicle/vehicle_system/electrics/); check with `dump(electrics.values)` in the vehicle console |
 | Per-wheel slip, contact material, deflated/broken state from vehicle Lua (e.g. `wheels.wheels[i]`) | P2 telemetry, punctures, surface | table names from memory; [BeamNG-Telemetry](PRIOR_ART.md#telemetry) reads these on 0.35 |

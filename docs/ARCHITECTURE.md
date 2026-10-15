@@ -20,6 +20,7 @@ mod/
  Controls (actions.json) ──onDown "extensions.rallyAcademy.retry()"──▶ GE Lua
  GE Lua ──guihooks.trigger('rallyAcademyState', {...})──────────────▶ HUD
  GE Lua ──jsonReadFile / jsonWriteFile──▶ exercises.json (read) · settings/rallyAcademyProgress.json (r/w)
+                                          · settings/rallyAcademySetups.json (r/w)
 ```
 
 - `modScript.lua` loads the extension when the mod is enabled (unload mode
@@ -34,6 +35,10 @@ mod/
     the clock) and checks the finish circle → `review`.
   - `recordAttempt(passed)` → `scored`, updates and saves progress.
 - HUD updates are throttled to about 4 Hz while running.
+- **Setups** (`settings/rallyAcademySetups.json`, schemaVersion 1):
+  `levels[levelId][drillId] = {start = {pos, dir, up}, finish = {pos, radius}}`.
+  Mark start/finish save immediately; `select(id)` loads the setup for the
+  current map. No vehicle id is stored, so Retry resets whichever car you drive.
 
 Known gaps are listed in [ROADMAP.md](ROADMAP.md).
 

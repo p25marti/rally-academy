@@ -59,13 +59,14 @@ end
 -- ---------------------------------------------------------------- install
 -- Installs fresh globals; returns a handle for inspecting side effects.
 function S.install()
-  local h = {events = {}, files = {}, vehicle = newVehicle(1)}
+  local h = {events = {}, files = {}, vehicle = newVehicle(1), level = 'driver_training'}
 
   _G.vec3 = vec3
   _G.quatFromDir = quatFromDir
   _G.log = function() end
   _G.dump = function() end
   _G.be = {getPlayerVehicle = function(_, idx) if idx == 0 then return h.vehicle end end}
+  _G.getCurrentLevelIdentifier = function() return h.level end -- verified 0.39.4
   -- spawn.safeTeleport(veh, pos, rot, checkOnlyStatics, visibilityPoint, removeTraffic,
   -- centeredPosition, resetVehicle): verified 0.39.4 as the game's own teleport + repair.
   _G.spawn = {safeTeleport = function(veh, pos, rot, _a, _b, _c, _d, resetVehicle)

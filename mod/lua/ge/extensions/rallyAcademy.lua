@@ -1,10 +1,13 @@
--- Rally Academy prototype (BeamNG GE Lua); NOT tested in a live 0.39 installation.
+-- Rally Academy prototype (BeamNG GE Lua). In-game status: docs/BEAMNG_API_NOTES.md.
 -- UI calls extensions.load('rallyAcademy') and extensions.rallyAcademy.<method>().
 local M = {}
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 local SAVE_FILE = 'settings/rallyAcademyProgress.json'
+-- Marked starts/finishes, per map then drill: levels[levelId][drillId] = {start, finish}
+local SETUPS_FILE = 'settings/rallyAcademySetups.json'
 local lessons, byId, lessonSummary = {}, {}, {}
 local progress = {schemaVersion = 1, lessons = {}}
+local setups = {schemaVersion = 1, levels = {}}
 local selected, startState, finishGate = nil, nil, nil
 local phase, elapsed, uiAccum = 'idle', 0, 0
 local lastTime, lastReason = nil, ''
@@ -13,6 +16,11 @@ local activeVehicleId = nil
 
 local function currentVehicle()
   return be and be:getPlayerVehicle(0) or nil
+end
+
+local function levelId()
+  local id = getCurrentLevelIdentifier and getCurrentLevelIdentifier()
+  return (type(id) == 'string' and id ~= '') and id or 'unknown'
 end
 
 local function snapshotVehicle()
@@ -69,10 +77,22 @@ local function load()
   end
   local saved = jsonReadFile(SAVE_FILE)
   if type(saved) == 'table' and type(saved.lessons) == 'table' then progress = saved end
+  local savedSetups = jsonReadFile(SETUPS_FILE)
+  if type(savedSetups) == 'table' and type(savedSetups.levels) == 'table' then setups = savedSetups end
 end
 
 local function saveProgress()
   jsonWriteFile(SAVE_FILE, progress, true)
+end
+
+-- Persist the selected drill's start/finish for the current map. The vehicle id
+-- isn't saved: ids change every session, and Retry applies to the current car.
+local function saveSetup()
+  local lvl = levelId()
+  setups.levels[lvl] = setups.levels[lvl] or {}
+  local start = startState and {pos = startState.pos, dir = startState.dir, up = startState.up} or nil
+  setups.levels[lvl][selected] = {start = start, finish = finishGate}
+  jsonWriteFile(SETUPS_FILE, setups, true)
 end
 
 function M.onExtensionLoaded()
@@ -87,7 +107,14 @@ function M.select(id)
   selected, startState, finishGate = id, nil, nil
   phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
   activeVehicleId = nil
-  lastReason = 'Select a suitable car/map, mark the start, and optionally mark a finish gate.'
+  local saved = setups.levels[levelId()] and setups.levels[levelId()][id]
+  if saved and saved.start then
+    startState, finishGate = saved.start, saved.finish
+    lastReason = finishGate and 'Loaded your saved start and finish for this map. Press Retry to begin.'
+      or 'Loaded your saved start for this map. Press Retry to begin.'
+  else
+    lastReason = 'Select a suitable car/map, mark the start, and optionally mark a finish gate.'
+  end
   output()
 end
 
@@ -98,7 +125,8 @@ function M.markStart()
   startState = snap
   activeVehicleId = snap.vehicleId
   phase = 'setup'
-  lastReason = 'Start position and orientation captured.'
+  saveSetup()
+  lastReason = 'Start position and orientation captured and saved for this map.'
   output()
 end
 
@@ -107,16 +135,18 @@ function M.markFinish()
   local snap = snapshotVehicle()
   if not snap then lastReason = 'No player vehicle'; output(); return end
   finishGate = {pos=snap.pos, radius=5}
-  lastReason = '5 m finish circle captured; retry to return to your start.'
+  saveSetup()
+  lastReason = '5 m finish circle captured and saved; retry to return to your start.'
   output()
 end
 
 function M.retry()
   local veh = currentVehicle()
-  if not veh or not startState or veh:getID() ~= activeVehicleId then
-    lastReason = 'Mark a start with the current vehicle before retrying.'
+  if not veh or not startState then
+    lastReason = 'Mark a start before retrying.'
     output(); return
   end
+  activeVehicleId = veh:getID() -- the run follows whichever car was reset
   teleportToStart(veh, startState)
   elapsed, lastTime = 0, nil
   phase = 'ready'

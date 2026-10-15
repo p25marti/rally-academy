@@ -58,7 +58,8 @@ BeamNG version and result in the PR.
 7. **Pass**, then **Retry**, then **Miss**. The counter shows `1/2`.
 8. Options → Controls: search "Rally Academy" and bind **Retry** to a key. Pressing it works.
 9. Restart the game. `settings/rallyAcademyProgress.json` in the user folder
-   still has the attempts.
+   still has the attempts, and selecting the same drill on the same map says
+   "Loaded your saved start…"; **Retry** works without marking again.
 10. Pause physics mid-run (`J`). The timer stops advancing.
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.

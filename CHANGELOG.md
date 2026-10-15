@@ -14,6 +14,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   WSL (`tools/ci/setup-lua.sh`), so `check --strict` runs locally without CI.
 - `modScript.lua` loads the extension automatically when the mod is enabled
   (ported from the earlier skeleton repo), so key bindings work before the HUD is opened.
+- Start and finish are saved per drill and map (`settings/rallyAcademySetups.json`)
+  and restored when you select the drill again, even after a restart.
 - HUD shows the run time: a live clock while driving (tenths), the final
   time after the finish (hundredths), and the drill's best time.
 
