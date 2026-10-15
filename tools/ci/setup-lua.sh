@@ -32,5 +32,9 @@ $SUDO cp lfs.so "$LUA_LIB/"
 printf '#!/bin/sh\nexec luajit "%s/libexec/luacheck/luacheck.lua" "$@"\n' "$PREFIX" | $SUDO tee "$PREFIX/bin/luacheck" >/dev/null
 $SUDO chmod +x "$PREFIX/bin/luacheck"
 
+# PREFIX may not be on PATH yet (CI adds it in a later step).
+export PATH="$PREFIX/bin:$PATH"
+export LUA_PATH="$LUA_SHARE/?.lua;$LUA_SHARE/?/init.lua;${LUA_PATH:-;}"
+export LUA_CPATH="$LUA_LIB/?.so;${LUA_CPATH:-;}"
 luajit -v
 luacheck --version
