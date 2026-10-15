@@ -39,6 +39,7 @@ local function newVehicle(id)
     dir = vec3(0, 1, 0),
     up = vec3(0, 0, 1),
     teleports = {},
+    damage = 0,
     luaCommands = {},
   }
   function v:getID() return self.id end
@@ -65,6 +66,14 @@ function S.install()
   _G.log = function() end
   _G.dump = function() end
   _G.be = {getPlayerVehicle = function(_, idx) if idx == 0 then return h.vehicle end end}
+  -- spawn.safeTeleport(veh, pos, rot, checkOnlyStatics, visibilityPoint, removeTraffic,
+  -- centeredPosition, resetVehicle): verified 0.39.4 as the game's own teleport + repair.
+  _G.spawn = {safeTeleport = function(veh, pos, rot, _a, _b, _c, _d, resetVehicle)
+    table.insert(veh.teleports, {x = pos.x, y = pos.y, z = pos.z, rot = rot, reset = resetVehicle})
+    veh.pos = vec3(pos)
+    veh.vel = vec3(0, 0, 0)
+    if resetVehicle then veh.damage = 0 end
+  end}
   _G.guihooks = {trigger = function(name, data) table.insert(h.events, {name = name, data = data}) end}
 
   -- Reads go to the in-memory store first (files the mod wrote), then the repo's mod/ folder,

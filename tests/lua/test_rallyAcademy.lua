@@ -68,18 +68,26 @@ function T.retry_teleports_to_marked_start()
   eq(h.lastState().phase, 'ready', 'phase ready')
 end
 
--- Verified in-game on 0.39.4: quatFromDir(forward) made Retry face the car
--- backwards; the game's own checkpoint reset negates the direction vector.
-function T.start_rotation_uses_negated_direction_vector()
+-- spawn.safeTeleport rotates 180 degrees itself, so Retry must hand it the
+-- rotation built from the plain (not negated) direction vector.
+function T.retry_faces_the_marked_direction()
   local h, M = setup()
-  local captured
-  local real = _G.quatFromDir
-  _G.quatFromDir = function(dir, up) captured = dir; return real(dir, up) end
   M.select('A01')
   h.vehicle.dir = stubs.vec3(0, 1, 0)
   M.markStart()
-  _G.quatFromDir = real
-  eq(captured.y, -1, 'rotation built from -forward')
+  h.vehicle.dir = stubs.vec3(1, 0, 0) -- car turned since
+  M.retry()
+  eq(h.vehicle.teleports[1].rot._dir.y, 1, 'rotation from the marked forward vector')
+end
+
+function T.retry_repairs_damage()
+  local h, M = setup()
+  M.select('A01')
+  M.markStart()
+  h.vehicle.damage = 1500
+  M.retry()
+  eq(h.vehicle.teleports[1].reset, true, 'teleport asks for a vehicle reset')
+  eq(h.vehicle.damage, 0, 'damage repaired')
 end
 
 -- Formerly known_issue_retry_keeps_velocity. In-game on 0.39.4, Retry at

@@ -21,14 +21,22 @@ local function snapshotVehicle()
   local pos = veh:getPosition()
   local forward = vec3(veh:getDirectionVector()):normalized()
   local up = vec3(veh:getDirectionVectorUp()):normalized()
-  -- setPositionRotation expects the rotation built from the *negated* direction
-  -- vector (as core_checkpoints does); without it Retry faces the car backwards.
-  local rot = quatFromDir(-forward, up)
   return {
     vehicleId = veh:getID(),
     pos = {x=pos.x, y=pos.y, z=pos.z},
-    rot = {x=rot.x, y=rot.y, z=rot.z, w=rot.w}
+    dir = {x=forward.x, y=forward.y, z=forward.z},
+    up = {x=up.x, y=up.y, z=up.z}
   }
+end
+
+-- Teleport to the start and repair the car, the way the game's own reset tooling
+-- does (spawn.safeTeleport with resetVehicle = true: restores undamaged node
+-- positions, zeroes velocity, snaps to the ground; nudges the car if something is
+-- in the way). safeTeleport turns the car 180 degrees itself, so it takes the
+-- rotation built from the plain direction vector, unlike setPositionRotation.
+local function teleportToStart(veh, s)
+  local rot = quatFromDir(vec3(s.dir.x, s.dir.y, s.dir.z), vec3(s.up.x, s.up.y, s.up.z))
+  spawn.safeTeleport(veh, vec3(s.pos.x, s.pos.y, s.pos.z), rot, nil, nil, nil, nil, true)
 end
 
 local function output(includeCatalog)
@@ -109,11 +117,10 @@ function M.retry()
     lastReason = 'Mark a start with the current vehicle before retrying.'
     output(); return
   end
-  local p,r = startState.pos, startState.rot
-  veh:setPositionRotation(p.x,p.y,p.z, r.x,r.y,r.z,r.w)
+  teleportToStart(veh, startState)
   elapsed, lastTime = 0, nil
   phase = 'ready'
-  lastReason = 'Ready: accelerate to begin. Retry again any time.'
+  lastReason = 'Car reset and repaired. Accelerate to begin; Retry again any time.'
   output()
 end
 

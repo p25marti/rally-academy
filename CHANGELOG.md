@@ -18,6 +18,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   time after the finish (hundredths), and the drill's best time.
 
 ### Fixed
+- Retry now repairs the car as well as returning it to the start, so a
+  crashed run restarts clean.
 - HUD panel failed to load on 0.39 (`Unknown provider: bngApiProvider`); it now
   uses the global `bngApi` like the stock apps.
 - HUD app is listed under the **Rally** category instead of "Unknown".

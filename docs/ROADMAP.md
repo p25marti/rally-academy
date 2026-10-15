@@ -9,8 +9,7 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
       restart) still to do.
 - [x] ~~Retry keeps velocity~~: not reproducible on 0.39.4, `setPositionRotation`
       leaves the car at rest. Retry also faced the car backwards (fixed).
-- [ ] **Retry repairs damage** (`resetBrokenFlexMesh` + vehicle-side reset, as
-      `core_checkpoints` does), so a crashed run restarts clean.
+- [x] Retry repairs damage (`spawn.safeTeleport` with vehicle reset).
 - [ ] **Persist start/finish per drill and map** (`levelId`) so setup survives
       reloads and restarts.
 - [ ] Log lines with a recognisable prefix so `dev.py log` finds them.
@@ -59,7 +58,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 
 | Issue | Impact | Tracked by |
 | --- | --- | --- |
-| Retry doesn't repair damage | A crashed car restarts the drill still damaged | — |
+| Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
 | After `extensions.reload("rallyAcademy")` the HUD keeps showing the old drill while Lua is back to `idle` | Buttons do nothing until you pick a drill again | — |
 | Start/finish are in memory only | Setup lost on reload/restart | — |
 | No in-game verification yet | Any engine API assumption may be wrong | BEAMNG_API_NOTES |

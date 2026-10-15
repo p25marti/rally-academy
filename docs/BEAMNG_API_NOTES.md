@@ -34,6 +34,7 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | `getVelocity()` on the frame after `setPositionRotation` reports a huge value (~430 m/s) | run-start detection | verified 0.39.4 — also require the car to leave the start |
 | `veh:setPositionRotation(x,y,z, qx,qy,qz,qw)` | retry teleport | verified 0.39.4 — **leaves the car at rest** (4.25 m/s → 0.03 m/s); does not repair damage |
 | Rotation for `setPositionRotation` = `quatFromDir(-dirVec, upVec)` | orientation capture | verified 0.39.4 — `quatFromDir(dirVec, …)` faces the car **backwards** (same convention as `core_checkpoints`) |
+| `spawn.safeTeleport(veh, pos, quatFromDir(dir, up), nil, nil, nil, nil, true)` | Retry: teleport + repair | verified 0.39.4 — damage 14931 → 0 after a 27 km/h guardrail hit; back within 0.02 m, same heading, at rest. Takes the **plain** direction quat (it turns 180° itself). Snaps to ground and nudges the car if the spot is occupied (props count as vehicles) |
 | `vec3(...)`, `:length()`, `:normalized()`, vector subtraction | maths | verified 0.39.4 |
 | `guihooks.trigger(name, table)` → Angular `$scope.$on(name, fn(event, data))` | Lua → HUD | verified 0.39.4 |
 | `jsonReadFile(path)` / `jsonWriteFile(path, table, pretty)` | data and progress | verified 0.39.4 |
@@ -74,8 +75,6 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 
 | API | For | Notes |
 | --- | --- | --- |
-| `veh:resetBrokenFlexMesh()` + vehicle-side `recovery.clear()` / `autoplace` | P0 repair on retry | what `core_checkpoints.ResetToSavedCheckpoint` does |
-| `spawn.safeTeleport(veh, pos, quatFromDir(dir))` | alternative teleport | used by `main.lua`; note it takes the *un-negated* direction |
 | Electrics (`throttle`, `brake`, `parkingbrake`, `steering`, wheel speeds) from vehicle Lua | P2 telemetry | needs a VLua → GE bridge |
 | `getCurrentLevelIdentifier()` | per-map persistence | |
 | `ui_appLayouts.setUsedLayout(filename)` + shipped `/settings/ui_apps/originalLayouts/*.uilayout.json` | own HUD layout | see ROADMAP P1 |
