@@ -107,13 +107,16 @@ Pass/Miss), or `selfAssessment` (today's behaviour).
 
 Full capability list, per-drill needs and build order: [GRADING.md](GRADING.md).
 
-**HUD technology.** BeamNG's UI is one shared embedded-Chromium page. Mods add
-HUD apps as AngularJS 1.x directives; that is the only documented path (the
-game's newer Vue 3 screens are a precompiled bundle mods can't extend). A
-framework such as Preact or Vue could be bundled into `mod/` and mounted inside
-our directive, at the cost of a build step, CSS isolation from other apps and an
-unknown Chromium version. The HUD stays a plain directive while it is small; a
-framework would need a decision record and an in-game test first.
+**UI technology.** BeamNG's UI is one shared embedded-Chromium page. The HUD panel
+is an AngularJS 1.x directive (legacy HUD apps). Since 0.39 the game also has an
+official **Vue UI mod** system (`ui/ui-vue/mods/README.md` in the game folder):
+runtime-compiled `.vue` files that can add main-menu buttons, routes, pause-menu
+tabs and slots, with no build step. The main-menu **Academy screen** uses it
+([ADR 0005](decisions/0005-main-menu-via-vue-ui-mods.md)):
+`mod/ui/ui-vue/mods/rallyAcademy/` (`index.js` registers the button and the
+`menu.rallyAcademy` route; `AcademyMenu.vue` is the screen). It calls
+`extensions.rallyAcademy.getMenuData()` and `startDrill(id)`. Rebuilding the HUD in
+Vue is the planned next step.
 
 **Authoring.** Start poses and gates are captured in-game and saved per
 `levelId`, then promoted into `exercises.json` (`startTransform`,

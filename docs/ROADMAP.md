@@ -26,6 +26,15 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
       and switch to it on drill start / back on exit via
       `ui_appLayouts.setUsedLayout`, so players never edit their Freeroam layout.
 
+## UI — Academy screen and Vue HUD
+
+- [x] Main-menu **Rally Academy** screen (More... → Rally Academy): every drill in
+      curriculum order, progress, details, **Start drill** ([ADR 0005](decisions/0005-main-menu-via-vue-ui-mods.md)).
+- [ ] Rebuild the HUD panel in Vue, if the Vue mod system can host HUD apps; then decide
+      whether drill selection moves out of the HUD drop-down.
+- [ ] Pause-menu tab reusing the Academy screen, to switch drills mid-session.
+- [ ] Polish: venue images per drill, recommended next drill, attempt history.
+
 ## P2 — First automatically graded drill
 
 Capabilities, drill-by-drill needs and build order: [GRADING.md](GRADING.md).

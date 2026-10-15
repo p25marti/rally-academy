@@ -976,4 +976,42 @@ function T.b01_stop_zone_is_drawn()
   eq(#h.draws, 4, 'four sides of the zone')
 end
 
+-- Main-menu screen -------------------------------------------------------------
+
+function T.menu_data_lists_every_drill_in_order_with_progress()
+  local h, M = setup()
+  M.select('A01')
+  h.vehicle.pos = stubs.vec3(0, 0, 0)
+  M.markStart()
+  M.retry()
+  drive(h, M, 1, {x = 0, y = 5, z = 0})
+  M.recordAttempt(true)
+  local d = M.getMenuData()
+  eq(#d.lessons, 48, 'all drills')
+  eq(d.lessons[1].id, 'A01', 'curriculum order starts at A01')
+  eq(d.lessons[48].id, 'F08', 'and ends at F08')
+  eq(d.progress.A01.totalPasses, 1, 'progress included')
+  eq(d.selected, 'A01', 'current HUD drill')
+end
+
+function T.menu_start_selects_the_drill_and_loads_its_map()
+  local h, M = setup()
+  eq(M.startDrill('nope'), false, 'unknown drill refused')
+  eq(M.startDrill('E08'), true, 'started')
+  eq(h.lastState().selected, 'E08', 'selected for the HUD too')
+  eq(#h.levelsLoaded, 1, 'its map is loading')
+  eq(#h.freeroamStarts, 1, 'started as freeroam, so the game leaves the menus')
+  eq(#h.uiRoutes, 0, 'menu stays up while the map loads')
+  h.level = 'utah' -- E08's map has loaded
+  h.syncSpawnHook = true
+  _G.extensions = {rallyAcademy = M}
+  M.onClientPostStartMission('/levels/utah/')
+  for _ = 1, 20 do M.onUpdate(0.1, 0.1) end
+  eq(h.uiRoutes[1], 'play', 'switched to the game view once the car is placed')
+  M.goToDrill()
+  for _ = 1, 20 do M.onUpdate(0.1, 0.1) end
+  eq(#h.uiRoutes, 1, 'Go to drill from inside the map leaves the UI alone')
+  _G.extensions = nil
+end
+
 return T

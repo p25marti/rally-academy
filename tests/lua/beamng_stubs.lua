@@ -84,6 +84,14 @@ function S.install()
     end,
     startLevel = function(path) table.insert(h.levelsLoaded, path) end,
   }
+  -- verified 0.39.4: the Freeroam menu's way in (enters freeroam mode, then startLevel)
+  h.uiRoutes = {}
+  _G.ui_router = {navigate = function(route) table.insert(h.uiRoutes, route) end} -- verified 0.39.4
+  h.freeroamStarts = {}
+  _G.freeroam_freeroam = {startFreeroam = function(path)
+    table.insert(h.freeroamStarts, path)
+    table.insert(h.levelsLoaded, path)
+  end}
   _G.core_vehicles = {replaceVehicle = function(model, opt)
     table.insert(h.spawned, {model = model, config = opt and opt.config})
     h.vehicle.JBeam = model

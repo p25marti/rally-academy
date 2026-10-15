@@ -45,6 +45,9 @@ local awaitingCar, awaitT = nil, 0 -- configPath we're waiting to see spawn, and
 local SETTLE_AFTER_SPAWN = 0.3     -- s after onVehicleSpawned before teleporting the new car
 local SPAWN_TIMEOUT = 6            -- s: place the car anyway if onVehicleSpawned never comes
 local placeAtDrill -- defined under "Go to drill"; onUpdate (above it) calls it
+-- Started from the main-menu Academy screen: switch the UI to the game view on arrival
+-- (the game's own main-menu exit does this; our screen isn't part of that flow).
+local leaveMenuOnArrival = false
 
 -- beamng.log lines read `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension + tag);
 -- `python tools/dev.py log --ours` shows only these.
@@ -515,6 +518,17 @@ local function levelPathFor(name)
   end
 end
 
+-- Start the map in freeroam, as the game's Freeroam menu does: it also enters freeroam
+-- mode (loading screen, HUD, leaves the menus). Bare core_levels.startLevel only worked
+-- from inside freeroam; from the main menu the menu stayed up with no HUD (0.39.4).
+local function startMap(path)
+  if freeroam_freeroam and freeroam_freeroam.startFreeroam then
+    freeroam_freeroam.startFreeroam(path)
+  else
+    core_levels.startLevel(path)
+  end
+end
+
 local function configKey(configPath) -- 'vehicles/covet/rally_gravel.pc' -> 'rally_gravel'
   return type(configPath) == 'string' and configPath:match('([^/]+)%.pc$') or nil
 end
@@ -548,6 +562,10 @@ function placeAtDrill()
     lastReason = 'At ' .. env.mapDisplayName .. ' in the drill car. Drive to where the drill starts, then Mark start.'
   end
   logf('I', 'go to drill: %s placed at %s', selected, startState and 'saved start' or 'venue spot')
+  if leaveMenuOnArrival and ui_router and ui_router.navigate then
+    leaveMenuOnArrival = false
+    ui_router.navigate('play')
+  end
   output()
 end
 
@@ -579,10 +597,28 @@ function M.goToDrill()
     lastReason = 'Loading ' .. env.mapDisplayName .. '...'
     logf('I', 'go to drill: %s, loading %s', selected, env.levelId)
     output()
-    core_levels.startLevel(path)
+    startMap(path)
     return
   end
   arriveAtDrill()
+end
+
+-- Main-menu screen (ui/ui-vue/mods/rallyAcademy) --------------------------------
+
+-- Everything the menu shows: every drill in curriculum order (file order), progress,
+-- and the drill selected in the HUD.
+function M.getMenuData()
+  return {lessons = lessons, progress = progress.lessons, selected = selected}
+end
+
+-- Start button: select the drill and go to it (loads its map from the main menu).
+function M.startDrill(id)
+  if type(id) ~= 'string' or not byId[id] then return false end
+  M.select(id)
+  leaveMenuOnArrival = true
+  M.goToDrill()
+  logf('I', 'menu: started %s', id)
+  return true
 end
 
 -- Telemetry ------------------------------------------------------------------

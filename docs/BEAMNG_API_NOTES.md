@@ -93,6 +93,13 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 | Panel survives a UI reload | **broken 0.39.4** | the shim can mount into a slot Vue then replaces (same id) and ignores later mounts; ~½ of reloads left an empty panel. `app.js` self-heals (unmount + mount after 3 s empty, max 2 tries) — 0 failures in 15 reloads after the fix |
 | A mod `app.js` is loaded once per page | **broken 0.39.4** | often injected twice (two `?_dc=` script tags ms apart); don't keep per-load state that breaks if the file runs twice |
 | Editing `app.js` hot-refreshes the panel | unreliable 0.39.4 | can fail with `Directive cache refresh failed`; run `reloadUI()` after editing |
+| Vue UI mods: files in `/ui/ui-vue/mods/<mod>/` (our `mod/ui/ui-vue/mods/rallyAcademy/`) are compiled at runtime; `index.js` exports `onLoad`/`onUnload` | verified 0.39.4 | `extensions.ui_uiMods.getVueMods()` lists them; edits hot-reload. Docs: `ui/ui-vue/mods/README.md` in the game folder |
+| Main-menu buttons via `events.on("MainMenuButtons", addButton)`; `iconId` is a `bngIcons` glyph name (we use `raceFlag`) | verified 0.39.4 | mod buttons show under **More...** (route `menu.others`), tagged "Mod", not on the top level |
+| Routes: `window.bngRoutes.add` + `ui_router_routeManager.registerModRoutes`; navigate with `ui_router.navigate(name)` | verified 0.39.4 | our `menu.rallyAcademy` opens from the main menu and also over the game view from inside a map |
+| The Vue bridge's `lua.*` only has functions listed in `LuaFunctionSignatures.js`; others need `runRaw` from `@/bridge/libs/Lua.js` | verified 0.39.4 | `lua.extensions.rallyAcademy` is undefined; `runRaw("extensions.rallyAcademy.getMenuData()")` returns the table |
+| `core_levels.startLevel` from the main menu loads the map but doesn't enter freeroam: no HUD layout, the menu route stays up | verified 0.39.4 | use `freeroam_freeroam.startFreeroam(path)`, as the Freeroam menu does |
+| After a map started from our menu, the UI stays on our route until `ui_router.navigate('play')` | verified 0.39.4 | the game's own main-menu exit handler navigates to `play` in freeroam; we do the same once the car is placed |
+| The game has its own **Rally** entry under More... | seen 0.39.4 | not investigated yet: may overlap with F-module stages (PRIOR_ART) |
 
 ## Developer loop
 

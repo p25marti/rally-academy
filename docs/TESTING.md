@@ -74,6 +74,10 @@ BeamNG version and result in the PR.
     straight and press **+ Gate** at each. Coloured posts appear across the track. Then
     **Retry** and hold about 30 km/h: each gate shows its speed as you pass it, and
     the run ends at gate 3 with PASS or MISS.
+14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 48 drills
+    show in order with your progress. Pick one, then **Start drill**: its map loads, the
+    menu closes, the HUD appears and you're in the drill car at its start or venue.
+    Re-test this after every game update (the Vue mod API is new in 0.39).
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.
 

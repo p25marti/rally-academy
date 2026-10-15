@@ -45,7 +45,13 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   gates without braking between them. The run ends at the last gate.
 - The B01 stop zone and finish circles are drawn in the world.
 
+- **Rally Academy screen in the main menu** (More... → Rally Academy): browse all 48
+  drills in order with your progress and what each one grades, then **Start drill**
+  to load its map, car and start in one press.
+
 ### Changed
+- Go to drill starts maps the way the game's Freeroam menu does, so it also works from
+  the main menu.
 - The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
