@@ -67,6 +67,16 @@ evaluated over the run record: `gate`, `speed_range`, `brake_profile`,
 `automatic` (all rules machine-checked), `hybrid` (machine rules plus a human
 Pass/Miss), or `selfAssessment` (today's behaviour).
 
+Full capability list, per-drill needs and build order: [GRADING.md](GRADING.md).
+
+**HUD technology.** BeamNG's UI is one shared embedded-Chromium page. Mods add
+HUD apps as AngularJS 1.x directives; that is the only documented path (the
+game's newer Vue 3 screens are a precompiled bundle mods can't extend). A
+framework such as Preact or Vue could be bundled into `mod/` and mounted inside
+our directive, at the cost of a build step, CSS isolation from other apps and an
+unknown Chromium version. The HUD stays a plain directive while it is small; a
+framework would need a decision record and an in-game test first.
+
 **Authoring.** Start poses and gates are captured in-game and saved per
 `levelId`, then promoted into `exercises.json` (`startTransform`,
 `finishGate`, later gate lists). Longer stages can build on BeamNG's own
