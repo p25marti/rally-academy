@@ -1,9 +1,9 @@
 # Prior art
 
 Existing BeamNG systems, tools and mods we can reuse instead of rebuilding.
-Researched 2026-10-14 from web search summaries. The beamng.com docs pages and
-the game's own Lua were **not** read directly, so module names below are
-unconfirmed and every API stays `unverified` in
+Researched 2026-10-14 from web search summaries; the **Telemetry** section was
+re-checked against the game's own Lua and measured in-game on 2026-10-15. Other
+sections are still unconfirmed, and every API stays `unverified` in
 [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) until tested in-game.
 
 **Summary:** no existing mod grades driving drills, so the rule engine and
@@ -27,11 +27,42 @@ proprietary, so we don't copy large chunks of it into this repo.
 
 ## Telemetry
 
+**Verified 2026-10-15** against the 0.39.4 Lua source in the install, with in-game
+measurements where noted. Decision: [ADR 0004](decisions/0004-telemetry-transport.md).
+
+### Inside the game
+
+| System (file) | What it does | Use for us |
+| --- | --- | --- |
+| `utRecorder` (`lua/vehicle/extensions/utRecorder.lua`) | Vehicle extension: each `updateGFX` packs inputs, speeds, position, direction and calls `obj:queueGameEngineLua(...)` to a GE recorder | **The pattern we follow**: our sampler is the same mechanism with per-wheel data and a faster encoder |
+| `gameplayStatistic` + `gameplayStatisticModules/watchAirtime`, `watchBurnout` | Career stats: vehicle-side watchers in `updateGFX`, results sent to GE with `obj:queueGameEngineLua` | Same pattern. `watchAirtime` is the reference airborne test (all wheels `contactMaterialID == -1`, ground speed > 6 m/s, upright) |
+| `guistreams` (`lua/vehicle/guistreams.lua`) | `wheelInfo` (name, radius, angular velocity, `lastSlip`, downforce, braking torque…), `engineInfo`, `electrics`, `sensors` (g-forces, roll/pitch/yaw) | Feeds the **UI**, not GE, only while an app subscribes. Reference for canonical field sources |
+| `core_vehicleBridge` + vehicle `gameplayInterface` | Subscribe to electrics keys; cached in GE | Electrics only, one message per changed key per frame. Fine for occasional values, not for per-wheel sampling |
+| `telemetryLogger` (vehicle extension) | Records inputs, speed, position, g-forces to CSV on disk | Too narrow; writes files, not a feed |
+| `telemetry/core.lua` (GE) | Gameplay analytics events to `telemetry/<session>.jsonl` | Not vehicle data |
+| OutGauge / MotionSim (`lua/vehicle/protocols/`) | UDP to an external program; settings-gated, fixed packets (OutGauge has no per-wheel data) | External dashboards only. Their comments document the rate trade-off: graphics step cost "ok", physics step (≤ 2000 Hz) "big" |
+| MCP `get_electrics` (`mcp/tools/telemetry.lua`) | One-off async read via `be:queueObjectLua` → `obj:queueGameEngineLua` | Same mechanism, on demand; handy for debugging |
+| `mqttGrafanaDemo` (vehicle extension) | Streams to an MQTT broker | External; a model for an optional live dashboard later |
+| BeamNG.tech sensors (`tech/powertrainSensor`, IMU…), Vehicle Stats Logger | Rich sensors | Gated by `tech/license.lua`; the stats logger isn't in .drive |
+| `dynamicVehicleData` (vehicle extension) | Works out transmission, drivetrain, fuel type | Later: checking drill cars ([VEHICLES](VEHICLES.md)) |
+
+### Outside the game
+
 | Source | What it is | Use for us |
 | --- | --- | --- |
-| [OfficialLambdax/BeamNG-Telemetry](https://github.com/OfficialLambdax/BeamNG-Telemetry) | MIT-licensed vehicle-side Lua extension (`lua/vehicle/extensions/auto/Telemetry.lua`). Records per-wheel speed, slip, contact material, deflated/broken status, brake data, all inputs, ABS/ESC/TCS states, position, velocity and acceleration | Model our telemetry sampler on it, with attribution. It targets 0.35, depends on BeamMP and is small (1 star, 9 commits), so adapt rather than depend |
-| [OutGauge / MotionSim UDP](https://documentation.beamng.com/modding/protocols) | Built-in data feeds to outside programs, with limited fields | An external analysis tool at most; not for in-game grading |
+| [OfficialLambdax/BeamNG-Telemetry](https://github.com/OfficialLambdax/BeamNG-Telemetry) | MIT vehicle extension reading inputs, per-wheel speed/slip/material/brakes, energy; samples on the graphics tick; JSON lines | Transport depends on a **BeamMP server**, 0.35-era, 9 commits, 1 star. Field reference only |
 | [BeamNGpy / BeamNG.tech](https://documentation.beamng.com/beamng_tech/sensors/) | See [below](#beamngtech) | Not usable in a shipped mod |
+
+### Measured cost of our sampler (0.39.4, Covet, 4 wheels)
+
+| Step | Cost | For comparison |
+| --- | --- | --- |
+| Build one sample in the car (`string.buffer`) | 1.4 µs | `serialize()` (utRecorder) 3.3 µs, `lpack` (vehicleBridge) 3.5 µs |
+| Parse it in GE (`loadstring` + run) | 14.9 µs | at 60 Hz: 0.9 ms per second, ~0.09% of a frame |
+| Message size | 234 bytes | |
+
+Delivery follows the frame rate (60 Hz focused, 30 Hz in the background). The
+vehicle extension survives a Retry reset.
 
 ## Community mods
 
@@ -47,7 +78,7 @@ grading turned up.
 
 ## What this changes
 
-1. **Telemetry:** model the sampler on the Lambdax vehicle extension.
+1. **Telemetry:** our own vehicle extension on BeamNG's `utRecorder` pattern ([ADR 0004](decisions/0004-telemetry-transport.md)); Lambdax as a field reference.
 2. **Gates and timing:** try BeamNG's race path and checkpoints before writing
    our own geometry. Our code then shrinks to zones, corridors and
    bumper-to-line offsets.
