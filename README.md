@@ -52,6 +52,7 @@ unpacked dev link alongside it.
 - [VEHICLES.md](docs/VEHICLES.md) — drill cars, what to look for, drivetrain options
 - [BEAMNG_API_NOTES.md](docs/BEAMNG_API_NOTES.md) — every engine API we rely on, and whether it's verified
 - [ROADMAP.md](docs/ROADMAP.md) — priorities and known issues
+- [MAPS.md](docs/MAPS.md) — surveyed venues (gravel/dirt) and where each drill takes place
 - [decisions/](docs/decisions/) — short records of why things are the way they are
 
 ## Credits

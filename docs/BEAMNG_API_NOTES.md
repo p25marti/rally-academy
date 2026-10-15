@@ -59,7 +59,9 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 | `getObjectByID(id)` (GE) returns the vehicle object | verified 0.39.4 | used to stop the sampler in the car that was recording |
 | Right after a repair-teleport the car settles: first samples show all wheels with `downForce` 0 and the engine re-idling | observed 0.39.4 | rules must look from the run's start mark, not from Retry |
 | Lockup is visible per wheel | verified 0.39.4 | 40 km/h full brake, no ABS: all 4 wheels < 30% of `airspeed` within ~0.2 s |
-| `contactMaterialID1` gives the surface | partly | id `10` on Driver Training tarmac; the id → surface name table is still to find |
+| `contactMaterialID1` gives the surface | verified 0.39.4 | names via `particles.getMaterialByID(particles.getMaterialsParticlesTable(), id).name`: 10 ASPHALT, 11 ASPHALT_WET, 13 ROCK, 14 DIRT_DUSTY, 15 DIRT, 16 SAND, 17 SANDY_ROAD, 18 MUD, 19 GRAVEL, 20 GRASS, 21 ICE, 22 SNOW, 29 RUMBLE_STRIP, 30 COBBLESTONE; -1 = no contact |
+| Terrain surface at a point (GE): `core_terrain.getTerrain():getMaterialIdxWs(pos)` → `:getMaterial(idx):getGroundmodelName()` | verified 0.39.4 | terrain only: road meshes/decals over it aren't seen (Italy, East Coast roads read as grass). Names vary per map (DIRT_LOOSE_DUSTY, DIRT_ROCKY…). Same approach as the rally editor's `surfaceProbe` |
+| Rally stage data in `gameplay/missions/<level>/rallyStage/<id>/`: `info.json` start trigger + recommended car + times; `race.race.json` start positions + checkpoints; `rally/drivelineSpline.json` centre line + stats (distance, surface %) | read 0.39.4 | spline `widths` are all 10 (editor default), not road width |
 
 ## Input actions
 
