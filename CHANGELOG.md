@@ -38,6 +38,13 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   check. Cone contact isn't graded yet. Drills can now declare typed grading rules
   (`assessment.rules`, `endWhen`); `dev.py validate` checks them.
 
+- **Gates**: drive to a spot and press **+ Gate** to put a gate across the road there.
+  Gates are saved per map, drawn as coloured posts (yellow next, green passed, red
+  missed), and the panel names the gate and your speed as you pass it.
+- **A04 throttle modulation is graded automatically**: hold 27–33 km/h through three
+  gates without braking between them. The run ends at the last gate.
+- The B01 stop zone and finish circles are drawn in the world.
+
 ### Changed
 - The panel no longer shows the "route detection and self-assessment only" note.
 

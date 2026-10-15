@@ -43,8 +43,12 @@ RULE_TYPES = {
     "entry_speed": ["minKmh"],
     "stop_zone": ["lengthM", "widthM"],
     "no_sustained_lockup": ["maxSeconds"],
+    "gates_passed": [],
+    "speed_at_gates": ["minKmh", "maxKmh"],
+    "no_brake_between_gates": [],
 }
-END_WHEN = {"finish", "stopped"}
+GATE_RULES = {"gates_passed", "speed_at_gates", "no_brake_between_gates"}
+END_WHEN = {"finish", "stopped", "gates"}
 ZIP_EPOCH = (2020, 1, 1, 0, 0, 0)  # fixed timestamp => reproducible zips
 SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
 # The mod logs as `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension name + tag).
@@ -132,6 +136,15 @@ def validate_exercises(data: dict) -> list[str]:
                 errors.append(f"{where}: rules[{j}] ({rtype}) needs numeric {missing_params}")
         if a.get("endWhen", "finish") not in END_WHEN:
             errors.append(f"{where}: assessment.endWhen must be one of {sorted(END_WHEN)}")
+        gates = a.get("gates")
+        if gates is not None:
+            count, width = (gates.get("count"), gates.get("widthM")) if isinstance(gates, dict) else (None, None)
+            if not (isinstance(count, int) and count >= 1 and isinstance(width, (int, float)) and width > 0):
+                errors.append(f"{where}: assessment.gates must be {{count: int >= 1, widthM: number > 0}}")
+        uses_gates = a.get("endWhen") == "gates" or any(
+            isinstance(r, dict) and r.get("type") in GATE_RULES for r in a.get("rules") or [])
+        if uses_gates and gates is None:
+            errors.append(f"{where}: gate rules and endWhen 'gates' need assessment.gates")
         if a.get("mode") == "automatic" and not a.get("rules"):
             errors.append(f"{where}: automatic drills need at least one rule")
     return errors

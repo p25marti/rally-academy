@@ -38,7 +38,8 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "successDefinition": "Per-run PASS criteria in plain English.",
         "metricToRecord": "Successful precise parks / 10",
         "mode": "selfAssessment",          // required: selfAssessment | automatic | hybrid
-        "endWhen": "finish",               // optional: finish (circle, default) | stopped (car at rest)
+        "endWhen": "finish",               // optional: finish (circle, default) | stopped (car at rest) | gates (last gate)
+        "gates": {"count": 3, "widthM": 10}, // optional: gates the driver marks with + Gate
         "rules": []                        // typed rules; empty = no machine grading
       },
       "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)
@@ -53,7 +54,8 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
 `dev.py validate` enforces: valid JSON, `schemaVersion == 1`, required keys,
 id format and uniqueness, `1 ≤ requiredPasses ≤ attempts`, known `mode`,
 `rules` is a list, known `endWhen`. Each rule needs a known `type` and that type's
-numeric parameters, and an `automatic` drill needs at least one rule.
+numeric parameters, and an `automatic` drill needs at least one rule. Gate rules
+and `endWhen: "gates"` need `assessment.gates`.
 
 Rules are objects such as `{"type": "stop_zone", "lengthM": 5, "widthM": 6}`. The
 types and their parameters are listed in [GRADING.md](GRADING.md#5-rule-engine);

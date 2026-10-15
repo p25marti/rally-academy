@@ -7,7 +7,8 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-**B01** (threshold braking) is graded automatically; every other drill is still
+**B01** (threshold braking) and **A04** (speed hold through gates) are graded
+automatically; every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -37,7 +38,7 @@ these fields and is the best reference.
 
 | Primitive | What it checks | Drills |
 | --- | --- | --- |
-| Gate | A line with width and direction, crossed by the car's footprint, not just its centre | A07, A08, C02, D01, D03 |
+| Gate | A line with width and direction, crossed by the car (built: the car's centre; footprint later) | A04, A07, A08, C02, D01, D03 |
 | Zone or box | Whole car inside a polygon | A01 parking box, B01 5 m stop zone |
 | Corridor or road edge | All wheels on the road or inside a lane, from an authored path or the surface under each wheel | about 20 drills |
 | Distance along path | Where the car is relative to apex or exit markers | B04, B07, C05 |
@@ -117,6 +118,23 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `entry_speed` | `minKmh` | The run's peak speed reaches `minKmh`. This uses the peak rather than the speed at first brake, because the brake reads 0.3 at rest after a reset. |
 | `stop_zone` | `lengthM`, `widthM` | The car comes to rest inside a box centred on the marked zone, aligned with the car's heading when the zone was marked |
 | `no_sustained_lockup` | `maxSeconds` (optional `ratio` 0.3, `minKmh` 7) | No wheel turns slower than `ratio` × the car's speed while braking for longer than `maxSeconds` |
+| `gates_passed` | none | Every marked gate driven through, in order, inside its width |
+| `speed_at_gates` | `minKmh`, `maxKmh` (optional `gate`: one gate, `-1` = last) | Speed when crossing each gate is inside the band |
+| `no_brake_between_gates` | none (optional `fromGate`, `toGate`) | No brake above 0.1 between the two gates while moving faster than 2 m/s |
+
+**Gates** (`gates.lua`, pure) are lines across the road: a centre, the direction the
+car faced when the gate was marked, and a width. A gate counts when the car's centre
+crosses the line going forwards. Crossing it more than `max(15 m, 2 × width)` from the
+centre doesn't count, because the car is elsewhere on the course. The crossing point
+and speed are interpolated between samples. A drill declares its gates as
+`assessment.gates = {count, widthM}`. The driver marks each gate with **+ Gate**, and
+the gates are saved per map like a start. `endWhen: "gates"` ends the run 0.3 s after
+the last gate, so the record includes the car's sample past it. The run is timed at the
+gate itself.
+
+The course is drawn in the world with the game's debug overlay (`debugDrawer`): gate
+posts, yellow for the next gate, green once passed, red if missed. The stop zone and
+the finish circle are drawn too.
 
 A drill with `endWhen: "stopped"` ends when the car has been at rest (below
 0.3 m/s) for 0.5 s at least 5 m from the start. A drill without it ends at the finish circle. Real
@@ -204,8 +222,8 @@ hybrid prompt.
 Each step unlocks graded drills:
 
 1. Telemetry sampler, gates, zones and segment timing. This makes A04 and B01
-   fully automatic (ROADMAP P2). Sampler, stop zone and lockup are done, and B01
-   is automatic; gates and segment timing (A04) remain.
+   fully automatic (ROADMAP P2). Done: sampler, stop zone, lockup, gates and speed
+   at gates; B01 and A04 are automatic. Segment timing between gates remains.
 2. Lockup, wheelspin, contact, damage and off-road detection. This covers most
    of modules A, B and D.
 3. Slip angle, spin, countersteer and handbrake detection. This opens module C.

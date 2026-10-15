@@ -70,6 +70,10 @@ BeamNG version and result in the PR.
     the zone. When the car stops, the panel shows three ✓/✗ lines and PASS or MISS,
     and the counter goes up without pressing Pass. Locking the brakes
     for more than 0.5 s gives a MISS that names the wheel.
+13. **A04** (gates): **Go to drill** → **Mark start** → drive 30, 55 and 80 m down the
+    straight and press **+ Gate** at each. Coloured posts appear across the track. Then
+    **Retry** and hold about 30 km/h: each gate shows its speed as you pass it, and
+    the run ends at gate 3 with PASS or MISS.
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.
 

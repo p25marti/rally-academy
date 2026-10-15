@@ -64,6 +64,12 @@ mod/
   and published as `grade` for the HUD's ✓/✗ lines. `endWhen: "stopped"` ends the
   run when the car is at rest, away from the start. The start is armed 0.2 s after
   Retry, because the repair-teleport can nudge the car a frame later.
+- **Gates** (`lua/ge/extensions/rallyAcademy/gates.lua`, pure): **+ Gate** marks a line
+  across the road at the car, facing the way it points (width from `assessment.gates`).
+  Gates are saved with the start in `settings/rallyAcademySetups.json`. `onUpdate` checks
+  the next gate each frame for live feedback ("Gate 2 of 3: 31 km/h") and for
+  `endWhen: "gates"`. Grading re-reads crossings from the run record. `drawCourse`
+  draws gates, the stop zone and the finish circle every frame with `debugDrawer`.
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 

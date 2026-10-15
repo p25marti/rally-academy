@@ -183,16 +183,30 @@
           }
         }
       },
-      "instructions": "Bring car to 30 km/h, then hold that speed across three cone-marked 25 m zones.",
-      "resetInstructions": "Stationary 30 m before first speed zone; save facing down runway.",
-      "props": "Use speedometer; initial speed build-up is unscored.",
+      "instructions": "Bring the car to 30 km/h, then hold that speed through three gates 25 m apart.",
+      "resetInstructions": "Mark the start 30 m before the first gate, facing down the straight. Drive to each gate spot in turn (25 m apart) and press + Gate.",
+      "props": "Speedometer only; the build-up to the first gate is not graded.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Speed at each of three markers between 27–33 km/h; no braking once inside zones.",
-        "metricToRecord": "Runs with all three markers in band",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Speed at each of the three gates between 27 and 33 km/h; no braking between the first and last gate.",
+        "metricToRecord": "Runs with all three gates in band",
+        "mode": "automatic",
+        "endWhen": "gates",
+        "gates": {
+          "count": 3,
+          "widthM": 10
+        },
+        "rules": [
+          {
+            "type": "speed_at_gates",
+            "minKmh": 27,
+            "maxKmh": 33
+          },
+          {
+            "type": "no_brake_between_gates"
+          }
+        ]
       },
       "startTransform": null,
       "finishGate": null,

@@ -18,6 +18,10 @@ local function vec3(x, y, z)
 end
 function vec3mt.__sub(a, b) return vec3(a.x - b.x, a.y - b.y, a.z - b.z) end
 function vec3mt.__add(a, b) return vec3(a.x + b.x, a.y + b.y, a.z + b.z) end
+function vec3mt.__mul(a, b)
+  if type(a) == 'number' then a, b = b, a end
+  return vec3(a.x * b, a.y * b, a.z * b)
+end
 function vec3mt.__unm(a) return vec3(-a.x, -a.y, -a.z) end
 function vec3mt:length() return math.sqrt(self.x ^ 2 + self.y ^ 2 + self.z ^ 2) end
 function vec3mt:normalized()
@@ -96,6 +100,12 @@ function S.install()
     veh.pos = vec3(pos)
     veh.vel = vec3(0, 0, 0)
     if resetVehicle then veh.damage = 0 end
+  end}
+  -- Debug overlay (verified to exist 0.39.4): records what was drawn on the last frames.
+  h.draws = {}
+  _G.ColorF = function(r, g, b, a) return {r = r, g = g, b = b, a = a} end
+  _G.debugDrawer = {drawCylinder = function(_, a, b, radius, colour)
+    table.insert(h.draws, {kind = 'cylinder', a = a, b = b, radius = radius, colour = colour})
   end}
   _G.guihooks = {trigger = function(name, data) table.insert(h.events, {name = name, data = data}) end}
 

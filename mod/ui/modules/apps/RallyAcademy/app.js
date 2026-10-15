@@ -20,7 +20,9 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
       '</div>',
       '<div style="display:flex;gap:5px;flex-wrap:wrap">',
       '<button ng-click="cmd(\'markStart\')">Mark start</button>',
-      '<button ng-click="cmd(\'markFinish\')">{{vm.lesson.assessment.endWhen === \'stopped\' ? \'Mark stop zone\' : \'Mark finish\'}}</button>',
+      '<button ng-if="vm.lesson.assessment.endWhen !== \'gates\'" ng-click="cmd(\'markFinish\')">{{vm.lesson.assessment.endWhen === \'stopped\' ? \'Mark stop zone\' : \'Mark finish\'}}</button>',
+      '<button class="ra-add-gate" ng-if="vm.lesson.assessment.gates" ng-click="cmd(\'addGate\')">+ Gate ({{vm.gateCount || 0}}/{{vm.lesson.assessment.gates.count}})</button>',
+      '<button ng-if="vm.lesson.assessment.gates && vm.gateCount" ng-click="cmd(\'clearGates\')">Clear gates</button>',
       '<button ng-click="cmd(\'retry\')">↻ Retry</button>',
       '<button ng-click="cmd(\'recordAttempt\',true)">✓ Pass</button>',
       '<button ng-click="cmd(\'recordAttempt\',false)">✕ Miss</button>',
@@ -53,7 +55,7 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
         return fmt(p && id && p[id] ? p[id].bestTime : null, 2);
       };
       scope.cmd = function (name, arg) {
-        var methods = {goToDrill:1, markStart:1, markFinish:1, retry:1, recordAttempt:1};
+        var methods = {goToDrill:1, markStart:1, markFinish:1, addGate:1, clearGates:1, retry:1, recordAttempt:1};
         if (!methods[name]) return;
         var args = name === 'recordAttempt' ? (arg ? 'true' : 'false') : '';
         bngApi.engineLua('if extensions.rallyAcademy then extensions.rallyAcademy.' + name + '(' + args + ') end');
