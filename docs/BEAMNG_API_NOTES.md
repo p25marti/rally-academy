@@ -27,6 +27,8 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | Extension at `lua/ge/extensions/rallyAcademy.lua`, loaded by `extensions.load('rallyAcademy')`, reachable as `extensions.rallyAcademy` | entry point | verified 0.39.4 |
 | `scripts/rally_academy/modScript.lua` runs on mod activation and loads the extension | auto-load | verified 0.39.4 (`extensions.rallyAcademy ~= nil` right after start) |
 | Hooks `onExtensionLoaded()`, `onUpdate(dtReal, dtSim, dtRaw)` | lifecycle, timing | verified 0.39.4 |
+| Hooks `onClientEndMission(levelPath)` (map unloading) and `onClientPostStartMission(levelPath)` (map + car loaded) | per-map setups | verified 0.39.4 (Driver Training → smallgrid → Driver Training) |
+| Hook `onVehicleSwitched(oldId, newId, player)` | abandon a run on car switch | 0.39.4: switching mid-run returned to `setup`; an `onUpdate` id check is the fallback, so which one fired wasn't isolated |
 | The engine caches hook functions at load; replacing `M.onUpdate` at runtime has no effect | debugging | verified 0.39.4 |
 | `dtSim` is 0 while physics is paused | pause-safe timer | verified 0.39.4 |
 | `be:getPlayerVehicle(0)` | player vehicle | verified 0.39.4 |

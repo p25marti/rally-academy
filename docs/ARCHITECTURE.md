@@ -39,6 +39,11 @@ mod/
   `levels[levelId][drillId] = {start = {pos, dir, up}, finish = {pos, radius}}`.
   Mark start/finish save immediately; `select(id)` loads the setup for the
   current map. No vehicle id is stored, so Retry resets whichever car you drive.
+- **Car and map changes:** switching car (or losing it) mid-run abandons the run
+  back to `setup`, unscored. `onClientEndMission` drops the map's start/finish;
+  `onClientPostStartMission` re-selects the drill to load the new map's setup.
+- **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
+  start, extension reload), the HUD selects the drill it shows (or the first).
 
 Known gaps are listed in [ROADMAP.md](ROADMAP.md).
 

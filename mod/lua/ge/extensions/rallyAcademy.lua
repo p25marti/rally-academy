@@ -102,12 +102,10 @@ end
 
 function M.publish() output(true) end
 
-function M.select(id)
-  if type(id) ~= 'string' or not byId[id] then return end
-  selected, startState, finishGate = id, nil, nil
-  phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
-  activeVehicleId = nil
-  local saved = setups.levels[levelId()] and setups.levels[levelId()][id]
+-- Load the selected drill's saved start/finish for the current map (or clear them).
+local function loadSetup()
+  startState, finishGate = nil, nil
+  local saved = setups.levels[levelId()] and setups.levels[levelId()][selected]
   if saved and saved.start then
     startState, finishGate = saved.start, saved.finish
     lastReason = finishGate and 'Loaded your saved start and finish for this map. Press Retry to begin.'
@@ -115,6 +113,22 @@ function M.select(id)
   else
     lastReason = 'Select a suitable car/map, mark the start, and optionally mark a finish gate.'
   end
+end
+
+-- Abandon the current run (nothing is scored) but keep the drill and its setup.
+local function backToSetup(reason)
+  phase, elapsed, lastTime = 'setup', 0, nil
+  activeVehicleId = nil
+  lastReason = reason
+  output()
+end
+
+function M.select(id)
+  if type(id) ~= 'string' or not byId[id] then return end
+  selected = id
+  phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
+  activeVehicleId = nil
+  loadSetup()
   output()
 end
 
@@ -190,7 +204,11 @@ end
 function M.onUpdate(dtReal, dtSim)
   if not selected or (phase ~= 'ready' and phase ~= 'running') then return end
   local veh = currentVehicle()
-  if not veh or veh:getID() ~= activeVehicleId then return end
+  if not veh or veh:getID() ~= activeVehicleId then
+    -- Fallback for onVehicleSwitched (also covers the car being deleted).
+    backToSetup('Vehicle changed. Press Retry to start a new run in this car.')
+    return
+  end
   uiAccum = uiAccum + (dtReal or 0)
   local speed = veh:getVelocity():length()
   -- The frame after a teleport reports a huge velocity (~430 m/s seen in 0.39.4),
@@ -220,6 +238,27 @@ function M.onUpdate(dtReal, dtSim)
     uiAccum = 0
     output()
   end
+end
+
+-- Engine hooks (lua/ge/main.lua, 0.39.4) --------------------------------------
+
+function M.onVehicleSwitched(_oldId, _newId, _player)
+  if phase == 'ready' or phase == 'running' then
+    backToSetup('Vehicle changed. Press Retry to start a new run in this car.')
+  end
+end
+
+-- Map unloading: its start/finish mean nothing on the next map.
+function M.onClientEndMission(_levelPath)
+  if not selected then return end
+  startState, finishGate = nil, nil
+  backToSetup('Map closed.')
+end
+
+-- Map fully loaded (car spawned): bring in the selected drill's setup for it.
+function M.onClientPostStartMission(_levelPath)
+  if not selected then return end
+  M.select(selected)
 end
 
 return M

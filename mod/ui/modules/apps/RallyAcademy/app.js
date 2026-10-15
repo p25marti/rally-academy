@@ -61,8 +61,10 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
       scope.$on('rallyAcademyState', function (event, data) {
         scope.vm = Object.assign({}, scope.vm, data);
         if (data.selected) scope.selectedId = data.selected;
-        else if (!scope.selectedId && data.lessons && data.lessons.length) {
-          scope.selectedId = data.lessons[0].id;
+        else if (data.lessons && data.lessons.length) {
+          // Lua has no drill (game start, or the extension was reloaded): select the
+          // one shown here, or the first, so the panel and Lua agree.
+          if (!scope.selectedId) scope.selectedId = data.lessons[0].id;
           scope.choose();
         }
       });

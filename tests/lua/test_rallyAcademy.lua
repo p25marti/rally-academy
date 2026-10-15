@@ -292,4 +292,63 @@ function T.retry_uses_the_current_car()
   eq(h.lastState().phase, 'running', 'run tracks the current car')
 end
 
+-- Vehicle switch / map changes ------------------------------------------------
+
+local function startRun(h, M)
+  markStartAndFinish(h, M, 'A01')
+  M.retry()
+  drive(h, M, 1.0, {x = 0, y = 10, z = 0})
+  eq(h.lastState().phase, 'running', 'precondition: running')
+end
+
+function T.vehicle_switch_mid_run_returns_to_setup()
+  local h, M = setup()
+  startRun(h, M)
+  M.onVehicleSwitched(1, 2, 0)
+  local s = h.lastState()
+  eq(s.phase, 'setup', 'run abandoned')
+  eq(s.attempts, 0, 'nothing scored')
+  eq(s.hasStart, true, 'start kept')
+  eq(s.hasFinish, true, 'finish kept')
+end
+
+-- If the hook doesn't fire (e.g. the car is deleted), onUpdate notices instead of
+-- leaving the timer frozen in 'running'.
+function T.different_car_in_on_update_returns_to_setup()
+  local h, M = setup()
+  startRun(h, M)
+  h.vehicle.id = 99
+  M.onUpdate(0.1, 0.1)
+  eq(h.lastState().phase, 'setup', 'run abandoned')
+end
+
+function T.vehicle_switch_while_not_running_changes_nothing()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'A01')
+  local before = #h.events
+  M.onVehicleSwitched(1, 2, 0)
+  eq(#h.events, before, 'no state change published')
+  eq(h.lastState().phase, 'setup', 'still setup')
+end
+
+function T.map_change_swaps_in_that_maps_setup()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'A01')           -- saved on driver_training
+  M.onClientEndMission('/levels/driver_training/')
+  local s = h.lastState()
+  eq(s.hasStart, false, 'old map start dropped on unload')
+  eq(s.selected, 'A01', 'drill stays selected')
+  M.retry()
+  eq(#h.vehicle.teleports, 0, 'no retry to the old map coordinates')
+
+  h.level = 'west_coast_usa'
+  M.onClientPostStartMission('/levels/west_coast_usa/')
+  eq(h.lastState().hasStart, false, 'nothing saved on the new map')
+
+  h.level = 'driver_training'
+  M.onClientEndMission('/levels/west_coast_usa/')
+  M.onClientPostStartMission('/levels/driver_training/')
+  eq(h.lastState().hasStart, true, 'saved setup back when returning to the map')
+end
+
 return T

@@ -20,6 +20,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   time after the finish (hundredths), and the drill's best time.
 
 ### Fixed
+- Switching car mid-run froze the timer; the run is now abandoned and you're
+  asked to press Retry in the new car.
+- Changing map kept the old map's start; now each map loads its own saved setup.
+- After a Lua reload the HUD showed a drill Lua had forgotten, so buttons did
+  nothing; the HUD now re-selects it.
 - Retry now repairs the car as well as returning it to the start, so a
   crashed run restarts clean.
 - HUD panel failed to load on 0.39 (`Unknown provider: bngApiProvider`); it now
