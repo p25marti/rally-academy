@@ -85,6 +85,8 @@ Typical cycle:
 4. `python tools/dev.py log --ours` to see the mod's own log lines (load, select, Retry,
    run start/finish, scoring); plain `log` adds every game error. The game flushes
    `beamng.log` in chunks, so the last minute may not be there yet.
+   To keep a real attempt as a test fixture, run `extensions.rallyAcademy.saveLastRun()`
+   in the console after it; it lands in `<user folder>/settings/rallyAcademy/lastRun.json`.
 5. Run the [in-game smoke test](TESTING.md#in-game-smoke-test) before opening a PR.
 
 Avoid having the release zip (`mods/rally_academy.zip`) installed while the dev

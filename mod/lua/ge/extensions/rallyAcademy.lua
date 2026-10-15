@@ -1,6 +1,7 @@
 -- Rally Academy prototype (BeamNG GE Lua). In-game status: docs/BEAMNG_API_NOTES.md.
 -- UI calls extensions.load('rallyAcademy') and extensions.rallyAcademy.<method>().
 local M = {}
+local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 local SAVE_FILE = 'settings/rallyAcademyProgress.json'
 -- Marked starts/finishes, per map then drill: levels[levelId][drillId] = {start, finish}
@@ -13,6 +14,10 @@ local phase, elapsed, uiAccum = 'idle', 0, 0
 local lastTime, lastReason = nil, ''
 local attempts, successes = 0, 0
 local activeVehicleId = nil
+-- Telemetry (docs/decisions/0004): the current or most recent attempt's record.
+local TELEMETRY_RATE = 60
+local LAST_RUN_FILE = 'settings/rallyAcademy/lastRun.json'
+local run, samplingVehId = nil, nil
 
 -- beamng.log lines read `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension + tag);
 -- `python tools/dev.py log --ours` shows only these.
@@ -52,6 +57,34 @@ end
 local function teleportToStart(veh, s)
   local rot = quatFromDir(vec3(s.dir.x, s.dir.y, s.dir.z), vec3(s.up.x, s.up.y, s.up.z))
   spawn.safeTeleport(veh, vec3(s.pos.x, s.pos.y, s.pos.z), rot, nil, nil, nil, nil, true)
+end
+
+-- Load the sampler into the car and start it; it reports to M.onTelemetry.
+local function startSampling(veh)
+  samplingVehId = veh:getID()
+  veh:queueLuaCommand(string.format("extensions.load('rallyAcademy/telemetry') "
+    .. "if extensions.rallyAcademy_telemetry then extensions.rallyAcademy_telemetry.start(%d, 'rallyAcademy') end",
+    TELEMETRY_RATE))
+end
+
+local function stopSampling()
+  local veh = samplingVehId and getObjectByID(samplingVehId)
+  if veh then
+    veh:queueLuaCommand("if extensions.rallyAcademy_telemetry then extensions.rallyAcademy_telemetry.stop() end")
+  end
+  samplingVehId = nil
+end
+
+-- Close the open run record, if any, and stop sampling.
+-- outcome: 'finished' | 'abandoned' | 'restarted'
+local function endRun(outcome)
+  if RunRecord.isOpen(run) then
+    RunRecord.finish(run, outcome)
+    local sum = RunRecord.summary(run)
+    logf('I', '%s: run record %s, %d samples over %.1f s (%.0f Hz)%s', tostring(run.meta.drill), outcome,
+      sum.samples, sum.span, sum.rateHz, sum.truncated and ', truncated' or '')
+  end
+  stopSampling()
 end
 
 local function output(includeCatalog)
@@ -129,6 +162,7 @@ end
 -- Abandon the current run (nothing is scored) but keep the drill and its setup.
 local function backToSetup(reason)
   logf('I', '%s: run abandoned (%s)', tostring(selected), reason)
+  endRun('abandoned')
   phase, elapsed, lastTime = 'setup', 0, nil
   activeVehicleId = nil
   lastReason = reason
@@ -137,6 +171,7 @@ end
 
 function M.select(id)
   if type(id) ~= 'string' or not byId[id] then return end
+  if RunRecord.isOpen(run) then endRun('abandoned') end
   selected = id
   phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
   activeVehicleId = nil
@@ -176,7 +211,11 @@ function M.retry()
     output(); return
   end
   activeVehicleId = veh:getID() -- the run follows whichever car was reset
+  if RunRecord.isOpen(run) then endRun('restarted') end
   teleportToStart(veh, startState)
+  run = RunRecord.new({drill = selected, level = levelId(), vehicleId = activeVehicleId,
+                       start = startState.pos, finish = finishGate})
+  startSampling(veh)
   logf('I', 'retry: %s, vehicle %s reset to start', selected, tostring(activeVehicleId))
   elapsed, lastTime = 0, nil
   phase = 'ready'
@@ -198,6 +237,8 @@ function M.recordAttempt(passed)
     output(); return
   end
   if phase == 'running' then lastTime = finished and elapsed or nil end
+  if RunRecord.isOpen(run) then endRun(finished and 'finished' or 'abandoned') end
+  if run and not run.score then run.score = {passed = passed == true, time = lastTime} end
   attempts = attempts + 1
   if passed == true then successes = successes + 1 end
   phase = 'scored'
@@ -235,6 +276,7 @@ function M.onUpdate(dtReal, dtSim)
   local leftStart = (veh:getPosition() - vec3(s.x, s.y, s.z)):length() > 0.5
   if phase == 'ready' and speed > 1 and leftStart then
     phase = 'running'
+    RunRecord.markRunStart(run)
     logf('I', '%s: run started', selected)
     lastReason = 'Run started.'
     output()
@@ -249,6 +291,7 @@ function M.onUpdate(dtReal, dtSim)
       lastTime = elapsed
       phase = 'review'
       logf('I', '%s: finish reached in %.2f s', selected, lastTime)
+      endRun('finished')
       lastReason = 'Finish reached. Grade the technique using Pass/Miss.'
       output()
       return
@@ -258,6 +301,27 @@ function M.onUpdate(dtReal, dtSim)
     uiAccum = 0
     output()
   end
+end
+
+-- Telemetry ------------------------------------------------------------------
+
+-- Called by the car's sampler (lua/vehicle/extensions/rallyAcademy/telemetry.lua).
+function M.onTelemetry(sample)
+  if not RunRecord.isOpen(run) or type(sample) ~= 'table' or sample.id ~= samplingVehId then return end
+  RunRecord.add(run, sample)
+end
+
+-- The current or most recent attempt's record (for grading and debugging).
+function M.getLastRun() return run end
+
+-- Developer hook: write the last run record to disk, e.g. to build test fixtures.
+-- Only on request: a minute of samples is ~1 MB of JSON.
+function M.saveLastRun(path)
+  if not run then return nil end
+  path = path or LAST_RUN_FILE
+  jsonWriteFile(path, run, false)
+  logf('I', 'saved run record (%d samples) to %s', #run.samples, path)
+  return path
 end
 
 -- Engine hooks (lua/ge/main.lua, 0.39.4) --------------------------------------

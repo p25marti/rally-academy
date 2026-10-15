@@ -31,8 +31,8 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 Capabilities, drill-by-drill needs and build order: [GRADING.md](GRADING.md).
 Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 
-- [ ] Telemetry sampling adapter (see ARCHITECTURE → Telemetry). Mechanism decided and
-      verified in-game (BEAMNG_API_NOTES → Vehicle Lua); vehicle-side sampler exists, GE side next.
+- [x] Telemetry sampling and per-attempt run records ([ADR 0004](decisions/0004-telemetry-transport.md),
+      ARCHITECTURE → Telemetry).
 - [ ] Generic gates, route deviation, penalties.
 - [ ] One fully automatic drill end-to-end. Candidates: **B01** threshold
       braking (stop inside a 5 m zone, no sustained lock) or **A04** speed hold

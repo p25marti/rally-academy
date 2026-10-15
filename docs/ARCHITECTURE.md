@@ -42,6 +42,15 @@ mod/
 - **Car and map changes:** switching car (or losing it) mid-run abandons the run
   back to `setup`, unscored. `onClientEndMission` drops the map's start/finish;
   `onClientPostStartMission` re-selects the drill to load the new map's setup.
+- **Telemetry and run records** ([ADR 0004](decisions/0004-telemetry-transport.md)):
+  Retry loads `lua/vehicle/extensions/rallyAcademy/telemetry.lua` into the car and
+  opens a record (`lua/ge/extensions/rallyAcademy/runRecord.lua`, pure Lua). The car
+  sends one sample per frame to `M.onTelemetry`; samples from other cars, repeats
+  and paused-sim duplicates are dropped. The record marks the run start (car left
+  the start) and closes as `finished`, `abandoned` (car/map change, mid-run Miss,
+  drill change) or `restarted` (Retry mid-run); the score is attached. Sampling
+  stops when no run is open. `M.getLastRun()` returns it; `M.saveLastRun(path)`
+  writes it as JSON (default `settings/rallyAcademy/lastRun.json`) for fixtures.
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 

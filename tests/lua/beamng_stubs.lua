@@ -67,6 +67,7 @@ function S.install()
   _G.dump = function() end
   _G.be = {getPlayerVehicle = function(_, idx) if idx == 0 then return h.vehicle end end}
   _G.getCurrentLevelIdentifier = function() return h.level end -- verified 0.39.4
+  _G.getObjectByID = function(id) if h.vehicle.id == id then return h.vehicle end end
   -- spawn.safeTeleport(veh, pos, rot, checkOnlyStatics, visibilityPoint, removeTraffic,
   -- centeredPosition, resetVehicle): verified 0.39.4 as the game's own teleport + repair.
   _G.spawn = {safeTeleport = function(veh, pos, rot, _a, _b, _c, _d, resetVehicle)

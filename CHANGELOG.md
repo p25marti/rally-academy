@@ -19,6 +19,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - The mod logs its key events to `beamng.log` (tag `rallyAcademy`): load, drill
   selection, marks, Retry, run start/finish times, scoring, abandoned runs.
   `python tools/dev.py log --ours` shows just those.
+- Every attempt is recorded: Retry starts a telemetry sampler in your car (inputs,
+  gear, RPM, speeds, ABS, and per wheel speed/surface/downforce, one sample per
+  frame) and keeps a run record for grading. Developers can save the last one with
+  `extensions.rallyAcademy.saveLastRun()`.
 - HUD shows the run time: a live clock while driving (tenths), the final
   time after the finish (hundredths), and the drill's best time.
 
