@@ -60,9 +60,14 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
       };
       scope.$on('rallyAcademyState', function (event, data) {
         // 0.39.4 can leave orphaned copies of the panel alive when it remounts HUD apps
-        // (4 live scopes, 1 visible, seen after map loads). An orphan must not act on
-        // updates: it would send duplicate commands to Lua. Clean it up instead.
-        if (!document.body.contains(element[0])) { scope.$destroy(); return; }
+        // (2 rallyAcademyState listeners, 1 panel on screen, after map loads). An orphan must not act on
+        // updates: it would send duplicate commands to Lua. Clean it up instead, but only
+        // after this broadcast: destroying a scope mid-broadcast throws in Angular's
+        // traversal ("reading '$$nextSibling'") and other listeners miss the update.
+        if (!document.body.contains(element[0])) {
+          setTimeout(function () { scope.$destroy(); }, 0);
+          return;
+        }
         scope.vm = Object.assign({}, scope.vm, data);
         if (data.selected) scope.selectedId = data.selected;
         else if (data.lessons && data.lessons.length) {
