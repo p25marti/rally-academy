@@ -38,7 +38,8 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "successDefinition": "Per-run PASS criteria in plain English.",
         "metricToRecord": "Successful precise parks / 10",
         "mode": "selfAssessment",          // required: selfAssessment | automatic | hybrid
-        "rules": []                        // typed rules (P3); empty = no machine grading
+        "endWhen": "finish",               // optional: finish (circle, default) | stopped (car at rest)
+        "rules": []                        // typed rules; empty = no machine grading
       },
       "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)
       "startTransform": null,              // {levelId, pos:{x,y,z}, rot:{x,y,z,w}} once authored
@@ -51,7 +52,14 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
 
 `dev.py validate` enforces: valid JSON, `schemaVersion == 1`, required keys,
 id format and uniqueness, `1 ≤ requiredPasses ≤ attempts`, known `mode`,
-`rules` is a list.
+`rules` is a list, known `endWhen`. Each rule needs a known `type` and that type's
+numeric parameters, and an `automatic` drill needs at least one rule.
+
+Rules are objects such as `{"type": "stop_zone", "lengthM": 5, "widthM": 6}`. The
+types and their parameters are listed in [GRADING.md](GRADING.md#5-rule-engine);
+`R.TYPES` in `rules.lua` and `RULE_TYPES` in `tools/dev.py` must agree. In an
+`automatic` drill, the rules decide Pass or Miss when the run ends, and the HUD
+shows one ✓/✗ line per rule.
 
 ## Modules
 

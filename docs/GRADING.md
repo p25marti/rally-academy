@@ -6,9 +6,10 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [ROADMAP](ROADMAP.md). Existing tools and mods we can reuse are in
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
-Today every drill is `selfAssessment` with an empty `rules` list. Nothing here
-is built yet, and every engine data source named here is **unverified** until
-tested in-game (see [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md)).
+**Status:** the telemetry sampler, run records and the rule engine exist.
+**B01** (threshold braking) is graded automatically; every other drill is still
+`selfAssessment` with an empty `rules` list. Engine data sources not listed as
+verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
 Sections 1–7 below are the capabilities; [Drill coverage](#drill-coverage)
 maps each of the 48 drills to the ones it needs.
@@ -107,6 +108,22 @@ and time conditions, such as "no lock after entering the zone" or
 reason, such as "lockup 1.4 s at 38 m", because that reason is the coaching.
 Rules are tested offline against recorded run fixtures.
 
+**Built** (`lua/ge/extensions/rallyAcademy/rules.lua`, pure Lua). `evaluate(rules,
+record, ctx)` looks only at samples from the run's start mark and returns
+`{passed, checks = {{type, ok, text}}}`. Rule types so far:
+
+| Type | Parameters | Passes when |
+| --- | --- | --- |
+| `entry_speed` | `minKmh` | The run's peak speed reaches `minKmh`. This uses the peak rather than the speed at first brake, because the brake reads 0.3 at rest after a reset. |
+| `stop_zone` | `lengthM`, `widthM` | The car comes to rest inside a box centred on the marked zone, aligned with the car's heading when the zone was marked |
+| `no_sustained_lockup` | `maxSeconds` (optional `ratio` 0.3, `minKmh` 7) | No wheel turns slower than `ratio` × the car's speed while braking for longer than `maxSeconds` |
+
+A drill with `endWhen: "stopped"` ends when the car has been at rest (below
+0.3 m/s) for 0.5 s at least 5 m from the start. A drill without it ends at the finish circle. Real
+recorded runs in `tests/fixtures/` (B01 clean, overshoot and lockup) pin the
+rules to real physics (`tests/lua/test_fixtures.lua`). B01's cone contact is
+not graded yet: it needs scene control (section 7).
+
 ## 6. Hybrid grading
 
 Some criteria test what the driver knows, not what the car did. These drills
@@ -187,7 +204,8 @@ hybrid prompt.
 Each step unlocks graded drills:
 
 1. Telemetry sampler, gates, zones and segment timing. This makes A04 and B01
-   fully automatic (ROADMAP P2).
+   fully automatic (ROADMAP P2). Sampler, stop zone and lockup are done, and B01
+   is automatic; gates and segment timing (A04) remain.
 2. Lockup, wheelspin, contact, damage and off-road detection. This covers most
    of modules A, B and D.
 3. Slip angle, spin, countersteer and handbrake detection. This opens module C.

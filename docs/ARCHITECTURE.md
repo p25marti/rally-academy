@@ -57,6 +57,13 @@ mod/
   (`core_vehicles.replaceVehicle`, placed once `onVehicleSpawned` reports it, 6 s
   fallback), then Retry from the saved start, or teleport to `environment.spawn`
   (the venue's default spot) to mark one. Changing drill mid-trip cancels it.
+- **Automatic grading:** for an `automatic` drill, the end of the run calls
+  `rules.evaluate` (`lua/ge/extensions/rallyAcademy/rules.lua`, pure Lua) on the run
+  record. For a stop drill, the context includes the zone marked with Mark stop zone. The result
+  is attached to the record (`run.grade`), logged, scored through `recordAttempt`,
+  and published as `grade` for the HUD's ✓/✗ lines. `endWhen: "stopped"` ends the
+  run when the car is at rest, away from the start. The start is armed 0.2 s after
+  Retry, because the repair-teleport can nudge the car a frame later.
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 
@@ -71,7 +78,7 @@ Carried over from the original technical roadmap, refined:
 ```
 lua/ge/extensions/rallyAcademy.lua            entry point; wires adapters to the core; engine hooks
 lua/ge/extensions/rallyAcademy/session.lua    state machine (pure)
-lua/ge/extensions/rallyAcademy/rules/*.lua    one evaluator per rule type (pure)
+lua/ge/extensions/rallyAcademy/rules.lua      rule evaluators (pure; split per type once it grows)
 lua/ge/extensions/rallyAcademy/telemetry.lua  vehicle sampling adapter (engine-facing)
 lua/ge/extensions/rallyAcademy/store.lua      progress persistence + schema migrations
 ```

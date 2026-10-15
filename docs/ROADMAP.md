@@ -34,9 +34,10 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 - [x] Telemetry sampling and per-attempt run records ([ADR 0004](decisions/0004-telemetry-transport.md),
       ARCHITECTURE → Telemetry).
 - [ ] Generic gates, route deviation, penalties.
-- [ ] One fully automatic drill end-to-end. Candidates: **B01** threshold
-      braking (stop inside a 5 m zone, no sustained lock) or **A04** speed hold
-      (27–33 km/h at three markers).
+- [x] One fully automatic drill end-to-end: **B01** threshold braking (entry
+      speed, stop inside a 5 m zone, no sustained lock), checked against recorded runs.
+      Cone contact is not graded yet (needs scene control).
+- [ ] A04 speed hold (27–33 km/h at three markers): needs gates.
 
 ## P3 — Machine-readable drills
 
@@ -61,4 +62,4 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 | --- | --- | --- |
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
 | No in-game verification yet | Any engine API assumption may be wrong | BEAMNG_API_NOTES |
-| Pass/Miss is self-assessed | No objective grading | P2/P3 |
+| Pass/Miss is self-assessed (all drills but B01) | No objective grading | P2/P3 |

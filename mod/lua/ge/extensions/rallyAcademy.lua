@@ -2,6 +2,7 @@
 -- UI calls extensions.load('rallyAcademy') and extensions.rallyAcademy.<method>().
 local M = {}
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
+local Rules = require('ge/extensions/rallyAcademy/rules')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 local SAVE_FILE = 'settings/rallyAcademyProgress.json'
 -- Marked starts/finishes, per map then drill: levels[levelId][drillId] = {start, finish}
@@ -18,6 +19,14 @@ local activeVehicleId = nil
 local TELEMETRY_RATE = 60
 local LAST_RUN_FILE = 'settings/rallyAcademy/lastRun.json'
 local run, samplingVehId = nil, nil
+-- Automatic grading: the last run's checks, and how long the car has been standing still.
+local lastGrade, stillT = nil, 0
+-- Where the car came to rest after Retry. The repair-teleport can nudge the car ~2 m a
+-- frame after it lands (seen on 0.39.4 next to barriers), so the start is armed only
+-- SETTLE_FOR after Retry, and departure is measured from the last spot the car was slow at.
+local originPos, settleT = nil, 0
+local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
+local STOPPED_SPEED, STOPPED_FOR, STOPPED_MIN_DIST = 0.3, 0.5, 5 -- m/s, s, m from the start
 -- Go to drill: drill waiting for its map to load; car swap in progress; deferred placement.
 local pendingGoTo, arriveIn = nil, nil
 local awaitingCar, awaitT = nil, 0 -- configPath we're waiting to see spawn, and how long we've waited
@@ -110,7 +119,7 @@ local function output(includeCatalog)
     hasStart = startState ~= nil,
     hasFinish = finishGate ~= nil,
     progress = progress.lessons,
-    prototypeWarning = 'Route detection and self-assessment only; car-control metrics are not implemented.'
+    grade = lastGrade
   })
 end
 
@@ -176,12 +185,21 @@ local function backToSetup(reason)
   output()
 end
 
+local function assessment()
+  local lesson = selected and byId[selected]
+  return lesson and lesson.assessment or {}
+end
+
+-- Drills like B01 end when the car comes to rest instead of at a finish circle.
+local function endsOnStop() return assessment().endWhen == 'stopped' end
+
 function M.select(id)
   if type(id) ~= 'string' or not byId[id] then return end
   if id ~= selected then pendingGoTo, arriveIn, awaitingCar = nil, nil, nil end -- changed your mind mid-trip
   if RunRecord.isOpen(run) then endRun('abandoned') end
   selected = id
   phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
+  lastGrade = nil
   activeVehicleId = nil
   loadSetup()
   if byId[id].parked then
@@ -209,10 +227,12 @@ function M.markFinish()
   if not selected then return end
   local snap = snapshotVehicle()
   if not snap then lastReason = 'No player vehicle'; output(); return end
-  finishGate = {pos=snap.pos, radius=5}
+  finishGate = {pos=snap.pos, radius=5, dir=snap.dir} -- dir orients a stop zone
   saveSetup()
   logf('I', 'finish marked for %s on %s at (%.1f, %.1f, %.1f)', selected, levelId(), snap.pos.x, snap.pos.y, snap.pos.z)
-  lastReason = '5 m finish circle captured and saved; retry to return to your start.'
+  lastReason = endsOnStop()
+    and 'Stop zone centre marked and saved (zone runs along the way you are facing). Retry to begin.'
+    or '5 m finish circle captured and saved; retry to return to your start.'
   output()
 end
 
@@ -229,7 +249,7 @@ function M.retry()
                        start = startState.pos, finish = finishGate})
   startSampling(veh)
   logf('I', 'retry: %s, vehicle %s reset to start', selected, tostring(activeVehicleId))
-  elapsed, lastTime = 0, nil
+  elapsed, lastTime, lastGrade, stillT, originPos, settleT = 0, nil, nil, 0, nil, 0
   phase = 'ready'
   lastReason = 'Car reset and repaired. Accelerate to begin; Retry again any time.'
   output()
@@ -272,6 +292,29 @@ function M.recordAttempt(passed)
   output()
 end
 
+-- End the run (finish reached, or stopped); automatic drills grade and record it.
+local function finishRun(how)
+  lastTime = elapsed
+  phase = 'review'
+  logf('I', '%s: %s in %.2f s', selected, how, lastTime)
+  endRun('finished')
+  local a = assessment()
+  if a.mode ~= 'automatic' then
+    lastReason = (endsOnStop() and 'Stopped.' or 'Finish reached.') .. ' Grade the technique using Pass/Miss.'
+    output(); return
+  end
+  lastGrade = Rules.evaluate(a.rules, run, {zone = finishGate})
+  if run then run.grade = lastGrade end
+  local firstFail
+  for _, c in ipairs(lastGrade.checks) do
+    logf('I', '%s:   %s %s', selected, c.ok and 'ok  ' or 'FAIL', c.text)
+    if not c.ok and not firstFail then firstFail = c.text end
+  end
+  M.recordAttempt(lastGrade.passed)
+  lastReason = (lastGrade.passed and 'PASS.' or ('MISS: ' .. firstFail .. '.')) .. ' Retry for the next attempt.'
+  output()
+end
+
 function M.onUpdate(dtReal, dtSim)
   if awaitingCar then
     awaitT = awaitT + (dtReal or 0)
@@ -295,10 +338,14 @@ function M.onUpdate(dtReal, dtSim)
   end
   uiAccum = uiAccum + (dtReal or 0)
   local speed = veh:getVelocity():length()
-  -- The frame after a teleport reports a huge velocity (~430 m/s seen in 0.39.4),
-  -- so also require the car to have actually left the start.
-  local s = startState.pos
-  local leftStart = (veh:getPosition() - vec3(s.x, s.y, s.z)):length() > 0.5
+  -- The frame after a teleport reports a huge velocity (~430 m/s seen in 0.39.4), and
+  -- the car may still be nudged: arm the start only once it has settled (see originPos).
+  if phase == 'ready' then
+    settleT = settleT + math.max(0, dtReal or 0)
+    if not originPos or speed < SETTLE_SPEED then originPos = vec3(veh:getPosition()) end
+  end
+  local fromOrigin = originPos and (veh:getPosition() - originPos):length() or 0
+  local leftStart = settleT >= SETTLE_FOR and fromOrigin > 0.5
   if phase == 'ready' and speed > 1 and leftStart then
     phase = 'running'
     RunRecord.markRunStart(run)
@@ -309,18 +356,17 @@ function M.onUpdate(dtReal, dtSim)
   if phase ~= 'running' then return end
   -- dtSim is game-simulation time, unlike wall clock. Physics pause should not add time.
   elapsed = elapsed + math.max(0, dtSim or 0)
-  if finishGate and elapsed > 1 then
+  if endsOnStop() then
+    if elapsed > 1 and speed < STOPPED_SPEED and fromOrigin > STOPPED_MIN_DIST then
+      stillT = stillT + math.max(0, dtSim or 0)
+      if stillT >= STOPPED_FOR then finishRun('stopped'); return end
+    else
+      stillT = 0
+    end
+  elseif finishGate and elapsed > 1 then
     local vpos = veh:getPosition()
     local gate = vec3(finishGate.pos.x,finishGate.pos.y,finishGate.pos.z)
-    if (vpos - gate):length() <= finishGate.radius then
-      lastTime = elapsed
-      phase = 'review'
-      logf('I', '%s: finish reached in %.2f s', selected, lastTime)
-      endRun('finished')
-      lastReason = 'Finish reached. Grade the technique using Pass/Miss.'
-      output()
-      return
-    end
+    if (vpos - gate):length() <= finishGate.radius then finishRun('finish reached'); return end
   end
   if uiAccum >= 0.25 then
     uiAccum = 0

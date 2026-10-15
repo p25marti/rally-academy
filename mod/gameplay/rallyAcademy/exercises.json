@@ -439,10 +439,25 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Stop within a 5 m cone zone without sustained lockup or cone contact.",
+        "successDefinition": "Reach at least 65 km/h, then stop with the car's centre inside the 5 m x 6 m zone, with no wheel locked for more than 0.5 s. (Cone contact: not graded yet.)",
         "metricToRecord": "Successful threshold stops / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "entry_speed",
+            "minKmh": 65
+          },
+          {
+            "type": "stop_zone",
+            "lengthM": 5,
+            "widthM": 6
+          },
+          {
+            "type": "no_sustained_lockup",
+            "maxSeconds": 0.5
+          }
+        ],
+        "endWhen": "stopped"
       },
       "startTransform": null,
       "finishGate": null,

@@ -40,10 +40,10 @@ function T.select_enters_setup_and_ignores_unknown_ids()
   local h, M = setup()
   M.select('ZZZ')
   eq(h.lastState().phase, 'idle', 'unknown id ignored')
-  M.select('B01')
+  M.select('B04')
   local s = h.lastState()
   eq(s.phase, 'setup', 'phase')
-  eq(s.selected, 'B01', 'selected')
+  eq(s.selected, 'B04', 'selected')
   eq(s.target, 10, 'target attempts from drill data')
 end
 
@@ -107,6 +107,7 @@ function T.run_starts_when_moving_and_times_with_sim_dt()
   M.select('A04')
   M.markStart()
   M.retry()
+  M.onUpdate(0.1, 0.1) -- a frame at rest after Retry, as in the game (origin is captured here)
   drive(h, M, 2.0, {x = 0, y = 10, z = 0})
   M.publish() -- HUD updates are throttled to 4 Hz; force a fresh snapshot
   local s = h.lastState()
@@ -129,6 +130,30 @@ function T.teleport_velocity_spike_does_not_start_run()
   eq(h.lastState().phase, 'ready', 'still waiting for the driver')
 end
 
+-- Seen in-game: the repair-teleport nudged the car ~1 m off a start next to barriers,
+-- which (with the post-teleport speed spike) started the run on its own.
+function T.a_nudged_start_does_not_start_the_run()
+  local h, M = setup()
+  M.select('A04')
+  h.vehicle.pos = stubs.vec3(5, 5, 0)
+  M.markStart()
+  M.retry()
+  M.onUpdate(0.016, 0.016)                  -- first frame: car where safeTeleport put it
+  h.vehicle.pos = stubs.vec3(6.9, 5.6, 0)   -- a frame later it is nudged ~1.9 m out of an overlap
+  h.vehicle.vel = stubs.vec3(0, 3, 0)       -- moving while it is shoved
+  for _ = 1, 3 do M.onUpdate(0.016, 0.016) end
+  h.vehicle.vel = stubs.vec3(0, 0.1, 0)     -- and settles
+  for _ = 1, 30 do M.onUpdate(0.016, 0.016) end
+  eq(h.lastState().phase, 'ready', 'still waiting for the driver')
+  -- now the driver goes: the run starts from the settled spot
+  for _ = 1, 10 do
+    h.vehicle.vel = stubs.vec3(0, 5, 0)
+    h.vehicle.pos = h.vehicle.pos + stubs.vec3(0, 0.1, 0)
+    M.onUpdate(0.016, 0.016)
+  end
+  eq(h.lastState().phase, 'running', 'started once the driver moved off the settled spot')
+end
+
 function T.paused_physics_does_not_add_time()
   local h, M = setup()
   M.select('A04')
@@ -144,7 +169,7 @@ end
 
 function T.finish_gate_stops_timer_and_requests_review()
   local h, M = setup()
-  M.select('B01')
+  M.select('B04')
   h.vehicle.pos = stubs.vec3(0, 0, 0)
   M.markStart()
   h.vehicle.pos = stubs.vec3(0, 100, 0)
@@ -181,6 +206,7 @@ function T.no_finish_gate_pass_records_run_time_as_best()
   M.select('A01')
   M.markStart()
   M.retry()
+  M.onUpdate(0.1, 0.1) -- a frame at rest after Retry, as in the game (origin is captured here)
   drive(h, M, 2.0, {x = 0, y = 10, z = 0})
   M.recordAttempt(true)
   local best = jsonReadFile('settings/rallyAcademyProgress.json').lessons.A01.bestTime
@@ -204,7 +230,7 @@ end
 -- Miss abandons it and records no time.
 function T.pass_mid_run_with_finish_gate_is_refused()
   local h, M = setup()
-  M.select('B01')
+  M.select('B04')
   h.vehicle.pos = stubs.vec3(0, 0, 0)
   M.markStart()
   h.vehicle.pos = stubs.vec3(0, 100, 0)
@@ -222,7 +248,7 @@ function T.pass_mid_run_with_finish_gate_is_refused()
   eq(s.phase, 'scored', 'abandoned run scored as a miss')
   eq(s.attempts, 1, 'miss recorded')
   eq(s.lastTime, nil, 'no time for an abandoned run')
-  local saved = jsonReadFile('settings/rallyAcademyProgress.json').lessons.B01
+  local saved = jsonReadFile('settings/rallyAcademyProgress.json').lessons.B04
   eq(saved.totalAttempts, 1, 'saved attempt')
   eq(saved.bestTime, nil, 'no best time')
 end
@@ -357,15 +383,15 @@ local function has(text, needle) return text:find(needle, 1, true) ~= nil end
 
 function T.key_events_are_logged_with_the_rallyAcademy_tag()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   h.vehicle.pos = stubs.vec3(10, 20, 30)
   drive(h, M, 8.0, {x = 0, y = 20, z = 0})
   M.recordAttempt(true)
   local text = h.logText('rallyAcademy')
-  for _, needle in ipairs({'loaded 48 drills on map driver_training', 'selected B01 on driver_training',
-                           'start marked for B01', 'finish marked for B01', 'retry: B01',
-                           'B01: run started', 'B01: finish reached in', 'B01: PASS, time'}) do
+  for _, needle in ipairs({'loaded 48 drills on map driver_training', 'selected B04 on driver_training',
+                           'start marked for B04', 'finish marked for B04', 'retry: B04',
+                           'B04: run started', 'B04: finish reached in', 'B04: PASS, time'}) do
     assert(has(text, needle), 'missing log line: ' .. needle .. '\n--- got:\n' .. text)
   end
 end
@@ -413,18 +439,18 @@ end
 
 function T.retry_loads_and_starts_the_sampler_in_the_current_car()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   eq(commandsMatching(h, "extensions.load('rallyAcademy/telemetry')"), 1, 'sampler loaded')
   eq(commandsMatching(h, "rallyAcademy_telemetry.start(60, 'rallyAcademy')"), 1, 'sampler started at 60 Hz')
   local run = M.getLastRun()
-  eq(run.meta.drill, 'B01', 'record for the drill')
+  eq(run.meta.drill, 'B04', 'record for the drill')
   eq(run.meta.level, 'driver_training', 'record knows the map')
 end
 
 function T.run_is_recorded_and_closed_at_the_finish()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B01')      -- start (10,20), finish (10,120)
+  markStartAndFinish(h, M, 'B04')      -- start (10,20), finish (10,120)
   M.retry()
   driveWithTelemetry(h, M, 0.3)        -- stationary at the start
   driveWithTelemetry(h, M, 8.0, {x = 0, y = 20, z = 0})
@@ -437,13 +463,13 @@ function T.run_is_recorded_and_closed_at_the_finish()
   local n = #run.samples
   M.onTelemetry({id = h.vehicle.id, t = simT + 1, air = 0, w = {}})
   eq(#run.samples, n, 'no samples after the run closed')
-  assert(has(h.logText('rallyAcademy'), 'B01: run record finished'), 'summary logged')
+  assert(has(h.logText('rallyAcademy'), 'B04: run record finished'), 'summary logged')
 end
 
 function T.samples_are_ignored_outside_a_run_and_from_other_cars()
   local h, M = setup()
   M.onTelemetry({id = h.vehicle.id, t = 1, w = {}}) -- no run yet: must not error
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   M.onTelemetry({id = 999, t = simT + 0.5, w = {}})
   eq(#M.getLastRun().samples, 0, 'other car ignored')
@@ -453,7 +479,7 @@ end
 
 function T.vehicle_switch_closes_the_record_as_abandoned()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   driveWithTelemetry(h, M, 1.0, {x = 0, y = 10, z = 0})
   M.onVehicleSwitched(1, 2, 0)
@@ -462,7 +488,7 @@ end
 
 function T.retry_mid_run_restarts_with_a_new_record()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   driveWithTelemetry(h, M, 1.0, {x = 0, y = 10, z = 0})
   local first = M.getLastRun()
@@ -474,7 +500,7 @@ end
 
 function T.score_is_attached_to_the_run_record()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   driveWithTelemetry(h, M, 8.0, {x = 0, y = 20, z = 0})
   M.recordAttempt(true)
@@ -485,7 +511,7 @@ end
 
 function T.miss_mid_run_closes_the_record_as_abandoned()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   driveWithTelemetry(h, M, 1.0, {x = 0, y = 10, z = 0})
   M.recordAttempt(false)
@@ -497,13 +523,13 @@ end
 function T.save_last_run_writes_json()
   local h, M = setup()
   eq(M.saveLastRun(), nil, 'nothing to save yet')
-  markStartAndFinish(h, M, 'B01')
+  markStartAndFinish(h, M, 'B04')
   M.retry()
   driveWithTelemetry(h, M, 1.0, {x = 0, y = 10, z = 0})
   local path = M.saveLastRun()
   eq(path, 'settings/rallyAcademy/lastRun.json', 'default path')
   local saved = jsonReadFile(path)
-  eq(saved.meta.drill, 'B01', 'saved meta')
+  eq(saved.meta.drill, 'B04', 'saved meta')
   eq(#saved.samples, #M.getLastRun().samples, 'saved samples')
 end
 
@@ -545,7 +571,7 @@ function T.parked_drills_are_flagged_in_the_catalogue_and_explained_on_select()
   local s = h.lastState()
   eq(s.selected, 'C03', 'still selectable')
   assert(s.reason:find('Parked for now', 1, true), 'reason explains: ' .. s.reason)
-  M.select('B01')
+  M.select('B04')
   assert(not h.lastState().reason:find('Parked', 1, true), 'normal drills have no parked note')
 end
 
@@ -679,10 +705,115 @@ function T.choosing_another_drill_while_loading_cancels_the_arrival()
   local h, M = setup()
   M.select('A01')
   M.goToDrill()
-  M.select('B01')                            -- changed your mind during the load
+  M.select('B04')                            -- changed your mind during the load
   h.level = 'west_coast_usa'
   M.onClientPostStartMission('/levels/west_coast_usa/main.level.json')
   eq(#h.vehicle.teleports, 0, 'no surprise teleport')
+end
+
+-- B01: automatic grading -----------------------------------------------------
+
+-- Retry, accelerate along +y to `kmh`, brake at `brakeAtY` with `decel` m/s2 until the car
+-- stops, then stand still; the car's sampler reports every step (with position).
+local function brakingRun(h, M, opts)
+  local dt, v, braking, lockedT = 0.05, 0, false, 0
+  local vmax = (opts.kmh or 70) / 3.6
+  M.retry()
+  local stoppedFor = 0
+  for _ = 1, 2000 do
+    if not braking and h.vehicle.pos.y >= (opts.brakeAtY or 80) then braking = true end
+    if braking then v = math.max(0, v - (opts.decel or 7) * dt) else v = math.min(vmax, v + 4 * dt) end
+    h.vehicle.vel = stubs.vec3(0, v, 0)
+    h.vehicle.pos = h.vehicle.pos + stubs.vec3(0, v * dt, 0)
+    simT = simT + dt
+    local lock = braking and opts.lockFor and lockedT < opts.lockFor and v > 0
+    if lock then lockedT = lockedT + dt end
+    local fs = lock and 0 or v
+    M.onTelemetry({id = h.vehicle.id, t = simT, x = h.vehicle.pos.x, y = h.vehicle.pos.y, z = 0, air = v,
+      brk = braking and 0.8 or 0, w = {{n = 'FL', s = fs}, {n = 'FR', s = fs}, {n = 'RL', s = v}, {n = 'RR', s = v}}})
+    M.onUpdate(dt, dt)
+    if braking and v == 0 then stoppedFor = stoppedFor + dt end
+    if h.lastState().phase == 'scored' or stoppedFor > 3 then break end
+  end
+  return h.lastState()
+end
+
+-- Start at the origin facing +y; stop zone centred at `zoneY`.
+local function setupB01(zoneY)
+  local h, M = setup()
+  M.select('B01')
+  h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
+  M.markStart()
+  h.vehicle.pos = stubs.vec3(0, zoneY, 0)
+  M.markFinish()
+  return h, M
+end
+
+-- With these defaults (70 km/h, braking at 80 m, 7 m/s2) the car stops near y = 107.
+function T.b01_clean_stop_in_the_zone_is_graded_pass()
+  local h, M = setupB01(107)
+  local s = brakingRun(h, M, {})
+  eq(s.phase, 'scored', 'graded and recorded on its own')
+  eq(s.attempts, 1, 'one attempt')
+  eq(s.successes, 1, 'counted as a pass')
+  eq(s.grade.passed, true, 'grade passed')
+  eq(#s.grade.checks, 3, 'three checks shown')
+  assert(s.reason:find('PASS', 1, true), s.reason)
+  local saved = jsonReadFile('settings/rallyAcademyProgress.json').lessons.B01
+  eq(saved.totalPasses, 1, 'pass saved')
+  eq(M.getLastRun().grade.passed, true, 'grade kept on the run record')
+end
+
+function T.b01_overshoot_is_graded_miss_with_the_reason()
+  local h, M = setupB01(95)
+  local s = brakingRun(h, M, {})
+  eq(s.successes, 0, 'miss')
+  eq(s.attempts, 1, 'recorded')
+  assert(s.reason:find('MISS: Stopped', 1, true) and s.reason:find('past the zone', 1, true), s.reason)
+end
+
+function T.b01_locked_stop_is_graded_miss_for_lockup()
+  local h, M = setupB01(107)
+  local s = brakingRun(h, M, {lockFor = 1.5})
+  eq(s.grade.passed, false, 'failed')
+  local lock = s.grade.checks[3]
+  eq(lock.ok, false, 'lockup check failed')
+  assert(lock.text:find('locked for', 1, true), lock.text)
+end
+
+function T.b01_marking_says_stop_zone_and_the_run_ends_on_stopping()
+  local h, M = setupB01(107)
+  -- (setupB01 marked the zone; check the message it left)
+  assert(h.lastState().reason:find('Stop zone centre marked', 1, true), h.lastState().reason)
+  M.retry()
+  -- drive past the start then sit still: run should end even far from any finish circle
+  for _ = 1, 20 do h.vehicle.vel = stubs.vec3(0, 10, 0); h.vehicle.pos = h.vehicle.pos + stubs.vec3(0, 0.5, 0); M.onUpdate(0.05, 0.05) end
+  h.vehicle.vel = stubs.vec3(0, 0, 0)
+  for _ = 1, 40 do M.onUpdate(0.05, 0.05) end
+  eq(h.lastState().attempts, 1, 'ended on stopping and was graded')
+end
+
+function T.self_assessed_drills_still_wait_for_pass_or_miss()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'B04')
+  M.retry()
+  for _ = 1, 100 do h.vehicle.vel = stubs.vec3(0, 20, 0); h.vehicle.pos = h.vehicle.pos + stubs.vec3(0, 2, 0); M.onUpdate(0.1, 0.1) end
+  local s = h.lastState()
+  eq(s.phase, 'review', 'waiting for the driver')
+  eq(s.attempts, 0, 'not recorded automatically')
+  eq(s.grade, nil, 'no automatic grade')
+end
+
+function T.every_rule_in_the_drill_data_is_known_with_its_parameters()
+  stubs.install()
+  local Rules = require('ge/extensions/rallyAcademy/rules')
+  for _, e in ipairs(jsonReadFile('gameplay/rallyAcademy/exercises.json').exercises) do
+    for _, rule in ipairs(e.assessment.rules or {}) do
+      local params = Rules.TYPES[rule.type]
+      assert(params, e.id .. ': unknown rule type ' .. tostring(rule.type))
+      for _, k in ipairs(params) do assert(type(rule[k]) == 'number', e.id .. ': ' .. rule.type .. ' needs ' .. k) end
+    end
+  end
 end
 
 return T

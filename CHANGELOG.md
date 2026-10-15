@@ -31,6 +31,15 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   (docs/MAPS.md). Five drills that need RWD/AWD are parked and labelled in the HUD.
 - HUD shows the run time: a live clock while driving (tenths), the final
   time after the finish (hundredths), and the drill's best time.
+- **B01 threshold braking is graded automatically**: Mark stop zone where the car
+  should stop, then brake from 65+ km/h. When the car stops, the run is scored from its
+  telemetry: entry speed, whether you stopped in the 5 m zone, and whether any wheel
+  locked for more than 0.5 s. The panel shows a ✓/✗ line with the numbers for each
+  check. Cone contact isn't graded yet. Drills can now declare typed grading rules
+  (`assessment.rules`, `endWhen`); `dev.py validate` checks them.
+
+### Changed
+- The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
 - Orphaned copies of the HUD panel (left alive by the game after map loads)

@@ -65,6 +65,11 @@ BeamNG version and result in the PR.
     loads, you're in the drill's car at the venue, and the panel says what to do next.
     Then a drill on the same map with a different car (e.g. B04 after A01): the car
     swaps and is placed within about a second.
+12. **B01** (auto-graded): **Go to drill** → **Mark start** → do one braking run and
+    stop → **Mark stop zone** where you stopped → **Retry**. Brake from 65+ km/h into
+    the zone. When the car stops, the panel shows three ✓/✗ lines and PASS or MISS,
+    and the counter goes up without pressing Pass. Locking the brakes
+    for more than 0.5 s gives a MISS that names the wheel.
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.
 

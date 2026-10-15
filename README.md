@@ -4,9 +4,9 @@ A BeamNG.drive mod for structured rally-driving practice: 48 progressive drills
 (foundations → braking → rotation → complex cornering → terrain → full stages),
 instant retry to a marked start, run timing, and per-drill progress tracking.
 
-> **Status: alpha, not yet verified in-game.** The current code is the starter
-> scaffold imported from the original planning work. It is a timer with
-> self-assessed Pass/Miss; automatic telemetry-based grading is on the
+> **Status: alpha.** Retry, timing, progress, Go to drill and telemetry recording
+> run on BeamNG 0.39.4. B01 (threshold braking) is graded automatically from
+> telemetry. The other drills use self-assessed Pass/Miss for now; see the
 > [roadmap](docs/ROADMAP.md).
 
 ## Quick start (developers)

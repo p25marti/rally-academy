@@ -37,6 +37,14 @@ MOD_NAME = "rally_academy"  # zip / unpacked folder name; keep stable across rel
 APP_JSON = Path("ui/modules/apps/RallyAcademy/app.json")
 EXERCISES_JSON = Path("gameplay/rallyAcademy/exercises.json")
 ALLOWED_TOP_LEVEL = {"gameplay", "lua", "ui", "art", "levels", "vehicles", "settings", "scripts"}
+# Grading rule types and their required numeric parameters; mirrors R.TYPES in
+# mod/lua/ge/extensions/rallyAcademy/rules.lua (docs/DRILL_DATA.md).
+RULE_TYPES = {
+    "entry_speed": ["minKmh"],
+    "stop_zone": ["lengthM", "widthM"],
+    "no_sustained_lockup": ["maxSeconds"],
+}
+END_WHEN = {"finish", "stopped"}
 ZIP_EPOCH = (2020, 1, 1, 0, 0, 0)  # fixed timestamp => reproducible zips
 SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
 # The mod logs as `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension name + tag).
@@ -114,6 +122,18 @@ def validate_exercises(data: dict) -> list[str]:
             errors.append(f"{where}: assessment.mode must be one of {sorted(ASSESSMENT_MODES)}")
         if not isinstance(a.get("rules", []), list):
             errors.append(f"{where}: assessment.rules must be a list")
+        for j, rule in enumerate(a.get("rules", []) if isinstance(a.get("rules", []), list) else []):
+            rtype = rule.get("type") if isinstance(rule, dict) else None
+            if rtype not in RULE_TYPES:
+                errors.append(f"{where}: rules[{j}].type must be one of {sorted(RULE_TYPES)}")
+                continue
+            missing_params = [k for k in RULE_TYPES[rtype] if not isinstance(rule.get(k), (int, float))]
+            if missing_params:
+                errors.append(f"{where}: rules[{j}] ({rtype}) needs numeric {missing_params}")
+        if a.get("endWhen", "finish") not in END_WHEN:
+            errors.append(f"{where}: assessment.endWhen must be one of {sorted(END_WHEN)}")
+        if a.get("mode") == "automatic" and not a.get("rules"):
+            errors.append(f"{where}: automatic drills need at least one rule")
     return errors
 
 
