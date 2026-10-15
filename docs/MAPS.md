@@ -9,6 +9,10 @@ and most drills on gravel or dirt.
 "tyres" is what the car's wheels actually reported, the authoritative surface.
 Nothing here has been *driven* as a drill yet.
 
+**Decision (2026-10-15): Option A**, West Coast USA as the home base with Utah for
+stages. Revisit later for bespoke areas per drill (e.g. Italy's hillclimbs for
+advanced cornering, Johnson Valley for rough terrain) if that gives a better result.
+
 ## Venues
 
 ### West Coast USA (`west_coast_usa`): loose-surface training complex
