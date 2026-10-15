@@ -1,3 +1,4 @@
+(function () {
 // bngApi is a global in 0.39 (not an injectable service), like the stock apps use it.
 angular.module('beamng.apps').directive('rallyAcademy', [function () {
   return {
@@ -70,3 +71,33 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
     }
   };
 }]);
+
+// Self-heal (0.39.4): the game's Angular-app shim sometimes mounts us into a slot
+// element that Vue then replaces with a fresh, empty one (same id). The shim still
+// counts the slot as mounted and ignores further mounts, so the panel vanishes after
+// a UI reload. If our slot stays empty for a few seconds, unmount + mount it again.
+// The game may run this file more than once (it loads it twice on some reloads, and
+// re-runs it to hot-refresh the directive after edits), so start one healer per page.
+if (window.__rallyAcademyHealer) return;
+window.__rallyAcademyHealer = true;
+var APP = {appName: 'rallyAcademy', directive: 'rallyAcademy', domElement: '<rally-academy></rally-academy>'};
+var emptySince = {}, attempts = {};
+setInterval(function () {
+  var shim = window.UIAppsServiceShim;
+  if (!shim) return;
+  var slots = document.querySelectorAll('.ui-angular-app-slot[id^="bng-app-slot_rallyAcademy_"]');
+  for (var i = 0; i < slots.length; i++) {
+    var id = slots[i].id;
+    if (slots[i].children.length > 0) { delete emptySince[id]; delete attempts[id]; continue; }
+    emptySince[id] = emptySince[id] || Date.now();
+    if (Date.now() - emptySince[id] < 3000) continue; // give a normal first mount time to finish
+    // Cap retries: after an app.js edit the game's hot refresh can fail outright
+    // ("Directive cache refresh failed"); remounting can't fix that, only reloadUI() can.
+    attempts[id] = (attempts[id] || 0) + 1;
+    if (attempts[id] > 2) continue;
+    delete emptySince[id];
+    shim.unmountDirective(id);
+    shim.mountDirective(id, APP);
+  }
+}, 1000);
+})();

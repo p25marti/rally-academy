@@ -21,6 +21,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - HUD panel failed to load on 0.39 (`Unknown provider: bngApiProvider`); it now
   uses the global `bngApi` like the stock apps.
 - HUD app is listed under the **Rally** category instead of "Unknown".
+- The HUD panel often vanished after a UI reload (a 0.39.4 app-loader quirk);
+  it now notices an empty slot and remounts itself.
 - Retry put the car back facing backwards.
 - Pass/Miss only score a driven run. Pressing them before driving does
   nothing; with a finish gate, Pass mid-run is refused (Miss abandons the run
