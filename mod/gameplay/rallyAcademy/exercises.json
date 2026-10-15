@@ -7,14 +7,14 @@
       "title": "Steering and spatial awareness",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — Student Driver (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "East-side open skidpad: mark a 3 m wide gate and parking box"
+        "mapDisplayName": "West Coast USA: BMP dirt arena",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt: mark a 3 m wide gate and a parking box."
       },
       "instructions": "Drive through entry gate, steer around one cone, and stop entirely inside a parking box.",
       "resetInstructions": "Stationary, 8 m before entry gate; face straight into the box. Save there.",
@@ -40,14 +40,14 @@
       "title": "Clutch engagement and launches",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — Student Driver (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Aerodrome runway: quiet straight section"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight from the start line."
       },
       "instructions": "Launch from 0 to 40 km/h; shift 1→2; then roll to a controlled stop.",
       "resetInstructions": "Stationary in 1st gear at fixed start cone; save with clutch disengaged.",
@@ -73,14 +73,14 @@
       "title": "Gear selection and downshifting",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — Student Driver (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Aerodrome runway: 250 m straight"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel Introduction layout: shift through the gears around the lap."
       },
       "instructions": "Accelerate to 60 km/h and downshift progressively to 2nd as you slow before the end gate.",
       "resetInstructions": "Stationary at start cone; mark 50 m end gate.",
@@ -106,14 +106,14 @@
       "title": "Throttle modulation",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — Student Driver (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Runway: mark three 25 m timing zones"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight: mark three 25 m timing zones."
       },
       "instructions": "Bring car to 30 km/h, then hold that speed across three cone-marked 25 m zones.",
       "resetInstructions": "Stationary 30 m before first speed zone; save facing down runway.",
@@ -139,14 +139,14 @@
       "title": "Braking accuracy",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — Student Driver (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "East skidpad: straight approach to a stop box"
+        "mapDisplayName": "West Coast USA: BMP dirt arena",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Straight approach to a stop box marked on the open dirt."
       },
       "instructions": "Brake once from 40 km/h and stop at a cone-marked line.",
       "resetInstructions": "Stationary 80 m before stop line; accelerate to 40 km/h at approach marker.",
@@ -172,14 +172,14 @@
       "title": "Vision and looking ahead",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — Student Driver (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Handling Circuit: one pair of linked bends"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Figure Eight Basics layout: call the next bend aloud before each apex."
       },
       "instructions": "Drive bends while speaking the *next* turn direction and apex marker aloud before current apex.",
       "resetInstructions": "Stationary 50 m before first bend; fix start direction.",
@@ -205,14 +205,14 @@
       "title": "Basic racing lines",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Handling Circuit: choose one medium-speed corner"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Pick one medium-speed corner on the circuit."
       },
       "instructions": "Compare early, middle and late-apex lines; finish with 10 scored laps using the most repeatable line.",
       "resetInstructions": "Stationary 60 m before braking marker, same approach line.",
@@ -238,14 +238,14 @@
       "title": "Apex and exit selection",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Handling Circuit: same corner as A07"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same corner as A07."
       },
       "instructions": "Move the apex gate slightly later and target a stable, straight corner exit.",
       "resetInstructions": "Reuse A07 checkpoint and exit gate.",
@@ -271,14 +271,14 @@
       "title": "Threshold braking",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — 1.5 DX (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Runway: long paved braking straight"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight (~150 m) into a marked 5 m stop zone."
       },
       "instructions": "From 70 km/h, brake progressively to the stop zone; adjust brake pressure near grip limit.",
       "resetInstructions": "Stationary 150 m before braking line; accelerate to 70 km/h at trigger cone.",
@@ -304,14 +304,14 @@
       "title": "Wheel lockup recognition and correction",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — 1.5 DX (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Same runway braking zone as B01"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same braking zone as B01."
       },
       "instructions": "Briefly provoke lockup using heavy braking, release enough to restore rolling grip and stop.",
       "resetInstructions": "Stationary 150 m upstream; fixed 60 km/h trigger.",
@@ -337,14 +337,14 @@
       "title": "Stopping-distance estimation",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu Covet — 1.5 DX (M), FWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Student Driver (4-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Runway paved straight + Rally Track gravel approach"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight; predict the stopping point before each run."
       },
       "instructions": "Before each run, estimate stopping spot, then brake from exactly 50 km/h; six runs per surface.",
       "resetInstructions": "Set a saved start in each location; use same 50 km/h trigger and same car/tires.",
@@ -370,14 +370,14 @@
       "title": "Trail braking",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Handling Circuit: medium-radius turn with safe runoff"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Medium-radius corner with runoff."
       },
       "instructions": "Begin braking on approach and ease pressure off progressively while steering toward apex.",
       "resetInstructions": "Stationary 75 m before chosen corner; brake marker unchanged.",
@@ -403,14 +403,14 @@
       "title": "Left-foot braking",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "East skidpad: broad semicircle around marker cones"
+        "mapDisplayName": "West Coast USA: BMP dirt circle",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Drive the circle around the infield."
       },
       "instructions": "With right foot steady on light throttle, apply short left-foot brake pressure to adjust rotation.",
       "resetInstructions": "Stationary 50 m before semicircle; approach 30 km/h.",
@@ -436,14 +436,14 @@
       "title": "Understeer recognition and correction",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "East skidpad: marked 15–20 m radius circle"
+        "mapDisplayName": "West Coast USA: BMP dirt circle",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). 15-20 m radius around the infield."
       },
       "instructions": "Enter too fast to create safe, mild understeer; reduce speed/steering demand to regain front grip.",
       "resetInstructions": "Stationary 40 m before circle; approach at repeatable 35 km/h.",
@@ -469,16 +469,16 @@
       "title": "Oversteer recognition and correction",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Ibishu BX-Series — 200BX Type-LS (M), RWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "East skidpad: large clear arc"
+        "mapDisplayName": "West Coast USA: BMP dirt circle",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Large arc of the circle."
       },
-      "instructions": "Use a modest throttle pulse to rotate rear, then countersteer and settle the car.",
+      "instructions": "In FWD, provoke the rear by lifting off or a short brake on turn-in, then countersteer and settle the car with steady throttle.",
       "resetInstructions": "Stationary 40 m before arc; target 25–35 km/h.",
       "props": "Rear-drive street car; begin at low speed. Disable ESC only if you document the setting.",
       "assessment": {
@@ -502,14 +502,14 @@
       "title": "Longitudinal weight transfer",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track: broad gravel bend"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Broad gravel bend."
       },
       "instructions": "Do 4 lift-only, 4 light-brake and 4 neutral-entry runs; compare rotation and exit line.",
       "resetInstructions": "Stationary 60 m before gravel turn, same approach speed.",
@@ -535,14 +535,14 @@
       "title": "Lift-off oversteer",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Handling Circuit: safe paved sweeper"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Sweeping gravel corner."
       },
       "instructions": "Approach under light throttle, lift just before turn-in to rotate, then stabilize smoothly.",
       "resetInstructions": "Stationary 70 m before sweeper; fixed 40 km/h entry.",
@@ -568,14 +568,14 @@
       "title": "Brake-induced rotation",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track: open gravel 90-degree corner"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open 90-degree gravel corner."
       },
       "instructions": "Initiate mild turn-in then apply a short controlled brake pulse for rotation.",
       "resetInstructions": "Stationary 60 m before turn; fixed brake cone.",
@@ -606,9 +606,9 @@
         "configPath": null
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "Eastern skidpad: large painted circle"
+        "mapDisplayName": "West Coast USA: BMP dirt circle",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle (parked: needs RWD/AWD)."
       },
       "instructions": "Use small power pulses to provoke rear slip while turning; then reduce power to regain balance.",
       "resetInstructions": "Stationary 40 m before 20 m radius circle; low gear.",
@@ -626,7 +626,8 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
-      }
+      },
+      "parked": "Needs RWD or rear-biased AWD (FWD can't oversteer under power)."
     },
     {
       "id": "C04",
@@ -634,14 +635,14 @@
       "title": "Handbrake rotation",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Gravel hairpin on accessible canyon road"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tightest hairpin or the roundabout (Tie the Knot layout)."
       },
       "instructions": "Brake before entry, briefly apply handbrake to rotate, release, and drive through exit gate.",
       "resetInstructions": "Stationary 70 m before 160–180° gravel bend; face uphill/downhill as chosen.",
@@ -672,9 +673,9 @@
         "configPath": null
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "Eastern skidpad: large open arc"
+        "mapDisplayName": "West Coast USA: BMP dirt arena",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt arc (parked: needs RWD/AWD)."
       },
       "instructions": "Deliberately create mild rear-wheel slide, steer into slide, then unwind to straight exit.",
       "resetInstructions": "Stationary 50 m before arc, identical 30 km/h entry.",
@@ -692,7 +693,8 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
-      }
+      },
+      "parked": "Needs RWD or AWD (power-on rear slide to catch)."
     },
     {
       "id": "C06",
@@ -705,9 +707,9 @@
         "configPath": null
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track: steady gravel sweeper"
+        "mapDisplayName": "West Coast USA: BMP dirt circle",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle arc (parked: needs RWD/AWD)."
       },
       "instructions": "Initiate moderate slide before apex; balance throttle/countersteer through a marked 20 m arc.",
       "resetInstructions": "Stationary 70 m before sweeper; fixed 40–50 km/h entry band.",
@@ -725,7 +727,8 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "parked": "Needs RWD or AWD (FWD can't hold a slide on throttle)."
     },
     {
       "id": "C07",
@@ -733,14 +736,14 @@
       "title": "Lateral weight transfer",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "Skidpad: figure-eight around two cones 20 m apart"
+        "mapDisplayName": "West Coast USA: BMP dirt arena",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Figure-eight around two cones 20 m apart."
       },
       "instructions": "Steer figure-eight alternating left/right; use lift/brake timing to manage direction change.",
       "resetInstructions": "Stationary 25 m before first cone, centered on approach.",
@@ -766,16 +769,16 @@
       "title": "Scandinavian flicks",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Wide gravel hairpin with clear outside runoff"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Wide gravel corner with outside runoff."
       },
-      "instructions": "Briefly steer away from turn, reverse steering to build rotation, catch slide without handbrake.",
+      "instructions": "Briefly steer away from the turn, then reverse the steering with a lift to load the front and swing the rear; catch it and pull straight with throttle, no handbrake.",
       "resetInstructions": "Stationary 100 m before hairpin, same approach lane.",
       "props": "Start around 35–45 km/h; only increase after 8/10 passes.",
       "assessment": {
@@ -799,14 +802,14 @@
       "title": "Slaloms and rapid transitions",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "Eastern skidpad: six-cone slalom, 12 m cone spacing"
+        "mapDisplayName": "West Coast USA: BMP dirt arena",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Six-cone slalom, 12 m spacing, on the open dirt."
       },
       "instructions": "Weave alternating around all six cones while maintaining smooth steering and continuous motion.",
       "resetInstructions": "Stationary 30 m before first cone; wheel centered.",
@@ -832,14 +835,14 @@
       "title": "Linked-corner sequencing",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track: two bends in quick succession"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Two linked bends from one of the layouts."
       },
       "instructions": "Prioritize second bend exit even if first apex is compromised; compare with single-corner focus.",
       "resetInstructions": "Stationary 80 m before first bend; RSC start gate at vehicle reset.",
@@ -865,14 +868,14 @@
       "title": "Decreasing-radius corners",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Italy",
-        "levelId": null,
-        "areaHint": "Choose a rural paved bend that visibly tightens toward exit"
+        "mapDisplayName": "West Coast USA: Quarry",
+        "levelId": "west_coast_usa",
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that tightens toward its exit."
       },
       "instructions": "Enter conservatively, delay apex, progressively reduce speed as radius tightens.",
       "resetInstructions": "Stationary 80 m before tightening bend, before sightline changes.",
@@ -898,14 +901,14 @@
       "title": "Increasing-radius corners",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Italy",
-        "levelId": null,
-        "areaHint": "Choose a rural paved curve that opens on exit"
+        "mapDisplayName": "West Coast USA: Quarry",
+        "levelId": "west_coast_usa",
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that opens on exit."
       },
       "instructions": "Enter at a safe speed, then unwind steering and progressively accelerate as radius opens.",
       "resetInstructions": "Stationary 60 m before opening bend; mark start and exit.",
@@ -931,14 +934,14 @@
       "title": "Blind corners",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Choose canyon gravel turn obscured by rock or crest"
+        "mapDisplayName": "West Coast USA: Quarry",
+        "levelId": "west_coast_usa",
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A bend hidden by a spoil heap or crest."
       },
       "instructions": "Drive the turn from the cockpit at a conservative fixed approach speed, using visible cues.",
       "resetInstructions": "Stationary 100 m before blind turn; avoid using freecam while scoring.",
@@ -964,14 +967,14 @@
       "title": "Uphill and downhill corners",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Asphalt Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Gradient Test hills and their paved connector bends"
+        "mapDisplayName": "West Coast USA: Quarry",
+        "levelId": "west_coast_usa",
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). Spiral Descent: uphill and downhill bends."
       },
       "instructions": "Alternate five uphill and five downhill turns at comparable entry speeds.",
       "resetInstructions": "Two starts: 60 m before uphill curve and 60 m before downhill curve.",
@@ -997,14 +1000,14 @@
       "title": "Road camber",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,
-        "areaHint": "West training tracks: banked/slanted road sections"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Banked berm corners."
       },
       "instructions": "Drive inside- and outside-camber arcs; note how line and speed change available grip.",
       "resetInstructions": "Stationary 50 m before first cambered segment; direction fixed.",
@@ -1030,14 +1033,14 @@
       "title": "Mixed-surface transitions",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Paved access road meeting gravel Rally Track"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tarmac start line onto gravel."
       },
       "instructions": "Cross tarmac→gravel while turning gently; adapt braking point and steering to lower grip.",
       "resetInstructions": "Stationary 80 m before identified pavement/gravel boundary.",
@@ -1063,14 +1066,14 @@
       "title": "Snow vs gravel vs tarmac",
       "difficulty": "Optional mod",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Winter West Coast, USA [OPTIONAL MOD]",
-        "levelId": null,
-        "areaHint": "Winter West Coast + West Coast dry; gravel on Automation Rally Track"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel circuit vs. the tarmac start area (snow: Automation Test Track, optional)."
       },
       "instructions": "Perform 4 controlled corners on snow, 4 on tarmac, 4 on gravel; record safe approach speed and braking behavior.",
       "resetInstructions": "Three saved starts, one on each surface (not identical geometry).",
@@ -1096,14 +1099,14 @@
       "title": "FWD driving technique",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track: moderate gravel corner with runoff"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Moderate gravel corner with runoff."
       },
       "instructions": "Use a small lift/brake to rotate before apex; reapply throttle to stabilize FWD exit.",
       "resetInstructions": "Stationary 70 m before turn, lower entry speed due to road tires.",
@@ -1134,9 +1137,9 @@
         "configPath": null
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track: open gravel sweeper"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open gravel sweeper (parked: RWD drill)."
       },
       "instructions": "Use steering and moderate power to create rear slip, then meter throttle to stabilize exit.",
       "resetInstructions": "Stationary 70 m before turn; 35–45 km/h entry.",
@@ -1154,7 +1157,8 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "parked": "RWD technique drill."
     },
     {
       "id": "E04",
@@ -1167,9 +1171,9 @@
         "configPath": null
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Same gravel sweeper as E03"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same sweeper (parked: AWD drill)."
       },
       "instructions": "Compare AWD corner rotation and exit traction with E03; use progressive throttle.",
       "resetInstructions": "Reuse exact E03 start location and timing markers.",
@@ -1187,7 +1191,8 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "parked": "AWD technique drill."
     },
     {
       "id": "E05",
@@ -1195,14 +1200,14 @@
       "title": "Crest management",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track hill / gravel approach near Gradient Test area"
+        "mapDisplayName": "West Coast USA: Off-Road Circuit",
+        "levelId": "west_coast_usa",
+        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Crest on the off-road circuit."
       },
       "instructions": "Approach crest in a straight line with light, stable inputs; avoid sudden steering at unloading.",
       "resetInstructions": "Stationary 120 m before chosen accessible crest; straight line at summit.",
@@ -1228,14 +1233,14 @@
       "title": "Jump takeoff and landing",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Cherrier Vivace — NGRC1 Gravel Rally (Sequential), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Accessible jump on NGRC Rally Utah 2026 gravel route"
+        "mapDisplayName": "West Coast USA: Off-Road Circuit",
+        "levelId": "west_coast_usa",
+        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Jump on the off-road circuit (or the BMP joker jump)."
       },
       "instructions": "Approach square, stabilize car before takeoff and land while maintaining road alignment.",
       "resetInstructions": "Stationary 150 m before jump; same approach direction/speed band.",
@@ -1261,14 +1266,14 @@
       "title": "Rough terrain and suspension unloading",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Cherrier Vivace — NGRC1 Gravel Rally (Sequential), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Johnson Valley",
-        "levelId": null,
-        "areaHint": "Rutted, corrugated off-road trail with no large cliffs"
+        "mapDisplayName": "West Coast USA: Off-Road Circuit",
+        "levelId": "west_coast_usa",
+        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Rough sections of the off-road circuit."
       },
       "instructions": "Traverse uneven road with smooth throttle and minimal large steering corrections.",
       "resetInstructions": "Stationary 80 m before 150–250 m rough section.",
@@ -1294,14 +1299,14 @@
       "title": "Water crossings and hazards",
       "difficulty": "Core",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Shallow crossing found on official NGRC Rally Utah route"
+        "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
+        "levelId": "utah",
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). SS1 Deer Creek river crossings."
       },
       "instructions": "Approach with modest speed, cross without stopping midstream, exit onto dry track.",
       "resetInstructions": "Stationary 80 m before ford; choose shallow driveable section.",
@@ -1327,14 +1332,14 @@
       "title": "Pacenote interpretation",
       "difficulty": "Mission",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Official NGRC Rally Utah 2026 special stage"
+        "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
+        "levelId": "utah",
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Any NGRC stage, with its pacenotes."
       },
       "instructions": "Choose one official stage with co-driver calls. Drive 5 scored runs, calling the next instruction before executing.",
       "resetInstructions": "Official rally-stage starting line; use mission start/restart rather than Home.",
@@ -1360,14 +1365,14 @@
       "title": "Timed consistency runs",
       "difficulty": "Timed",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "40–90-second section of the Rally Track"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). 40-90 s of a BMP layout, repeated."
       },
       "instructions": "Complete 6 scored runs through exactly the same start, checkpoints and finish.",
       "resetInstructions": "Stationary at custom RSC start gate, ~10 m before segment timing begins.",
@@ -1393,14 +1398,14 @@
       "title": "Speed management and regularity",
       "difficulty": "Timed",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — 1.6 Base FWD (M)",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Runway: custom 200–300 m regularity route"
+        "mapDisplayName": "Utah: Airstrip",
+        "levelId": "utah",
+        "areaHint": "Dirt airstrip (MAPS U2) ~(-330, -562). 200-300 m regularity route along the airstrip."
       },
       "instructions": "Complete fixed-distance route at a target time set after two practice passes.",
       "resetInstructions": "Stationary 15 m before timing start; fix one target time for whole segment.",
@@ -1426,14 +1431,14 @@
       "title": "Driving unfamiliar stages",
       "difficulty": "Timed",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Five different short routes on Rally Track + Handling access roads"
+        "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
+        "levelId": "utah",
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). The four NGRC stages, each new to you."
       },
       "instructions": "Drive 5 distinct short, previously unused courses once each; focus on road reading.",
       "resetInstructions": "Each new route has its own start gate; no prior timed recce before scored first run.",
@@ -1459,14 +1464,14 @@
       "title": "Long-stage concentration",
       "difficulty": "Mission",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Official NGRC Rally Utah 2026 full loop (four gravel stages)"
+        "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
+        "levelId": "utah",
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Full NGRC Rally Utah loop (four stages)."
       },
       "instructions": "Complete the entire multi-stage loop, maintaining focus and minimizing cumulative mistakes.",
       "resetInstructions": "Use actual Rally Mode loop start; mission restart between scored assessments.",
@@ -1492,14 +1497,14 @@
       "title": "Puncture and damage adaptation",
       "difficulty": "Special",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "Straight and moderate corners on a low-risk gravel road"
+        "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
+        "levelId": "utah",
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Straight and moderate corners of a stage."
       },
       "instructions": "Induce one random tire deflation and drive slowly to finish, adapting steering/braking.",
       "resetInstructions": "Stationary 40 m before 200–300 m chosen training stretch.",
@@ -1525,14 +1530,14 @@
       "title": "Vehicle setup comparisons",
       "difficulty": "Timed",
       "vehicle": {
-        "displayName": "Hirochi Sunburst — NGRC2 Gravel Rally (M), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Automation Test Track",
-        "levelId": null,
-        "areaHint": "Rally Track: same 40–60 s segment for A/B comparison"
+        "mapDisplayName": "West Coast USA: BMP Gravel Track",
+        "levelId": "west_coast_usa",
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same 40-60 s layout segment for A/B setups."
       },
       "instructions": "Alternate four runs on base config and four on one changed parameter (spring rate if tunable).",
       "resetInstructions": "Stationary at RSC start; save two named car configurations and never move start gate.",
@@ -1558,14 +1563,14 @@
       "title": "Full-stage technique integration",
       "difficulty": "Mission",
       "vehicle": {
-        "displayName": "Cherrier Vivace — NGRC1 Gravel Rally (Sequential), AWD",
-        "modelId": null,
-        "configPath": null
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "mapDisplayName": "Utah, USA",
-        "levelId": null,
-        "areaHint": "One official NGRC Rally Utah 2026 special stage"
+        "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
+        "levelId": "utah",
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). One full NGRC stage."
       },
       "instructions": "Complete three stage attempts combining notes, braking, rotation, hazards and pace.",
       "resetInstructions": "Use official stage start; establish a clean reference time before scoring.",

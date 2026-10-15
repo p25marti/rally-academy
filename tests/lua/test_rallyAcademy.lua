@@ -507,4 +507,46 @@ function T.save_last_run_writes_json()
   eq(#saved.samples, #M.getLastRun().samples, 'saved samples')
 end
 
+-- FWD-first lineup (docs/VEHICLES.md, MAPS.md Option A) ------------------------
+
+local function drills()
+  local byId = {}
+  for _, e in ipairs(jsonReadFile('gameplay/rallyAcademy/exercises.json').exercises) do byId[e.id] = e end
+  return byId
+end
+
+function T.lineup_parks_exactly_the_drills_fwd_cannot_do()
+  stubs.install()
+  local parked = {}
+  for id, e in pairs(drills()) do if e.parked then parked[#parked + 1] = id end end
+  table.sort(parked)
+  eq(table.concat(parked, ','), 'C03,C05,C06,E03,E04', 'parked drills')
+end
+
+function T.every_active_drill_pins_a_fwd_covet_and_a_map()
+  stubs.install()
+  for id, e in pairs(drills()) do
+    assert(e.environment.levelId == 'west_coast_usa' or e.environment.levelId == 'utah', id .. ' map')
+    if not e.parked then
+      eq(e.vehicle.modelId, 'covet', id .. ' model')
+      assert(e.vehicle.configPath == 'vehicles/covet/student_driver.pc' or e.vehicle.configPath == 'vehicles/covet/rally_gravel.pc',
+        id .. ' config ' .. tostring(e.vehicle.configPath))
+      assert(e.vehicle.displayName:find('FWD', 1, true), id .. ' says FWD')
+    end
+  end
+end
+
+function T.parked_drills_are_flagged_in_the_catalogue_and_explained_on_select()
+  local h, M = setup()
+  local flagged = {}
+  for _, l in ipairs(h.lastState().lessons) do if l.parked then flagged[#flagged + 1] = l.id end end
+  eq(#flagged, 5, 'five parked drills flagged for the HUD')
+  M.select('C03')
+  local s = h.lastState()
+  eq(s.selected, 'C03', 'still selectable')
+  assert(s.reason:find('Parked for now', 1, true), 'reason explains: ' .. s.reason)
+  M.select('B01')
+  assert(not h.lastState().reason:find('Parked', 1, true), 'normal drills have no parked note')
+end
+
 return T

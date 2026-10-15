@@ -114,7 +114,8 @@ local function load()
   lessons, byId, lessonSummary = (data and data.exercises) or {}, {}, {}
   for _, lesson in ipairs(lessons) do
     byId[lesson.id] = lesson
-    table.insert(lessonSummary, {id=lesson.id, title=lesson.title, module=lesson.module})
+    table.insert(lessonSummary, {id=lesson.id, title=lesson.title, module=lesson.module,
+      parked=lesson.parked ~= nil or nil})
   end
   local saved = jsonReadFile(SAVE_FILE)
   if type(saved) == 'table' and type(saved.lessons) == 'table' then progress = saved
@@ -176,6 +177,10 @@ function M.select(id)
   phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
   activeVehicleId = nil
   loadSetup()
+  if byId[id].parked then
+    -- FWD-first lineup (docs/VEHICLES.md): still drivable, but say why it's parked.
+    lastReason = 'Parked for now: ' .. byId[id].parked .. ' ' .. lastReason
+  end
   logf('I', 'selected %s on %s (%s)', id, levelId(), startState and 'saved setup loaded' or 'no saved setup')
   output()
 end

@@ -19,12 +19,12 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
       "difficulty": "Core",
       "vehicle": {
         "displayName": "Ibishu Covet — Student Driver (M), FWD",
-        "modelId": null,                   // BeamNG model id, e.g. "covet" — fill when verified
-        "configPath": null                 // e.g. "vehicles/covet/<config>.pc" — fill when verified
+        "modelId": "covet",                // BeamNG model id (see VEHICLES.md)
+        "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
         "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": null,                   // BeamNG level folder name — fill when verified
+        "levelId": "west_coast_usa",       // BeamNG level folder name (see MAPS.md)
         "areaHint": "East-side open skidpad: …"
       },
       "instructions": "What the driver does (shown in the HUD).",
@@ -38,6 +38,7 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "mode": "selfAssessment",          // required: selfAssessment | automatic | hybrid
         "rules": []                        // typed rules (P3); empty = no machine grading
       },
+      "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)
       "startTransform": null,              // {levelId, pos:{x,y,z}, rot:{x,y,z,w}} once authored
       "finishGate": null,                  // {pos:{x,y,z}, radius} once authored
       "references": { "map": "url", "vehicle": "url" }

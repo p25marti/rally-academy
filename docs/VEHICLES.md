@@ -1,13 +1,47 @@
 # Vehicles and drivetrain options
 
 Which cars the drills use, what to look for in a drill car, and which drills
-could be practised with more than one drivetrain. Car and config names come
-from the original spreadsheet; every drill still has `modelId` and
-`configPath` set to null, so **none of these names has been matched to a real
-game config yet**. Driving-technique judgements here are design guidance, not
-in-game findings.
+could be practised with more than one drivetrain. Driving-technique judgements
+here are design guidance, not in-game findings.
 
-## Current lineup
+## Current lineup: FWD first (decided 2026-10-15)
+
+The owner practises FWD most, so drills start **FWD-only** on a two-rung Covet
+ladder; multi-drivetrain options (below) come later. `exercises.json` pins these
+configs (`modelId`, `configPath`), and venues follow [MAPS](MAPS.md) Option A.
+
+| Rung | Config | Drills | Power / weight | Gearbox | Aids | Handbrake |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | `covet/student_driver` (Covet Student Driver) | A01–A06, B01–B03 | 78 hp / 1015 kg | 4-speed manual | none | rear wheels |
+| 2 | `covet/rally_gravel` (Covet Gravel Rally) | the other 34 FWD drills | 214 hp / 1070 kg | 6-speed manual (race), race diff | none | rear wheels (race lever) |
+| later? | `midsize/rally` (Midsize Rally) | possible top rung for module F | 241 hp / 1305 kg | 6-speed **sequential**, race diff | none | rear wheels |
+
+Verified in-game on 0.39.4: `hasABS = 0`, no ESC/TCS parts or electrics, handbrake
+torque on the rear wheels only (so handbrake turns work in FWD). Stats from each
+config's `info_*.json`.
+
+**Parked** (field `parked` in `exercises.json`, shown as "needs RWD/AWD" in the
+HUD): C03, C05, C06, E03, E04. **FWD-adapted instructions:** B07 (provoke the rear
+by lift or brake, not throttle) and C08 (lift on the flick, pull straight with power).
+
+### Real config names (0.39.4) for the cars named below
+
+| Name used below | Game config | Drive, power, gearbox |
+| --- | --- | --- |
+| Covet Student Driver | `covet/student_driver` | FWD, 78 hp, manual |
+| FWD gravel rally (was "none chosen yet") | `covet/rally_gravel` | FWD, 214 hp, manual |
+| Sunburst NGRC2 Gravel Rally | `sunburst2/rally_am_gravel` | AWD, 217 hp, manual |
+| Sunburst NGRC2 Asphalt Rally | `sunburst2/rally_am_asphalt` | AWD, 217 hp, manual |
+| Sunburst 1.6 Base | `sunburst2/base_EU_M` | FWD, 113 hp, manual, **ABS and ESC fitted** |
+| 200BX gravel rally | `bx/240bx_coupe_rally_gravel` | RWD, 178 hp, manual |
+| SBR4 NGRC2 Gravel Rally | `sbr/rally_am_gravel` | RWD, 271 hp, manual |
+| Vivace NGRC1 Gravel Rally | `vivace/gravel_SQ` | AWD, 381 hp, sequential |
+
+Other stock gravel options: `autobello/150_rally` (RWD, 91 hp, 755 kg, the toughest:
+off-road score 46), `miramar/safari_rally` (RWD, 214 hp), `etki/rally_am_gravel`
+(RWD, 243 hp), `sunburst2/rally_pro_gravel` (AWD, 333 hp, sequential).
+
+## Original lineup (from the spreadsheet; superseded by the FWD-first lineup)
 
 | Car | Drivetrain | Used by | Role |
 | --- | --- | --- | --- |
@@ -153,7 +187,8 @@ Not implemented; would need a decision record and a schema change
 
 ## To check in-game
 
-For each car: exact config name, drivetrain, gearbox, and whether ABS, ESC and
-TCS are fitted or adjustable. Also: the two missing configs (FWD rally,
-Sunburst AWD road) and handbrake behaviour on AWD rally cars (C04). Record the
-results in BEAMNG_API_NOTES and fill `modelId`/`configPath` in `exercises.json`.
+Done for the FWD lineup (2026-10-15): config names, drivetrain, gearbox, aids and
+handbrake for `covet/student_driver`, `covet/rally_gravel` and `midsize/rally`;
+`modelId`/`configPath` filled in `exercises.json`. Still open for later rungs:
+aids on the RWD/AWD candidates, a Sunburst AWD road config, and whether the
+handbrake disconnects the drive on AWD rally cars (C04).

@@ -23,6 +23,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   gear, RPM, speeds, ABS, and per wheel speed/surface/downforce, one sample per
   frame) and keeps a run record for grading. Developers can save the last one with
   `extensions.rallyAcademy.saveLastRun()`.
+- FWD-first drill lineup: every drill names its car (Covet Student Driver for the
+  basics, Covet Gravel Rally for the rest) and its venue on West Coast USA or Utah
+  (docs/MAPS.md). Five drills that need RWD/AWD are parked and labelled in the HUD.
 - HUD shows the run time: a live clock while driving (tenths), the final
   time after the finish (hundredths), and the drill's best time.
 
