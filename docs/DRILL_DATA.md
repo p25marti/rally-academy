@@ -25,7 +25,9 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
       "environment": {
         "mapDisplayName": "ETK Driver Experience Center",
         "levelId": "west_coast_usa",       // BeamNG level folder name (see MAPS.md)
-        "areaHint": "East-side open skidpad: …"
+        "areaHint": "BMP dirt arena (MAPS W2) …",
+        "spawn": {"pos": {"x": 337.07, "y": 96.09, "z": 127.26},   // venue default spot for Go to drill,
+                  "dir": {...}, "up": {...}}                       // same format as a saved start
       },
       "instructions": "What the driver does (shown in the HUD).",
       "resetInstructions": "Where/how to place the start.",

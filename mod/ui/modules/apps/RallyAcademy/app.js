@@ -8,6 +8,7 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
       '<div class="rally-academy-app" style="height:100%;background:rgba(13,21,30,.93);color:#f8fafc;padding:12px;overflow:auto;font-family:sans-serif;font-size:13px;border-radius:8px;box-sizing:border-box">',
       '<div style="font-weight:700;font-size:17px;margin-bottom:10px">RALLY ACADEMY <span style="font-size:11px;color:#94a3b8">ALPHA</span></div>',
       '<select ng-model="selectedId" ng-options="x.id as (x.id + \' · \' + x.title + (x.parked ? \' (needs RWD/AWD)\' : \'\')) for x in vm.lessons" ng-change="choose()" style="width:100%;font-size:12px;padding:5px"></select>',
+      '<button class="ra-goto" ng-if="vm.lesson && vm.lesson.environment.levelId" ng-click="cmd(\'goToDrill\')" style="width:100%;margin-top:6px;padding:4px">⤳ Go to drill · {{vm.lesson.environment.mapDisplayName}}</button>',
       '<p ng-if="vm.lesson" style="color:#dbeafe;line-height:1.3">{{vm.lesson.instructions}}</p>',
       '<div style="display:flex;align-items:baseline;justify-content:space-between;margin:6px 0">',
       '<span class="ra-timer" style="font-size:30px;font-weight:700;font-variant-numeric:tabular-nums" ng-style="{color: vm.phase === \'running\' ? \'#facc15\' : \'#f8fafc\'}">{{timerText()}}</span>',
@@ -50,7 +51,7 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
         return fmt(p && id && p[id] ? p[id].bestTime : null, 2);
       };
       scope.cmd = function (name, arg) {
-        var methods = {markStart:1, markFinish:1, retry:1, recordAttempt:1};
+        var methods = {goToDrill:1, markStart:1, markFinish:1, retry:1, recordAttempt:1};
         if (!methods[name]) return;
         var args = name === 'recordAttempt' ? (arg ? 'true' : 'false') : '';
         bngApi.engineLua('if extensions.rallyAcademy then extensions.rallyAcademy.' + name + '(' + args + ') end');

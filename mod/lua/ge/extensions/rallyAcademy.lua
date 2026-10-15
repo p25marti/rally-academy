@@ -18,6 +18,12 @@ local activeVehicleId = nil
 local TELEMETRY_RATE = 60
 local LAST_RUN_FILE = 'settings/rallyAcademy/lastRun.json'
 local run, samplingVehId = nil, nil
+-- Go to drill: drill waiting for its map to load; car swap in progress; deferred placement.
+local pendingGoTo, arriveIn = nil, nil
+local awaitingCar, awaitT = nil, 0 -- configPath we're waiting to see spawn, and how long we've waited
+local SETTLE_AFTER_SPAWN = 0.3     -- s after onVehicleSpawned before teleporting the new car
+local SPAWN_TIMEOUT = 6            -- s: place the car anyway if onVehicleSpawned never comes
+local placeAtDrill -- defined under "Go to drill"; onUpdate (above it) calls it
 
 -- beamng.log lines read `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension + tag);
 -- `python tools/dev.py log --ours` shows only these.
@@ -172,6 +178,7 @@ end
 
 function M.select(id)
   if type(id) ~= 'string' or not byId[id] then return end
+  if id ~= selected then pendingGoTo, arriveIn, awaitingCar = nil, nil, nil end -- changed your mind mid-trip
   if RunRecord.isOpen(run) then endRun('abandoned') end
   selected = id
   phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
@@ -266,6 +273,19 @@ function M.recordAttempt(passed)
 end
 
 function M.onUpdate(dtReal, dtSim)
+  if awaitingCar then
+    awaitT = awaitT + (dtReal or 0)
+    if awaitT >= SPAWN_TIMEOUT then
+      logf('W', 'go to drill: no spawn event after %d s, placing the car anyway', SPAWN_TIMEOUT)
+      awaitingCar, arriveIn = nil, 0
+    end
+    return
+  end
+  if arriveIn then
+    arriveIn = arriveIn - (dtReal or 0)
+    if arriveIn <= 0 then arriveIn = nil; placeAtDrill() end
+    return
+  end
   if not selected or (phase ~= 'ready' and phase ~= 'running') then return end
   local veh = currentVehicle()
   if not veh or veh:getID() ~= activeVehicleId then
@@ -308,6 +328,91 @@ function M.onUpdate(dtReal, dtSim)
   end
 end
 
+-- Go to drill ----------------------------------------------------------------
+-- Load the drill's map if needed, put the player in the drill's car, and place it
+-- at the saved start (straight into a run) or the venue's default spot.
+
+-- Level names differ in case between the list ('Utah') and the current level ('utah').
+local function sameLevel(a, b)
+  return type(a) == 'string' and type(b) == 'string' and a:lower() == b:lower()
+end
+
+local function levelPathFor(name)
+  for _, l in ipairs((core_levels and core_levels.getList and core_levels.getList()) or {}) do
+    if sameLevel(l.levelName, name) then return l.fullfilename or l.misFilePath end
+  end
+end
+
+local function configKey(configPath) -- 'vehicles/covet/rally_gravel.pc' -> 'rally_gravel'
+  return type(configPath) == 'string' and configPath:match('([^/]+)%.pc$') or nil
+end
+
+-- Respawn only if the current car isn't already the drill's model and config.
+-- Returns true if a new car was requested; it is placed once onVehicleSpawned
+-- reports it. That hook fires synchronously inside replaceVehicle (0.39.4), so
+-- start waiting before the call.
+local function ensureCar(vehicle)
+  if not (vehicle and vehicle.modelId and vehicle.configPath) then return false end
+  local veh = currentVehicle()
+  if veh and veh.JBeam == vehicle.modelId and veh.partConfig == vehicle.configPath then return false end
+  awaitingCar, awaitT = vehicle.configPath, 0
+  core_vehicles.replaceVehicle(vehicle.modelId, {config = configKey(vehicle.configPath)})
+  logf('I', 'go to drill: spawned %s (%s)', vehicle.modelId, tostring(configKey(vehicle.configPath)))
+  return true
+end
+
+function placeAtDrill()
+  local lesson = byId[selected]
+  local veh = currentVehicle()
+  if not lesson then return end
+  if not veh then arriveIn = 0.25; return end -- car still being built: try again shortly
+  local env = lesson.environment
+  if startState then
+    M.retry()
+    lastReason = 'At ' .. env.mapDisplayName .. ' in the drill car, at your saved start. Go when ready; Retry any time.'
+  else
+    teleportToStart(veh, env.spawn)
+    activeVehicleId = veh:getID()
+    lastReason = 'At ' .. env.mapDisplayName .. ' in the drill car. Drive to where the drill starts, then Mark start.'
+  end
+  logf('I', 'go to drill: %s placed at %s', selected, startState and 'saved start' or 'venue spot')
+  output()
+end
+
+local function arriveAtDrill()
+  if ensureCar(byId[selected].vehicle) then
+    lastReason = 'Getting the drill car ready...'
+    output()
+  else
+    placeAtDrill()
+  end
+end
+
+function M.goToDrill()
+  if not selected then return end
+  local env = byId[selected].environment
+  if not (env and env.levelId and env.spawn) then
+    lastReason = 'This drill has no venue yet.'
+    output(); return
+  end
+  if RunRecord.isOpen(run) then endRun('abandoned') end
+  phase, elapsed, lastTime = 'setup', 0, nil
+  if not sameLevel(levelId(), env.levelId) then
+    local path = levelPathFor(env.levelId)
+    if not path then
+      lastReason = 'Map not installed: ' .. env.levelId
+      output(); return
+    end
+    pendingGoTo = selected
+    lastReason = 'Loading ' .. env.mapDisplayName .. '...'
+    logf('I', 'go to drill: %s, loading %s', selected, env.levelId)
+    output()
+    core_levels.startLevel(path)
+    return
+  end
+  arriveAtDrill()
+end
+
 -- Telemetry ------------------------------------------------------------------
 
 -- Called by the car's sampler (lua/vehicle/extensions/rallyAcademy/telemetry.lua).
@@ -337,6 +442,13 @@ function M.onVehicleSwitched(_oldId, _newId, _player)
   end
 end
 
+-- A car finished (re)spawning: if it's the drill car we asked for, place it shortly.
+function M.onVehicleSpawned(_vid, veh)
+  if awaitingCar and veh and veh.partConfig == awaitingCar then
+    awaitingCar, arriveIn = nil, SETTLE_AFTER_SPAWN
+  end
+end
+
 -- Map unloading: its start/finish mean nothing on the next map.
 function M.onClientEndMission(_levelPath)
   if not selected then return end
@@ -349,6 +461,10 @@ function M.onClientPostStartMission(levelPath)
   if not selected then return end
   logf('I', 'map loaded (%s), reloading setup for %s', tostring(levelPath), selected)
   M.select(selected)
+  if pendingGoTo == selected then
+    pendingGoTo = nil
+    arriveAtDrill()
+  end
 end
 
 return M

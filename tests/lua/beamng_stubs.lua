@@ -40,6 +40,8 @@ local function newVehicle(id)
     up = vec3(0, 0, 1),
     teleports = {},
     damage = 0,
+    JBeam = 'covet',
+    partConfig = 'vehicles/covet/student_driver.pc',
     luaCommands = {},
   }
   function v:getID() return self.id end
@@ -68,6 +70,25 @@ function S.install()
   _G.be = {getPlayerVehicle = function(_, idx) if idx == 0 then return h.vehicle end end}
   _G.getCurrentLevelIdentifier = function() return h.level end -- verified 0.39.4
   _G.getObjectByID = function(id) if h.vehicle.id == id then return h.vehicle end end
+  -- Levels and vehicle spawning (verified 0.39.4, as the game's MCP tools use them).
+  h.levelsLoaded, h.spawned = {}, {}
+  _G.core_levels = {
+    getList = function()
+      return {{levelName = 'west_coast_usa', fullfilename = '/levels/west_coast_usa/main/'},
+              {levelName = 'utah', fullfilename = '/levels/utah/main/'},
+              {levelName = 'driver_training', fullfilename = '/levels/driver_training/main/'}}
+    end,
+    startLevel = function(path) table.insert(h.levelsLoaded, path) end,
+  }
+  _G.core_vehicles = {replaceVehicle = function(model, opt)
+    table.insert(h.spawned, {model = model, config = opt and opt.config})
+    h.vehicle.JBeam = model
+    h.vehicle.partConfig = 'vehicles/' .. model .. '/' .. tostring(opt and opt.config) .. '.pc'
+    -- verified 0.39.4: onVehicleSpawned fires synchronously inside replaceVehicle
+    if h.syncSpawnHook and extensions and extensions.rallyAcademy then
+      extensions.rallyAcademy.onVehicleSpawned(h.vehicle.id, h.vehicle)
+    end
+  end}
   -- spawn.safeTeleport(veh, pos, rot, checkOnlyStatics, visibilityPoint, removeTraffic,
   -- centeredPosition, resetVehicle): verified 0.39.4 as the game's own teleport + repair.
   _G.spawn = {safeTeleport = function(veh, pos, rot, _a, _b, _c, _d, resetVehicle)

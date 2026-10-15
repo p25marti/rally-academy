@@ -51,6 +51,12 @@ mod/
   drill change) or `restarted` (Retry mid-run); the score is attached. Sampling
   stops when no run is open. `M.getLastRun()` returns it; `M.saveLastRun(path)`
   writes it as JSON (default `settings/rallyAcademy/lastRun.json`) for fixtures.
+- **Go to drill** (`M.goToDrill`, HUD button under the drill list): loads the drill's
+  `environment.levelId` if needed (`core_levels.startLevel`, resumed in
+  `onClientPostStartMission`), puts the player in `vehicle.modelId`/`configPath`
+  (`core_vehicles.replaceVehicle`, placed once `onVehicleSpawned` reports it, 6 s
+  fallback), then Retry from the saved start, or teleport to `environment.spawn`
+  (the venue's default spot) to mark one. Changing drill mid-trip cancels it.
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 

@@ -61,6 +61,10 @@ BeamNG version and result in the PR.
    still has the attempts, and selecting the same drill on the same map says
    "Loaded your saved start…"; **Retry** works without marking again.
 10. Pause physics mid-run (`J`). The timer stops advancing.
+11. **Go to drill** for a drill on another map (e.g. E08 from West Coast USA): the map
+    loads, you're in the drill's car at the venue, and the panel says what to do next.
+    Then a drill on the same map with a different car (e.g. B04 after A01): the car
+    swaps and is placed within about a second.
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.
 

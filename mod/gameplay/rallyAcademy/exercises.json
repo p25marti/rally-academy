@@ -14,7 +14,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt: mark a 3 m wide gate and a parking box."
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt: mark a 3 m wide gate and a parking box.",
+        "spawn": {
+          "pos": {
+            "x": 337.07,
+            "y": 96.09,
+            "z": 127.26
+          },
+          "dir": {
+            "x": -0.7051,
+            "y": -0.7046,
+            "z": 0.0793
+          },
+          "up": {
+            "x": 0.0492,
+            "y": 0.0629,
+            "z": 0.9968
+          }
+        }
       },
       "instructions": "Drive through entry gate, steer around one cone, and stop entirely inside a parking box.",
       "resetInstructions": "Stationary, 8 m before entry gate; face straight into the box. Save there.",
@@ -47,7 +64,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight from the start line."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight from the start line.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Launch from 0 to 40 km/h; shift 1→2; then roll to a controlled stop.",
       "resetInstructions": "Stationary in 1st gear at fixed start cone; save with clutch disengaged.",
@@ -80,7 +114,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel Introduction layout: shift through the gears around the lap."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel Introduction layout: shift through the gears around the lap.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Accelerate to 60 km/h and downshift progressively to 2nd as you slow before the end gate.",
       "resetInstructions": "Stationary at start cone; mark 50 m end gate.",
@@ -113,7 +164,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight: mark three 25 m timing zones."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight: mark three 25 m timing zones.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Bring car to 30 km/h, then hold that speed across three cone-marked 25 m zones.",
       "resetInstructions": "Stationary 30 m before first speed zone; save facing down runway.",
@@ -146,7 +214,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Straight approach to a stop box marked on the open dirt."
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Straight approach to a stop box marked on the open dirt.",
+        "spawn": {
+          "pos": {
+            "x": 337.07,
+            "y": 96.09,
+            "z": 127.26
+          },
+          "dir": {
+            "x": -0.7051,
+            "y": -0.7046,
+            "z": 0.0793
+          },
+          "up": {
+            "x": 0.0492,
+            "y": 0.0629,
+            "z": 0.9968
+          }
+        }
       },
       "instructions": "Brake once from 40 km/h and stop at a cone-marked line.",
       "resetInstructions": "Stationary 80 m before stop line; accelerate to 40 km/h at approach marker.",
@@ -179,7 +264,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Figure Eight Basics layout: call the next bend aloud before each apex."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Figure Eight Basics layout: call the next bend aloud before each apex.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Drive bends while speaking the *next* turn direction and apex marker aloud before current apex.",
       "resetInstructions": "Stationary 50 m before first bend; fix start direction.",
@@ -212,7 +314,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Pick one medium-speed corner on the circuit."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Pick one medium-speed corner on the circuit.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Compare early, middle and late-apex lines; finish with 10 scored laps using the most repeatable line.",
       "resetInstructions": "Stationary 60 m before braking marker, same approach line.",
@@ -245,7 +364,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same corner as A07."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same corner as A07.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Move the apex gate slightly later and target a stable, straight corner exit.",
       "resetInstructions": "Reuse A07 checkpoint and exit gate.",
@@ -278,7 +414,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight (~150 m) into a marked 5 m stop zone."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight (~150 m) into a marked 5 m stop zone.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "From 70 km/h, brake progressively to the stop zone; adjust brake pressure near grip limit.",
       "resetInstructions": "Stationary 150 m before braking line; accelerate to 70 km/h at trigger cone.",
@@ -311,7 +464,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same braking zone as B01."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same braking zone as B01.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Briefly provoke lockup using heavy braking, release enough to restore rolling grip and stop.",
       "resetInstructions": "Stationary 150 m upstream; fixed 60 km/h trigger.",
@@ -344,7 +514,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight; predict the stopping point before each run."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight; predict the stopping point before each run.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Before each run, estimate stopping spot, then brake from exactly 50 km/h; six runs per surface.",
       "resetInstructions": "Set a saved start in each location; use same 50 km/h trigger and same car/tires.",
@@ -377,7 +564,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Medium-radius corner with runoff."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Medium-radius corner with runoff.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Begin braking on approach and ease pressure off progressively while steering toward apex.",
       "resetInstructions": "Stationary 75 m before chosen corner; brake marker unchanged.",
@@ -410,7 +614,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Drive the circle around the infield."
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Drive the circle around the infield.",
+        "spawn": {
+          "pos": {
+            "x": 265.0,
+            "y": 40.05,
+            "z": 127.3
+          },
+          "dir": {
+            "x": 0.7076,
+            "y": 0.7067,
+            "z": 0.0018
+          },
+          "up": {
+            "x": -0.0136,
+            "y": 0.0111,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "With right foot steady on light throttle, apply short left-foot brake pressure to adjust rotation.",
       "resetInstructions": "Stationary 50 m before semicircle; approach 30 km/h.",
@@ -443,7 +664,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). 15-20 m radius around the infield."
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). 15-20 m radius around the infield.",
+        "spawn": {
+          "pos": {
+            "x": 265.0,
+            "y": 40.05,
+            "z": 127.3
+          },
+          "dir": {
+            "x": 0.7076,
+            "y": 0.7067,
+            "z": 0.0018
+          },
+          "up": {
+            "x": -0.0136,
+            "y": 0.0111,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "Enter too fast to create safe, mild understeer; reduce speed/steering demand to regain front grip.",
       "resetInstructions": "Stationary 40 m before circle; approach at repeatable 35 km/h.",
@@ -476,7 +714,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Large arc of the circle."
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Large arc of the circle.",
+        "spawn": {
+          "pos": {
+            "x": 265.0,
+            "y": 40.05,
+            "z": 127.3
+          },
+          "dir": {
+            "x": 0.7076,
+            "y": 0.7067,
+            "z": 0.0018
+          },
+          "up": {
+            "x": -0.0136,
+            "y": 0.0111,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "In FWD, provoke the rear by lifting off or a short brake on turn-in, then countersteer and settle the car with steady throttle.",
       "resetInstructions": "Stationary 40 m before arc; target 25–35 km/h.",
@@ -509,7 +764,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Broad gravel bend."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Broad gravel bend.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Do 4 lift-only, 4 light-brake and 4 neutral-entry runs; compare rotation and exit line.",
       "resetInstructions": "Stationary 60 m before gravel turn, same approach speed.",
@@ -542,7 +814,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Sweeping gravel corner."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Sweeping gravel corner.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Approach under light throttle, lift just before turn-in to rotate, then stabilize smoothly.",
       "resetInstructions": "Stationary 70 m before sweeper; fixed 40 km/h entry.",
@@ -575,7 +864,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open 90-degree gravel corner."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open 90-degree gravel corner.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Initiate mild turn-in then apply a short controlled brake pulse for rotation.",
       "resetInstructions": "Stationary 60 m before turn; fixed brake cone.",
@@ -608,7 +914,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle (parked: needs RWD/AWD)."
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle (parked: needs RWD/AWD).",
+        "spawn": {
+          "pos": {
+            "x": 265.0,
+            "y": 40.05,
+            "z": 127.3
+          },
+          "dir": {
+            "x": 0.7076,
+            "y": 0.7067,
+            "z": 0.0018
+          },
+          "up": {
+            "x": -0.0136,
+            "y": 0.0111,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "Use small power pulses to provoke rear slip while turning; then reduce power to regain balance.",
       "resetInstructions": "Stationary 40 m before 20 m radius circle; low gear.",
@@ -642,7 +965,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tightest hairpin or the roundabout (Tie the Knot layout)."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tightest hairpin or the roundabout (Tie the Knot layout).",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Brake before entry, briefly apply handbrake to rotate, release, and drive through exit gate.",
       "resetInstructions": "Stationary 70 m before 160–180° gravel bend; face uphill/downhill as chosen.",
@@ -675,7 +1015,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt arc (parked: needs RWD/AWD)."
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt arc (parked: needs RWD/AWD).",
+        "spawn": {
+          "pos": {
+            "x": 337.07,
+            "y": 96.09,
+            "z": 127.26
+          },
+          "dir": {
+            "x": -0.7051,
+            "y": -0.7046,
+            "z": 0.0793
+          },
+          "up": {
+            "x": 0.0492,
+            "y": 0.0629,
+            "z": 0.9968
+          }
+        }
       },
       "instructions": "Deliberately create mild rear-wheel slide, steer into slide, then unwind to straight exit.",
       "resetInstructions": "Stationary 50 m before arc, identical 30 km/h entry.",
@@ -709,7 +1066,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle arc (parked: needs RWD/AWD)."
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle arc (parked: needs RWD/AWD).",
+        "spawn": {
+          "pos": {
+            "x": 265.0,
+            "y": 40.05,
+            "z": 127.3
+          },
+          "dir": {
+            "x": 0.7076,
+            "y": 0.7067,
+            "z": 0.0018
+          },
+          "up": {
+            "x": -0.0136,
+            "y": 0.0111,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "Initiate moderate slide before apex; balance throttle/countersteer through a marked 20 m arc.",
       "resetInstructions": "Stationary 70 m before sweeper; fixed 40–50 km/h entry band.",
@@ -743,7 +1117,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Figure-eight around two cones 20 m apart."
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Figure-eight around two cones 20 m apart.",
+        "spawn": {
+          "pos": {
+            "x": 337.07,
+            "y": 96.09,
+            "z": 127.26
+          },
+          "dir": {
+            "x": -0.7051,
+            "y": -0.7046,
+            "z": 0.0793
+          },
+          "up": {
+            "x": 0.0492,
+            "y": 0.0629,
+            "z": 0.9968
+          }
+        }
       },
       "instructions": "Steer figure-eight alternating left/right; use lift/brake timing to manage direction change.",
       "resetInstructions": "Stationary 25 m before first cone, centered on approach.",
@@ -776,7 +1167,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Wide gravel corner with outside runoff."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Wide gravel corner with outside runoff.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Briefly steer away from the turn, then reverse the steering with a lift to load the front and swing the rear; catch it and pull straight with throttle, no handbrake.",
       "resetInstructions": "Stationary 100 m before hairpin, same approach lane.",
@@ -809,7 +1217,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Six-cone slalom, 12 m spacing, on the open dirt."
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Six-cone slalom, 12 m spacing, on the open dirt.",
+        "spawn": {
+          "pos": {
+            "x": 337.07,
+            "y": 96.09,
+            "z": 127.26
+          },
+          "dir": {
+            "x": -0.7051,
+            "y": -0.7046,
+            "z": 0.0793
+          },
+          "up": {
+            "x": 0.0492,
+            "y": 0.0629,
+            "z": 0.9968
+          }
+        }
       },
       "instructions": "Weave alternating around all six cones while maintaining smooth steering and continuous motion.",
       "resetInstructions": "Stationary 30 m before first cone; wheel centered.",
@@ -842,7 +1267,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Two linked bends from one of the layouts."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Two linked bends from one of the layouts.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Prioritize second bend exit even if first apex is compromised; compare with single-corner focus.",
       "resetInstructions": "Stationary 80 m before first bend; RSC start gate at vehicle reset.",
@@ -875,7 +1317,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that tightens toward its exit."
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that tightens toward its exit.",
+        "spawn": {
+          "pos": {
+            "x": 728.81,
+            "y": -823.27,
+            "z": 157.96
+          },
+          "dir": {
+            "x": -0.9557,
+            "y": -0.2936,
+            "z": -0.0214
+          },
+          "up": {
+            "x": -0.0283,
+            "y": 0.0193,
+            "z": 0.9994
+          }
+        }
       },
       "instructions": "Enter conservatively, delay apex, progressively reduce speed as radius tightens.",
       "resetInstructions": "Stationary 80 m before tightening bend, before sightline changes.",
@@ -908,7 +1367,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that opens on exit."
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that opens on exit.",
+        "spawn": {
+          "pos": {
+            "x": 728.81,
+            "y": -823.27,
+            "z": 157.96
+          },
+          "dir": {
+            "x": -0.9557,
+            "y": -0.2936,
+            "z": -0.0214
+          },
+          "up": {
+            "x": -0.0283,
+            "y": 0.0193,
+            "z": 0.9994
+          }
+        }
       },
       "instructions": "Enter at a safe speed, then unwind steering and progressively accelerate as radius opens.",
       "resetInstructions": "Stationary 60 m before opening bend; mark start and exit.",
@@ -941,7 +1417,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A bend hidden by a spoil heap or crest."
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A bend hidden by a spoil heap or crest.",
+        "spawn": {
+          "pos": {
+            "x": 728.81,
+            "y": -823.27,
+            "z": 157.96
+          },
+          "dir": {
+            "x": -0.9557,
+            "y": -0.2936,
+            "z": -0.0214
+          },
+          "up": {
+            "x": -0.0283,
+            "y": 0.0193,
+            "z": 0.9994
+          }
+        }
       },
       "instructions": "Drive the turn from the cockpit at a conservative fixed approach speed, using visible cues.",
       "resetInstructions": "Stationary 100 m before blind turn; avoid using freecam while scoring.",
@@ -974,7 +1467,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). Spiral Descent: uphill and downhill bends."
+        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). Spiral Descent: uphill and downhill bends.",
+        "spawn": {
+          "pos": {
+            "x": 728.81,
+            "y": -823.27,
+            "z": 157.96
+          },
+          "dir": {
+            "x": -0.9557,
+            "y": -0.2936,
+            "z": -0.0214
+          },
+          "up": {
+            "x": -0.0283,
+            "y": 0.0193,
+            "z": 0.9994
+          }
+        }
       },
       "instructions": "Alternate five uphill and five downhill turns at comparable entry speeds.",
       "resetInstructions": "Two starts: 60 m before uphill curve and 60 m before downhill curve.",
@@ -1007,7 +1517,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Banked berm corners."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Banked berm corners.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Drive inside- and outside-camber arcs; note how line and speed change available grip.",
       "resetInstructions": "Stationary 50 m before first cambered segment; direction fixed.",
@@ -1040,7 +1567,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tarmac start line onto gravel."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tarmac start line onto gravel.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Cross tarmac→gravel while turning gently; adapt braking point and steering to lower grip.",
       "resetInstructions": "Stationary 80 m before identified pavement/gravel boundary.",
@@ -1073,7 +1617,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel circuit vs. the tarmac start area (snow: Automation Test Track, optional)."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel circuit vs. the tarmac start area (snow: Automation Test Track, optional).",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Perform 4 controlled corners on snow, 4 on tarmac, 4 on gravel; record safe approach speed and braking behavior.",
       "resetInstructions": "Three saved starts, one on each surface (not identical geometry).",
@@ -1106,7 +1667,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Moderate gravel corner with runoff."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Moderate gravel corner with runoff.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Use a small lift/brake to rotate before apex; reapply throttle to stabilize FWD exit.",
       "resetInstructions": "Stationary 70 m before turn, lower entry speed due to road tires.",
@@ -1139,7 +1717,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open gravel sweeper (parked: RWD drill)."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open gravel sweeper (parked: RWD drill).",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Use steering and moderate power to create rear slip, then meter throttle to stabilize exit.",
       "resetInstructions": "Stationary 70 m before turn; 35–45 km/h entry.",
@@ -1173,7 +1768,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same sweeper (parked: AWD drill)."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same sweeper (parked: AWD drill).",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Compare AWD corner rotation and exit traction with E03; use progressive throttle.",
       "resetInstructions": "Reuse exact E03 start location and timing markers.",
@@ -1207,7 +1819,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: Off-Road Circuit",
         "levelId": "west_coast_usa",
-        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Crest on the off-road circuit."
+        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Crest on the off-road circuit.",
+        "spawn": {
+          "pos": {
+            "x": 566.52,
+            "y": 27.2,
+            "z": 148.3
+          },
+          "dir": {
+            "x": -0.0017,
+            "y": 0.9999,
+            "z": 0.0102
+          },
+          "up": {
+            "x": -0.0176,
+            "y": -0.0103,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "Approach crest in a straight line with light, stable inputs; avoid sudden steering at unloading.",
       "resetInstructions": "Stationary 120 m before chosen accessible crest; straight line at summit.",
@@ -1240,7 +1869,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: Off-Road Circuit",
         "levelId": "west_coast_usa",
-        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Jump on the off-road circuit (or the BMP joker jump)."
+        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Jump on the off-road circuit (or the BMP joker jump).",
+        "spawn": {
+          "pos": {
+            "x": 566.52,
+            "y": 27.2,
+            "z": 148.3
+          },
+          "dir": {
+            "x": -0.0017,
+            "y": 0.9999,
+            "z": 0.0102
+          },
+          "up": {
+            "x": -0.0176,
+            "y": -0.0103,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "Approach square, stabilize car before takeoff and land while maintaining road alignment.",
       "resetInstructions": "Stationary 150 m before jump; same approach direction/speed band.",
@@ -1273,7 +1919,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: Off-Road Circuit",
         "levelId": "west_coast_usa",
-        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Rough sections of the off-road circuit."
+        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Rough sections of the off-road circuit.",
+        "spawn": {
+          "pos": {
+            "x": 566.52,
+            "y": 27.2,
+            "z": 148.3
+          },
+          "dir": {
+            "x": -0.0017,
+            "y": 0.9999,
+            "z": 0.0102
+          },
+          "up": {
+            "x": -0.0176,
+            "y": -0.0103,
+            "z": 0.9998
+          }
+        }
       },
       "instructions": "Traverse uneven road with smooth throttle and minimal large steering corrections.",
       "resetInstructions": "Stationary 80 m before 150–250 m rough section.",
@@ -1306,7 +1969,24 @@
       "environment": {
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). SS1 Deer Creek river crossings."
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). SS1 Deer Creek river crossings.",
+        "spawn": {
+          "pos": {
+            "x": -410.97,
+            "y": -635.14,
+            "z": 121.06
+          },
+          "dir": {
+            "x": -0.9271,
+            "y": 0.3529,
+            "z": -0.126
+          },
+          "up": {
+            "x": -0.1376,
+            "y": -0.0079,
+            "z": 0.9905
+          }
+        }
       },
       "instructions": "Approach with modest speed, cross without stopping midstream, exit onto dry track.",
       "resetInstructions": "Stationary 80 m before ford; choose shallow driveable section.",
@@ -1339,7 +2019,24 @@
       "environment": {
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Any NGRC stage, with its pacenotes."
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Any NGRC stage, with its pacenotes.",
+        "spawn": {
+          "pos": {
+            "x": -410.97,
+            "y": -635.14,
+            "z": 121.06
+          },
+          "dir": {
+            "x": -0.9271,
+            "y": 0.3529,
+            "z": -0.126
+          },
+          "up": {
+            "x": -0.1376,
+            "y": -0.0079,
+            "z": 0.9905
+          }
+        }
       },
       "instructions": "Choose one official stage with co-driver calls. Drive 5 scored runs, calling the next instruction before executing.",
       "resetInstructions": "Official rally-stage starting line; use mission start/restart rather than Home.",
@@ -1372,7 +2069,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). 40-90 s of a BMP layout, repeated."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). 40-90 s of a BMP layout, repeated.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Complete 6 scored runs through exactly the same start, checkpoints and finish.",
       "resetInstructions": "Stationary at custom RSC start gate, ~10 m before segment timing begins.",
@@ -1405,7 +2119,24 @@
       "environment": {
         "mapDisplayName": "Utah: Airstrip",
         "levelId": "utah",
-        "areaHint": "Dirt airstrip (MAPS U2) ~(-330, -562). 200-300 m regularity route along the airstrip."
+        "areaHint": "Dirt airstrip (MAPS U2) ~(-330, -562). 200-300 m regularity route along the airstrip.",
+        "spawn": {
+          "pos": {
+            "x": -329.76,
+            "y": -561.64,
+            "z": 130.1
+          },
+          "dir": {
+            "x": 0.9819,
+            "y": -0.1894,
+            "z": -0.0012
+          },
+          "up": {
+            "x": -0.0034,
+            "y": -0.024,
+            "z": 0.9997
+          }
+        }
       },
       "instructions": "Complete fixed-distance route at a target time set after two practice passes.",
       "resetInstructions": "Stationary 15 m before timing start; fix one target time for whole segment.",
@@ -1438,7 +2169,24 @@
       "environment": {
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). The four NGRC stages, each new to you."
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). The four NGRC stages, each new to you.",
+        "spawn": {
+          "pos": {
+            "x": -410.97,
+            "y": -635.14,
+            "z": 121.06
+          },
+          "dir": {
+            "x": -0.9271,
+            "y": 0.3529,
+            "z": -0.126
+          },
+          "up": {
+            "x": -0.1376,
+            "y": -0.0079,
+            "z": 0.9905
+          }
+        }
       },
       "instructions": "Drive 5 distinct short, previously unused courses once each; focus on road reading.",
       "resetInstructions": "Each new route has its own start gate; no prior timed recce before scored first run.",
@@ -1471,7 +2219,24 @@
       "environment": {
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Full NGRC Rally Utah loop (four stages)."
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Full NGRC Rally Utah loop (four stages).",
+        "spawn": {
+          "pos": {
+            "x": -410.97,
+            "y": -635.14,
+            "z": 121.06
+          },
+          "dir": {
+            "x": -0.9271,
+            "y": 0.3529,
+            "z": -0.126
+          },
+          "up": {
+            "x": -0.1376,
+            "y": -0.0079,
+            "z": 0.9905
+          }
+        }
       },
       "instructions": "Complete the entire multi-stage loop, maintaining focus and minimizing cumulative mistakes.",
       "resetInstructions": "Use actual Rally Mode loop start; mission restart between scored assessments.",
@@ -1504,7 +2269,24 @@
       "environment": {
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Straight and moderate corners of a stage."
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Straight and moderate corners of a stage.",
+        "spawn": {
+          "pos": {
+            "x": -410.97,
+            "y": -635.14,
+            "z": 121.06
+          },
+          "dir": {
+            "x": -0.9271,
+            "y": 0.3529,
+            "z": -0.126
+          },
+          "up": {
+            "x": -0.1376,
+            "y": -0.0079,
+            "z": 0.9905
+          }
+        }
       },
       "instructions": "Induce one random tire deflation and drive slowly to finish, adapting steering/braking.",
       "resetInstructions": "Stationary 40 m before 200–300 m chosen training stretch.",
@@ -1537,7 +2319,24 @@
       "environment": {
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same 40-60 s layout segment for A/B setups."
+        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same 40-60 s layout segment for A/B setups.",
+        "spawn": {
+          "pos": {
+            "x": 110.11,
+            "y": 170.17,
+            "z": 118.3
+          },
+          "dir": {
+            "x": -0.8155,
+            "y": -0.5787,
+            "z": -0.0063
+          },
+          "up": {
+            "x": -0.001,
+            "y": -0.0095,
+            "z": 1.0
+          }
+        }
       },
       "instructions": "Alternate four runs on base config and four on one changed parameter (spring rate if tunable).",
       "resetInstructions": "Stationary at RSC start; save two named car configurations and never move start gate.",
@@ -1570,7 +2369,24 @@
       "environment": {
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). One full NGRC stage."
+        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). One full NGRC stage.",
+        "spawn": {
+          "pos": {
+            "x": -410.97,
+            "y": -635.14,
+            "z": 121.06
+          },
+          "dir": {
+            "x": -0.9271,
+            "y": 0.3529,
+            "z": -0.126
+          },
+          "up": {
+            "x": -0.1376,
+            "y": -0.0079,
+            "z": 0.9905
+          }
+        }
       },
       "instructions": "Complete three stage attempts combining notes, braking, rotation, hazards and pace.",
       "resetInstructions": "Use official stage start; establish a clean reference time before scoring.",
