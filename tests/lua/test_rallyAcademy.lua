@@ -793,6 +793,16 @@ function T.b01_marking_says_stop_zone_and_the_run_ends_on_stopping()
   eq(h.lastState().attempts, 1, 'ended on stopping and was graded')
 end
 
+-- The HUD merges each published state into the last one, so "no grade" must be sent
+-- explicitly or the previous drill's checks stay on screen.
+function T.changing_drill_clears_the_shown_grade()
+  local h, M = setupB01(107)
+  brakingRun(h, M, {})
+  assert(h.lastState().grade, 'graded first')
+  M.select('A01')
+  eq(h.lastState().grade, false, 'grade cleared on drill change')
+end
+
 function T.self_assessed_drills_still_wait_for_pass_or_miss()
   local h, M = setup()
   markStartAndFinish(h, M, 'B04')
@@ -801,7 +811,7 @@ function T.self_assessed_drills_still_wait_for_pass_or_miss()
   local s = h.lastState()
   eq(s.phase, 'review', 'waiting for the driver')
   eq(s.attempts, 0, 'not recorded automatically')
-  eq(s.grade, nil, 'no automatic grade')
+  eq(s.grade, false, 'no automatic grade')
 end
 
 function T.every_rule_in_the_drill_data_is_known_with_its_parameters()

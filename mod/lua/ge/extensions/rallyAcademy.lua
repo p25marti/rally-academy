@@ -119,7 +119,7 @@ local function output(includeCatalog)
     hasStart = startState ~= nil,
     hasFinish = finishGate ~= nil,
     progress = progress.lessons,
-    grade = lastGrade
+    grade = lastGrade or false -- explicit: the HUD merges updates, so a missing key would keep the old grade
   })
 end
 
