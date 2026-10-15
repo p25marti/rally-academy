@@ -605,10 +605,14 @@ end
 
 -- Main-menu screen (ui/ui-vue/mods/rallyAcademy) --------------------------------
 
+local APP_INFO_FILE = 'ui/modules/apps/RallyAcademy/app.json' -- version kept in sync by dev.py
+
 -- Everything the menu shows: every drill in curriculum order (file order), progress,
--- and the drill selected in the HUD.
+-- the drill selected in the HUD, and the mod's version and author (About, Credits).
 function M.getMenuData()
-  return {lessons = lessons, progress = progress.lessons, selected = selected}
+  local app = jsonReadFile(APP_INFO_FILE) or {}
+  return {lessons = lessons, progress = progress.lessons, selected = selected,
+          info = {version = app.version, author = app.author}}
 end
 
 -- Start button: select the drill and go to it (loads its map from the main menu).

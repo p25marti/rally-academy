@@ -49,6 +49,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   drills in order with your progress and what each one grades, then **Start drill**
   to load its map, car and start in one press. Auto-graded drills are highlighted;
   the rest are tagged **Coming soon** and can still be practised with Pass/Miss.
+  Tabs: **Exercises**, **Analysis** (attempts, pass rates, best times and progress per
+  module, from your saved progress), **About** and **Credits**.
 
 ### Changed
 - Go to drill starts maps the way the game's Freeroam menu does, so it also works from

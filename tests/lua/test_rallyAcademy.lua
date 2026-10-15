@@ -992,6 +992,8 @@ function T.menu_data_lists_every_drill_in_order_with_progress()
   eq(d.lessons[48].id, 'F08', 'and ends at F08')
   eq(d.progress.A01.totalPasses, 1, 'progress included')
   eq(d.selected, 'A01', 'current HUD drill')
+  eq(d.info.version, jsonReadFile('ui/modules/apps/RallyAcademy/app.json').version, 'mod version for About')
+  assert(d.info.author, 'author for Credits')
 end
 
 function T.menu_start_selects_the_drill_and_loads_its_map()

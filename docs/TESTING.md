@@ -78,7 +78,8 @@ BeamNG version and result in the PR.
     show in order with your progress; only auto-graded drills (A04, B01) lack the
     **Coming soon** tag. Pick one, then **Start drill**: its map loads, the
     menu closes, the HUD appears and you're in the drill car at its start or venue.
-    Re-test this after every game update (the Vue mod API is new in 0.39).
+    The Analysis, About and Credits tabs open and show your totals, the version and the
+    author. Re-test this after every game update (the Vue mod API is new in 0.39).
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.
 

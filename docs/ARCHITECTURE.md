@@ -114,7 +114,9 @@ runtime-compiled `.vue` files that can add main-menu buttons, routes, pause-menu
 tabs and slots, with no build step. The main-menu **Academy screen** uses it
 ([ADR 0005](decisions/0005-main-menu-via-vue-ui-mods.md)):
 `mod/ui/ui-vue/mods/rallyAcademy/` (`index.js` registers the button and the
-`menu.rallyAcademy` route; `AcademyMenu.vue` is the screen). It calls
+`menu.rallyAcademy` route; `AcademyMenu.vue` is the screen, with the game's tabs for
+`pages/ExercisesPage.vue`, `AnalysisPage.vue`, `AboutPage.vue` and `CreditsPage.vue`;
+`academy.js` holds shared helpers). It calls
 `extensions.rallyAcademy.getMenuData()` and `startDrill(id)`. Rebuilding the HUD in
 Vue is the planned next step.
 
