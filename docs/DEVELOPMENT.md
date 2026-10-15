@@ -26,9 +26,9 @@ Installing the Lua tools:
   python tools/dev.py check --strict
   ```
 
-  Run the second line from the repo root. The script ends with
-  `luajit: command not found`; that's harmless (the prefix isn't on WSL's PATH,
-  and `dev.py` sets it up itself). Tools on the native `PATH` take precedence.
+  Run the second line from the repo root; it ends by printing the LuaJIT and
+  luacheck versions. The prefix isn't on WSL's PATH, but `dev.py` sets that up
+  itself. Tools on the native `PATH` take precedence.
   Keep the repo and BeamNG on the Windows side: the game needs the Windows
   junction, and its MCP server on `127.0.0.1` isn't reachable from WSL2 by default.
 
