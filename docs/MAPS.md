@@ -25,6 +25,7 @@ Load ≈ 80 s (biggest map).
 | W3 | **BMP dirt circle** | (265, 40, ~) | DIRT_DUSTY | ≈ 50 m circular infield, dead flat, light towers round the edge: a natural skidpad |
 | W4 | Quarry | (729, −823, 158) | GRAVEL | Haul roads, terraces, spoil heaps; Spiral Descent for gradients. Cluttered |
 | W5 | Off-Road Circuit | (567, 27, 148) | DIRT_DUSTY / rocky | Rough dirt figure-eight with jumps |
+| W6? | Asphalt circle pad near BMP | (406, −122, 145) | ASPHALT | Candidate, not yet checked in a drill: found by `survey.py corners` (a 343° loop, radius ≈ 26–31 m, 9 m wide) and seen in the venue report as a large pad with a painted circle. Could suit circle drills on tarmac (B05, C06 variants) |
 
 ### Utah (`utah`): rally stages and desert
 Load ≈ 30 s.
@@ -119,7 +120,9 @@ One map per module (about six loads over the course), each drill where it fits b
 
 ## Method (repeatable)
 
-Scripts drive the game through its MCP server (not in the repo):
+The tools are in the repo: [TESTING → Finding a venue](TESTING.md#finding-a-venue) (Save spot,
+`tools/ingame/survey.py` finders and report). The original survey that produced the table
+above used:
 1. **Routes**: start pose and checkpoints from the mission's `race.race.json`;
    tyre contact read at every checkpoint (catches road meshes the terrain can't see).
 2. **Open ground**: terrain sampled every 16 m (`core_terrain.getTerrainHeight`,

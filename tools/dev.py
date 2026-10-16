@@ -257,7 +257,19 @@ def cmd_lint(args=None) -> None:
     ok(f"luacheck clean ({where})")
 
 
+def python_tests() -> None:
+    """Unit tests for the Python tooling (tests/python, stdlib unittest)."""
+    result = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests/python", "-q"],
+                            cwd=ROOT, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(result.stdout + result.stderr)
+        fail("Python tool tests failed")
+    ran = re.search(r"Ran (\d+) tests?", result.stderr)
+    ok(f"Python tool tests pass ({ran.group(1) if ran else '?'} tests)")
+
+
 def cmd_test(args=None) -> None:
+    python_tests()
     tool = lua_tool("luajit")
     if not tool:
         if args is not None and getattr(args, "strict", False):

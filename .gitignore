@@ -20,3 +20,6 @@ desktop.ini
 # Local BeamNG artefacts that sometimes get copied in while debugging
 beamng.log
 *.log
+
+# Venue reports (tools/ingame/survey.py report): local output, can be large
+venue-reports/

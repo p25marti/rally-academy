@@ -68,6 +68,12 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - `python tools/dev.py ingame <scenario>`: scripted in-game checks (smoke, B01, A04,
   A05/B02, A02) through the game's MCP server, kept in `tools/ingame/`.
 
+- **Save spot** binding (Options → Controls → "Rally Academy: Save spot"): bookmark where you
+  are as a possible drill venue, with room, slope, the nearest road and surfaces measured.
+- Venue tools for contributors: road-network finders (straights, corners, hills, crests),
+  an open-area terrain scan, and an HTML venue report with aerial views
+  (`tools/ingame/survey.py`).
+
 ### Removed
 - Six stage drills (F01 pacenotes, F02 consistency, F03 regularity, F04 unfamiliar stages, F05
   long stage, F08 full stage): the game's own Rally mode does these properly, and the Academy

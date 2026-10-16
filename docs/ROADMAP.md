@@ -37,6 +37,26 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
       physics paused.
 - [ ] Polish: venue images per drill, recommended next drill, attempt history.
 
+## Venue tooling: finding and testing drill locations
+
+Workflow: [TESTING → Finding a venue](TESTING.md#finding-a-venue). All six steps are planned;
+the first three are built.
+
+- [x] **Save spot** binding: bookmark where you are (pose, room, slope, nearest road,
+      surfaces) while driving (`spots.lua`, `settings/rallyAcademy/spots.json`).
+- [x] **Venue report** (`survey.py report`): saved spots plus the finders' best, each with an
+      aerial view, measured surfaces and room, and a teleport command, as one HTML file.
+- [x] **Road finders** on the AI road network (`roads.py`): straights, corners (radius,
+      decreasing or increasing, hairpins), hills, crests; and a terrain scan for open areas.
+- [ ] **Drill venue needs as data:** a `venueNeeds` block per drill (length, width,
+      surfaces, slope, room), so the finders and the report say which drills a spot suits
+      and the validator flags drills without one.
+- [ ] **Fit test:** `dev.py ingame fit <drill> --spot <id>` drives the drill's scripted pass
+      run at a candidate and reports contact, leaving the surface, running out of room or a
+      nudged start, before any drill depends on the spot.
+- [ ] **Venues as data:** `venues.json` with named spots that drills refer to, instead of a
+      copy in each drill's `environment`. Pairs with promoting setups into drill data (P1).
+
 ## P2 — First automatically graded drill
 
 Capabilities, drill-by-drill needs and build order: [GRADING.md](GRADING.md).

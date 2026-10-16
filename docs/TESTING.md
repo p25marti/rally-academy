@@ -91,20 +91,37 @@ Recorded runs pin the grading rules to real physics (`tests/lua/test_fixtures.lu
 4. Describe how it was driven (game version, map, car, inputs) in the header of
    `test_fixtures.lua`, and add a test that today's rules give the verdict the game showed.
 
-## Surveying a venue
+## Finding a venue
 
-`tools/ingame/survey.py` answers the questions a drill's setup needs, on the map you're on:
+Tools for finding and checking places for drills (venue ideas live in [MAPS.md](MAPS.md)).
+Load the map first.
 
-```sh
-python tools/ingame/survey.py here                                  # room around the car, surface under each wheel
-python tools/ingame/survey.py surfaces --along=20,60 --side=-8,0,8  # surface grid ahead of / across from the car
-python tools/ingame/survey.py terrain 110 170 100 160               # terrain ground model at points
-python tools/ingame/survey.py configs covet                         # a model's config keys
-python tools/ingame/survey.py levels                                # installed maps
-```
+1. **Drive and bookmark.** Bind **Rally Academy: Save spot** (Options → Controls) and press
+   it wherever a drill could work. Each spot records pose, room to walls and barriers in eight
+   directions, slope, the nearest road's width, and the surface under each wheel, in
+   `<user folder>/settings/rallyAcademy/spots.json`.
+2. **Let the finders look too.** They search the map's AI road network, with no driving:
+   ```sh
+   python tools/ingame/survey.py straights --min-length 150   # braking and speed drills
+   python tools/ingame/survey.py corners --max-radius 40      # hairpins, decreasing/increasing radius
+   python tools/ingame/survey.py hills                        # climbs and descents
+   python tools/ingame/survey.py crests                       # jumps and crests
+   python tools/ingame/survey.py open                         # open flat loose areas (terrain scan, slow)
+   ```
+3. **Review them together.** `python tools/ingame/survey.py report` (add `--open` for open
+   areas, `--quick` to skip measuring) writes `venue-reports/<map>/index.html`: one card per
+   saved spot or find, with an aerial view (HUD hidden), measured surfaces and room, and the
+   command to go there. It moves the car and camera, then puts them back, and moves the
+   game's screenshot copies out of your user folder into the report. The report is
+   local output and not committed.
+4. **Go and look.** `survey.py goto 3` (a saved spot) or `goto --at=X,Y,Z,DX,DY` (a find),
+   then `survey.py here` for room and surfaces, or `survey.py surfaces --along=20,60
+   --side=-8,0,8` for a grid across the road.
+5. **Record it** in MAPS.md, and use the surfaces in the drill's `on_surface` rule.
 
-Record findings in [MAPS.md](MAPS.md) (venues) and use the surface names in `on_surface`
-rules. `surfaces` moves the car around and then puts it back.
+Smaller commands: `terrain X Y …` (terrain ground model at points), `configs [model]`,
+`levels`, `spots [--all]`. Not every find is drivable: the road network includes bridges,
+car parks and loops, which is why the report shows a picture.
 
 ## In-game smoke test
 

@@ -121,6 +121,10 @@ file from the user folder into `tests/fixtures/` and note how it was driven at t
 decorated with `@scenario`. Use the `academy.py` helpers, return a list of problems, and
 clean up any progress you record (`A.clear_progress`). List it in TESTING.
 
+**Find a venue:** bookmark with the Save spot binding, or run the finders (`survey.py
+straights|corners|hills|crests|open`). Review them with `survey.py report`, check a spot with
+`goto` and `here`, then record it in MAPS.md ([TESTING → Finding a venue](docs/TESTING.md#finding-a-venue)).
+
 **UI changes:**
 1. Use native components (`@/common/components/base`) and `--bng-*` colours.
 2. The pause card is about 450 px wide; the HUD panel is 390×340.

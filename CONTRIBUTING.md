@@ -41,8 +41,9 @@ Say in your PR how you tested, and what you couldn't test.
 - **Make a drill auto-graded.** Pick a "Coming soon" drill whose needs are already built
   (see GRADING's coverage table): gates, stop zones, lockup, wheelspin, spin, leaving the
   road, damage. The recipe is in [AGENTS.md](AGENTS.md#recipes).
-- **Survey a venue** for a drill without a good spot yet (`tools/ingame/survey.py`), and
-  record it in [MAPS.md](docs/MAPS.md).
+- **Find a venue** for a drill without a good spot yet: bookmark spots while driving, run
+  `survey.py report`, and record what works in [MAPS.md](docs/MAPS.md)
+  ([how](docs/TESTING.md#finding-a-venue)).
 - **Improve a drill's text:** instructions and pass criteria live in `exercises.json`.
 - **Check an "unverified" row** in [BEAMNG_API_NOTES](docs/BEAMNG_API_NOTES.md) on your game
   version.
