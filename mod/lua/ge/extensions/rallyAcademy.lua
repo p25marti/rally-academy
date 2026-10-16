@@ -1,42 +1,49 @@
--- Rally Academy prototype (BeamNG GE Lua). In-game status: docs/BEAMNG_API_NOTES.md.
+-- Rally Academy (BeamNG GE Lua extension): drill session, timing, grading, progress.
+-- Design: docs/ARCHITECTURE.md. Engine API status: docs/BEAMNG_API_NOTES.md.
 -- UI calls extensions.load('rallyAcademy') and extensions.rallyAcademy.<method>().
 local M = {}
 -- Re-read our pure modules whenever the extension (re)loads: extensions.reload re-runs
 -- this file but `require` would keep the old modules (seen on 0.39.4).
-for _, name in ipairs({'runRecord', 'rules', 'gates'}) do package.loaded['ge/extensions/rallyAcademy/' .. name] = nil end
+for _, name in ipairs({'runRecord', 'rules', 'gates', 'store', 'course'}) do package.loaded['ge/extensions/rallyAcademy/' .. name] = nil end
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
 local Rules = require('ge/extensions/rallyAcademy/rules')
 local Gates = require('ge/extensions/rallyAcademy/gates')
+local Store = require('ge/extensions/rallyAcademy/store')
+local Course = require('ge/extensions/rallyAcademy/course')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
-local SAVE_FILE = 'settings/rallyAcademyProgress.json'
--- Marked starts/finishes/gates, per map then drill: levels[levelId][drillId] = {start, finish, gates}
-local SETUPS_FILE = 'settings/rallyAcademySetups.json'
 local lessons, byId, lessonSummary = {}, {}, {}
-local progress = {schemaVersion = 1, lessons = {}}
+local progress = {schemaVersion = 1, lessons = {}} -- store.lua has the file formats
 local setups = {schemaVersion = 1, levels = {}}
 local selected, startState, finishGate = nil, nil, nil
-local phase, elapsed, uiAccum = 'idle', 0, 0
-local lastTime, lastReason = nil, ''
+local phase, lastReason = 'idle', ''
 local attempts, successes = 0, 0
 local activeVehicleId = nil
 -- Telemetry (docs/decisions/0004): the current or most recent attempt's record.
 local TELEMETRY_RATE = 60
 local LAST_RUN_FILE = 'settings/rallyAcademy/lastRun.json'
 local run, samplingVehId = nil, nil
--- Automatic grading: the last run's checks, and how long the car has been standing still.
-local lastGrade, stillT = nil, 0
--- Where the car came to rest after Retry. The repair-teleport can nudge the car ~2 m a
--- frame after it lands (seen on 0.39.4 next to barriers), so the start is armed only
--- SETTLE_FOR after Retry, and departure is measured from the last spot the car was slow at.
-local originPos, settleT = nil, 0
--- Gates (gates.lua) marked for the selected drill on this map, in driving order; during
--- a run, the next gate to pass, each gate's result so far, and last frame's position.
+-- Gates (gates.lua) marked for the selected drill on this map, in driving order.
 local gates = {}
-local gateIdx, gateResults, prevPos = 1, {}, nil
 -- The car's telemetry reaches GE about a frame late (0.39.4), so after the last gate the
 -- run keeps recording briefly before it is graded; the time is taken at the gate.
 local GRADE_DELAY = 0.3 -- s of sim time
-local endingIn, endTime = nil, nil
+
+-- Per-run state. resetRun() replaces it wholesale (Retry, drill change, abandoned run, Go to
+-- drill), so nothing from one run leaks into the next.
+--   elapsed, lastTime  run clock and final time (s of sim time); grade = last automatic grade
+--   settleT, originPos the repair-teleport can nudge the car ~2 m a frame after it lands
+--                      (0.39.4, next to barriers), so the start arms SETTLE_FOR after Retry and
+--                      departure is measured from the last spot the car was slow at
+--   stillT             how long the car has been standing still (endWhen 'stopped')
+--   gateIdx, gateResults, prevPos  next gate, each gate's live result, last frame's position
+--   endingIn, endTime  grading delay after the last gate, and the time taken at the gate
+--   uiAccum            time since the last HUD update
+local cur
+local function resetRun()
+  cur = {elapsed = 0, lastTime = nil, grade = nil, settleT = 0, originPos = nil, stillT = 0,
+         gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0}
+end
+resetRun()
 local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
 local STOPPED_SPEED, STOPPED_FOR, STOPPED_MIN_DIST = 0.3, 0.5, 5 -- m/s, s, m from the start
 -- Go to drill: drill waiting for its map to load; car swap in progress; deferred placement.
@@ -128,14 +135,14 @@ local function output(includeCatalog)
     successes = successes,
     required = lesson and lesson.assessment.requiredPasses or 0,
     target = lesson and lesson.assessment.attempts or 0,
-    elapsed = elapsed,
-    lastTime = lastTime,
+    elapsed = cur.elapsed,
+    lastTime = cur.lastTime,
     reason = lastReason,
     hasStart = startState ~= nil,
     hasFinish = finishGate ~= nil,
     gateCount = #gates,
     progress = progress.lessons,
-    grade = lastGrade or false -- explicit: the HUD merges updates, so a missing key would keep the old grade
+    grade = cur.grade or false -- explicit: the HUD merges updates, so a missing key would keep the old grade
   })
 end
 
@@ -148,27 +155,20 @@ local function load()
     table.insert(lessonSummary, {id=lesson.id, title=lesson.title, module=lesson.module,
       parked=lesson.parked ~= nil or nil})
   end
-  local saved = jsonReadFile(SAVE_FILE)
-  if type(saved) == 'table' and type(saved.lessons) == 'table' then progress = saved
-  elseif saved ~= nil then logf('W', 'ignoring unreadable %s', SAVE_FILE) end
-  local savedSetups = jsonReadFile(SETUPS_FILE)
-  if type(savedSetups) == 'table' and type(savedSetups.levels) == 'table' then setups = savedSetups
-  elseif savedSetups ~= nil then logf('W', 'ignoring unreadable %s', SETUPS_FILE) end
+  local warn
+  progress, warn = Store.loadProgress()
+  if warn then logf('W', '%s', warn) end
+  setups, warn = Store.loadSetups()
+  if warn then logf('W', '%s', warn) end
   logf('I', 'loaded %d drills on map %s', #lessons, levelId())
 end
 
-local function saveProgress()
-  jsonWriteFile(SAVE_FILE, progress, true)
-end
+local function saveProgress() Store.saveProgress(progress) end
 
--- Persist the selected drill's start/finish for the current map. The vehicle id
--- isn't saved: ids change every session, and Retry applies to the current car.
+-- Persist the selected drill's start, finish and gates for the current map.
 local function saveSetup()
-  local lvl = levelId()
-  setups.levels[lvl] = setups.levels[lvl] or {}
   local start = startState and {pos = startState.pos, dir = startState.dir, up = startState.up} or nil
-  setups.levels[lvl][selected] = {start = start, finish = finishGate, gates = #gates > 0 and gates or nil}
-  jsonWriteFile(SETUPS_FILE, setups, true)
+  Store.putSetup(setups, levelId(), selected, {start = start, finish = finishGate, gates = #gates > 0 and gates or nil})
 end
 
 function M.onExtensionLoaded()
@@ -181,7 +181,7 @@ function M.publish() output(true) end
 -- Load the selected drill's saved start/finish for the current map (or clear them).
 local function loadSetup()
   startState, finishGate, gates = nil, nil, {}
-  local saved = setups.levels[levelId()] and setups.levels[levelId()][selected]
+  local saved = Store.getSetup(setups, levelId(), selected)
   if saved and type(saved.gates) == 'table' then gates = saved.gates end
   if saved and saved.start then
     startState, finishGate = saved.start, saved.finish
@@ -196,7 +196,8 @@ end
 local function backToSetup(reason)
   logf('I', '%s: run abandoned (%s)', tostring(selected), reason)
   endRun('abandoned')
-  phase, elapsed, lastTime = 'setup', 0, nil
+  phase = 'setup'
+  resetRun()
   activeVehicleId = nil
   lastReason = reason
   output()
@@ -225,8 +226,8 @@ function M.select(id)
   if id ~= selected then pendingGoTo, arriveIn, awaitingCar = nil, nil, nil end -- changed your mind mid-trip
   if RunRecord.isOpen(run) then endRun('abandoned') end
   selected = id
-  phase, elapsed, attempts, successes, lastTime = 'setup', 0, 0, 0, nil
-  lastGrade = nil
+  phase, attempts, successes = 'setup', 0, 0
+  resetRun()
   activeVehicleId = nil
   loadSetup()
   if byId[id].parked then
@@ -306,9 +307,7 @@ function M.retry()
                        start = startState.pos, finish = finishGate, gates = #gates > 0 and gates or nil})
   startSampling(veh)
   logf('I', 'retry: %s, vehicle %s reset to start', selected, tostring(activeVehicleId))
-  elapsed, lastTime, lastGrade, stillT, originPos, settleT = 0, nil, nil, 0, nil, 0
-  gateIdx, gateResults, prevPos = 1, {}, nil
-  endingIn, endTime = nil, nil
+  resetRun()
   phase = 'ready'
   lastReason = 'Car reset and repaired. Accelerate to begin; Retry again any time.'
   if endsAtLastGate() and #gates == 0 then
@@ -317,10 +316,10 @@ function M.retry()
   output()
 end
 
--- MVP scoring is intentionally *self-assessed*. Crossing a finish gate only stops the timer.
--- Only a driven run can be scored: one that reached the finish, or one the driver
--- ends with Pass/Miss when the drill has no finish gate. With a finish gate, a
--- run in progress can only be abandoned (Miss), so a partial time never counts.
+-- Score an attempt: self-assessed drills via the Pass/Miss buttons, automatic drills from
+-- finishRun. Only a driven run can be scored: one that reached its end, or one the driver
+-- ends with Pass/Miss when the drill has no end of its own. A run that does end on its own
+-- can only be abandoned mid-run (Miss), so a partial time never counts.
 function M.recordAttempt(passed)
   if not selected then return end
   local finished = phase == 'review' or (phase == 'running' and not hasEnd())
@@ -330,17 +329,17 @@ function M.recordAttempt(passed)
     lastReason = 'Finish the run to score a pass, or press Miss to abandon it.'
     output(); return
   end
-  if phase == 'running' then lastTime = finished and elapsed or nil end
+  if phase == 'running' then cur.lastTime = finished and cur.elapsed or nil end
   if RunRecord.isOpen(run) then endRun(finished and 'finished' or 'abandoned') end
-  if run and not run.score then run.score = {passed = passed == true, time = lastTime} end
+  if run and not run.score then run.score = {passed = passed == true, time = cur.lastTime} end
   attempts = attempts + 1
   if passed == true then successes = successes + 1 end
   phase = 'scored'
   local entry = progress.lessons[selected] or {totalAttempts=0, totalPasses=0, bestTime=nil}
   entry.totalAttempts = entry.totalAttempts + 1
   entry.totalPasses = entry.totalPasses + (passed and 1 or 0)
-  if passed and lastTime and (not entry.bestTime or lastTime < entry.bestTime) then
-    entry.bestTime = lastTime
+  if passed and cur.lastTime and (not entry.bestTime or cur.lastTime < entry.bestTime) then
+    entry.bestTime = cur.lastTime
   end
   local config = byId[selected].assessment
   if attempts >= config.attempts then
@@ -349,30 +348,12 @@ function M.recordAttempt(passed)
   progress.lessons[selected] = entry
   saveProgress()
   logf('I', '%s: %s, time %s, session %d/%d', selected, passed and 'PASS' or 'MISS',
-    lastTime and string.format('%.2f s', lastTime) or '-', successes, attempts)
+    cur.lastTime and string.format('%.2f s', cur.lastTime) or '-', successes, attempts)
   lastReason = (passed and 'Recorded a clean attempt.' or 'Recorded an unsuccessful attempt.')
   output()
 end
 
--- Course markers --------------------------------------------------------------
--- Gates, stop zone and finish circle drawn in the world every frame (debugDrawer: a
--- debug overlay, not scene objects, so nothing to clean up and no collisions).
-local COLOURS = {
-  upcoming = {0.55, 0.8, 1, 0.85}, next = {1, 0.82, 0.1, 0.95},
-  passed = {0.25, 0.9, 0.4, 0.9}, missed = {1, 0.3, 0.3, 0.9}, zone = {0.25, 0.9, 0.4, 0.35},
-}
-local function colour(name) local c = COLOURS[name]; return ColorF(c[1], c[2], c[3], c[4]) end
-
-local function drawGate(g, state)
-  local c = colour(state)
-  local rx, ry, half = g.dir.y, -g.dir.x, g.width / 2 -- right of the gate, facing dir
-  local z0, z1 = g.pos.z - 0.6, g.pos.z + 1.4
-  local left = {x = g.pos.x - rx * half, y = g.pos.y - ry * half}
-  local right = {x = g.pos.x + rx * half, y = g.pos.y + ry * half}
-  debugDrawer:drawCylinder(vec3(left.x, left.y, z0), vec3(left.x, left.y, z1), 0.12, c)
-  debugDrawer:drawCylinder(vec3(right.x, right.y, z0), vec3(right.x, right.y, z1), 0.12, c)
-  debugDrawer:drawCylinder(vec3(left.x, left.y, z1), vec3(right.x, right.y, z1), 0.05, c)
-end
+-- Course markers (course.lua draws them) ------------------------------------------
 
 local function stopZoneSize()
   for _, r in ipairs(assessment().rules or {}) do
@@ -381,64 +362,37 @@ local function stopZoneSize()
   return 5, 6
 end
 
-local function drawStopZone(zone)
-  local len, wid = stopZoneSize()
-  local d = vec3(zone.dir.x, zone.dir.y, 0):normalized()
-  local r = vec3(d.y, -d.x, 0)
-  local centre = vec3(zone.pos.x, zone.pos.y, zone.pos.z - 0.4)
-  local corners = {centre + d * (len / 2) + r * (wid / 2), centre + d * (len / 2) - r * (wid / 2),
-                   centre - d * (len / 2) - r * (wid / 2), centre - d * (len / 2) + r * (wid / 2)}
-  local c = colour('passed')
-  for i = 1, 4 do
-    debugDrawer:drawCylinder(corners[i], corners[i % 4 + 1], 0.06, c)
-  end
-end
-
--- Marked with the car's front bumper on the line; the car's centre was half a car length
--- behind it, so draw the line ~2 m ahead of the marked centre (Covet: ~4 m long).
-local function drawStopLine(line)
-  local d = vec3(line.dir.x, line.dir.y, 0):normalized()
-  local r = vec3(d.y, -d.x, 0)
-  local mid = vec3(line.pos.x, line.pos.y, line.pos.z - 0.4) + d * 2
-  debugDrawer:drawCylinder(mid - r * 4, mid + r * 4, 0.08, colour('passed'))
-end
-
 local function drawCourse()
-  if not (debugDrawer and ColorF) then return end
-  for i, g in ipairs(gates) do
-    local state = gateResults[i] or ((phase == 'ready' or phase == 'running') and i == gateIdx and 'next') or 'upcoming'
-    drawGate(g, state)
-  end
-  if finishGate and usesStopLine() and finishGate.dir then
-    drawStopLine(finishGate)
-  elseif finishGate and endsOnStop() and finishGate.dir then
-    drawStopZone(finishGate)
-  elseif finishGate and finishGate.pos then
-    local p = finishGate.pos
-    debugDrawer:drawCylinder(vec3(p.x, p.y, p.z - 0.5), vec3(p.x, p.y, p.z - 0.45), finishGate.radius or 5, colour('zone'))
-  end
+  local zoneLength, zoneWidth = stopZoneSize()
+  Course.draw({
+    gates = gates, gateResults = cur.gateResults,
+    nextGate = (phase == 'ready' or phase == 'running') and cur.gateIdx or nil,
+    finish = finishGate,
+    finishKind = usesStopLine() and 'line' or endsOnStop() and 'zone' or 'circle',
+    zoneLength = zoneLength, zoneWidth = zoneWidth,
+  })
 end
 
 -- End the run (finish reached, or stopped); automatic drills grade and record it.
 local function finishRun(how, atTime)
-  lastTime = atTime or elapsed
+  cur.lastTime = atTime or cur.elapsed
   phase = 'review'
-  logf('I', '%s: %s in %.2f s', selected, how, lastTime)
+  logf('I', '%s: %s in %.2f s', selected, how, cur.lastTime)
   endRun('finished')
   local a = assessment()
   if a.mode ~= 'automatic' then
     lastReason = (endsOnStop() and 'Stopped.' or 'Finish reached.') .. ' Grade the technique using Pass/Miss.'
     output(); return
   end
-  lastGrade = Rules.evaluate(a.rules, run, {zone = finishGate, gates = gates})
-  if run then run.grade = lastGrade end
+  cur.grade = Rules.evaluate(a.rules, run, {zone = finishGate, gates = gates})
+  if run then run.grade = cur.grade end
   local firstFail
-  for _, c in ipairs(lastGrade.checks) do
+  for _, c in ipairs(cur.grade.checks) do
     logf('I', '%s:   %s %s', selected, c.ok and 'ok  ' or 'FAIL', c.text)
     if not c.ok and not firstFail then firstFail = c.text end
   end
-  M.recordAttempt(lastGrade.passed)
-  lastReason = (lastGrade.passed and 'PASS.' or ('MISS: ' .. firstFail .. '.')) .. ' Retry for the next attempt.'
+  M.recordAttempt(cur.grade.passed)
+  lastReason = (cur.grade.passed and 'PASS.' or ('MISS: ' .. firstFail .. '.')) .. ' Retry for the next attempt.'
   output()
 end
 
@@ -464,19 +418,19 @@ function M.onUpdate(dtReal, dtSim)
     backToSetup('Vehicle changed. Press Retry to start a new run in this car.')
     return
   end
-  uiAccum = uiAccum + (dtReal or 0)
+  cur.uiAccum = cur.uiAccum + (dtReal or 0)
   local speed = veh:getVelocity():length()
   -- The frame after a teleport reports a huge velocity (~430 m/s seen in 0.39.4), and
-  -- the car may still be nudged: arm the start only once it has settled (see originPos).
+  -- the car may still be nudged: arm the start only once it has settled (see cur.originPos).
   if phase == 'ready' then
-    settleT = settleT + math.max(0, dtReal or 0)
-    if not originPos or speed < SETTLE_SPEED then originPos = vec3(veh:getPosition()) end
+    cur.settleT = cur.settleT + math.max(0, dtReal or 0)
+    if not cur.originPos or speed < SETTLE_SPEED then cur.originPos = vec3(veh:getPosition()) end
   end
-  local fromOrigin = originPos and (veh:getPosition() - originPos):length() or 0
-  local leftStart = settleT >= SETTLE_FOR and fromOrigin > 0.5
+  local fromOrigin = cur.originPos and (veh:getPosition() - cur.originPos):length() or 0
+  local leftStart = cur.settleT >= SETTLE_FOR and fromOrigin > 0.5
   if phase == 'ready' and speed > 1 and leftStart then
     phase = 'running'
-    prevPos = vec3(veh:getPosition())
+    cur.prevPos = vec3(veh:getPosition())
     RunRecord.markRunStart(run)
     logf('I', '%s: run started', selected)
     lastReason = 'Run started.'
@@ -484,39 +438,40 @@ function M.onUpdate(dtReal, dtSim)
   end
   if phase ~= 'running' then return end
   -- dtSim is game-simulation time, unlike wall clock. Physics pause should not add time.
-  elapsed = elapsed + math.max(0, dtSim or 0)
+  cur.elapsed = cur.elapsed + math.max(0, dtSim or 0)
   local vpos = vec3(veh:getPosition())
-  if prevPos and gates[gateIdx] then
+  if cur.prevPos and gates[cur.gateIdx] then
     -- Live gate feedback; grading re-reads the gates from the run record (rules.lua).
-    local c = Gates.crossing(gates[gateIdx], prevPos, vpos)
+    local c = Gates.crossing(gates[cur.gateIdx], cur.prevPos, vpos)
     if c then
-      gateResults[gateIdx] = c.inside and 'passed' or 'missed'
-      lastReason = c.inside and string.format('Gate %d of %d: %.0f km/h', gateIdx, #gates, speed * 3.6)
-        or string.format('Missed gate %d (%s)', gateIdx, Gates.missText(gates[gateIdx], c.offset))
-      logf('I', '%s: gate %d %s at %.0f km/h, %.1f m off centre', selected, gateIdx, gateResults[gateIdx], speed * 3.6, c.offset)
-      gateIdx = gateIdx + 1
-      uiAccum = 1 -- publish now
-      if endsAtLastGate() and gateIdx > #gates then endingIn, endTime = GRADE_DELAY, elapsed end
+      cur.gateResults[cur.gateIdx] = c.inside and 'passed' or 'missed'
+      lastReason = c.inside and string.format('Gate %d of %d: %.0f km/h', cur.gateIdx, #gates, speed * 3.6)
+        or string.format('Missed gate %d (%s)', cur.gateIdx, Gates.missText(gates[cur.gateIdx], c.offset))
+      logf('I', '%s: gate %d %s at %.0f km/h, %.1f m off centre', selected, cur.gateIdx,
+        cur.gateResults[cur.gateIdx], speed * 3.6, c.offset)
+      cur.gateIdx = cur.gateIdx + 1
+      cur.uiAccum = 1 -- publish now
+      if endsAtLastGate() and cur.gateIdx > #gates then cur.endingIn, cur.endTime = GRADE_DELAY, cur.elapsed end
     end
   end
-  prevPos = vpos
-  if endingIn then
-    endingIn = endingIn - math.max(0, dtSim or 0)
-    if endingIn <= 0 then endingIn = nil; finishRun('last gate', endTime); return end
+  cur.prevPos = vpos
+  if cur.endingIn then
+    cur.endingIn = cur.endingIn - math.max(0, dtSim or 0)
+    if cur.endingIn <= 0 then cur.endingIn = nil; finishRun('last gate', cur.endTime); return end
   end
   if endsOnStop() then
-    if elapsed > 1 and speed < STOPPED_SPEED and fromOrigin > STOPPED_MIN_DIST then
-      stillT = stillT + math.max(0, dtSim or 0)
-      if stillT >= STOPPED_FOR then finishRun('stopped'); return end
+    if cur.elapsed > 1 and speed < STOPPED_SPEED and fromOrigin > STOPPED_MIN_DIST then
+      cur.stillT = cur.stillT + math.max(0, dtSim or 0)
+      if cur.stillT >= STOPPED_FOR then finishRun('stopped'); return end
     else
-      stillT = 0
+      cur.stillT = 0
     end
-  elseif finishGate and not endsAtLastGate() and elapsed > 1 then
+  elseif finishGate and not endsAtLastGate() and cur.elapsed > 1 then
     local gate = vec3(finishGate.pos.x,finishGate.pos.y,finishGate.pos.z)
     if (vpos - gate):length() <= finishGate.radius then finishRun('finish reached'); return end
   end
-  if uiAccum >= 0.25 then
-    uiAccum = 0
+  if cur.uiAccum >= 0.25 then
+    cur.uiAccum = 0
     output()
   end
 end
@@ -604,7 +559,8 @@ function M.goToDrill()
     output(); return
   end
   if RunRecord.isOpen(run) then endRun('abandoned') end
-  phase, elapsed, lastTime = 'setup', 0, nil
+  phase = 'setup'
+  resetRun()
   if not sameLevel(levelId(), env.levelId) then
     local path = levelPathFor(env.levelId)
     if not path then
@@ -712,10 +668,10 @@ end
 
 -- A snapshot of the session for test scripts, instead of reading Lua internals.
 function M.debugState()
-  return {phase = phase, selected = selected, level = levelId(), elapsed = elapsed, lastTime = lastTime,
-          hasStart = startState ~= nil, hasFinish = finishGate ~= nil, gateCount = #gates, gateIdx = gateIdx,
+  return {phase = phase, selected = selected, level = levelId(), elapsed = cur.elapsed, lastTime = cur.lastTime,
+          hasStart = startState ~= nil, hasFinish = finishGate ~= nil, gateCount = #gates, gateIdx = cur.gateIdx,
           attempts = attempts, successes = successes, reason = lastReason,
-          menuOpen = menuOpen, passed = lastGrade and lastGrade.passed} -- false = graded MISS, nil = not graded
+          menuOpen = menuOpen, passed = cur.grade and cur.grade.passed} -- false = graded MISS, nil = not graded
 end
 
 -- Forget a drill's saved progress (scenarios clean up the attempts they record).
