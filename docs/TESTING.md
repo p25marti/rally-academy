@@ -68,6 +68,9 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `a04` | Gates marked down the straight; 30 km/h PASS, too fast at gate 3 MISS |
 | `stops` | A05 stop line and B02 lockup recovery, a PASS and a MISS each |
 | `launch` | A02 launch with a 1-2 shift passes |
+| `events` | A handbrake spin, a run on the grass verge and a puncture are detected (and the puncture isn't contact) |
+| `goto` | Go to drill loads Utah in the gravel Covet for E08, then West Coast USA again for B01 (slow: two map loads) |
+| `mainmenu` | From the main menu: Academy → A04 → Start drill lands in the drill with the HUD up (slow: map load) |
 
 The driving scenarios need West Coast USA loaded (e.g. Go to drill on B01): they mark their
 start on the BMP start straight, drive with the arcade gearbox, then restore the realistic
@@ -76,6 +79,32 @@ gearbox and remove the attempts they recorded from your progress. Code: `tools/i
 scripts read the mod through `extensions.rallyAcademy.debugState()`, not its internals.
 Their verdicts on the same inputs match the recorded fixtures, but physics varies run to run
 by a few tenths of a metre, so they check verdicts, not exact numbers.
+
+## Recording a fixture
+
+Recorded runs pin the grading rules to real physics (`tests/lua/test_fixtures.lua`):
+
+1. Drive the run, by hand or with a scenario. The run record is kept until the next Retry.
+2. In the console, or through the MCP server, run
+   `extensions.rallyAcademy.saveLastRun('settings/rallyAcademy/fixtures/<name>.json')`.
+3. Copy `<user folder>/settings/rallyAcademy/fixtures/<name>.json` into `tests/fixtures/`.
+4. Describe how it was driven (game version, map, car, inputs) in the header of
+   `test_fixtures.lua`, and add a test that today's rules give the verdict the game showed.
+
+## Surveying a venue
+
+`tools/ingame/survey.py` answers the questions a drill's setup needs, on the map you're on:
+
+```sh
+python tools/ingame/survey.py here                                  # room around the car, surface under each wheel
+python tools/ingame/survey.py surfaces --along=20,60 --side=-8,0,8  # surface grid ahead of / across from the car
+python tools/ingame/survey.py terrain 110 170 100 160               # terrain ground model at points
+python tools/ingame/survey.py configs covet                         # a model's config keys
+python tools/ingame/survey.py levels                                # installed maps
+```
+
+Record findings in [MAPS.md](MAPS.md) (venues) and use the surface names in `on_surface`
+rules. `surfaces` moves the car around and then puts it back.
 
 ## In-game smoke test
 

@@ -118,3 +118,5 @@ warn about this.
   in-game**), wait for CI, squash-merge.
 - Large or one-way decisions get a short record in [decisions/](decisions/).
 - Never commit build output (`dist/`), BeamNG logs or anything from your user folder.
+- With the game running from a junction-linked `mod/`, switching branches rewrites files under the
+  live game, which hot-reloads them. Merge with `git push . HEAD:main` instead of switching first.
