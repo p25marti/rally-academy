@@ -58,7 +58,7 @@ function T.changing_drill_clears_the_shown_grade()
   local h, M = setupB01(107)
   brakingRun(h, M, {})
   assert(h.lastState().grade, 'graded first')
-  M.select('A01')
+  M.select('A03')
   eq(h.lastState().grade, false, 'grade cleared on drill change')
 end
 
@@ -83,6 +83,21 @@ function T.every_rule_in_the_drill_data_is_known_with_its_parameters()
       for _, k in ipairs(params) do assert(type(rule[k]) == 'number', e.id .. ': ' .. rule.type .. ' needs ' .. k) end
     end
   end
+end
+
+-- Auto-retry (on by default) follows a graded B01 run once the zone is marked, but not the
+-- first run, which is the one you mark the stop zone from.
+function T.auto_retry_waits_until_the_stop_zone_is_marked()
+  local h, M = setup()
+  M.select('B01')
+  h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
+  M.markStart()
+  local s = brakingRun(h, M, {})
+  eq(s.phase, 'scored', 'graded (a miss: no zone)')
+  eq(s.autoRetryIn, false, 'no countdown without a zone')
+  M.markFinish()
+  s = brakingRun(h, M, {})
+  eq(s.autoRetryIn, 3, 'counting down once the zone is marked')
 end
 
 return T

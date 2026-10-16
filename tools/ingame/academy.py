@@ -1,5 +1,6 @@
 """Rally Academy helpers on top of game.py: the HUD panel, drills, scripted runs."""
 import json
+import math
 import time
 from pathlib import Path
 
@@ -154,6 +155,91 @@ def braking_run(target_kmh, brake, throttle=1.0, max_s=25):
             break
         inp("brake", brake(spd * 3.6, time.time() - tb))
         time.sleep(0.04)
+    return wait_graded()
+
+
+def course_points(drill_id, local_points):
+    """Course-frame points (x right, y ahead of the venue start, metres) -> world (x, y)."""
+    sp = drill(drill_id)["environment"]["spawn"]
+    n = math.hypot(sp["dir"]["x"], sp["dir"]["y"])
+    fx, fy = sp["dir"]["x"] / n, sp["dir"]["y"] / n
+    rx, ry = fy, -fx
+    return [(sp["pos"]["x"] + rx * x + fx * y, sp["pos"]["y"] + ry * x + fy * y) for x, y in local_points]
+
+
+def _resample(points, step=0.25):
+    out = [points[0]]
+    for (ax, ay), (bx, by) in zip(points, points[1:]):
+        n = max(1, int(math.dist((ax, ay), (bx, by)) / step))
+        out += [(ax + (bx - ax) * k / n, ay + (by - ay) * k / n) for k in range(1, n + 1)]
+    return out
+
+
+# One round trip per tick: apply the driver's inputs in the car, read back its pose.
+_DRIVE_TICK = ("local v = be:getPlayerVehicle(0) "
+               "v:queueLuaCommand(\"input.event('steering', {s:.3f}, 2) input.event('throttle', {t:.3f}, 2) "
+               "input.event('brake', {b:.3f}, 2) input.event('parkingbrake', {p:.0f}, 2)\") "
+               "local q, d, w = v:getPosition(), v:getDirectionVector(), v:getVelocity() "
+               "return string.format('%.3f,%.3f,%.4f,%.4f,%.3f', q.x, q.y, d.x, d.y, w:length())")
+
+
+def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max_steer=0.55, timeout=40):
+    """Drive the player's car along world points (x, y) with pure pursuit and stop with its
+    position on the last point: steady `kmh`, then braking at `decel` m/s2 to arrive slowly,
+    and the handbrake for the last few centimetres (arcade reverses on a held brake). Use the
+    arcade gearbox. Returns the distance from the last point when the car stopped."""
+    path = _resample(points)
+    remaining = [0.0] * len(path)
+    for i in range(len(path) - 2, -1, -1):
+        remaining[i] = remaining[i + 1] + math.dist(path[i], path[i + 1])
+    s = t = b = p = 0.0
+    idx, t0, stopped_at = 0, time.time(), None
+    while time.time() - t0 < timeout:
+        x, y, hx, hy, v = (float(f) for f in lua(_DRIVE_TICK.format(s=s, t=t, b=b, p=p)).split(","))
+        # Closest path point ahead of the last one (never go back along the path).
+        best = min(range(idx, min(idx + 80, len(path))), key=lambda i: math.dist((x, y), path[i]))
+        idx = best
+        to_go = remaining[idx] + 0.0
+        if idx == len(path) - 1:
+            # Past the end of the path: signed distance along the heading to the last point.
+            ex, ey = path[-1]
+            to_go = (ex - x) * hx + (ey - y) * hy
+        look = max(2.5, 0.9 * v)
+        j = idx
+        while j < len(path) - 1 and math.dist((x, y), path[j]) < look:
+            j += 1
+        lx, ly = path[j]
+        hn = math.hypot(hx, hy) or 1
+        hx, hy = hx / hn, hy / hn
+        dx, dy = lx - x, ly - y
+        dist = math.hypot(dx, dy) or 1
+        sin_a = (hx * dy - hy * dx) / dist  # + when the point is to the left
+        steer_angle = math.atan(2 * wheelbase * sin_a / max(dist, 1.0))
+        s = max(-1.0, min(1.0, -steer_angle / max_steer)) if to_go > 0.8 else s * 0.5
+        want = min(kmh / 3.6, math.sqrt(max(0.0, 2 * decel * max(0.0, to_go - stop_within))) + 0.6)
+        if to_go <= stop_within or (to_go < 1.5 and v < 0.3):
+            t, b, p = 0.0, 0.0, 1.0
+            if v < 0.05:
+                stopped_at = to_go
+                break
+        elif v > want + 0.3:
+            t, b, p = 0.0, min(0.6, 0.15 + (v - want) * 0.4), 0.0
+            if v < 1.2:  # arcade turns a held brake at low speed into reverse
+                b, p = 0.0, 0.0
+        else:
+            t, b, p = min(0.6, max(0.08, (want - v) * 0.5 + 0.12)), 0.0, 0.0
+        time.sleep(0.02)
+    lua(_DRIVE_TICK.format(s=0, t=0, b=0, p=1))
+    return stopped_at
+
+
+def course_run(drill_id, local_points, **kw):
+    """Retry the drill and drive course-frame points (see course_points); returns the graded state."""
+    click("Retry")
+    time.sleep(1.0)
+    arcade()
+    inp("parkingbrake", 0)
+    follow_path(course_points(drill_id, local_points), **kw)
     return wait_graded()
 
 

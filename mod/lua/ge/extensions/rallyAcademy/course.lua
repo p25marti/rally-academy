@@ -1,11 +1,14 @@
 -- Course markers drawn in the world every frame: gates, stop zone or stop line, finish
--- circle. Uses debugDrawer, a debug overlay rather than scene objects, so there is nothing
+-- circle, and authored courses' cones and parking box (with its medal boxes). Uses
+-- debugDrawer, a debug overlay rather than scene objects, so there is nothing
 -- to clean up and nothing to hit. The only module that draws.
 local C = {}
 
 local COLOURS = {
   upcoming = {0.55, 0.8, 1, 0.85}, next = {1, 0.82, 0.1, 0.95},
   passed = {0.25, 0.9, 0.4, 0.9}, missed = {1, 0.3, 0.3, 0.9}, zone = {0.25, 0.9, 0.4, 0.35},
+  cone = {1, 0.45, 0.05, 0.95}, hint = {0.9, 0.95, 1, 0.7}, car = {0.9, 0.95, 1, 0.8},
+  bronze = {0.8, 0.5, 0.25, 0.9}, silver = {0.78, 0.8, 0.86, 0.9}, gold = {1, 0.8, 0.1, 0.95},
 }
 local function colour(name) local c = COLOURS[name]; return ColorF(c[1], c[2], c[3], c[4]) end
 
@@ -41,15 +44,75 @@ local function drawStopLine(line)
   debugDrawer:drawCylinder(mid - r * 4, mid + r * 4, 0.08, colour('passed'))
 end
 
+-- Course objects (layout.lua) sit at a car's height (~0.4 m) above the ground.
+local GROUND = 0.4
+
+-- A traffic cone: three stacked cylinders, narrower towards the top.
+local function drawCone(c, state)
+  local col = colour(state == 'passed' and 'passed' or state == 'missed' and 'missed' or 'cone')
+  local z = c.z - GROUND
+  for _, seg in ipairs({{0.15, 0, 0.25}, {0.11, 0.25, 0.5}, {0.06, 0.5, 0.7}}) do -- radius, bottom, top
+    debugDrawer:drawCylinder(vec3(c.x, c.y, z + seg[2]), vec3(c.x, c.y, z + seg[3]), seg[1], col)
+  end
+end
+
+-- A chevron on the ground beside a cone, on the side to pass it, pointing the way to go.
+local function drawPassHint(c)
+  local fx, fy = c.dir.x, c.dir.y
+  local side = c.keep == 'left' and 1 or -1 -- keep it on your left: pass on its right
+  local rx, ry = fy * side, -fx * side
+  local z = c.z - GROUND + 0.03
+  local px, py = c.x + rx * 1.8, c.y + ry * 1.8
+  local tip = vec3(px + fx * 0.5, py + fy * 0.5, z)
+  local col = colour('hint')
+  debugDrawer:drawCylinder(vec3(px - fx * 0.2 + rx * 0.5, py - fy * 0.2 + ry * 0.5, z), tip, 0.04, col)
+  debugDrawer:drawCylinder(vec3(px - fx * 0.2 - rx * 0.5, py - fy * 0.2 - ry * 0.5, z), tip, 0.04, col)
+end
+
+local function drawRect(corners, z, radius, col)
+  for i = 1, 4 do
+    local a, b = corners[i], corners[i % 4 + 1]
+    debugDrawer:drawCylinder(vec3(a.x, a.y, z), vec3(b.x, b.y, z), radius, col)
+  end
+end
+
+-- The parking box and its medal boxes (each `inset` smaller); the one the car is in now is
+-- drawn green and thicker.
+local function drawBox(box, boxes, fit)
+  local fx, fy = box.dir.x, box.dir.y
+  local rx, ry = fy, -fx
+  local z = box.z - GROUND + 0.02
+  for _, b in ipairs(boxes) do
+    local hl, hw = box.lengthM / 2 - b.inset, box.widthM / 2 - b.inset
+    local function at(a, s) return {x = box.x + fx * a + rx * s, y = box.y + fy * a + ry * s} end
+    local current = b.name == fit
+    drawRect({at(hl, -hw), at(hl, hw), at(-hl, hw), at(-hl, -hw)}, z,
+      current and 0.06 or (b.inset == 0 and 0.05 or 0.03), colour(current and 'passed' or b.name))
+  end
+end
+
 -- course = {
 --   gates = {...}, gateResults = {[i] = 'passed' | 'missed'}, nextGate = index or nil,
 --   finish = {pos, dir, radius} or nil, finishKind = 'line' | 'zone' | 'circle',
 --   zoneLength = m, zoneWidth = m,
+--   cones = {{x, y, z, dir, keep}}, coneResults = {[i] = 'passed' | 'missed'}, nextCone = index or nil,
+--   box = {x, y, z, dir, lengthM, widthM}, boxes = {{name, inset}}, fit = medal box the car is in,
+--   footprint = the car's four corners (near the box), or nil
 -- }
 function C.draw(course)
   if not (debugDrawer and ColorF) then return end
   for i, g in ipairs(course.gates or {}) do
     drawGate(g, course.gateResults[i] or (i == course.nextGate and 'next') or 'upcoming')
+  end
+  for i, c in ipairs(course.cones or {}) do
+    drawCone(c, course.coneResults and course.coneResults[i])
+    if i == course.nextCone then drawPassHint(c) end
+  end
+  if course.box then
+    drawBox(course.box, course.boxes or {{name = 'bronze', inset = 0}}, course.fit)
+    if course.footprint then
+      drawRect(course.footprint, course.box.z - GROUND + 0.05, 0.03, colour(course.fit and 'passed' or 'car'))
+    end
   end
   local f = course.finish
   if not (f and f.pos) then return end

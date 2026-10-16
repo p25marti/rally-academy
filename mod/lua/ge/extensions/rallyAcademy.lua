@@ -4,12 +4,13 @@
 local M = {}
 -- Re-read our pure modules whenever the extension (re)loads: extensions.reload re-runs
 -- this file but `require` would keep the old modules (seen on 0.39.4).
-for _, name in ipairs({'runRecord', 'rules', 'gates', 'store', 'course', 'spots'}) do
+for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots'}) do
   package.loaded['ge/extensions/rallyAcademy/' .. name] = nil
 end
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
 local Rules = require('ge/extensions/rallyAcademy/rules')
 local Gates = require('ge/extensions/rallyAcademy/gates')
+local Layout = require('ge/extensions/rallyAcademy/layout')
 local Store = require('ge/extensions/rallyAcademy/store')
 local Course = require('ge/extensions/rallyAcademy/course')
 local Spots = require('ge/extensions/rallyAcademy/spots')
@@ -28,8 +29,20 @@ local activeVehicleId = nil
 local TELEMETRY_RATE = 60
 local LAST_RUN_FILE = 'settings/rallyAcademy/lastRun.json'
 local run, samplingVehId = nil, nil
--- Gates (gates.lua) marked for the selected drill on this map, in driving order.
+-- Gates (gates.lua) marked for the selected drill on this map, in driving order. For a drill
+-- with an authored course they come from the course instead.
 local gates = {}
+-- Authored course (layout.lua) laid out from the start, or nil; usingVenueStart = the start
+-- is the venue's spawn, not one the player marked.
+local course, usingVenueStart = nil, false
+-- The car's footprint (layout.lua), measured from its nodes once per car: {vid, config, car}.
+local carSize = nil
+-- Player preferences (store.lua): auto-retry after a graded run.
+local prefs = {autoRetry = true}
+local AUTO_RETRY_DELAY = 3 -- s of sim time after a graded run
+local AUTO_RETRY_CANCEL_SPEED = 2 -- m/s: driving off cancels it
+-- Medals, lowest first.
+local TIER_RANK = {bronze = 1, silver = 2, gold = 3}
 -- The car's telemetry reaches GE about a frame late (0.39.4), so after the last gate the
 -- run keeps recording briefly before it is graded; the time is taken at the gate.
 local GRADE_DELAY = 0.3 -- s of sim time
@@ -44,10 +57,14 @@ local GRADE_DELAY = 0.3 -- s of sim time
 --   gateIdx, gateResults, prevPos  next gate, each gate's live result, last frame's position
 --   endingIn, endTime  grading delay after the last gate, and the time taken at the gate
 --   uiAccum            time since the last HUD update
+--   coneIdx, coneResults  next cone, each cone's live result ('passed' | 'wrong')
+--   clipped            the first marker the car touched (live), fit = medal box the car is in now
+--   aid                parking aid text near the box; autoRetryIn = countdown after a graded run
 local cur
 local function resetRun()
   cur = {elapsed = 0, lastTime = nil, grade = nil, settleT = 0, originPos = nil, stillT = 0,
-         gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0}
+         gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0,
+         coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil}
 end
 resetRun()
 local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
@@ -76,6 +93,11 @@ end
 local function levelId()
   local id = getCurrentLevelIdentifier and getCurrentLevelIdentifier()
   return (type(id) == 'string' and id ~= '') and id or 'unknown'
+end
+
+-- Level names differ in case between the list ('Utah') and the current level ('utah').
+local function sameLevel(a, b)
+  return type(a) == 'string' and type(b) == 'string' and a:lower() == b:lower()
 end
 
 local function snapshotVehicle()
@@ -130,6 +152,8 @@ local function endRun(outcome)
   stopSampling()
 end
 
+local liveCourse -- defined under "Course markers"; the HUD's checklist and parking aid
+
 local function output(includeCatalog)
   local lesson = selected and byId[selected] or nil
   guihooks.trigger('rallyAcademyState', {
@@ -148,7 +172,12 @@ local function output(includeCatalog)
     hasFinish = finishGate ~= nil,
     gateCount = #gates,
     progress = progress.lessons,
-    grade = cur.grade or false -- explicit: the HUD merges updates, so a missing key would keep the old grade
+    -- Explicit `false`s: the HUD merges updates, so a missing key would keep the old value.
+    grade = cur.grade or false,
+    course = liveCourse() or false,
+    usingVenueStart = usingVenueStart,
+    autoRetry = prefs.autoRetry ~= false,
+    autoRetryIn = cur.autoRetryIn and math.ceil(cur.autoRetryIn) or false,
   })
 end
 
@@ -175,15 +204,47 @@ local function load()
   if warn then logf('W', '%s', warn) end
   setups, warn = Store.loadSetups()
   if warn then logf('W', '%s', warn) end
+  prefs = Store.loadPrefs()
   logf('I', 'loaded %d drills on map %s', #lessons, levelId())
 end
 
 local function saveProgress() Store.saveProgress(progress) end
 
--- Persist the selected drill's start, finish and gates for the current map.
+-- The selected drill's authored course definition (assessment.course), or nil.
+local function courseDef()
+  local lesson = selected and byId[selected]
+  return lesson and lesson.assessment and lesson.assessment.course or nil
+end
+
+-- Persist the selected drill's start, finish and gates for the current map. A course's
+-- gates come from the course, so only its start is saved.
 local function saveSetup()
   local start = startState and {pos = startState.pos, dir = startState.dir, up = startState.up} or nil
-  Store.putSetup(setups, levelId(), selected, {start = start, finish = finishGate, gates = #gates > 0 and gates or nil})
+  local marked = not courseDef() and #gates > 0 and gates or nil
+  Store.putSetup(setups, levelId(), selected, {start = start, finish = finishGate, gates = marked})
+end
+
+-- Ground height under (x, y), or `z` when the engine can't tell (be:getSurfaceHeightBelow
+-- answers -1e10 or so with nothing below; seen on 0.39.4).
+local function groundZ(x, y, z)
+  if not (be and be.getSurfaceHeightBelow) then return z end
+  local h = be:getSurfaceHeightBelow(vec3(x, y, z + 3))
+  if type(h) ~= 'number' or h < z - 20 then return z end
+  return h
+end
+
+-- Lay the selected drill's course out from the start (or clear it). Course objects sit at a
+-- car's height above the ground, like marked gates (the car's position is ~0.4 m up).
+local CAR_HEIGHT = 0.4
+local function placeCourse()
+  local def = courseDef()
+  if not (def and startState) then course = nil; return end
+  course = Layout.place(def, startState)
+  local z0 = startState.pos.z
+  for _, g in ipairs(course.gates) do g.pos.z = groundZ(g.pos.x, g.pos.y, z0) + CAR_HEIGHT end
+  for _, c in ipairs(course.cones) do c.z = groundZ(c.x, c.y, z0) + CAR_HEIGHT end
+  if course.box then course.box.z = groundZ(course.box.x, course.box.y, z0) + CAR_HEIGHT end
+  gates = course.gates
 end
 
 function M.onExtensionLoaded()
@@ -195,16 +256,28 @@ function M.publish() output(true) end
 
 -- Load the selected drill's saved start/finish for the current map (or clear them).
 local function loadSetup()
-  startState, finishGate, gates = nil, nil, {}
+  startState, finishGate, gates, usingVenueStart = nil, nil, {}, false
   local saved = Store.getSetup(setups, levelId(), selected)
-  if saved and type(saved.gates) == 'table' then gates = saved.gates end
+  local def = courseDef()
+  if saved and type(saved.gates) == 'table' and not def then gates = saved.gates end
   if saved and saved.start then
-    startState, finishGate = saved.start, saved.finish
-    lastReason = finishGate and 'Loaded your saved start and finish for this map. Press Retry to begin.'
+    startState, finishGate = saved.start, (not def) and saved.finish or nil
+    lastReason = def and 'Loaded your saved start; the course is laid out ahead of it. Press Retry to begin.'
+      or finishGate and 'Loaded your saved start and finish for this map. Press Retry to begin.'
       or 'Loaded your saved start for this map. Press Retry to begin.'
+  elseif def then
+    -- A course needs no marking: on the drill's own map it starts at the venue's spawn.
+    local env = byId[selected].environment or {}
+    if env.spawn and sameLevel(levelId(), env.levelId) then
+      startState, usingVenueStart = {pos = env.spawn.pos, dir = env.spawn.dir, up = env.spawn.up}, true
+      lastReason = 'The course is laid out at the venue. Press Retry to begin.'
+    else
+      lastReason = 'Press Go to drill: the course is laid out for you at ' .. tostring(env.mapDisplayName) .. '.'
+    end
   else
     lastReason = 'Select a suitable car/map, mark the start, and optionally mark a finish gate.'
   end
+  placeCourse()
 end
 
 -- Abandon the current run (nothing is scored) but keep the drill and its setup.
@@ -234,7 +307,7 @@ end
 local function endsAtLastGate() return assessment().endWhen == 'gates' end
 
 -- Does a run of this drill end on its own (so a run in progress can't be passed early)?
-local function hasEnd() return finishGate ~= nil or (endsAtLastGate() and #gates > 0) end
+local function hasEnd() return finishGate ~= nil or course ~= nil or (endsAtLastGate() and #gates > 0) end
 
 function M.select(id)
   if type(id) ~= 'string' or not byId[id] then return end
@@ -257,17 +330,38 @@ function M.markStart()
   if not selected then return end
   local snap = snapshotVehicle()
   if not snap then lastReason = 'No player vehicle'; output(); return end
-  startState = snap
+  startState, usingVenueStart = snap, false
   activeVehicleId = snap.vehicleId
   phase = 'setup'
   saveSetup()
+  placeCourse()
   logf('I', 'start marked for %s on %s at (%.1f, %.1f, %.1f)', selected, levelId(), snap.pos.x, snap.pos.y, snap.pos.z)
-  lastReason = 'Start position and orientation captured and saved for this map.'
+  lastReason = course and 'Start marked and saved: the course is now laid out ahead of you from here.'
+    or 'Start position and orientation captured and saved for this map.'
+  output()
+end
+
+-- Course drills: forget the marked start and lay the course out at the venue again.
+function M.useVenueStart()
+  if not (selected and courseDef()) then return end
+  Store.putSetup(setups, levelId(), selected, nil)
+  loadSetup()
+  phase = 'setup'
+  resetRun()
+  logf('I', '%s: back to the venue start (%s)', selected, startState and 'laid out' or 'not on this map')
+  output()
+end
+
+-- HUD toggle: start the next attempt automatically after a graded run.
+function M.setAutoRetry(on)
+  prefs.autoRetry = on == true
+  Store.savePrefs(prefs)
+  if not prefs.autoRetry then cur.autoRetryIn = nil end
   output()
 end
 
 function M.markFinish()
-  if not selected then return end
+  if not selected or courseDef() then return end
   local snap = snapshotVehicle()
   if not snap then lastReason = 'No player vehicle'; output(); return end
   finishGate = {pos=snap.pos, radius=5, dir=snap.dir} -- dir orients a stop zone
@@ -283,7 +377,7 @@ end
 
 -- Mark a gate across the road where the car is, facing the way it points.
 function M.addGate()
-  if not selected then return end
+  if not selected or courseDef() then return end
   local spec = assessment().gates or {}
   if spec.count and #gates >= spec.count then
     lastReason = string.format('All %d gates are marked. Clear gates to mark them again.', spec.count)
@@ -301,7 +395,7 @@ function M.addGate()
 end
 
 function M.clearGates()
-  if not selected then return end
+  if not selected or courseDef() then return end
   gates = {}
   saveSetup()
   logf('I', 'gates cleared for %s on %s', selected, levelId())
@@ -319,7 +413,8 @@ function M.retry()
   if RunRecord.isOpen(run) then endRun('restarted') end
   teleportToStart(veh, startState)
   run = RunRecord.new({drill = selected, level = levelId(), vehicleId = activeVehicleId,
-                       start = startState.pos, finish = finishGate, gates = #gates > 0 and gates or nil})
+                       start = startState.pos, finish = finishGate, gates = #gates > 0 and gates or nil,
+                       course = course})
   startSampling(veh)
   logf('I', 'retry: %s, vehicle %s reset to start', selected, tostring(activeVehicleId))
   resetRun()
@@ -356,6 +451,12 @@ function M.recordAttempt(passed)
   if passed and cur.lastTime and (not entry.bestTime or cur.lastTime < entry.bestTime) then
     entry.bestTime = cur.lastTime
   end
+  local tier = finished and cur.grade and cur.grade.tier
+  if tier then
+    entry.tiers = entry.tiers or {}
+    entry.tiers[tier] = (entry.tiers[tier] or 0) + 1
+    if TIER_RANK[tier] > (TIER_RANK[entry.bestTier] or 0) then entry.bestTier = tier end
+  end
   local config = byId[selected].assessment
   if attempts >= config.attempts then
     entry.lastSessionPassed = successes >= config.requiredPasses
@@ -377,15 +478,167 @@ local function stopZoneSize()
   return 5, 6
 end
 
+-- The parking box and its medal boxes, lowest first: {{name, inset}} (bronze = the drill's
+-- own park_in_box rule, then each tier's smaller box).
+local function tierBoxes()
+  local out = {{name = 'bronze', inset = 0}}
+  for _, r in ipairs(assessment().rules or {}) do
+    if r.type == 'park_in_box' then out[1].inset = r.insetM or 0 end
+  end
+  for _, t in ipairs(assessment().tiers or {}) do
+    for _, r in ipairs(t.rules or {}) do
+      if r.type == 'park_in_box' then out[#out + 1] = {name = t.name, inset = r.insetM or 0} end
+    end
+  end
+  return out
+end
+
+-- The car's footprint (layout.lua) from its node positions: getNodePosition gives each node's
+-- offset from the car's position in world axes (0.39.4), so project on forward and right.
+-- Measured once per car; a car without nodes gets a centred box from its initial size.
+local function measureCar(veh)
+  local key = tostring(veh:getID()) .. '|' .. tostring(veh.partConfig)
+  if carSize and carSize.key == key then return carSize.car end
+  local d = veh:getDirectionVector()
+  local fx, fy = d.x, d.y
+  local n = math.sqrt(fx * fx + fy * fy)
+  if n == 0 then return nil end
+  fx, fy = fx / n, fy / n
+  local car
+  local count = veh.getNodeCount and veh:getNodeCount() or 0
+  if count > 0 then
+    local lo, hi, left, right = math.huge, -math.huge, math.huge, -math.huge
+    for i = 0, count - 1 do
+      local p = veh:getNodePosition(i)
+      local a, s = p.x * fx + p.y * fy, p.x * fy - p.y * fx
+      lo, hi, left, right = math.min(lo, a), math.max(hi, a), math.min(left, s), math.max(right, s)
+    end
+    car = {front = hi, rear = -lo, left = -left, right = right}
+  elseif veh.getInitialLength then
+    car = Layout.centredCar(veh:getInitialLength(), veh:getInitialWidth())
+  end
+  if not car then return nil end
+  carSize = {key = key, car = car}
+  logf('I', 'car footprint: %.2f m long, %.2f m wide (front %.2f, rear %.2f, left %.2f, right %.2f of its position)',
+    car.front + car.rear, car.left + car.right, car.front, car.rear, car.left, car.right)
+  return car
+end
+
 local function drawCourse()
   local zoneLength, zoneWidth = stopZoneSize()
+  local active = phase == 'ready' or phase == 'running'
+  local footprint
+  if course and course.box and cur.aid and carSize then
+    local veh = currentVehicle()
+    if veh then
+      local p, h = veh:getPosition(), veh:getDirectionVector()
+      footprint = Layout.corners(carSize.car, p.x, p.y, h.x, h.y)
+    end
+  end
   Course.draw({
     gates = gates, gateResults = cur.gateResults,
-    nextGate = (phase == 'ready' or phase == 'running') and cur.gateIdx or nil,
+    nextGate = active and cur.gateIdx or nil,
     finish = finishGate,
     finishKind = usesStopLine() and 'line' or endsOnStop() and 'zone' or 'circle',
     zoneLength = zoneLength, zoneWidth = zoneWidth,
+    cones = course and course.cones, coneResults = cur.coneResults, nextCone = active and cur.coneIdx or nil,
+    box = course and course.box, boxes = course and course.box and tierBoxes(), fit = cur.fit,
+    footprint = footprint,
   })
+end
+
+-- "1.2 m to go · 0.3 m left of centre": where the car's body is against the box centre.
+local function aidText(fit)
+  local along = fit.along < -0.05 and string.format('%.1f m to go', -fit.along)
+    or fit.along > 0.05 and string.format('%.1f m past the centre', fit.along) or 'level with the centre'
+  local side = math.abs(fit.side) < 0.05 and 'centred'
+    or string.format('%.1f m %s of centre', math.abs(fit.side), fit.side > 0 and 'right' or 'left')
+  return along .. ' · ' .. side
+end
+
+-- Live course feedback while driving: cones passed on the right side, a marker clipped, and
+-- near the box, where the car is and which medal box it fits right now. Grading re-reads all
+-- of this from the run record (rules.lua); this is only what the HUD shows meanwhile.
+local function trackCourse(veh, vpos)
+  local cone = course.cones[cur.coneIdx]
+  if cone and cur.prevPos then
+    local c = Layout.coneCrossing(cone, cur.prevPos, vpos)
+    if c then
+      local ok = c.side == cone.keep
+      cur.coneResults[cur.coneIdx] = ok and 'passed' or 'missed'
+      lastReason = ok and 'Cone passed on the correct side.'
+        or ('Wrong side of the cone: ' .. Layout.keepText(cone.keep) .. '.')
+      logf('I', '%s: cone %d %s (%.1f m %s of it)', selected, cur.coneIdx, cur.coneResults[cur.coneIdx],
+        math.abs(c.offset), c.offset >= 0 and 'right' or 'left')
+      cur.coneIdx = cur.coneIdx + 1
+      cur.uiAccum = 1
+    end
+  end
+  local car = carSize and carSize.car
+  if not car then return end
+  local h = veh:getDirectionVector()
+  if not cur.clipped then
+    for _, m in ipairs(course.markers) do
+      if Layout.distanceToCar(car, vpos.x, vpos.y, h.x, h.y, m.x, m.y) < Layout.MARKER_RADIUS then
+        cur.clipped, lastReason, cur.uiAccum = m.name, 'Clipped ' .. m.name .. '.', 1
+        logf('I', '%s: clipped %s', selected, m.name)
+        break
+      end
+    end
+  end
+  if not course.box then return end
+  local first
+  cur.fit = nil
+  for _, t in ipairs(tierBoxes()) do
+    local f = Layout.boxFit(course.box, car, vpos.x, vpos.y, h.x, h.y, t.inset)
+    first = first or f
+    if f.inside then cur.fit = t.name end
+  end
+  local near = math.abs(first.along) < 15 and math.abs(first.side) < 8
+  cur.aid = near and aidText(first) or nil
+end
+
+-- The HUD's course panel: a checklist (gate, cone, box), the parking aid and the medal box
+-- the car is in. nil for drills without a course.
+function liveCourse()
+  if not course then return nil end
+  local steps = {}
+  for i = 1, #course.gates do
+    steps[#steps + 1] = {label = #course.gates > 1 and ('Gate ' .. i) or 'Gate', state = cur.gateResults[i] or 'todo'}
+  end
+  for i = 1, #course.cones do
+    steps[#steps + 1] = {label = #course.cones > 1 and ('Cone ' .. i) or 'Cone', state = cur.coneResults[i] or 'todo'}
+  end
+  if course.box then
+    local state = 'todo'
+    for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
+      if c.type == 'park_in_box' then state = c.ok and 'passed' or 'missed' end
+    end
+    steps[#steps + 1] = {label = 'Box', state = state}
+  end
+  if phase == 'ready' or phase == 'running' then
+    for _, st in ipairs(steps) do
+      if st.state == 'todo' then st.state = 'next'; break end
+    end
+  end
+  local cone = course.cones[1]
+  return {steps = steps, aid = cur.aid or false, fit = cur.fit or false, clipped = cur.clipped or false,
+          keep = cone and cone.keep or false}
+end
+
+local function tierLabel(name) return (name:gsub('^%l', string.upper)) end
+
+-- Is something the rules need still unmarked (B01's first run is the one you mark the stop
+-- zone from)? Then don't auto-retry: the driver needs to stay where the car stopped.
+local ZONE_RULES = {stop_zone = true, stop_before_line = true}
+local function setupMissing()
+  local gateRules = {}
+  for _, t in ipairs(Rules.GATE_RULES) do gateRules[t] = true end
+  for _, r in ipairs(assessment().rules or {}) do
+    if ZONE_RULES[r.type] and not finishGate then return true end
+    if gateRules[r.type] and #gates == 0 then return true end
+  end
+  return false
 end
 
 -- End the run (finish reached, or stopped); automatic drills grade and record it.
@@ -399,7 +652,8 @@ local function finishRun(how, atTime)
     lastReason = (endsOnStop() and 'Stopped.' or 'Finish reached.') .. ' Grade the technique using Pass/Miss.'
     output(); return
   end
-  cur.grade = Rules.evaluate(a.rules, run, {zone = finishGate, gates = gates})
+  cur.grade = Rules.grade(a, run, {zone = finishGate, gates = gates, course = course,
+                                   car = carSize and carSize.car, time = cur.lastTime})
   if run then run.grade = cur.grade end
   local firstFail
   for _, c in ipairs(cur.grade.checks) do
@@ -407,8 +661,37 @@ local function finishRun(how, atTime)
     if not c.ok and not firstFail then firstFail = c.text end
   end
   M.recordAttempt(cur.grade.passed)
-  lastReason = (cur.grade.passed and 'PASS.' or ('MISS: ' .. firstFail .. '.')) .. ' Retry for the next attempt.'
+  local g = cur.grade
+  local verdict = g.passed and ('PASS' .. (g.tier and (' · ' .. tierLabel(g.tier)) or '') .. '.')
+    or ('MISS: ' .. firstFail .. '.')
+  if g.tier then logf('I', '%s:   medal %s%s', selected, g.tier, g.nextTier and (', next: ' .. g.nextTier.text) or '') end
+  if prefs.autoRetry ~= false and not setupMissing() then
+    cur.autoRetryIn = AUTO_RETRY_DELAY
+    lastReason = verdict .. ' Next attempt in a moment; drive off to stay here.'
+  else
+    lastReason = verdict .. ' Retry for the next attempt.'
+  end
   output()
+end
+
+-- After a graded run: count down, then Retry, unless the driver drives off. Sim time, so a
+-- physics pause holds it.
+local function autoRetryTick(dtSim)
+  local veh = currentVehicle()
+  if veh and veh:getVelocity():length() > AUTO_RETRY_CANCEL_SPEED then
+    cur.autoRetryIn = nil
+    lastReason = 'Auto-retry cancelled: you drove off. Press Retry when you want the next attempt.'
+    output()
+    return
+  end
+  local shown = math.ceil(cur.autoRetryIn)
+  cur.autoRetryIn = cur.autoRetryIn - math.max(0, dtSim or 0)
+  if cur.autoRetryIn <= 0 then
+    cur.autoRetryIn = nil
+    M.retry()
+    return
+  end
+  if math.ceil(cur.autoRetryIn) ~= shown then output() end
 end
 
 function M.onUpdate(dtReal, dtSim)
@@ -426,6 +709,7 @@ function M.onUpdate(dtReal, dtSim)
     return
   end
   if selected then drawCourse() end
+  if selected and phase == 'scored' and cur.autoRetryIn then autoRetryTick(dtSim) end
   if not selected or (phase ~= 'ready' and phase ~= 'running') then return end
   local veh = currentVehicle()
   if not veh or veh:getID() ~= activeVehicleId then
@@ -447,6 +731,11 @@ function M.onUpdate(dtReal, dtSim)
     phase = 'running'
     cur.prevPos = vec3(veh:getPosition())
     RunRecord.markRunStart(run)
+    if course then
+      -- Fresh from Retry's repair, so the body is undamaged: measure it for the box and markers.
+      local car = measureCar(veh)
+      if run then run.meta.car = car end
+    end
     logf('I', '%s: run started', selected)
     lastReason = 'Run started.'
     output()
@@ -469,6 +758,7 @@ function M.onUpdate(dtReal, dtSim)
       if endsAtLastGate() and cur.gateIdx > #gates then cur.endingIn, cur.endTime = GRADE_DELAY, cur.elapsed end
     end
   end
+  if course then trackCourse(veh, vpos) end
   cur.prevPos = vpos
   if cur.endingIn then
     cur.endingIn = cur.endingIn - math.max(0, dtSim or 0)
@@ -494,11 +784,6 @@ end
 -- Go to drill ----------------------------------------------------------------
 -- Load the drill's map if needed, put the player in the drill's car, and place it
 -- at the saved start (straight into a run) or the venue's default spot.
-
--- Level names differ in case between the list ('Utah') and the current level ('utah').
-local function sameLevel(a, b)
-  return type(a) == 'string' and type(b) == 'string' and a:lower() == b:lower()
-end
 
 local function levelPathFor(name)
   for _, l in ipairs((core_levels and core_levels.getList and core_levels.getList()) or {}) do
@@ -543,7 +828,8 @@ function placeAtDrill()
   local env = lesson.environment
   if startState then
     M.retry()
-    lastReason = 'At ' .. env.mapDisplayName .. ' in the drill car, at your saved start. Go when ready; Retry any time.'
+    lastReason = 'At ' .. env.mapDisplayName .. ' in the drill car, '
+      .. (usingVenueStart and 'at the start of the course.' or 'at your saved start.') .. ' Go when ready; Retry any time.'
   else
     teleportToStart(veh, env.spawn)
     activeVehicleId = veh:getID()
@@ -744,7 +1030,11 @@ function M.debugState()
   return {phase = phase, selected = selected, level = levelId(), elapsed = cur.elapsed, lastTime = cur.lastTime,
           hasStart = startState ~= nil, hasFinish = finishGate ~= nil, gateCount = #gates, gateIdx = cur.gateIdx,
           attempts = attempts, successes = successes, reason = lastReason,
-          menuOpen = menuOpen, passed = cur.grade and cur.grade.passed} -- false = graded MISS, nil = not graded
+          menuOpen = menuOpen, passed = cur.grade and cur.grade.passed, -- false = graded MISS, nil = not graded
+          tier = cur.grade and cur.grade.tier, nextTier = cur.grade and cur.grade.nextTier and cur.grade.nextTier.text,
+          hasCourse = course ~= nil, usingVenueStart = usingVenueStart, autoRetry = prefs.autoRetry ~= false,
+          autoRetryIn = cur.autoRetryIn, clipped = cur.clipped, fit = cur.fit, aid = cur.aid,
+          car = carSize and carSize.car}
 end
 
 -- Record the car's telemetry outside any drill (venue fit tests, tools/ingame/fit.py): no
@@ -796,7 +1086,7 @@ end
 -- Map unloading: its start/finish mean nothing on the next map.
 function M.onClientEndMission(_levelPath)
   if not selected then return end
-  startState, finishGate, gates = nil, nil, {}
+  startState, finishGate, gates, course, usingVenueStart = nil, nil, {}, nil, false
   backToSetup('Map closed.')
 end
 

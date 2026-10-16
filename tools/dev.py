@@ -56,6 +56,76 @@ def rule_types() -> tuple[dict[str, list[str]], set[str]]:
     return types, set(re.findall(r"'(\w+)'", gates.group(1)))
 
 
+def lua_name_list(name: str) -> list[str]:
+    """A one-line list of names in rules.lua, such as R.COURSE_RULES or R.TIERS."""
+    m = re.search(rf"^R\.{name} = \{{(.*?)\}}", RULES_LUA.read_text(encoding="utf-8"), re.M)
+    if not m:
+        fail(f"can't find R.{name} in {RULES_LUA}")
+    return re.findall(r"'(\w+)'", m.group(1))
+
+
+def _num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def course_errors(course) -> list[str]:
+    """assessment.course: gates, cones and a parking box in metres from the start (x right, y ahead)."""
+    if not isinstance(course, dict):
+        return ["assessment.course must be an object"]
+    errors = []
+    unknown = set(course) - {"gates", "cones", "box"}
+    if unknown:
+        errors.append(f"assessment.course: unknown keys {sorted(unknown)}")
+    for kind in ("gates", "cones"):
+        items = course.get(kind, [])
+        if not isinstance(items, list):
+            errors.append(f"assessment.course.{kind} must be a list")
+            continue
+        for i, it in enumerate(items):
+            if not (isinstance(it, dict) and _num(it.get("y")) and _num(it.get("x", 0))):
+                errors.append(f"assessment.course.{kind}[{i}] needs numeric y (and x)")
+            elif kind == "gates" and not (_num(it.get("widthM")) and it["widthM"] > 0):
+                errors.append(f"assessment.course.gates[{i}] needs widthM > 0")
+            elif kind == "cones" and it.get("keep", "left") not in ("left", "right"):
+                errors.append(f"assessment.course.cones[{i}].keep must be 'left' or 'right'")
+    box = course.get("box")
+    if box is not None and not (isinstance(box, dict) and _num(box.get("y")) and _num(box.get("x", 0))
+                                and _num(box.get("lengthM")) and box["lengthM"] > 0
+                                and _num(box.get("widthM")) and box["widthM"] > 0):
+        errors.append("assessment.course.box needs numeric y (and x), lengthM > 0 and widthM > 0")
+    return errors
+
+
+def tier_errors(tiers, rule_types_: dict, base_rules: list) -> list[str]:
+    """assessment.tiers: [{name: 'silver', rules: [...]}, {name: 'gold', ...}], in R.TIERS order."""
+    if not isinstance(tiers, list):
+        return ["assessment.tiers must be a list"]
+    errors, names = [], lua_name_list("TIERS")
+    got = [t.get("name") if isinstance(t, dict) else None for t in tiers]
+    if got != names[:len(got)]:
+        errors.append(f"assessment.tiers names must be {names} in that order (got {got})")
+    if not base_rules:
+        errors.append("assessment.tiers need assessment.rules (a pass is bronze)")
+    insets = []
+    for t in tiers:
+        name = t.get("name") if isinstance(t, dict) else t
+        rules = t.get("rules") if isinstance(t, dict) else None
+        if not isinstance(rules, list) or not rules:
+            errors.append(f"assessment.tiers ({name}) need a non-empty rules list")
+            continue
+        for rule in rules:
+            rtype = rule.get("type") if isinstance(rule, dict) else None
+            if rtype not in rule_types_:
+                errors.append(f"assessment.tiers ({name}): rule type must be one of {sorted(rule_types_)}")
+            elif [k for k in rule_types_[rtype] if not _num(rule.get(k))]:
+                errors.append(f"assessment.tiers ({name}): {rtype} needs numeric {rule_types_[rtype]}")
+            elif rtype == "park_in_box":
+                insets.append(rule.get("insetM", 0))
+    if insets != sorted(insets):
+        errors.append("assessment.tiers: each tier's park_in_box insetM must be larger than the last")
+    return errors
+
+
 END_WHEN = {"finish", "stopped", "gates"}
 ZIP_EPOCH = (2020, 1, 1, 0, 0, 0)  # fixed timestamp => reproducible zips
 SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
@@ -189,10 +259,21 @@ def validate_exercises(data: dict) -> list[str]:
             count, width = (gates.get("count"), gates.get("widthM")) if isinstance(gates, dict) else (None, None)
             if not (isinstance(count, int) and count >= 1 and isinstance(width, (int, float)) and width > 0):
                 errors.append(f"{where}: assessment.gates must be {{count: int >= 1, widthM: number > 0}}")
-        uses_gates = a.get("endWhen") == "gates" or any(
-            isinstance(r, dict) and r.get("type") in gate_rules for r in a.get("rules") or [])
-        if uses_gates and gates is None:
-            errors.append(f"{where}: gate rules and endWhen 'gates' need assessment.gates")
+        course = a.get("course")
+        if course is not None:
+            errors += [f"{where}: {e}" for e in course_errors(course)]
+            if gates is not None:
+                errors.append(f"{where}: a course brings its own gates; drop assessment.gates")
+        course_gates = isinstance(course, dict) and bool(course.get("gates"))
+        rule_list = [r for r in a.get("rules") or [] if isinstance(r, dict)]
+        uses_gates = a.get("endWhen") == "gates" or any(r.get("type") in gate_rules for r in rule_list)
+        if uses_gates and gates is None and not course_gates:
+            errors.append(f"{where}: gate rules and endWhen 'gates' need assessment.gates (or gates in assessment.course)")
+        course_rules = set(lua_name_list("COURSE_RULES"))
+        if any(r.get("type") in course_rules for r in rule_list) and course is None:
+            errors.append(f"{where}: course rules ({sorted(course_rules)}) need assessment.course")
+        if "tiers" in a:
+            errors += [f"{where}: {e}" for e in tier_errors(a["tiers"], rule_types_, rule_list)]
         env = ex.get("environment") or {}
         if "venueNeeds" not in env:
             errors.append(f"{where}: environment.venueNeeds is required (what kind of place the drill needs; docs/DRILL_DATA.md)")

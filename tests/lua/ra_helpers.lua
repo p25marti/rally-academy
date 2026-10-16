@@ -54,7 +54,7 @@ function H.reloadExtension()
 end
 
 function H.startRun(h, M)
-  H.markStartAndFinish(h, M, 'A01')
+  H.markStartAndFinish(h, M, 'A03')
   M.retry()
   H.drive(h, M, 1.0, {x = 0, y = 10, z = 0})
   H.eq(h.lastState().phase, 'running', 'precondition: running')

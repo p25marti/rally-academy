@@ -9,6 +9,7 @@
 -- x, y, z (m), w = {{n = 'FR', s = wheel speed m/s, m = surface id, f = downforce}, ...}
 -- ctx: {zone = marked stop zone {pos, dir}, gates = marked gates (gates.lua), in order}
 local Gates = require('ge/extensions/rallyAcademy/gates')
+local Layout = require('ge/extensions/rallyAcademy/layout')
 local R = {}
 
 local KMH = 3.6
@@ -364,7 +365,7 @@ function E.gates_passed(_rule, samples, ctx)
       return false, string.format('Missed gate %d (%s)', i, Gates.missText(gates[i], p.offset))
     end
   end
-  return true, string.format('All %d gates passed', #gates)
+  return true, #gates == 1 and 'Through the gate' or string.format('All %d gates passed', #gates)
 end
 
 -- Speed when crossing each gate inside a band. A gate not reached or missed fails.
@@ -418,6 +419,119 @@ function E.no_brake_between_gates(rule, samples, ctx)
   return true, string.format('No braking between gates %d and %d', from, to)
 end
 
+-- Authored courses (layout.lua): cones, markers, the parking box --------------------
+
+local function courseOf(ctx, what)
+  local course = ctx and ctx.course
+  if not (course and course[what]) then return nil end
+  return course
+end
+
+-- The car's footprint for this run (measured at Retry), or a typical small car's.
+local function carOf(ctx)
+  return (ctx and ctx.car) or Layout.centredCar(4, 1.8)
+end
+
+local function heading(s)
+  if s.hx and (s.hx ~= 0 or s.hy ~= 0) then return s.hx, s.hy end
+  return nil
+end
+
+-- Every course cone passed on the side its `keep` says.
+-- rule: {type = 'cones_passed'}; ctx.course.cones = {{x, y, dir, keep}}
+function E.cones_passed(_rule, samples, ctx)
+  local course = courseOf(ctx, 'cones')
+  if not course or #course.cones == 0 then return false, 'This drill has no cones laid out' end
+  for i, cone in ipairs(course.cones) do
+    local name = #course.cones > 1 and ('cone ' .. i) or 'the cone'
+    local crossing
+    for j = 2, #samples do
+      local a, b = samples[j - 1], samples[j]
+      if a.x and b.x then crossing = Layout.coneCrossing(cone, a, b) end
+      if crossing then break end
+    end
+    if not crossing then return false, string.format('Never got past %s', name) end
+    if crossing.side ~= cone.keep then
+      return false, string.format('Went the wrong side of %s (%s)', name, Layout.keepText(cone.keep))
+    end
+  end
+  return true, #course.cones > 1 and string.format('All %d cones passed on the correct side', #course.cones)
+    or 'Passed the cone on the correct side'
+end
+
+-- The car's body never touches a drawn cone or gate post (they can't be hit, so this is the
+-- contact check for drawn courses).
+-- rule: {type = 'markers_clear', clearanceM = 0}; ctx.course.markers = {{x, y, name}}
+function E.markers_clear(rule, samples, ctx)
+  local course = courseOf(ctx, 'markers')
+  if not course then return false, 'This drill has no course laid out' end
+  local car, need = carOf(ctx), Layout.MARKER_RADIUS + (rule.clearanceM or 0)
+  local closest, closestName, hit = math.huge, nil, nil
+  for _, s in ipairs(samples) do
+    local hx, hy = heading(s)
+    if hx and s.x then
+      for _, m in ipairs(course.markers) do
+        local d = Layout.distanceToCar(car, s.x, s.y, hx, hy, m.x, m.y)
+        if d < closest then closest, closestName = d, m.name end
+        if d < need and not hit then hit = {name = m.name, air = s.air or 0} end
+      end
+    end
+  end
+  if hit then return false, string.format('Clipped %s at %.0f km/h', hit.name, hit.air * KMH) end
+  if not closestName then return true, 'Cleared every marker' end
+  return true, string.format('Cleared every marker (closest: %s, %.1f m)', closestName,
+    math.max(0, closest - Layout.MARKER_RADIUS))
+end
+
+-- At rest with the whole car inside the course's parking box, shrunk by `insetM` on every
+-- side (the tiers' smaller boxes). `label` names the box in the coaching text.
+-- rule: {type = 'park_in_box', insetM = 0, label = 'box'}; ctx.course.box = {x, y, dir, lengthM, widthM}
+function E.park_in_box(rule, samples, ctx)
+  local course = courseOf(ctx, 'box')
+  if not course then return false, 'This drill has no parking box laid out' end
+  local last, hx, hy = samples[#samples], nil, nil
+  if last then hx, hy = heading(last) end
+  if not (last and last.x and hx) then return false, 'No position data for this run' end
+  local fit = Layout.boxFit(course.box, carOf(ctx), last.x, last.y, hx, hy, rule.insetM)
+  local label = rule.label or 'box'
+  if fit.inside then
+    return true, string.format('Parked inside the %s (%.2f m to spare)', label, fit.margin)
+  end
+  if math.abs(fit.along) > course.box.lengthM / 2 + 2 or math.abs(fit.side) > course.box.widthM / 2 + 2 then
+    return false, string.format('Stopped %.1f m %s the %s', math.sqrt(fit.along ^ 2 + fit.side ^ 2),
+      fit.along < 0 and 'short of' or 'away from', label)
+  end
+  return false, string.format('%s corner %.2f m over the %s edge of the %s',
+    (Layout.CORNER_NAMES[fit.corner]:gsub('^%l', string.upper)), -fit.margin, fit.edge, label)
+end
+
+-- Never backs up: distance travelled backwards (against the way the car points) stays
+-- under `maxM`, which allows a settle after a hard stop.
+-- rule: {type = 'no_reverse', maxM = 0.3}
+function E.no_reverse(rule, samples)
+  local back, max = 0, rule.maxM or 0.3
+  for i = 2, #samples do
+    local a, b = samples[i - 1], samples[i]
+    local hx, hy = heading(b)
+    if hx and a.x and b.x then
+      local n = math.sqrt(hx * hx + hy * hy)
+      local moved = ((b.x - a.x) * hx + (b.y - a.y) * hy) / n
+      if moved < 0 then back = back + -moved end
+    end
+  end
+  if back > max then return false, string.format('Reversed %.1f m (no reversing)', back) end
+  return true, 'No reversing'
+end
+
+-- Run time at most `maxSeconds` (the tiers' time targets). ctx.time = the run's time.
+-- rule: {type = 'max_time', maxSeconds = 12}
+function E.max_time(rule, _samples, ctx)
+  local t = ctx and ctx.time
+  if not t then return false, 'No run time' end
+  if t <= rule.maxSeconds then return true, string.format('Time %.1f s (target %g s)', t, rule.maxSeconds) end
+  return false, string.format('Time %.1f s (target %g s)', t, rule.maxSeconds)
+end
+
 R.evaluators = E
 
 -- Rule types and their required parameters. tools/dev.py validate reads this table and
@@ -441,10 +555,19 @@ R.TYPES = {
   gates_passed = {},
   speed_at_gates = {'minKmh', 'maxKmh'},
   no_brake_between_gates = {},
+  cones_passed = {},
+  markers_clear = {},
+  park_in_box = {},
+  no_reverse = {},
+  max_time = {'maxSeconds'},
 }
 
--- Rule types that need marked gates (assessment.gates in the drill data).
+-- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
 R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates'}
+-- Rule types that need an authored course (assessment.course).
+R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box'}
+-- Medal tiers above a pass (bronze), in order (assessment.tiers).
+R.TIERS = {'silver', 'gold'}
 
 -- Returns {passed = bool, checks = {{type, ok, text}, ...}}; an empty record fails.
 function R.evaluate(rules, record, ctx)
@@ -465,6 +588,46 @@ function R.evaluate(rules, record, ctx)
     end
     result.checks[#result.checks + 1] = {type = rule.type, ok = ok, text = text}
     result.passed = result.passed and ok
+  end
+  return result
+end
+
+-- A tier's rules: the drill's rules, with each tier rule replacing the drill rule of the same
+-- type (a smaller box) or adding to them (a time target).
+local function tierRules(base, extra)
+  local out, replaced = {}, {}
+  for _, r in ipairs(extra or {}) do replaced[r.type] = r end
+  for _, r in ipairs(base or {}) do out[#out + 1] = replaced[r.type] or r end
+  for _, r in ipairs(extra or {}) do
+    local found = false
+    for _, b in ipairs(base or {}) do if b.type == r.type then found = true end end
+    if not found then out[#out + 1] = r end
+  end
+  return out
+end
+
+-- Grade a run against a drill's assessment, medals included: a pass is bronze; each tier
+-- in assessment.tiers ({{name = 'silver', rules = {...}}, {name = 'gold', ...}}) is earned
+-- when its rules pass too. Returns evaluate()'s result plus, for drills with tiers, `tier`
+-- ('bronze' | 'silver' | 'gold'; nil on a miss) and `nextTier` = {name, text} (what the next
+-- medal still needs).
+function R.grade(a, record, ctx)
+  local result = R.evaluate(a.rules, record, ctx)
+  if not (result.passed and a.tiers and #a.tiers > 0) then return result end
+  result.tier = 'bronze'
+  for _, t in ipairs(a.tiers or {}) do
+    local rules = {}
+    for i, r in ipairs(t.rules or {}) do
+      rules[i] = setmetatable({label = r.label or (t.name .. ' box')}, {__index = r})
+    end
+    local res = R.evaluate(tierRules(a.rules, rules), record, ctx)
+    if not res.passed then
+      for _, c in ipairs(res.checks) do
+        if not c.ok then result.nextTier = {name = t.name, text = c.text}; break end
+      end
+      break
+    end
+    result.tier = t.name
   end
   return result
 end

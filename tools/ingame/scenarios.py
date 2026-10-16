@@ -63,9 +63,9 @@ def smoke():
     picked = A.wait_for(lambda: A.debug_state().get("selected"), "B01")
     expect(p, "picking B01 in the drop-down selects it", picked == "B01", picked)
     # Found by the demo run: a drill with no rules ({} from Lua, not []) crashed the Vue panel.
-    A.choose("A01")
+    A.choose("A03")
     title = A.wait_for(lambda: ui(f"var p=document.querySelector('{A.PANEL} .ra-instructions'); return p ? 'shown' : 'missing'"), "shown")
-    expect(p, "panel renders a drill without grading rules (A01)", title == "shown", title)
+    expect(p, "panel renders a drill without grading rules (A03)", title == "shown", title)
     A.choose("A04")
     expect(p, "selecting A04 shows the gate button", "Gate" in str(ui(f"return document.querySelector('{A.PANEL}').innerText")))
     if A.debug_state().get("level") != "unknown":
@@ -76,6 +76,54 @@ def smoke():
         lua("extensions.rallyAcademy.toggleMenu() return 1")
         time.sleep(3)
         expect(p, "menu closes and physics resume", lua("return tostring(simTimeAuthority.getPause())") == "false")
+    return p
+
+
+# A01 lines in course coordinates (x right, y ahead of the venue start; car position, which
+# sits 0.11 m ahead and 0.325 m right of the Covet's body centre, so -1.175 centres it in the box).
+A01_GOLD = [(0, 0), (0, 10), (1.8, 16), (1.8, 21), (-1.175, 27.5), (-1.175, 33.11)]
+A01_WRONG_SIDE = [(0, 0), (0, 10), (-1.8, 16), (-1.8, 21), (-1.175, 27.5), (-1.175, 33.11)]
+A01_POST = [(0, 0), (0.95, 4), (0.95, 11), (1.8, 16), (1.8, 21), (-1.175, 27.5), (-1.175, 33.11)]
+
+
+@scenario
+def a01():
+    """Authored course at the BMP dirt arena: laid out with no marking; a medal run, the wrong
+    side of the cone, a clipped gate post; auto-retry. Needs West Coast USA loaded."""
+    p = []
+    A.reload_mod(ui_too=False)
+    A.fresh_sampler()
+    A.choose("A01")
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A01)")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    s = A.debug_state()
+    expect(p, "the course is laid out at the venue with no marking", s.get("hasCourse") and s.get("usingVenueStart"), s.get("reason"))
+    steps = A.wait_for(lambda: ui(f"var c=document.querySelector('{A.PANEL} .ra-course'); return c ? c.innerText.indexOf('Box') >= 0 : false"), True)
+    expect(p, "the HUD shows the gate / cone / box checklist", steps is True, steps)
+    best = None
+    for _ in range(3):  # the script's line jitters by ~0.1 m; gold needs ~0.2 m to spare
+        s = A.course_run("A01", A01_GOLD, kmh=14)
+        if s.get("passed") and (best is None or s.get("tier") == "gold"):
+            best = s
+        if s.get("tier") == "gold":
+            break
+    best = best or s
+    expect(p, "a clean centred run passes with a medal", best.get("passed") is True and best.get("tier") in ("gold", "silver"),
+           f"{best.get('tier')}: {best.get('reason')} {best.get('nextTier') or ''}")
+    s = A.course_run("A01", A01_WRONG_SIDE, kmh=14)
+    expect(p, "the wrong side of the cone misses", s.get("passed") is False and "wrong side of the cone" in str(s.get("reason")),
+           s.get("reason"))
+    s = A.course_run("A01", A01_POST, kmh=14)
+    expect(p, "clipping a gate post misses", s.get("passed") is False and "Clipped the right post" in str(s.get("reason")),
+           s.get("reason"))
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
+    s = A.course_run("A01", A01_GOLD, kmh=14)
+    expect(p, "after a graded run the next attempt counts down", bool(s.get("autoRetryIn")), s.get("reason"))
+    ready = A.wait_for(lambda: A.debug_state().get("phase"), "ready", timeout=8)
+    expect(p, "auto-retry resets the car for the next attempt", ready == "ready", ready)
+    A.realistic()
+    A.clear_progress("A01")
     return p
 
 

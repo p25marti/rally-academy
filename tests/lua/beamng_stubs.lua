@@ -60,6 +60,18 @@ local function newVehicle(id)
     self.vel = vec3(0, 0, 0) -- verified 0.39.4: teleporting a moving car leaves it at rest
   end
   function v:queueLuaCommand(cmd) table.insert(self.luaCommands, cmd) end
+  -- Nodes (verified 0.39.4): getNodePosition(i) is node i's offset from the car's position in
+  -- world axes. The stub's body is a box measured on the Covet Student Driver: 1.85 m ahead of
+  -- its position, 2.07 m behind, 1.23 m to the left, 0.58 m to the right.
+  v.body = {front = 1.85, rear = 2.07, left = 1.23, right = 0.58}
+  function v.getNodeCount() return 4 end
+  function v:getNodePosition(i)
+    local f = vec3(self.dir.x, self.dir.y, 0):normalized()
+    local r = vec3(f.y, -f.x, 0)
+    local a = (i < 2) and self.body.front or -self.body.rear
+    local s = (i % 2 == 0) and -self.body.left or self.body.right
+    return f * a + r * s
+  end
   return v
 end
 
@@ -72,7 +84,9 @@ function S.install()
   _G.quatFromDir = quatFromDir
   _G.log = function(level, tag, msg) table.insert(h.logs, {level = level, tag = tag, msg = msg}) end
   _G.dump = function() end
-  _G.be = {getPlayerVehicle = function(_, idx) if idx == 0 then return h.vehicle end end}
+  -- getSurfaceHeightBelow (verified 0.39.4): the ground under a point; h.groundZ overrides.
+  _G.be = {getPlayerVehicle = function(_, idx) if idx == 0 then return h.vehicle end end,
+           getSurfaceHeightBelow = function(_, p) return h.groundZ or (p.z - 3) end}
   _G.getCurrentLevelIdentifier = function() return h.level end -- verified 0.39.4
   _G.getObjectByID = function(id) if h.vehicle.id == id then return h.vehicle end end
   -- Levels and vehicle spawning (verified 0.39.4, as the game's MCP tools use them).

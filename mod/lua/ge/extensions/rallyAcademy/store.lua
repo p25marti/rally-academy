@@ -17,7 +17,8 @@ local function read(path, valid, fallback)
   return fallback, nil
 end
 
--- progress = {schemaVersion = 1, lessons = {[drillId] = {totalAttempts, totalPasses, bestTime, lastSessionPassed}}}
+-- progress = {schemaVersion = 1, lessons = {[drillId] = {totalAttempts, totalPasses, bestTime, lastSessionPassed,
+--   bestTier, tiers = {bronze = n, silver = n, gold = n}}}} (tiers: drills with medals)
 function S.loadProgress()
   return read(S.PROGRESS_FILE, function(t) return type(t.lessons) == 'table' end, {schemaVersion = 1, lessons = {}})
 end
@@ -51,6 +52,19 @@ end
 
 function S.saveSpots(spots)
   jsonWriteFile(S.SPOTS_FILE, spots, true)
+end
+
+-- prefs = {schemaVersion = 1, autoRetry = bool} (the player's choices in the HUD)
+S.PREFS_FILE = 'settings/rallyAcademy/prefs.json'
+
+function S.loadPrefs()
+  local t = read(S.PREFS_FILE, function(p) return type(p) == 'table' end, {schemaVersion = 1})
+  if t.autoRetry == nil then t.autoRetry = true end -- on by default (owner decision, PRODUCT.md)
+  return t
+end
+
+function S.savePrefs(prefs)
+  jsonWriteFile(S.PREFS_FILE, prefs, true)
 end
 
 return S

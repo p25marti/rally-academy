@@ -13,7 +13,7 @@
       },
       "environment": {
         "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt: mark a 3 m wide gate and a parking box.",
+        "areaHint": "BMP dirt arena (MAPS W2): the course is laid out from the venue's spawn, heading south-west across the open dirt (about 40 m of room needed ahead).",
         "venueNeeds": {
           "kind": "open",
           "areaM": 30,
@@ -27,16 +27,85 @@
           ]
         }
       },
-      "instructions": "Drive through entry gate, steer around one cone, and stop entirely inside a parking box.",
-      "resetInstructions": "Stationary, 8 m before entry gate; face straight into the box. Save there.",
-      "props": "Use six cones to mark entry, turn and box.",
+      "instructions": "Drive through the gate, keep the cone on your left, and stop with the whole car inside the parking box. One stop, no reversing.",
+      "resetInstructions": "Go to drill puts you at the start with the gate, cone and box laid out ahead. Mark start moves the course to where you are; Use venue start puts it back.",
+      "props": "None: the gate, cone and parking box are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No cone contact; all four wheels finish inside box; no reversing.",
+        "successDefinition": "Through the 3 m gate and past the cone on the correct side without touching either, then stop once with the whole car inside the 6 x 3.2 m box, without reversing. Silver: inside the silver box (0.3 m smaller all round) in 14 s or less. Gold: inside the gold box (0.5 m smaller) in 10 s or less.",
         "metricToRecord": "Successful precise parks / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "endWhen": "stopped",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 8,
+              "widthM": 3
+            }
+          ],
+          "cones": [
+            {
+              "x": 0,
+              "y": 20,
+              "keep": "left"
+            }
+          ],
+          "box": {
+            "x": -1.5,
+            "y": 33,
+            "lengthM": 6,
+            "widthM": 3.2
+          }
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "cones_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_reverse",
+            "maxM": 0.3
+          },
+          {
+            "type": "park_in_box",
+            "insetM": 0
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "park_in_box",
+                "insetM": 0.3
+              },
+              {
+                "type": "max_time",
+                "maxSeconds": 14
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "park_in_box",
+                "insetM": 0.5
+              },
+              {
+                "type": "max_time",
+                "maxSeconds": 10
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

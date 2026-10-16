@@ -1,0 +1,136 @@
+-- Authored courses (assessment.course): gates, cones and a parking box laid out relative to
+-- the start, so a drill is ready to drive with no marking. Also the car's footprint, which
+-- the box and marker rules need ("the whole car inside the box", "clear of every cone").
+-- Pure Lua (no engine globals): the extension places and draws, the rules grade.
+--
+-- Course coordinates are metres from the start: x to the right, y ahead (the way the car
+-- faces at the start). A placed course is in world x, y; the extension fills in heights.
+local Gates = require('ge/extensions/rallyAcademy/gates')
+local L = {}
+
+-- Radius of a drawn cone or gate post: the car "clips" it inside this distance.
+L.MARKER_RADIUS = 0.15 -- m
+-- Crossing a cone's line further than this from it doesn't count (elsewhere on the course).
+local CONE_REACH = 10 -- m
+
+local function unit(x, y)
+  local n = math.sqrt(x * x + y * y)
+  if n == 0 then return 0, 1 end
+  return x / n, y / n
+end
+
+-- Frame of a start pose {pos, dir}: origin, forward and right unit vectors (horizontal).
+function L.frame(start)
+  local fx, fy = unit(start.dir.x, start.dir.y)
+  return {ox = start.pos.x, oy = start.pos.y, fx = fx, fy = fy, rx = fy, ry = -fx}
+end
+
+function L.toWorld(f, x, y)
+  return f.ox + f.rx * x + f.fx * y, f.oy + f.ry * x + f.fy * y
+end
+
+-- Lay a course definition out from a start pose. Returns
+-- {gates = {...} (gates.lua format), cones = {{x, y, dir, keep}}, box = {x, y, dir, lengthM, widthM},
+--  markers = {{x, y, name}}} with world x, y; heights are left to the caller.
+function L.place(def, start)
+  local f = L.frame(start)
+  local dir = {x = f.fx, y = f.fy}
+  local out = {gates = {}, cones = {}, markers = {}}
+  for i, g in ipairs(def.gates or {}) do
+    local x, y = L.toWorld(f, g.x or 0, g.y)
+    local gate = Gates.new({pos = {x = x, y = y, z = start.pos.z}, dir = dir}, g.widthM)
+    out.gates[i] = gate
+    local half = gate.width / 2
+    local label = #(def.gates) > 1 and (' of gate ' .. i) or ' of the gate'
+    out.markers[#out.markers + 1] = {x = x - f.rx * half, y = y - f.ry * half, name = 'the left post' .. label}
+    out.markers[#out.markers + 1] = {x = x + f.rx * half, y = y + f.ry * half, name = 'the right post' .. label}
+  end
+  for i, c in ipairs(def.cones or {}) do
+    local x, y = L.toWorld(f, c.x or 0, c.y)
+    out.cones[i] = {x = x, y = y, z = start.pos.z, dir = dir, keep = c.keep or 'left'}
+    out.markers[#out.markers + 1] = {x = x, y = y, name = #(def.cones) > 1 and ('cone ' .. i) or 'the cone'}
+  end
+  if def.box then
+    local x, y = L.toWorld(f, def.box.x or 0, def.box.y)
+    out.box = {x = x, y = y, z = start.pos.z, dir = dir, lengthM = def.box.lengthM, widthM = def.box.widthM}
+  end
+  return out
+end
+
+-- Car footprint ------------------------------------------------------------------
+-- car = {front, rear, left, right}: metres from the car's position (what telemetry and
+-- getPosition report, which isn't the body's centre) to each side of its body.
+
+-- A centred footprint, for when the body can't be measured.
+function L.centredCar(length, width)
+  return {front = length / 2, rear = length / 2, left = width / 2, right = width / 2}
+end
+
+-- The four corners in world x, y, for a car at (x, y) pointing (hx, hy).
+-- Order: front-left, front-right, rear-right, rear-left.
+function L.corners(car, x, y, hx, hy)
+  local fx, fy = unit(hx, hy)
+  local rx, ry = fy, -fx
+  local function at(a, s) return {x = x + fx * a + rx * s, y = y + fy * a + ry * s} end
+  return {at(car.front, -car.left), at(car.front, car.right), at(-car.rear, car.right), at(-car.rear, -car.left)}
+end
+L.CORNER_NAMES = {'front-left', 'front-right', 'rear-right', 'rear-left'}
+
+-- Distance from a point to the car's footprint (0 when the point is under the car).
+function L.distanceToCar(car, x, y, hx, hy, px, py)
+  local fx, fy = unit(hx, hy)
+  local dx, dy = px - x, py - y
+  local a, s = dx * fx + dy * fy, dx * fy - dy * fx -- along (forward +), side (right +)
+  local da = math.max(0, a - car.front, -car.rear - a)
+  local ds = math.max(0, s - car.right, -car.left - s)
+  return math.sqrt(da * da + ds * ds)
+end
+
+-- Where the car is relative to a box: each corner's margin inside the box (negative =
+-- outside) after shrinking the box by `inset` on every side, and the body centre's offset
+-- from the box centre (along = ahead of it, side = right of it, in the box's direction).
+-- Returns {inside, margin = smallest corner margin, corner = its index, edge = 'front' |
+-- 'back' | 'left' | 'right' (the edge it's nearest or past), along, side}.
+function L.boxFit(box, car, x, y, hx, hy, inset)
+  local bx, by = unit(box.dir.x, box.dir.y)
+  local halfL, halfW = box.lengthM / 2 - (inset or 0), box.widthM / 2 - (inset or 0)
+  local worst = {margin = math.huge}
+  for i, c in ipairs(L.corners(car, x, y, hx, hy)) do
+    local dx, dy = c.x - box.x, c.y - box.y
+    local a, s = dx * bx + dy * by, dx * by - dy * bx
+    local edges = {{halfL - a, 'front'}, {halfL + a, 'back'}, {halfW - s, 'right'}, {halfW + s, 'left'}}
+    for _, e in ipairs(edges) do
+      if e[1] < worst.margin then worst = {margin = e[1], corner = i, edge = e[2]} end
+    end
+  end
+  -- Body centre: midway between the front and rear, left and right.
+  local fx, fy = unit(hx, hy)
+  local midA, midS = (car.front - car.rear) / 2, (car.right - car.left) / 2
+  local cx, cy = x + fx * midA + fy * midS, y + fy * midA - fx * midS
+  local dx, dy = cx - box.x, cy - box.y
+  worst.along, worst.side = dx * bx + dy * by, dx * by - dy * bx
+  worst.inside = worst.margin >= 0
+  return worst
+end
+
+-- Cones -------------------------------------------------------------------------
+
+-- Does moving from a to b pass the cone (cross the line through it, square to the course,
+-- going forwards)? Returns nil or {offset = metres right (+) or left (-) of the cone,
+-- side = which side of the car the cone was on: 'left' | 'right'}.
+function L.coneCrossing(cone, a, b)
+  local dx, dy = cone.dir.x, cone.dir.y
+  local alongA = (a.x - cone.x) * dx + (a.y - cone.y) * dy
+  local alongB = (b.x - cone.x) * dx + (b.y - cone.y) * dy
+  if not (alongA < 0 and alongB >= 0) then return nil end
+  local f = -alongA / (alongB - alongA)
+  local cx, cy = a.x + f * (b.x - a.x), a.y + f * (b.y - a.y)
+  local offset = (cx - cone.x) * dy - (cy - cone.y) * dx
+  if math.abs(offset) > CONE_REACH then return nil end
+  return {offset = offset, side = offset >= 0 and 'left' or 'right'}
+end
+
+-- "Keep the cone on your left": you pass to its right.
+function L.keepText(keep) return 'keep it on your ' .. keep end
+
+return L

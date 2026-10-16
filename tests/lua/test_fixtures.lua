@@ -15,6 +15,11 @@
 --      edge (damage 0 -> 5722) and the arcade gearbox then reversed; spin = handbrake and
 --      full lock at 60 km/h (turned 143 degrees); contact = full lock onto the grass at 35
 --      km/h (no hit); puncture = beamstate.deflateRandomTire() at 45 km/h.
+-- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
+--      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
+--      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
+--      post = 0.95 m right through the gate, clipping its right post. The record carries the
+--      laid-out course and the car's measured footprint (meta.course, meta.car).
 local json = require('json')
 local Rules = require('ge/extensions/rallyAcademy/rules')
 local T = {}
@@ -42,6 +47,12 @@ end
 
 local function check(res, ruleType)
   for _, c in ipairs(res.checks) do if c.type == ruleType then return c end end
+end
+
+local function eq(actual, expected, msg)
+  if actual ~= expected then
+    error(('%s: expected %s, got %s'):format(msg or 'mismatch', tostring(expected), tostring(actual)), 2)
+  end
 end
 
 local function has(text, needle)
@@ -123,6 +134,39 @@ function T.a02_recorded_launch_has_engine_and_gear_data()
   assert(res.passed, 'clean launch passes')
   assert(rec.samples[#rec.samples].eng == 1, 'engine-running flag recorded')
   has(check(res, 'gear_reached').text, 'gear 2')
+end
+
+-- A01: the course and footprint come from the record, the time from its score.
+local function gradeCourse(name)
+  local rec = fixture(name)
+  local a
+  for _, e in ipairs(read(ROOT .. '/mod/gameplay/rallyAcademy/exercises.json').exercises) do
+    if e.id == 'A01' then a = e.assessment end
+  end
+  return Rules.grade(a, rec, {course = rec.meta.course, gates = rec.meta.course.gates, car = rec.meta.car,
+                              time = rec.score and rec.score.time}), rec
+end
+
+function T.a01_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {a01_gold = 'gold', a01_wrong_side = false, a01_post = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name)
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+    eq(rec.grade.tier or false, tier, name .. ' medal the game showed')
+  end
+end
+
+function T.a01_recorded_misses_fail_for_the_right_reasons()
+  local wrong = gradeCourse('a01_wrong_side')
+  has(check(wrong, 'cones_passed').text, 'wrong side of the cone')
+  local post = gradeCourse('a01_post')
+  has(check(post, 'markers_clear').text, 'Clipped the right post of the gate')
+  eq(check(post, 'park_in_box').ok, true, 'it still parked in the box')
+  local gold = gradeCourse('a01_gold')
+  has(check(gold, 'park_in_box').text, 'Parked inside the box')
+  eq(check(gold, 'no_reverse').ok, true, 'the handbrake stop does not read as reversing')
 end
 
 local function ruleCheck(name, rule)
