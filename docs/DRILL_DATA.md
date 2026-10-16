@@ -61,6 +61,34 @@ types and their parameters are listed in [GRADING.md](GRADING.md#5-rule-engine);
 `automatic` drill, the rules decide Pass or Miss when the run ends, and the HUD
 shows one ✓/✗ line per rule.
 
+## Venue needs
+
+Every drill says what kind of place it needs, in `environment.venueNeeds`. The venue tools
+use it to say which drills a spot suits (`survey.py report`) and to search a map for a
+drill's venue (`survey.py fits <drill>`). `dev.py validate` requires it and checks its
+fields (the checks live in `tools/ingame/venues.py`).
+
+```jsonc
+"venueNeeds": {
+  "kind": "straight",          // straight | corner | open | hill | crest | route
+  "lengthM": 150,              // usable length (straight, route, crest) or along an open area
+  "widthM": 8,                 // road width (not for open areas)
+  "areaM": 50,                 // open: smallest side of the open ground
+  "radiusM": [15, 50],         // corner: minimum radius range
+  "turnDeg": 90,               // corner: how far it turns at least
+  "shape": "hairpin",          // corner: constant | decreasing | increasing | hairpin
+  "gradePct": 6,               // hill: at least this steep
+  "maxGradePct": 3,            // straight: no steeper than this (braking drills)
+  "maxSlopeDeg": 3,            // flat enough (open areas, starts)
+  "surfaces": ["GRAVEL", "DIRT", "ASPHALT"], // allowed; listed in order of preference
+  "features": ["runoff outside the corner"]  // what only a person can confirm
+}
+```
+
+Everything but `kind` is optional. Surface names are the wheels' ground models
+(`R.SURFACES` in `rules.lua`). Saved spots can't prove a corner, hill or crest exists, so the
+report lists those drills as "maybe".
+
 ## Modules
 
 | Letter | Module | Drills |

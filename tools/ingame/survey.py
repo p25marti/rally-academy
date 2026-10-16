@@ -11,6 +11,7 @@ Run with the game loaded on the map you're surveying (docs/TESTING.md, "Finding 
   survey.py goto ID | --at X,Y,Z,DX,DY    put the car on a saved spot or a pose
   survey.py straights|corners|hills|crests   road sections from the map's AI road network
   survey.py open [--step=16]              open, flat, loose-surface areas from a terrain scan (slow)
+  survey.py fits DRILL [--measure N]      places on this map that suit a drill's venueNeeds
   survey.py report [--quick] [--open]     HTML page: saved spots + the finders' best, with aerial
                                           views and measured surfaces, in venue-reports/<map>/
 
@@ -35,6 +36,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 from game import call, lua, screenshot, vlua  # noqa: E402
 import academy as A  # noqa: E402
 import roads  # noqa: E402
+import venues  # noqa: E402
 
 ROOT = HERE.parents[1]
 REPORTS = ROOT / "venue-reports"
@@ -273,6 +275,40 @@ def open_cmd(args):
     show(open_areas(args.step), args.limit)
 
 
+def fits_cmd(args):
+    """Search this map for places matching a drill's venueNeeds."""
+    drill = A.drill(args.drill)
+    needs = drill["environment"]["venueNeeds"]
+    kind = needs["kind"]
+    print(f"{drill['id']} {drill['title']} needs: " + ", ".join(f"{k} {v}" for k, v in needs.items() if k != "features"))
+    if needs.get("features"):
+        print("  and, by eye: " + "; ".join(needs["features"]))
+    if kind == "open":
+        found = open_areas()
+    else:
+        nodes, adj = road_network()
+        found = {"straight": lambda: roads.straights(nodes, adj, min_length=needs.get("lengthM", 80)),
+                 "corner": lambda: roads.corners(nodes, adj, max_radius=(needs.get("radiusM") or [8, 120])[1]),
+                 "hill": lambda: roads.hills(nodes, adj, min_grade_pct=needs.get("gradePct", 6)),
+                 "crest": lambda: roads.crests(nodes, adj),
+                 "route": lambda: roads.straights(nodes, adj, min_length=needs.get("lengthM", 100)) + roads.corners(nodes, adj)}[kind]()
+    matches = [c for c in roads.dedupe(found) if not venues.check(needs, c)[0]]
+    if args.measure:  # place the car on the best few: real surfaces and room, then check again
+        home = pose()
+        try:
+            for c in matches[:args.measure]:
+                c["measured"] = measure(c)
+        finally:
+            A.place(home["pos"], home["dir"], lift=0.5)
+        measured = sorted((c for c in matches[:args.measure] if not venues.check(needs, c)[0]),
+                          key=lambda c: venues.surface_rank(needs, c))  # gravel before tarmac
+        print(f"\n{len(measured)} of the best {min(args.measure, len(matches))} pass with measured surfaces and room:")
+        matches = measured
+    else:
+        print(f"\n{len(matches)} candidates on {level()} (surfaces unchecked; add --measure 5 to check the best five):")
+    show(matches, args.limit)
+
+
 # --------------------------------------------------------------------------- report
 
 def aerial(path, pos, direction, height=40.0, back=30.0):
@@ -300,6 +336,23 @@ def fmt(v):
     return f"{v:g}" if isinstance(v, float) else str(v)
 
 
+def suitability(c):
+    """HTML rows: drills this place fits, ones it nearly fits (and why), what to check by eye."""
+    fits, maybe, near = venues.suits(A.drills(), c)
+    rows = []
+    if fits:
+        rows.append(f"<tr><th>fits</th><td class=\"fits\">{html.escape(', '.join(d for d, _ in fits))}</td></tr>")
+        eye = sorted({e for _, by_eye in fits for e in by_eye})
+        if eye:
+            rows.append(f"<tr><th>check by eye</th><td>{html.escape('; '.join(eye[:5]))}</td></tr>")
+    if maybe:
+        rows.append(f"<tr><th>maybe (by eye)</th><td>{html.escape(', '.join(d for d, _ in maybe))}</td></tr>")
+    if near:
+        rows.append("<tr><th>nearly</th><td>" + "<br>".join(f"{html.escape(d)}: {html.escape('; '.join(p))}"
+                                                        for d, p in near[:4]) + "</td></tr>")
+    return rows
+
+
 def card(c, img):
     facts = {k: v for k, v in c.items() if k not in ("kind", "pos", "dir", "nodes", "id", "level", "note", "measured", "room", "road", "surfaces")}
     m = c.get("measured") or {}
@@ -312,6 +365,7 @@ def card(c, img):
     room = m.get("room") or c.get("room")
     if room:
         rows.append("<tr><th>room</th><td>" + ", ".join(f"{n} {d} m" for n, d in zip(ROOM_NAMES, room) if n in ("ahead", "left", "right", "behind")) + "</td></tr>")
+    rows += suitability(c)
     p, d = c["pos"], c["dir"]
     cmd = f"python tools/ingame/survey.py goto {c['id']}" if "id" in c else \
         f"python tools/ingame/survey.py goto --at={p['x']},{p['y']},{p['z']},{d['x']},{d['y']}"
@@ -335,7 +389,7 @@ article {{ background: var(--card); border: 1px solid var(--line); border-radius
 article h3 {{ margin: 0 0 8px; font-size: 15px; }} img, .noimg {{ width: 100%; border-radius: 6px; display: block; aspect-ratio: 16/9; object-fit: cover; background: #000; }}
 .noimg {{ display: grid; place-items: center; color: var(--muted); }}
 table {{ width: 100%; margin-top: 8px; border-collapse: collapse; }} th {{ text-align: left; color: var(--muted); font-weight: 500; padding: 2px 8px 2px 0; width: 38%; }}
-td {{ padding: 2px 0; }} .at {{ color: var(--muted); margin: 6px 0 4px; }}
+td {{ padding: 2px 0; }} td.fits {{ color: var(--accent); font-weight: 600; }} .at {{ color: var(--muted); margin: 6px 0 4px; }}
 code {{ display: block; padding: 6px 8px; background: #0b0d10; border-radius: 6px; font-size: 12px; overflow-x: auto; white-space: nowrap; }}
 </style></head><body><h1>Venues on {map}</h1>
 <div class="sub">Generated {when} by tools/ingame/survey.py report. Surfaces and room are measured with the car at each start; road values come from the map's AI road network.</div>
@@ -450,6 +504,11 @@ def main():
     p.add_argument("--step", type=float, default=16.0)
     p.add_argument("--limit", type=int, default=10)
     p.set_defaults(func=open_cmd)
+    p = sub.add_parser("fits")
+    p.add_argument("drill")
+    p.add_argument("--measure", type=int, default=0, help="place the car on the best N to measure them")
+    p.add_argument("--limit", type=int, default=8)
+    p.set_defaults(func=fits_cmd)
     p = sub.add_parser("report")
     p.add_argument("--quick", action="store_true", help="skip placing the car to measure surfaces")
     p.add_argument("--open", action="store_true", help="include the (slow) terrain scan for open areas")

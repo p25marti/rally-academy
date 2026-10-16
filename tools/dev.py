@@ -103,6 +103,13 @@ REQUIRED_EXERCISE_KEYS = {
 ASSESSMENT_MODES = {"selfAssessment", "automatic", "hybrid"}
 
 
+def venue_needs_errors(needs) -> list[str]:
+    """venueNeeds checks live with the matcher (tools/ingame/venues.py), so they can't drift."""
+    sys.path.insert(0, str(ROOT / "tools" / "ingame"))
+    import venues  # noqa: E402 - stdlib-only module next to the in-game tools
+    return venues.validate(needs)
+
+
 def validate_exercises(data: dict) -> list[str]:
     errors: list[str] = []
     rule_types_, gate_rules = rule_types()
@@ -153,6 +160,11 @@ def validate_exercises(data: dict) -> list[str]:
             isinstance(r, dict) and r.get("type") in gate_rules for r in a.get("rules") or [])
         if uses_gates and gates is None:
             errors.append(f"{where}: gate rules and endWhen 'gates' need assessment.gates")
+        env = ex.get("environment") or {}
+        if "venueNeeds" not in env:
+            errors.append(f"{where}: environment.venueNeeds is required (what kind of place the drill needs; docs/DRILL_DATA.md)")
+        else:
+            errors += [f"{where}: {e}" for e in venue_needs_errors(env["venueNeeds"])]
         if a.get("mode") == "automatic" and not a.get("rules"):
             errors.append(f"{where}: automatic drills need at least one rule")
     return errors

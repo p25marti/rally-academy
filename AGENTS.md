@@ -99,8 +99,9 @@ Learned the hard way (0.39.4):
 1. Read its entry in `exercises.json` and the capability table in [GRADING](docs/GRADING.md).
 2. Use existing rule types (`R.TYPES` in `rules.lua`) where you can. Set
    `assessment.mode: "automatic"`, `rules`, and `endWhen` or `gates` as needed.
-3. Survey the venue if a rule depends on it, e.g. `on_surface` surfaces
-   (`python tools/ingame/survey.py surfaces`).
+3. Check the drill's venue: its `environment.venueNeeds` describes the place
+   (`survey.py fits <id>` searches for one), and survey it if a rule depends on it, e.g.
+   `on_surface` surfaces (`survey.py surfaces`).
 4. Drive scripted pass and miss runs in-game, then save them as fixtures (below).
 5. Add a fixture test that the rules agree with the game's verdicts.
 6. Update GRADING's status line, ROADMAP and the CHANGELOG.
@@ -121,7 +122,8 @@ file from the user folder into `tests/fixtures/` and note how it was driven at t
 decorated with `@scenario`. Use the `academy.py` helpers, return a list of problems, and
 clean up any progress you record (`A.clear_progress`). List it in TESTING.
 
-**Find a venue:** bookmark with the Save spot binding, or run the finders (`survey.py
+**Find a venue:** `survey.py fits <drill>` searches the map for the drill's `venueNeeds`. Or
+bookmark with the Save spot binding, or run the finders (`survey.py
 straights|corners|hills|crests|open`). Review them with `survey.py report`, check a spot with
 `goto` and `here`, then record it in MAPS.md ([TESTING → Finding a venue](docs/TESTING.md#finding-a-venue)).
 

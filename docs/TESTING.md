@@ -108,10 +108,15 @@ Load the map first.
    python tools/ingame/survey.py crests                       # jumps and crests
    python tools/ingame/survey.py open                         # open flat loose areas (terrain scan, slow)
    ```
+   Or start from a drill: `python tools/ingame/survey.py fits D03` searches the map for places
+   matching that drill's `venueNeeds` (add `--measure 5` to place the car on the best five
+   and check their real surfaces and room, gravel ranked before tarmac).
 3. **Review them together.** `python tools/ingame/survey.py report` (add `--open` for open
    areas, `--quick` to skip measuring) writes `venue-reports/<map>/index.html`: one card per
    saved spot or find, with an aerial view (HUD hidden), measured surfaces and room, and the
-   command to go there. It moves the car and camera, then puts them back, and moves the
+   command to go there. Each card also lists the drills the place **fits**, **maybe** fits
+   (a saved spot can't prove a corner exists) or **nearly** fits, with what's missing. With
+   `--quick` surfaces aren't measured, so fits ignore surface. It moves the car and camera, then puts them back, and moves the
    game's screenshot copies out of your user folder into the report. The report is
    local output and not committed.
 4. **Go and look.** `survey.py goto 3` (a saved spot) or `goto --at=X,Y,Z,DX,DY` (a find),

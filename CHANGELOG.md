@@ -70,6 +70,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 
 - **Save spot** binding (Options → Controls → "Rally Academy: Save spot"): bookmark where you
   are as a possible drill venue, with room, slope, the nearest road and surfaces measured.
+- Every drill now says what kind of place it needs (`environment.venueNeeds`: shape, length,
+  width, radius, grade, surfaces), and the venue tools use it: the report says which drills
+  a place fits, and `survey.py fits <drill>` finds places for one.
 - Venue tools for contributors: road-network finders (straights, corners, hills, crests),
   an open-area terrain scan, and an HTML venue report with aerial views
   (`tools/ingame/survey.py`).

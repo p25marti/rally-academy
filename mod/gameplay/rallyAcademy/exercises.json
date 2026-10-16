@@ -15,6 +15,18 @@
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt: mark a 3 m wide gate and a parking box.",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 30,
+          "maxSlopeDeg": 5,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 337.07,
@@ -63,6 +75,19 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight from the start line.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 120,
+          "widthM": 6,
+          "maxGradePct": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -132,6 +157,19 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel Introduction layout: shift through the gears around the lap.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 200,
+          "widthM": 6,
+          "maxGradePct": 4,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -180,6 +218,19 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight: mark three 25 m timing zones.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 110,
+          "widthM": 6,
+          "maxGradePct": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -242,6 +293,19 @@
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Straight approach to a stop box marked on the open dirt.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 100,
+          "widthM": 6,
+          "maxGradePct": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 337.07,
@@ -305,6 +369,20 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Figure Eight Basics layout: call the next bend aloud before each apex.",
+        "venueNeeds": {
+          "kind": "route",
+          "lengthM": 300,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "several bends in a row"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -353,6 +431,25 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Pick one medium-speed corner on the circuit.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            20,
+            60
+          ],
+          "turnDeg": 60,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ],
+          "features": [
+            "60 m straight approach"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -401,6 +498,25 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same corner as A07.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            20,
+            60
+          ],
+          "turnDeg": 60,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ],
+          "features": [
+            "straight exit"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -449,6 +565,19 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight (~150 m) into a marked 5 m stop zone.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 150,
+          "widthM": 8,
+          "maxGradePct": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -512,6 +641,19 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same braking zone as B01.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 150,
+          "widthM": 8,
+          "maxGradePct": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -583,6 +725,22 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight; predict the stopping point before each run.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 120,
+          "widthM": 6,
+          "maxGradePct": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ],
+          "features": [
+            "a tarmac and a gravel stretch"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -631,6 +789,25 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Medium-radius corner with runoff.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            20,
+            60
+          ],
+          "turnDeg": 60,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ],
+          "features": [
+            "runoff outside the corner"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -679,6 +856,17 @@
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Drive the circle around the infield.",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 50,
+          "maxSlopeDeg": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 265.0,
@@ -727,6 +915,17 @@
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). 15-20 m radius around the infield.",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 50,
+          "maxSlopeDeg": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 265.0,
@@ -775,6 +974,17 @@
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Large arc of the circle.",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 50,
+          "maxSlopeDeg": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 265.0,
@@ -823,6 +1033,21 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Broad gravel bend.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            30,
+            100
+          ],
+          "turnDeg": 45,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -871,6 +1096,21 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Sweeping gravel corner.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            40,
+            120
+          ],
+          "turnDeg": 45,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -919,6 +1159,21 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open 90-degree gravel corner.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            15,
+            50
+          ],
+          "turnDeg": 80,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -967,6 +1222,17 @@
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle (parked: needs RWD/AWD).",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 45,
+          "maxSlopeDeg": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 265.0,
@@ -1016,6 +1282,22 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tightest hairpin or the roundabout (Tie the Knot layout).",
+        "venueNeeds": {
+          "kind": "corner",
+          "shape": "hairpin",
+          "radiusM": [
+            8,
+            30
+          ],
+          "turnDeg": 150,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1064,6 +1346,17 @@
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt arc (parked: needs RWD/AWD).",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 50,
+          "maxSlopeDeg": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 337.07,
@@ -1113,6 +1406,17 @@
         "mapDisplayName": "West Coast USA: BMP dirt circle",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle arc (parked: needs RWD/AWD).",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 50,
+          "maxSlopeDeg": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 265.0,
@@ -1162,6 +1466,17 @@
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Figure-eight around two cones 20 m apart.",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 40,
+          "maxSlopeDeg": 3,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 337.07,
@@ -1210,6 +1525,25 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Wide gravel corner with outside runoff.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            15,
+            50
+          ],
+          "turnDeg": 90,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "runoff outside the corner",
+            "100 m approach"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1258,6 +1592,18 @@
         "mapDisplayName": "West Coast USA: BMP dirt arena",
         "levelId": "west_coast_usa",
         "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Six-cone slalom, 12 m spacing, on the open dirt.",
+        "venueNeeds": {
+          "kind": "open",
+          "areaM": 20,
+          "lengthM": 100,
+          "maxSlopeDeg": 4,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 337.07,
@@ -1306,6 +1652,20 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Two linked bends from one of the layouts.",
+        "venueNeeds": {
+          "kind": "route",
+          "lengthM": 150,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "two linked bends"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1354,6 +1714,22 @@
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
         "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that tightens toward its exit.",
+        "venueNeeds": {
+          "kind": "corner",
+          "shape": "decreasing",
+          "radiusM": [
+            15,
+            80
+          ],
+          "turnDeg": 45,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 728.81,
@@ -1402,6 +1778,22 @@
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
         "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that opens on exit.",
+        "venueNeeds": {
+          "kind": "corner",
+          "shape": "increasing",
+          "radiusM": [
+            15,
+            80
+          ],
+          "turnDeg": 45,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 728.81,
@@ -1450,6 +1842,24 @@
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
         "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A bend hidden by a spoil heap or crest.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            15,
+            80
+          ],
+          "turnDeg": 45,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "blind: hidden by a crest, heap or trees"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 728.81,
@@ -1498,6 +1908,20 @@
         "mapDisplayName": "West Coast USA: Quarry",
         "levelId": "west_coast_usa",
         "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). Spiral Descent: uphill and downhill bends.",
+        "venueNeeds": {
+          "kind": "hill",
+          "gradePct": 6,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "a corner on the slope"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 728.81,
@@ -1546,6 +1970,24 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Banked berm corners.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            20,
+            80
+          ],
+          "turnDeg": 45,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "camber: banked or off-camber"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1594,6 +2036,21 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tarmac start line onto gravel.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 80,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT"
+          ],
+          "features": [
+            "surface change: tarmac to gravel"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1642,6 +2099,27 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel circuit vs. the tarmac start area (snow: Automation Test Track, optional).",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            20,
+            80
+          ],
+          "turnDeg": 45,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ASPHALT",
+            "SNOW",
+            "ICE"
+          ],
+          "features": [
+            "one corner on each surface: tarmac, gravel, snow"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1690,6 +2168,24 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Moderate gravel corner with runoff.",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            20,
+            60
+          ],
+          "turnDeg": 60,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "runoff outside the corner"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1738,6 +2234,21 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open gravel sweeper (parked: RWD drill).",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            40,
+            120
+          ],
+          "turnDeg": 45,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1787,6 +2298,21 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same sweeper (parked: AWD drill).",
+        "venueNeeds": {
+          "kind": "corner",
+          "radiusM": [
+            40,
+            120
+          ],
+          "turnDeg": 45,
+          "widthM": 8,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
@@ -1836,6 +2362,20 @@
         "mapDisplayName": "West Coast USA: Off-Road Circuit",
         "levelId": "west_coast_usa",
         "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Crest on the off-road circuit.",
+        "venueNeeds": {
+          "kind": "crest",
+          "lengthM": 120,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "straight over the summit"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 566.52,
@@ -1884,6 +2424,20 @@
         "mapDisplayName": "West Coast USA: Off-Road Circuit",
         "levelId": "west_coast_usa",
         "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Jump on the off-road circuit (or the BMP joker jump).",
+        "venueNeeds": {
+          "kind": "crest",
+          "lengthM": 150,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "a jump with a clear landing"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 566.52,
@@ -1932,6 +2486,22 @@
         "mapDisplayName": "West Coast USA: Off-Road Circuit",
         "levelId": "west_coast_usa",
         "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Rough sections of the off-road circuit.",
+        "venueNeeds": {
+          "kind": "route",
+          "lengthM": 150,
+          "widthM": 5,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "ROCK",
+            "MUD"
+          ],
+          "features": [
+            "rough, uneven ground"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 566.52,
@@ -1980,6 +2550,21 @@
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
         "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). SS1 Deer Creek river crossings.",
+        "venueNeeds": {
+          "kind": "route",
+          "lengthM": 120,
+          "widthM": 5,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD",
+            "MUD"
+          ],
+          "features": [
+            "a shallow water crossing"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": -410.97,
@@ -2028,6 +2613,20 @@
         "mapDisplayName": "Utah: NGRC Rally Utah 2026 stages",
         "levelId": "utah",
         "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Straight and moderate corners of a stage.",
+        "venueNeeds": {
+          "kind": "route",
+          "lengthM": 250,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "straights and moderate corners"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": -410.97,
@@ -2076,6 +2675,20 @@
         "mapDisplayName": "West Coast USA: BMP Gravel Track",
         "levelId": "west_coast_usa",
         "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same 40-60 s layout segment for A/B setups.",
+        "venueNeeds": {
+          "kind": "route",
+          "lengthM": 300,
+          "widthM": 6,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ],
+          "features": [
+            "a repeatable 40-60 s segment"
+          ]
+        },
         "spawn": {
           "pos": {
             "x": 110.11,
