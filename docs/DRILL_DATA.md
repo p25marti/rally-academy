@@ -23,11 +23,9 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "mapDisplayName": "ETK Driver Experience Center",
-        "levelId": "west_coast_usa",       // BeamNG level folder name (see MAPS.md)
-        "areaHint": "BMP dirt arena (MAPS W2) …",
-        "spawn": {"pos": {"x": 337.07, "y": 96.09, "z": 127.26},   // venue default spot for Go to drill,
-                  "dir": {...}, "up": {...}}                       // same format as a saved start
+        "venue": "bmp-dirt-arena",         // required: a venue id from venues.json (below)
+        "areaHint": "BMP dirt arena (MAPS W2) …", // where on the venue, for this drill
+        "venueNeeds": {"kind": "open", "areaM": 30}  // required: see "Venue needs"
       },
       "instructions": "What the driver does (shown in the HUD).",
       "resetInstructions": "Where/how to place the start.",
@@ -60,6 +58,34 @@ types and their parameters are listed in [GRADING.md](GRADING.md#5-rule-engine);
 `R.TYPES` in `rules.lua` is the one list: `tools/dev.py validate` reads it (and `R.GATE_RULES`) from that file. In an
 `automatic` drill, the rules decide Pass or Miss when the run ends, and the HUD
 shows one ✓/✗ line per rule.
+
+## Venues
+
+Venues live in `mod/gameplay/rallyAcademy/venues.json` and drills refer to one by id
+(`environment.venue`, [ADR 0007](decisions/0007-venues-as-data.md)). When the mod loads the
+drills, it fills each drill's `environment.levelId`, `mapDisplayName` and `spawn` from its
+venue, so the HUD, the Academy screen and Go to drill read them from the drill as before.
+Change a venue once and every drill on it follows.
+
+```jsonc
+{
+  "schemaVersion": 1,
+  "venues": [
+    {
+      "id": "bmp-gravel-track",                 // what drills refer to
+      "mapsId": "W1",                           // its row in docs/MAPS.md
+      "name": "West Coast USA: BMP Gravel Track", // shown in the HUD and the Academy
+      "levelId": "west_coast_usa",              // BeamNG level folder name
+      "spawn": {"pos": {...}, "dir": {...}, "up": {...}}, // Go to drill's default spot (Mark start overrides)
+      "notes": "Purpose-built rallycross venue …"
+    }
+  ]
+}
+```
+
+`dev.py validate` checks the file and that every drill's venue exists. It also rejects a
+drill that still carries its own `levelId`, `mapDisplayName` or `spawn`, so each venue has
+one source.
 
 ## Venue needs
 

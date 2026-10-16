@@ -14,6 +14,9 @@ local Store = require('ge/extensions/rallyAcademy/store')
 local Course = require('ge/extensions/rallyAcademy/course')
 local Spots = require('ge/extensions/rallyAcademy/spots')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
+-- Named venues drills refer to (environment.venue); the loader fills in each drill's map,
+-- display name and spawn from it, so the rest of the mod reads them from the drill.
+local VENUES_FILE = 'gameplay/rallyAcademy/venues.json'
 local lessons, byId, lessonSummary = {}, {}, {}
 local progress = {schemaVersion = 1, lessons = {}} -- store.lua has the file formats
 local setups = {schemaVersion = 1, levels = {}}
@@ -153,8 +156,17 @@ local function load()
   local data = jsonReadFile(LESSONS_FILE)
   if not (data and data.exercises) then logf('E', 'could not read drills from %s', LESSONS_FILE) end
   lessons, byId, lessonSummary = (data and data.exercises) or {}, {}, {}
+  local venueById = {}
+  for _, v in ipairs((jsonReadFile(VENUES_FILE) or {}).venues or {}) do venueById[v.id] = v end
   for _, lesson in ipairs(lessons) do
     byId[lesson.id] = lesson
+    local env = lesson.environment
+    local venue = env and venueById[env.venue]
+    if venue then
+      env.levelId, env.mapDisplayName, env.spawn, env.venueNotes = venue.levelId, venue.name, venue.spawn, venue.notes
+    elseif env and env.venue then
+      logf('E', '%s: unknown venue %s (%s)', lesson.id, tostring(env.venue), VENUES_FILE)
+    end
     table.insert(lessonSummary, {id=lesson.id, title=lesson.title, module=lesson.module,
       parked=lesson.parked ~= nil or nil})
   end

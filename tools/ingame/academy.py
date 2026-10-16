@@ -10,8 +10,18 @@ EXERCISES = ROOT / "mod" / "gameplay" / "rallyAcademy" / "exercises.json"
 PANEL = ".rally-academy-app"
 
 
+VENUES = ROOT / "mod" / "gameplay" / "rallyAcademy" / "venues.json"
+
+
 def drills():
-    return json.loads(EXERCISES.read_text(encoding="utf-8"))["exercises"]
+    """The drills with each venue filled in (levelId, mapDisplayName, spawn), as the mod loads them."""
+    venues = {v["id"]: v for v in json.loads(VENUES.read_text(encoding="utf-8"))["venues"]}
+    out = json.loads(EXERCISES.read_text(encoding="utf-8"))["exercises"]
+    for d in out:
+        v = venues.get(d["environment"].get("venue"))
+        if v:
+            d["environment"].update(levelId=v["levelId"], mapDisplayName=v["name"], spawn=v["spawn"])
+    return out
 
 
 def drill(drill_id):

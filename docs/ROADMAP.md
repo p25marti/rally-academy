@@ -40,7 +40,7 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 ## Venue tooling: finding and testing drill locations
 
 Workflow: [TESTING → Finding a venue](TESTING.md#finding-a-venue). All six steps are planned;
-the first five are built.
+all six are built.
 
 - [x] **Save spot** binding: bookmark where you are (pose, room, slope, nearest road,
       surfaces) while driving (`spots.lua`, `settings/rallyAcademy/spots.json`).
@@ -55,8 +55,9 @@ the first five are built.
       at a candidate (scripted braking on straights, the game's AI through corners and routes,
       a sized circle in open areas) and reports contact, leaving the allowed surfaces, running
       out of length, or a nudged start.
-- [ ] **Venues as data:** `venues.json` with named spots that drills refer to, instead of a
-      copy in each drill's `environment`. Pairs with promoting setups into drill data (P1).
+- [x] **Venues as data:** `venues.json` holds the named venues and drills refer to one by id
+      ([ADR 0007](decisions/0007-venues-as-data.md)). Next: promote captured setups into
+      venue or drill data (P1).
 
 ## P2 — First automatically graded drill
 

@@ -166,4 +166,23 @@ function T.choosing_another_drill_while_loading_cancels_the_arrival()
   eq(#h.vehicle.teleports, 0, 'no surprise teleport')
 end
 
+-- Venues are shared data (venues.json); the loader fills each drill's map, name and spawn.
+function T.drills_get_their_venue_filled_in_on_load()
+  local h, M = setup()
+  M.select('B01')
+  local env = h.lastState().lesson.environment
+  eq(env.venue, 'bmp-gravel-track', 'venue id kept')
+  eq(env.levelId, 'west_coast_usa', 'map from the venue')
+  eq(env.mapDisplayName, 'West Coast USA: BMP Gravel Track', 'display name from the venue')
+  assert(env.spawn and env.spawn.pos, 'spawn from the venue')
+end
+
+function T.an_unknown_venue_is_logged_as_an_error()
+  local h = stubs.install()
+  h.files['gameplay/rallyAcademy/venues.json'] = '{"schemaVersion": 1, "venues": []}'
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  H.has(h.logText('rallyAcademy'), 'unknown venue bmp-gravel-track')
+end
+
 return T

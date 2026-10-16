@@ -13,6 +13,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | --- | --- |
 | `mod/` | Exactly the shipped zip root. Nothing else goes in it |
 | `mod/gameplay/rallyAcademy/exercises.json` | The drills: source of truth ([DRILL_DATA](docs/DRILL_DATA.md), [ADR 0002](docs/decisions/0002-drill-data-source-of-truth.md)) |
+| `mod/gameplay/rallyAcademy/venues.json` | Named venues (map, spawn) that drills refer to by id ([ADR 0007](docs/decisions/0007-venues-as-data.md)) |
 | `mod/lua/ge/extensions/rallyAcademy.lua` | GE extension: session state machine, timing, grading flow, engine hooks |
 | `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `runRecord.lua` (pure); `store.lua` (files), `course.lua` (drawing) |
 | `mod/lua/vehicle/extensions/rallyAcademy/telemetry.lua` | Sampler inside the car's Lua VM ([ADR 0004](docs/decisions/0004-telemetry-transport.md)) |

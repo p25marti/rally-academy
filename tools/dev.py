@@ -36,6 +36,7 @@ VERSION_FILE = ROOT / "VERSION"
 MOD_NAME = "rally_academy"  # zip / unpacked folder name; keep stable across releases
 APP_JSON = Path("ui/modules/apps/RallyAcademy/app.json")
 EXERCISES_JSON = Path("gameplay/rallyAcademy/exercises.json")
+VENUES_JSON = Path("gameplay/rallyAcademy/venues.json")
 ALLOWED_TOP_LEVEL = {"gameplay", "lua", "ui", "art", "levels", "vehicles", "settings", "scripts"}
 # Grading rule types and their required numeric parameters; mirrors R.TYPES in
 # mod/lua/ge/extensions/rallyAcademy/rules.lua (docs/DRILL_DATA.md).
@@ -108,6 +109,38 @@ def venue_needs_errors(needs) -> list[str]:
     sys.path.insert(0, str(ROOT / "tools" / "ingame"))
     import venues  # noqa: E402 - stdlib-only module next to the in-game tools
     return venues.validate(needs)
+
+
+def _vec_ok(v) -> bool:
+    return isinstance(v, dict) and all(isinstance(v.get(k), (int, float)) for k in ("x", "y", "z"))
+
+
+def validate_venues(venues: dict, exercises: dict) -> list[str]:
+    """venues.json is well formed, every drill names a known venue, and no drill still carries
+    its own copy of the venue (levelId, mapDisplayName, spawn): one source per venue."""
+    errors: list[str] = []
+    if venues.get("schemaVersion") != 1:
+        errors.append("venues.json: schemaVersion must be 1")
+    ids = set()
+    for i, v in enumerate(venues.get("venues") or []):
+        where = f"venues[{i}] ({v.get('id', '?')})"
+        for k in ("id", "name", "levelId"):
+            if not isinstance(v.get(k), str) or not v.get(k):
+                errors.append(f"{where}: {k} must be a non-empty string")
+        if v.get("id") in ids:
+            errors.append(f"{where}: duplicate id")
+        ids.add(v.get("id"))
+        sp = v.get("spawn") or {}
+        if not all(_vec_ok(sp.get(k)) for k in ("pos", "dir", "up")):
+            errors.append(f"{where}: spawn needs pos, dir and up as {{x, y, z}}")
+    for ex in exercises.get("exercises") or []:
+        env = ex.get("environment") or {}
+        if env.get("venue") not in ids:
+            errors.append(f"{ex.get('id')}: environment.venue {env.get('venue')!r} isn't in venues.json")
+        copies = [k for k in ("levelId", "mapDisplayName", "spawn") if k in env]
+        if copies:
+            errors.append(f"{ex.get('id')}: environment has {copies}; those come from the venue")
+    return errors
 
 
 def validate_exercises(data: dict) -> list[str]:
@@ -191,6 +224,11 @@ def cmd_validate(_args=None) -> None:
         fail("drill data invalid:\n    " + "\n    ".join(errors))
     count = len(json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8"))["exercises"])
     ok(f"{count} drills valid")
+    venues = json.loads((MOD_DIR / VENUES_JSON).read_text(encoding="utf-8"))
+    errors = validate_venues(venues, json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8")))
+    if errors:
+        fail("venue data invalid:\n    " + "\n    ".join(errors))
+    ok(f"{len(venues['venues'])} venues valid, every drill's venue found")
 
     stray = [p.name for p in MOD_DIR.iterdir() if p.name not in ALLOWED_TOP_LEVEL]
     if stray:

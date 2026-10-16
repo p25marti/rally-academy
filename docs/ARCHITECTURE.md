@@ -5,6 +5,7 @@
 ```
 mod/                                            exactly the shipped zip root
 ├── gameplay/rallyAcademy/exercises.json        the drills (data only; docs/DRILL_DATA.md)
+├── gameplay/rallyAcademy/venues.json           named venues the drills refer to
 ├── scripts/rally_academy/modScript.lua         runs on mod activation: loads the extension
 ├── lua/ge/extensions/rallyAcademy.lua          GE extension: session, timing, grading flow, engine hooks
 ├── lua/ge/extensions/rallyAcademy/

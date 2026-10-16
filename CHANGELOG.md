@@ -85,6 +85,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   now points to it. F06 (punctures) and F07 (setup comparisons) stay, with the same IDs.
 
 ### Changed
+- Drill venues are shared data (`venues.json`): six named venues instead of a copy of the
+  map and spawn in each drill. Nothing changes in play.
 - The HUD app is listed as "Rally Academy" (was "Rally Academy (Prototype)"), and the Academy's
   drill details show directions to the venue spot.
 - The in-drive panel is rebuilt in Vue, matching the Academy screen's look: tighter layout

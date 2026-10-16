@@ -78,15 +78,25 @@ function H.commandsMatching(h, needle)
   return n
 end
 
+-- Drills by id with each venue filled in (levelId, mapDisplayName, spawn), as the mod loads them.
 function H.drills()
-  local byId = {}
-  for _, e in ipairs(jsonReadFile('gameplay/rallyAcademy/exercises.json').exercises) do byId[e.id] = e end
+  local venues, byId = {}, {}
+  for _, v in ipairs(jsonReadFile('gameplay/rallyAcademy/venues.json').venues) do venues[v.id] = v end
+  for _, e in ipairs(jsonReadFile('gameplay/rallyAcademy/exercises.json').exercises) do
+    local v = venues[e.environment.venue]
+    if v then e.environment.levelId, e.environment.mapDisplayName, e.environment.spawn = v.levelId, v.name, v.spawn end
+    byId[e.id] = e
+  end
   return byId
 end
 
 function H.spawnOf(id)
   for _, e in ipairs(jsonReadFile('gameplay/rallyAcademy/exercises.json').exercises) do
-    if e.id == id then return e.environment.spawn.pos end
+    if e.id == id then
+      for _, v in ipairs(jsonReadFile('gameplay/rallyAcademy/venues.json').venues) do
+        if v.id == e.environment.venue then return v.spawn.pos end
+      end
+    end
   end
 end
 

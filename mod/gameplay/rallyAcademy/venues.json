@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "venues": [
+    {
+      "id": "bmp-dirt-arena",
+      "mapsId": "W2",
+      "name": "West Coast USA: BMP dirt arena",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 337.07,
+          "y": 96.09,
+          "z": 127.26
+        },
+        "dir": {
+          "x": -0.7051,
+          "y": -0.7046,
+          "z": 0.0793
+        },
+        "up": {
+          "x": 0.0492,
+          "y": 0.0629,
+          "z": 0.9968
+        }
+      },
+      "notes": "Open, flat, fenced dusty-dirt arena, at least 64 x 64 m."
+    },
+    {
+      "id": "bmp-gravel-track",
+      "mapsId": "W1",
+      "name": "West Coast USA: BMP Gravel Track",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 110.11,
+          "y": 170.17,
+          "z": 118.3
+        },
+        "dir": {
+          "x": -0.8155,
+          "y": -0.5787,
+          "z": -0.0063
+        },
+        "up": {
+          "x": -0.001,
+          "y": -0.0095,
+          "z": 1.0
+        }
+      },
+      "notes": "Purpose-built rallycross venue: gravel track 14-16 m wide with a tarmac start line, berms, a jump and 9 layouts. The spawn faces down the ~150 m start straight."
+    },
+    {
+      "id": "bmp-dirt-circle",
+      "mapsId": "W3",
+      "name": "West Coast USA: BMP dirt circle",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 265.0,
+          "y": 40.05,
+          "z": 127.3
+        },
+        "dir": {
+          "x": 0.7076,
+          "y": 0.7067,
+          "z": 0.0018
+        },
+        "up": {
+          "x": -0.0136,
+          "y": 0.0111,
+          "z": 0.9998
+        }
+      },
+      "notes": "About 50 m circular dusty-dirt infield, dead flat: a natural skidpad."
+    },
+    {
+      "id": "wcusa-quarry",
+      "mapsId": "W4",
+      "name": "West Coast USA: Quarry",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 728.81,
+          "y": -823.27,
+          "z": 157.96
+        },
+        "dir": {
+          "x": -0.9557,
+          "y": -0.2936,
+          "z": -0.0214
+        },
+        "up": {
+          "x": -0.0283,
+          "y": 0.0193,
+          "z": 0.9994
+        }
+      },
+      "notes": "Gravel haul roads, terraces and spoil heaps; Spiral Descent for gradients. Cluttered."
+    },
+    {
+      "id": "wcusa-offroad-circuit",
+      "mapsId": "W5",
+      "name": "West Coast USA: Off-Road Circuit",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 566.52,
+          "y": 27.2,
+          "z": 148.3
+        },
+        "dir": {
+          "x": -0.0017,
+          "y": 0.9999,
+          "z": 0.0102
+        },
+        "up": {
+          "x": -0.0176,
+          "y": -0.0103,
+          "z": 0.9998
+        }
+      },
+      "notes": "Rough dusty-dirt figure-eight with jumps and crests."
+    },
+    {
+      "id": "utah-ngrc-stages",
+      "mapsId": "U1",
+      "name": "Utah: NGRC Rally Utah 2026 stages",
+      "levelId": "utah",
+      "spawn": {
+        "pos": {
+          "x": -410.97,
+          "y": -635.14,
+          "z": 121.06
+        },
+        "dir": {
+          "x": -0.9271,
+          "y": 0.3529,
+          "z": -0.126
+        },
+        "up": {
+          "x": -0.1376,
+          "y": -0.0079,
+          "z": 0.9905
+        }
+      },
+      "notes": "The four NGRC 2026 gravel stages; the spawn is at SS1 Deer Creek (river crossings)."
+    }
+  ]
+}
