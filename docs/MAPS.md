@@ -88,10 +88,8 @@ Two maps. A–D and most of E stay at BMP (teleport between venues, no load).
 | E02–E04 FWD/RWD/AWD | W1 layouts |
 | E05 crests, E06 jumps, E07 rough | W5 off-road circuit, W1 jump |
 | E08 water | U1 SS1 river crossings |
-| F01 pacenotes, F05 long stage, F06 puncture, F08 full stage | U1 stages |
-| F02 consistency, F07 setup A/B | W1 laps |
-| F03 regularity | U2 airstrip or W1 |
-| F04 unfamiliar stages | U1's four stages |
+| F06 puncture | U1 stages |
+| F07 setup A/B | W1 laps |
 
 ## Option C: curriculum tour
 
@@ -104,7 +102,7 @@ One map per module (about six loads over the course), each drill where it fits b
 | C Rotation | West Coast USA → Italy | W3 circle (C03, C06), W2 (C05, C07), W1 (C01, C02); I2 hairpins (C04, C08) |
 | D Cornering | Italy | I1/I2 hillclimbs (D02–D06), I4 Mixed Circuit (D08), I3 field (D01 slalom), camber on I2 (D07) |
 | E Terrain | Utah (+ JV, ATT) | U1 crests/jumps/rivers (E05, E06, E08), U3/U4 flats (E02–E04), Johnson Valley rough routes (E07), ATT snow (E01) |
-| F Stages | Utah (+ East Coast) | U1 stages (F01, F05, F06, F08), U2 airstrip (F03), F04 across Utah stages + SS Backroads, Howler Pass, Rockwood |
+| F Adaptation and setup | Utah, West Coast USA | U1 stages (F06), W1 laps (F07). Full stages: the game's Rally mode (ADR 0006) |
 
 ## What the survey changed
 

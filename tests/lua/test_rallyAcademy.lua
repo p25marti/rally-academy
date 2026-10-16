@@ -33,11 +33,11 @@ local function drive(h, M, seconds, vel)
   end
 end
 
-function T.loads_all_48_drills()
+function T.loads_all_42_drills()
   local h = setup()
   local s = h.lastState()
   eq(s.phase, 'idle', 'initial phase')
-  eq(#s.lessons, 48, 'lesson count')
+  eq(#s.lessons, 42, 'lesson count (stage drills F01-F05, F08 cut: ADR 0006)')
   eq(s.lessons[1].id, 'A01', 'first lesson')
 end
 
@@ -394,7 +394,7 @@ function T.key_events_are_logged_with_the_rallyAcademy_tag()
   drive(h, M, 8.0, {x = 0, y = 20, z = 0})
   M.recordAttempt(true)
   local text = h.logText('rallyAcademy')
-  for _, needle in ipairs({'loaded 48 drills on map driver_training', 'selected B04 on driver_training',
+  for _, needle in ipairs({'loaded 42 drills on map driver_training', 'selected B04 on driver_training',
                            'start marked for B04', 'finish marked for B04', 'retry: B04',
                            'B04: run started', 'B04: finish reached in', 'B04: PASS, time'}) do
     assert(has(text, needle), 'missing log line: ' .. needle .. '\n--- got:\n' .. text)
@@ -987,9 +987,9 @@ function T.menu_data_lists_every_drill_in_order_with_progress()
   drive(h, M, 1, {x = 0, y = 5, z = 0})
   M.recordAttempt(true)
   local d = M.getMenuData()
-  eq(#d.lessons, 48, 'all drills')
+  eq(#d.lessons, 42, 'all drills')
   eq(d.lessons[1].id, 'A01', 'curriculum order starts at A01')
-  eq(d.lessons[48].id, 'F08', 'and ends at F08')
+  eq(d.lessons[42].id, 'F07', 'and ends at F07')
   eq(d.progress.A01.totalPasses, 1, 'progress included')
   eq(d.selected, 'A01', 'current HUD drill')
   eq(d.info.version, jsonReadFile('ui/modules/apps/RallyAcademy/app.json').version, 'mod version for About')
@@ -1048,6 +1048,15 @@ function T.menu_back_from_the_main_menu_returns_there()
   eq(h.paused, false, 'nothing to pause without a map')
   M.closeMenu()
   eq(h.uiRoutes[#h.uiRoutes], 'menu', 'main menu')
+end
+
+-- ADR 0006: full stages are the game's Rally mode; only F06 and F07 remain, IDs unchanged.
+function T.stage_drills_are_cut_and_the_rest_keep_their_ids()
+  local h = setup()
+  local ids = {}
+  for _, l in ipairs(h.lastState().lessons) do ids[l.id] = true end
+  for _, gone in ipairs({'F01', 'F02', 'F03', 'F04', 'F05', 'F08'}) do assert(not ids[gone], gone .. ' should be cut') end
+  assert(ids.F06 and ids.F07, 'F06 and F07 stay, same IDs')
 end
 
 return T

@@ -1,13 +1,15 @@
 # Rally Academy for BeamNG.drive
 
-A BeamNG.drive mod for structured rally-driving practice: 48 progressive drills
-(foundations → braking → rotation → complex cornering → terrain → full stages),
+A BeamNG.drive mod for structured rally-driving practice: 42 progressive drills
+(foundations → braking → rotation → complex cornering → terrain → adaptation; full
+stages are the game's own Rally mode),
 instant retry to a marked start, run timing, and per-drill progress tracking.
 
 > **Status: alpha.** Retry, timing, progress, Go to drill and telemetry recording
-> run on BeamNG 0.39.4. B01 (threshold braking) is graded automatically from
-> telemetry. The other drills use self-assessed Pass/Miss for now; see the
-> [roadmap](docs/ROADMAP.md).
+> run on BeamNG 0.39.4. Five drills (A02, A04, A05, B01, B02) are graded
+> automatically from telemetry; the others use self-assessed Pass/Miss for now. The
+> Academy screen lives in the main menu (More... → Rally Academy) and the pause menu;
+> see the [roadmap](docs/ROADMAP.md).
 
 ## Quick start (developers)
 

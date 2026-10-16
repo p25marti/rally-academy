@@ -14,7 +14,7 @@ through gates), **A05** (stop before a line), **B01** (threshold braking) and **
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
 Sections 1–7 below are the capabilities; [Drill coverage](#drill-coverage)
-maps each of the 48 drills to the ones it needs.
+maps each of the 42 drills to the ones it needs.
 
 ## 1. Telemetry sampler
 
@@ -166,7 +166,6 @@ need HUD prompts and the `hybrid` mode:
 | B03 | Predict the stopping point | Place a marker before the run |
 | B08, D07 | Which input or side changed the grip | Pick from options |
 | E01 | Safe speed and braking observations per surface | Short form |
-| F01 | Pacenote interpretation | Self-assessed, or graded from route errors |
 | F07 | One handling difference between setups | Free text |
 
 ## 7. Scene control
@@ -176,8 +175,8 @@ drivetrain ([VEHICLES](VEHICLES.md)), switch setups (F07) and inject a puncture 
 
 ## Drill coverage
 
-41 of 48 drills can be fully automatic once these capabilities exist; 7 need a
-hybrid prompt.
+36 of 42 drills can be fully automatic once these capabilities exist; 6 need a
+hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/0006-stages-are-the-games-rally-mode.md).)
 
 | Drill | Title | Capabilities needed | Mode |
 | --- | --- | --- | --- |
@@ -221,14 +220,8 @@ hybrid prompt.
 | E06 | Jump takeoff and landing | Landing on road, rollover, damage | Automatic |
 | E07 | Rough terrain | Puncture, damage, rollover, corridor | Automatic |
 | E08 | Water crossings | Stall, damage, corridor, recovery use | Automatic |
-| F01 | Pacenote interpretation | Route errors, damage, recovery use | Hybrid |
-| F02 | Timed consistency runs | Stage time, +7% of best clean | Automatic |
-| F03 | Speed management | Target time ±2 s, reversing, speed cap | Automatic |
-| F04 | Unfamiliar stages | Corridor, damage, recovery use, 4 of 5 routes | Automatic |
-| F05 | Long-stage concentration | Loop count, recovery use, damage | Automatic |
 | F06 | Puncture adaptation | Puncture injection, damage baseline, 35 km/h cap, rollover | Automatic |
 | F07 | Vehicle setup comparisons | Setup switching, A/B stats, handling-difference prompt | Hybrid |
-| F08 | Full-stage integration | Recovery use, +8% of reference time | Automatic |
 
 ## Build order
 

@@ -46,12 +46,12 @@ off-road score 46), `miramar/safari_rally` (RWD, 214 hp), `etki/rally_am_gravel`
 | Car | Drivetrain | Used by | Role |
 | --- | --- | --- | --- |
 | Ibishu Covet, Student Driver and 1.5 DX (manual) | FWD | A01–A06, B01–B03 | Slow, forgiving starter car for basics and braking |
-| Hirochi Sunburst 1.6 Base (manual) | FWD | A07, A08, B05, B06, C01, C07, D01, D07, E02, F03 | Neutral road car for cornering and lift-off rotation |
+| Hirochi Sunburst 1.6 Base (manual) | FWD | A07, A08, B05, B06, C01, C07, D01, D07, E02 | Neutral road car for cornering and lift-off rotation |
 | Hirochi Sunburst NGRC2 Asphalt Rally (manual) | AWD | B04, D03, D04, D06 | Tarmac rally car |
 | Hirochi Sunburst NGRC2 Gravel Rally (manual) | AWD | 18 drills in modules B–F | The main rally car |
 | Ibishu 200BX Type-LS (manual) | RWD | B07, C03, C05 | Light RWD car for oversteer and countersteer |
 | Hirochi SBR4 NGRC2 Gravel Rally (manual) | RWD | E03 | RWD technique |
-| Cherrier Vivace NGRC1 Gravel Rally (sequential) | AWD | E06, E07, F08 | Tougher car for jumps, rough ground and full stages |
+| Cherrier Vivace NGRC1 Gravel Rally (sequential) | AWD | E06, E07 | Tougher car for jumps, rough ground and full stages |
 
 Few cars means less to learn and less threshold tuning; every car is stock, so
 players need no car mods; and the set covers FWD, RWD and AWD. The SBR4 is used
@@ -86,7 +86,7 @@ by one drill, so E03 could move to the 200BX to cut the lineup to five models.
 
 ## Drivetrain options
 
-42 of 48 drills can be practised with FWD, RWD or AWD: 34 work the same with
+Of the original 48 drills, 42 could be practised with FWD, RWD or AWD (six stage drills have since been cut, ADR 0006): 34 work the same with
 any drivetrain, 8 need different instructions per drivetrain, and 6 are
 restricted to one or two.
 
@@ -136,14 +136,8 @@ same. The ABS/TCS/ESC rules above apply to every option.
 | E06 | Jump takeoff and landing | Medium | Throttle on landing pitches each car differently |
 | E07 | Rough terrain | Medium | Traction on uneven ground; AWD is easiest |
 | E08 | Water crossings | Low | Mostly ground clearance |
-| F01 | Pacenote interpretation | Medium | Same calls, different pace |
-| F02 | Timed consistency runs | Medium | Track consistency per car |
-| F03 | Speed management and regularity | Low | Target-time drill |
-| F04 | Driving unfamiliar stages | Medium | Road reading is the same |
-| F05 | Long-stage concentration | Medium | Focus drill |
 | F06 | Puncture adaptation | High | A punctured driven wheel behaves very differently |
 | F07 | Vehicle setup comparisons | Medium | A/B setup within one car; drivetrain could be the A/B change |
-| F08 | Full-stage integration | High | The whole skill set on each car |
 
 ### Group 2: any drivetrain, technique changes (8)
 

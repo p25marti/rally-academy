@@ -50,7 +50,7 @@ BeamNG version and result in the PR.
 3. Add the panel. In 0.39: `Alt+Shift+U` (HUD Layouts) → select a layout →
    **Edit Layout** → **＋ Add** → search "academy" → add **Rally Academy (Prototype)**.
    Tip: first **Layout Actions → Duplicate** your Freeroam layout and **Use Layout**
-   on the copy, so your normal layout stays untouched. Panel appears; drill list shows 48 entries.
+   on the copy, so your normal layout stays untouched. Panel appears; drill list shows 42 entries.
 4. `python tools/dev.py log`: no errors mentioning `rallyAcademy`.
 5. Select a drill → **Mark start** → drive ~50 m → **Mark finish** → **Retry**.
    The car returns to the start facing the same way.
@@ -74,7 +74,7 @@ BeamNG version and result in the PR.
     straight and press **+ Gate** at each. Coloured posts appear across the track. Then
     **Retry** and hold about 30 km/h: each gate shows its speed as you pass it, and
     the run ends at gate 3 with PASS or MISS.
-14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 48 drills
+14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 42 drills
     show in order with your progress; only auto-graded drills (A04, B01) lack the
     **Coming soon** tag. Pick one, then **Start drill**: its map loads, the
     menu closes, the HUD appears and you're in the drill car at its start or venue.

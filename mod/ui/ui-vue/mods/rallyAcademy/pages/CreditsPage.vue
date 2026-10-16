@@ -9,7 +9,7 @@
     <section class="ra-panel">
       <div class="ra-panel-title">Drill design</div>
       <p>
-        The 48 drills are original exercises, not official BeamNG missions. Their structure and
+        The drills are original exercises, not official BeamNG missions. Their structure and
         order draw on real rally-school teaching, including the Team O'Neil and DirtFish rally
         schools, and on the rally school in Richard Burns Rally.
       </p>

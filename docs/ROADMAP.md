@@ -58,12 +58,14 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 
 ## P3 — Machine-readable drills
 
-- [ ] Typed rule schema for all 48 drills; split into automatic and human-review rules.
+- [ ] Typed rule schema for all 42 drills; split into automatic and human-review rules.
 - [ ] Rule evaluators with unit tests for each.
 
 ## P4 — Stages
 
-- [ ] Stage assessments (F-module) built on BeamNG's rally/race tooling and pacenotes.
+- [x] ~~Stage assessments (F module)~~: cut. Full stages are the game's own Rally mode, which the
+      Academy points to ([ADR 0006](decisions/0006-stages-are-the-games-rally-mode.md)). F06
+      (puncture adaptation) and F07 (setup comparisons) remain.
 
 ## P5 — Coaching and progression
 

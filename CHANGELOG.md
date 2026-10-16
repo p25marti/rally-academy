@@ -45,7 +45,7 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   gates without braking between them. The run ends at the last gate.
 - The B01 stop zone and finish circles are drawn in the world.
 
-- **Rally Academy screen in the main menu** (More... → Rally Academy): browse all 48
+- **Rally Academy screen in the main menu** (More... → Rally Academy): browse all the
   drills in order with your progress and what each one grades, then **Start drill**
   to load its map, car and start in one press. Auto-graded drills are highlighted;
   the rest are tagged **Coming soon** and can still be practised with Pass/Miss.
@@ -64,6 +64,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - **Car event checks** for grading: hard contact (damage), spinning out, leaving the road
   (what the wheels are on), rolling over, using the handbrake and punctures. B02 now also
   requires no spin and staying on the road.
+
+### Removed
+- Six stage drills (F01 pacenotes, F02 consistency, F03 regularity, F04 unfamiliar stages, F05
+  long stage, F08 full stage): the game's own Rally mode does these properly, and the Academy
+  now points to it. F06 (punctures) and F07 (setup comparisons) stay, with the same IDs.
 
 ### Changed
 - The in-drive panel is rebuilt in Vue, matching the Academy screen's look: tighter layout

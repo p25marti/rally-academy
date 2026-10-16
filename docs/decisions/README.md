@@ -13,3 +13,4 @@ Template: **Context** (what forced a choice) · **Decision** · **Consequences**
 | [0003](0003-testing-without-the-game.md) | Unit-test Lua under LuaJIT with engine stubs | Accepted |
 | [0004](0004-telemetry-transport.md) | Telemetry via our own vehicle extension and `obj:queueGameEngineLua` (BeamNG's own pattern) | Accepted |
 | [0005](0005-main-menu-via-vue-ui-mods.md) | Main-menu Academy screen as a BeamNG Vue UI mod (button + route) | Accepted |
+| [0006](0006-stages-are-the-games-rally-mode.md) | Full stages are the game's Rally mode; stage drills F01–F05, F08 cut | Accepted |

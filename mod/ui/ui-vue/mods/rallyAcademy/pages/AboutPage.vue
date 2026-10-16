@@ -3,13 +3,17 @@
     <section class="ra-panel">
       <div class="ra-panel-title">What this is</div>
       <p>
-        Rally Academy is structured rally-driving practice for BeamNG.drive: 48 drills that build
-        from car control basics through braking, rotation, complex corners and changing terrain to
-        full stages. Each drill is short and repeatable, so you can run it many times in a row,
-        then move on.
+        Rally Academy is structured rally-driving practice for BeamNG.drive: 42 drills that build
+        from car control basics through braking, rotation, complex corners and changing terrain,
+        plus adapting to damage and setups. Each drill is short and repeatable, so you can run it
+        many times in a row, then move on.
       </p>
       <p>
         The drills are listed in order, but nothing is locked. Start wherever you like.
+      </p>
+      <p>
+        For full stages, use the game's own Rally mode (main menu → More... → Rally). It has real
+        stages, co-driver pacenotes, recce and medals against reference times.
       </p>
     </section>
 

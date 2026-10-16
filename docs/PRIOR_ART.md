@@ -18,8 +18,8 @@ proprietary, so we don't copy large chunks of it into this repo.
 
 | System | What it gives us | Covers |
 | --- | --- | --- |
-| Race path, checkpoints, time trials ([overview](https://www.beamng.com/game/news/patch/race-system-overview/)) | Gates, checkpoint crossing, start lines, segment and stage timing, plus editors to lay them out | Course geometry, timing, D02, F02–F05 |
-| Rally mode: Rally Editor, rally stage missions, visual pacenotes ([dev post](https://beamng.com/goto/post?id=1403802); a 30 km stage was [added in 0.39](https://racinggames.gg/article/beamngdrives-039-patch-brings-a-graphics-overhaul-proper-rally-stages-and-more)) | Stage authoring and pacenote playback | Module F, especially F01 |
+| Race path, checkpoints, time trials ([overview](https://www.beamng.com/game/news/patch/race-system-overview/)) | Gates, checkpoint crossing, start lines, segment and stage timing, plus editors to lay them out | Course geometry, timing, D02 |
+| Rally mode: Rally Editor, rally stage missions, visual pacenotes ([dev post](https://beamng.com/goto/post?id=1403802); a 30 km stage was [added in 0.39](https://racinggames.gg/article/beamngdrives-039-patch-brings-a-graphics-overhaul-proper-rally-stages-and-more)) | Stage authoring and pacenote playback | Full stages are now this mode, not Academy drills (ADR 0006) |
 | Drift spots: start and scoring lines, drift data editor, score targets ([format](https://docs.beamng.com/modding/levels/level_formats/driftspots/)) | The game already detects and scores drifts | Slip angle and held slides (C03, C06) |
 | Cone prefabs ([tutorial](https://www.beamng.com/threads/time-trial-and-prefab-tutorial.101736)) | Cones are physics objects, so a moved cone means contact | Cone contact, about 15 drills |
 | `core_checkpoints` | Reset and repair logic; we already copy its rotation convention | Run lifecycle, repair on retry |

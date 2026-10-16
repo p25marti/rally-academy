@@ -22,6 +22,14 @@
           </div>
         </div>
       </template>
+      <div class="ra-rally-mode">
+        <div class="ra-rally-title">Full rally stages</div>
+        <div>
+          For complete stages, use the game's own <strong>Rally</strong> mode (main menu → More... →
+          Rally): real stages with co-driver pacenotes, recce, time controls, and gold/silver/bronze
+          against reference times. The drills above build the car control those stages need.
+        </div>
+      </div>
     </div>
 
     <aside v-if="chosen" class="ra-details">
@@ -139,6 +147,22 @@ async function start() {
     font-size: 0.7em;
     font-weight: 400;
     color: var(--bng-cool-gray-100);
+  }
+}
+
+.ra-rally-mode {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--bng-corners-2);
+  background-color: rgb(var(--bng-cool-gray-900-rgb));
+  border: 1px solid rgb(var(--bng-cool-gray-700-rgb));
+  border-left: 4px solid var(--bng-orange-400);
+  line-height: 1.45;
+  color: var(--bng-off-white);
+  .ra-rally-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
   }
 }
 

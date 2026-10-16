@@ -16,7 +16,7 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | Zip in `mods/` loads; zip root must contain `lua/`, `ui/`, … directly | unverified | `dev.py build` guarantees layout |
 | Unpacked mods load from `mods/unpacked/<name>/` | verified 0.39.4 | log: `mountEntry -- /mods/unpacked/rally_academy/` |
 | A directory junction there is followed | verified 0.39.4 | `dev.py link` (junction) works; `--copy` not needed |
-| Mod files are visible at the virtual FS root (`gameplay/...` readable via `jsonReadFile`) | verified 0.39.4 | 48 drills load |
+| Mod files are visible at the virtual FS root (`gameplay/...` readable via `jsonReadFile`) | verified 0.39.4 | all drills load (48 then; 42 since ADR 0006) |
 | User folder: `%LOCALAPPDATA%\BeamNG\BeamNG.drive\current` | verified 0.39.4 | override with `BEAMNG_USER_FOLDER` |
 | Log at `<user folder>/beamng.log` | verified 0.39.4 | written in buffered chunks: the newest lines can lag a minute or more behind the game |
 | `log(level, tag, msg)` from extension `rallyAcademy` appears as `|I|GELua.rallyAcademy.<tag>| msg` | verified 0.39.4 | we use tag `rallyAcademy` |
