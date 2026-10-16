@@ -67,7 +67,9 @@ const assessment = computed(() => (lesson.value && lesson.value.assessment) || {
 const isAuto = computed(() => assessment.value.mode === "automatic")
 
 const markFinishLabel = computed(() => {
-  const line = (assessment.value.rules || []).some(r => r.type === "stop_before_line")
+  // An empty Lua table arrives as {} (an object), not [], so check before using it as a list.
+  const rules = Array.isArray(assessment.value.rules) ? assessment.value.rules : []
+  const line = rules.some(r => r.type === "stop_before_line")
   return line ? "Mark stop line" : assessment.value.endWhen === "stopped" ? "Mark stop zone" : "Mark finish"
 })
 
