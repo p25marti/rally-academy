@@ -47,6 +47,9 @@ Say in your PR how you tested, and what you couldn't test.
 - **Check an "unverified" row** in [BEAMNG_API_NOTES](docs/BEAMNG_API_NOTES.md) on your game
   version.
 
+Have a bigger idea? Add it to [docs/IDEAS.md](docs/IDEAS.md) (someday/maybe) and talk to the
+owner before building it.
+
 ## Conventions
 
 - **Branches:** `feat/…`, `fix/…`, `docs/…` or `chore/…`, with

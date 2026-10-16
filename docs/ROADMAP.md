@@ -75,6 +75,11 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 - [ ] Progress migrations, warm-up detection, coaching feedback, difficulty
       progression, optional ghost comparison.
 
+## Beyond the roadmap
+
+Ideas we're not planning, such as spoken real-time coaching or a freeform exercise builder,
+live in [IDEAS.md](IDEAS.md) until the owner decides to pick one up.
+
 ## Known issues (current build)
 
 | Issue | Impact | Tracked by |

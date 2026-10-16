@@ -33,7 +33,7 @@ gearbox. It must also work on a keyboard or gamepad, but the rig is the referenc
 
 ## Where it's going
 
-[ROADMAP](ROADMAP.md) has the order. In short:
+[ROADMAP](ROADMAP.md) has the order; bigger someday ideas are in [IDEAS](IDEAS.md). In short:
 
 1. Grade more drills automatically, venue by venue.
 2. Scene control: the mod places its own cones, so cone contact can be graded.

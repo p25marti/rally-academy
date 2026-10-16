@@ -37,6 +37,8 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
   checked in-game).
 - Follow the owner's standing decisions in [PRODUCT.md](docs/PRODUCT.md); ask before
   reversing one. One-way or large choices get an ADR in `docs/decisions/`.
+- [docs/IDEAS.md](docs/IDEAS.md) is a someday/maybe list, not a plan. Don't build from it
+  unless the owner asks. Do add ideas there instead of letting them get lost.
 - The owner's BeamNG user folder: only `mods/unpacked/rally_academy/` is ours to write
   (and `settings/rallyAcademy*`, which the mod itself writes). See "Live game" for the one
   side effect to clean up.
