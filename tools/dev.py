@@ -445,6 +445,12 @@ def cmd_status(args) -> None:
     print(f"log file    : {log} [{'present' if log.exists() else 'missing'}]")
 
 
+def cmd_ingame(args) -> None:
+    """In-game scenarios through BeamNG's MCP server (tools/ingame/, see docs/TESTING.md)."""
+    cmd = [sys.executable, str(ROOT / "tools" / "ingame" / "run.py"), *(args.scenarios or ["--list"])]
+    sys.exit(subprocess.call(cmd))
+
+
 def cmd_log(args) -> None:
     user = resolve_user_folder(args.user_folder)
     log = user / "beamng.log"
@@ -470,6 +476,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--strict", action="store_true", help="fail instead of skipping when luajit/luacheck missing")
     p.set_defaults(func=cmd_check)
     sub.add_parser("validate", help="validate JSON, drills and version").set_defaults(func=cmd_validate)
+    p = sub.add_parser("ingame", help="run in-game scenarios (BeamNG running, mod linked)")
+    p.add_argument("scenarios", nargs="*", help="scenario names; none lists them")
+    p.set_defaults(func=cmd_ingame)
     p = sub.add_parser("lint", help="luacheck")
     p.add_argument("--strict", action="store_true")
     p.set_defaults(func=cmd_lint)

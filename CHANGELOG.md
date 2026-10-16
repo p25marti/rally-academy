@@ -65,6 +65,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   (what the wheels are on), rolling over, using the handbrake and punctures. B02 now also
   requires no spin and staying on the road.
 
+- `python tools/dev.py ingame <scenario>`: scripted in-game checks (smoke, B01, A04,
+  A05/B02, A02) through the game's MCP server, kept in `tools/ingame/`.
+
 ### Removed
 - Six stage drills (F01 pacenotes, F02 consistency, F03 regularity, F04 unfamiliar stages, F05
   long stage, F08 full stage): the game's own Rally mode does these properly, and the Academy

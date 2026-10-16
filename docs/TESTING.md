@@ -40,6 +40,32 @@ end
 return T
 ```
 
+## Automated in-game scenarios
+
+With BeamNG running and the mod linked (`dev.py link`), scripts drive the real game through
+its built-in MCP server (`127.0.0.1:29292/mcp`, 0.39+):
+
+```sh
+python tools/dev.py ingame                 # list scenarios
+python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check fails
+```
+
+| Scenario | What it checks |
+| --- | --- |
+| `smoke` | UI reload leaves one HUD panel, drop-down lists every drill, menu opens/closes with physics paused/resumed |
+| `b01` | Stop zone: clean PASS, late braking MISS, full brake MISS (lockup) |
+| `a04` | Gates marked down the straight; 30 km/h PASS, too fast at gate 3 MISS |
+| `stops` | A05 stop line and B02 lockup recovery, a PASS and a MISS each |
+| `launch` | A02 launch with a 1-2 shift passes |
+
+The driving scenarios need West Coast USA loaded (e.g. Go to drill on B01): they mark their
+start on the BMP start straight, drive with the arcade gearbox, then restore the realistic
+gearbox and remove the attempts they recorded from your progress. Code: `tools/ingame/`
+(`game.py` talks to the server, `academy.py` holds mod helpers, `scenarios.py` the checks);
+scripts read the mod through `extensions.rallyAcademy.debugState()`, not its internals.
+Their verdicts on the same inputs match the recorded fixtures, but physics varies run to run
+by a few tenths of a metre, so they check verdicts, not exact numbers.
+
 ## In-game smoke test
 
 Run before every PR that touches `mod/`, and before every release. Record the

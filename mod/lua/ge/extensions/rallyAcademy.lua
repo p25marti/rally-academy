@@ -708,6 +708,27 @@ function M.saveLastRun(path)
   return path
 end
 
+-- Developer hooks (tools/ingame scenarios) -----------------------------------------
+
+-- A snapshot of the session for test scripts, instead of reading Lua internals.
+function M.debugState()
+  return {phase = phase, selected = selected, level = levelId(), elapsed = elapsed, lastTime = lastTime,
+          hasStart = startState ~= nil, hasFinish = finishGate ~= nil, gateCount = #gates, gateIdx = gateIdx,
+          attempts = attempts, successes = successes, reason = lastReason,
+          menuOpen = menuOpen, passed = lastGrade and lastGrade.passed} -- false = graded MISS, nil = not graded
+end
+
+-- Forget a drill's saved progress (scenarios clean up the attempts they record).
+function M.devClearProgress(id)
+  if type(id) ~= 'string' then return false end
+  progress.lessons[id] = nil
+  saveProgress()
+  if id == selected then attempts, successes = 0, 0 end
+  logf('I', 'progress cleared for %s (developer hook)', id)
+  output()
+  return true
+end
+
 -- Engine hooks (lua/ge/main.lua, 0.39.4) --------------------------------------
 
 function M.onVehicleSwitched(_oldId, _newId, _player)
