@@ -227,3 +227,110 @@ def pause():
     lua("ui_router.navigate('play') return 1")
     time.sleep(1)
     return p
+
+
+@scenario
+def events():
+    """Car events on the BMP straight: a handbrake spin, a grass excursion and a puncture are detected."""
+    p = []
+    A.reload_mod(ui_too=False)
+    A.fresh_sampler()
+    A.choose("B02")  # ends when the car stops; checks spin and staying on the road
+    on_straight()
+
+    def drive(target_kmh, during, max_s=20):
+        A.click("Retry")
+        time.sleep(1.0)
+        A.arcade()
+        inp("parkingbrake", 0)
+        inp("steering", 0)
+        t0 = time.time()
+        while time.time() - t0 < 25 and state()[1] * 3.6 < target_kmh:
+            inp("throttle", 1.0)
+            time.sleep(0.05)
+        inp("throttle", 0)
+        tb = time.time()
+        while time.time() - tb < max_s:
+            if state()[1] * 3.6 < 3 and time.time() - tb > 1:
+                break
+            during(time.time() - tb)
+            time.sleep(0.04)
+        for event, value in (("brake", 0), ("steering", 0), ("parkingbrake", 1)):
+            inp(event, value)
+        A.wait_graded()
+
+    def spin(t):
+        inp("parkingbrake", 1 if t < 1.0 else 0)
+        inp("steering", 1.0 if t < 1.0 else 0.0)
+        inp("brake", 0.0 if t < 1.2 else 0.5)
+    drive(60, spin)
+    c = A.rule_check({"type": "no_spin"})
+    expect(p, "handbrake spin is a spin", not c["ok"], c["text"])
+    c = A.rule_check({"type": "no_handbrake"})
+    expect(p, "handbrake use is seen", not c["ok"], c["text"])
+
+    # Steering off the road depends on the car's path; start the run on the verge instead
+    # (survey.py surfaces: grass 8 m left of the road, 20 m along from B01's spot).
+    sp = A.drill("B01")["environment"]["spawn"]
+    A.place(sp["pos"], sp["dir"], ahead=20, side=-8)
+    A.click("Mark start")
+    drive(20, lambda t: inp("brake", 0.0 if t < 1.0 else 0.5))
+    c = A.rule_check({"type": "on_surface", "surfaces": ["ASPHALT", "GRAVEL"], "maxWheelsOff": 2, "maxSeconds": 0.5})
+    expect(p, "driving onto the grass leaves the road", not c["ok"], c["text"])
+
+    on_straight()  # back to the road for the puncture
+    flat = {"done": False}
+    def puncture(t):
+        if not flat["done"]:
+            call("run_lua_vehicle", {"code": "beamstate.deflateRandomTire() return 1"})
+            flat["done"] = True
+        inp("brake", 0.0 if t < 1.5 else 0.35)
+    drive(45, puncture)
+    c = A.rule_check({"type": "no_puncture"})
+    expect(p, "deflated tyre is a puncture", not c["ok"], c["text"])
+    c = A.rule_check({"type": "no_damage"})
+    expect(p, "a puncture is not contact", c["ok"], c["text"])
+    A.realistic()
+    A.clear_progress("B02")
+    return p
+
+
+@scenario
+def goto():
+    """Go to drill: E08 loads Utah in the gravel Covet; B01 then brings back West Coast USA (slow: 2 map loads)."""
+    p = []
+    A.choose("E08")
+    lua("extensions.rallyAcademy.goToDrill() return 1")
+    expect(p, "E08 loads Utah with the Covet Gravel Rally", A.wait_level("utah", "rally_gravel"))
+    s = A.debug_state()
+    expect(p, "E08 is selected and the car placed", s.get("selected") == "E08", s.get("reason"))
+    A.choose("B01")
+    lua("extensions.rallyAcademy.goToDrill() return 1")
+    expect(p, "B01 brings back West Coast USA with the Student Driver", A.wait_level("west_coast_usa", "student_driver"))
+    return p
+
+
+@scenario
+def mainmenu():
+    """From the main menu: More... > Rally Academy > A04 > Start drill lands in the drill (slow: map load).
+    Leaves West Coast USA loaded, so the driving scenarios can follow."""
+    p = []
+    if A.debug_state().get("level") != "unknown":
+        lua("returnToMainMenu() return 1")
+        t0 = time.time()
+        while time.time() - t0 < 120 and (str(A.safe(lua, "return tostring(getCurrentLevelIdentifier())")) not in ("nil", "<GameError>")
+                                          or A.safe(ui, "return location.hash") != "#/menu"):
+            time.sleep(3)
+        time.sleep(3)
+    lua("ui_router.navigate('menu.rallyAcademy') return 1")
+    cards = A.wait_for(lambda: ui("return document.querySelectorAll('.ra-card').length"), len(A.drills()), timeout=20)
+    expect(p, "Academy screen opens from the main menu", cards == len(A.drills()), cards)
+    ui("var c=Array.from(document.querySelectorAll('.ra-card')).find(function(x){return x.innerText.indexOf('A04')===0}); c.click(); return 1")
+    time.sleep(1)
+    ui("var b=Array.from(document.querySelectorAll('.ra-details button')).find(function(x){return /Start drill/.test(x.textContent)}); b.click(); return 1")
+    expect(p, "Start drill loads West Coast USA in the drill car", A.wait_level("west_coast_usa", "student_driver"))
+    route = A.wait_for(lambda: ui("return location.hash"), "#/play")
+    expect(p, "the menu gets out of the way (game view)", route == "#/play", route)
+    expect(p, "the HUD panel is up", A.wait_panel())
+    return p
+

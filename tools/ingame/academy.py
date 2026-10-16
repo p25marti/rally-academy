@@ -155,3 +155,24 @@ def save_fixture(name):
 def clear_progress(*drill_ids):
     for d in drill_ids:
         lua(f"return tostring(extensions.rallyAcademy.devClearProgress({json.dumps(d)}))")
+
+
+def rule_check(rule):
+    """Evaluate one grading rule (a dict) against the last run record, in the game."""
+    return lua_json(
+        "local R = require('ge/extensions/rallyAcademy/rules') "
+        f"return R.evaluate({{jsonDecode({json.dumps(json.dumps(rule))})}}, extensions.rallyAcademy.getLastRun()).checks[1]")
+
+
+def wait_level(name, car_config=None, timeout=240):
+    """Wait for a map (and optionally a car config) to finish loading; the server drops meanwhile."""
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        time.sleep(4)
+        lvl = safe(lua, "return tostring(getCurrentLevelIdentifier())")
+        cfg = safe(lua, "local v = be:getPlayerVehicle(0) return tostring(v and v.partConfig)")
+        if str(lvl).lower() == name.lower() and (car_config is None or car_config in str(cfg)):
+            time.sleep(6)
+            return True
+    return False
+
