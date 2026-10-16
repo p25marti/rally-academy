@@ -420,7 +420,8 @@ end
 
 R.evaluators = E
 
--- Rule types and their required parameters (mirrored by tools/dev.py validate).
+-- Rule types and their required parameters. tools/dev.py validate reads this table and
+-- R.GATE_RULES from this file, so keep each entry on one line: name = {'param', ...},
 R.TYPES = {
   entry_speed = {'minKmh'},
   stop_zone = {'lengthM', 'widthM'},
@@ -441,6 +442,9 @@ R.TYPES = {
   speed_at_gates = {'minKmh', 'maxKmh'},
   no_brake_between_gates = {},
 }
+
+-- Rule types that need marked gates (assessment.gates in the drill data).
+R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates'}
 
 -- Returns {passed = bool, checks = {{type, ok, text}, ...}}; an empty record fails.
 function R.evaluate(rules, record, ctx)

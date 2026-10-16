@@ -39,27 +39,22 @@ EXERCISES_JSON = Path("gameplay/rallyAcademy/exercises.json")
 ALLOWED_TOP_LEVEL = {"gameplay", "lua", "ui", "art", "levels", "vehicles", "settings", "scripts"}
 # Grading rule types and their required numeric parameters; mirrors R.TYPES in
 # mod/lua/ge/extensions/rallyAcademy/rules.lua (docs/DRILL_DATA.md).
-RULE_TYPES = {
-    "entry_speed": ["minKmh"],
-    "stop_zone": ["lengthM", "widthM"],
-    "no_sustained_lockup": ["maxSeconds"],
-    "lockup_recovered": ["maxSeconds"],
-    "no_sustained_wheelspin": ["maxSeconds"],
-    "no_stall": [],
-    "gear_reached": ["gear"],
-    "clean_shifts": [],
-    "stop_before_line": ["minM", "maxM"],
-    "no_damage": [],
-    "no_spin": [],
-    "on_surface": [],
-    "no_rollover": [],
-    "no_handbrake": [],
-    "no_puncture": [],
-    "gates_passed": [],
-    "speed_at_gates": ["minKmh", "maxKmh"],
-    "no_brake_between_gates": [],
-}
-GATE_RULES = {"gates_passed", "speed_at_gates", "no_brake_between_gates"}
+RULES_LUA = ROOT / "mod" / "lua" / "ge" / "extensions" / "rallyAcademy" / "rules.lua"
+
+
+def rule_types() -> tuple[dict[str, list[str]], set[str]]:
+    """R.TYPES (rule type -> required numeric params) and R.GATE_RULES, read from rules.lua
+    so the validator and the evaluators can't drift apart."""
+    src = RULES_LUA.read_text(encoding="utf-8")
+    block = re.search(r"^R\.TYPES = \{\n(.*?)^\}", src, re.S | re.M)
+    gates = re.search(r"^R\.GATE_RULES = \{(.*?)\}", src, re.M)
+    if not (block and gates):
+        fail(f"can't find R.TYPES / R.GATE_RULES in {RULES_LUA}")
+    types = {m.group(1): re.findall(r"'(\w+)'", m.group(2))
+             for m in re.finditer(r"^\s*(\w+) = \{(.*?)\},?\s*$", block.group(1), re.M)}
+    return types, set(re.findall(r"'(\w+)'", gates.group(1)))
+
+
 END_WHEN = {"finish", "stopped", "gates"}
 ZIP_EPOCH = (2020, 1, 1, 0, 0, 0)  # fixed timestamp => reproducible zips
 SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
@@ -110,6 +105,7 @@ ASSESSMENT_MODES = {"selfAssessment", "automatic", "hybrid"}
 
 def validate_exercises(data: dict) -> list[str]:
     errors: list[str] = []
+    rule_types_, gate_rules = rule_types()
     if data.get("schemaVersion") != 1:
         errors.append("exercises.json: schemaVersion must be 1 (bump deliberately, see docs/DRILL_DATA.md)")
     exercises = data.get("exercises")
@@ -140,10 +136,10 @@ def validate_exercises(data: dict) -> list[str]:
             errors.append(f"{where}: assessment.rules must be a list")
         for j, rule in enumerate(a.get("rules", []) if isinstance(a.get("rules", []), list) else []):
             rtype = rule.get("type") if isinstance(rule, dict) else None
-            if rtype not in RULE_TYPES:
-                errors.append(f"{where}: rules[{j}].type must be one of {sorted(RULE_TYPES)}")
+            if rtype not in rule_types_:
+                errors.append(f"{where}: rules[{j}].type must be one of {sorted(rule_types_)}")
                 continue
-            missing_params = [k for k in RULE_TYPES[rtype] if not isinstance(rule.get(k), (int, float))]
+            missing_params = [k for k in rule_types_[rtype] if not isinstance(rule.get(k), (int, float))]
             if missing_params:
                 errors.append(f"{where}: rules[{j}] ({rtype}) needs numeric {missing_params}")
         if a.get("endWhen", "finish") not in END_WHEN:
@@ -154,7 +150,7 @@ def validate_exercises(data: dict) -> list[str]:
             if not (isinstance(count, int) and count >= 1 and isinstance(width, (int, float)) and width > 0):
                 errors.append(f"{where}: assessment.gates must be {{count: int >= 1, widthM: number > 0}}")
         uses_gates = a.get("endWhen") == "gates" or any(
-            isinstance(r, dict) and r.get("type") in GATE_RULES for r in a.get("rules") or [])
+            isinstance(r, dict) and r.get("type") in gate_rules for r in a.get("rules") or [])
         if uses_gates and gates is None:
             errors.append(f"{where}: gate rules and endWhen 'gates' need assessment.gates")
         if a.get("mode") == "automatic" and not a.get("rules"):

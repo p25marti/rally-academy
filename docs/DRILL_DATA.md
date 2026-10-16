@@ -59,7 +59,7 @@ and `endWhen: "gates"` need `assessment.gates`.
 
 Rules are objects such as `{"type": "stop_zone", "lengthM": 5, "widthM": 6}`. The
 types and their parameters are listed in [GRADING.md](GRADING.md#5-rule-engine);
-`R.TYPES` in `rules.lua` and `RULE_TYPES` in `tools/dev.py` must agree. In an
+`R.TYPES` in `rules.lua` is the one list: `tools/dev.py validate` reads it (and `R.GATE_RULES`) from that file. In an
 `automatic` drill, the rules decide Pass or Miss when the run ends, and the HUD
 shows one ✓/✗ line per rule.
 
