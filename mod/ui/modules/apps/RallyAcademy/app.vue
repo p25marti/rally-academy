@@ -218,10 +218,10 @@ onMounted(() => {
   margin: 0.3rem 0;
   font-size: 0.95em;
   .ok {
-    color: #4ade80;
+    color: var(--bng-add-green-400);
   }
   .fail {
-    color: #f87171;
+    color: var(--bng-add-red-400);
   }
 }
 
