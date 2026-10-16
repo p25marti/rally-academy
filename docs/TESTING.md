@@ -70,6 +70,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `launch` | A02 launch with a 1-2 shift passes |
 | `events` | A handbrake spin, a run on the grass verge and a puncture are detected (and the puncture isn't contact) |
 | `goto` | Go to drill loads Utah in the gravel Covet for E08, then West Coast USA again for B01 (slow: two map loads) |
+| `fit` | Venue fit test: B01 fits its straight but not facing the barrier; B05's circle fits the BMP dirt arena |
 | `mainmenu` | From the main menu: Academy → A04 → Start drill lands in the drill with the HUD up (slow: map load) |
 
 The driving scenarios need West Coast USA loaded (e.g. Go to drill on B01): they mark their
@@ -119,10 +120,16 @@ Load the map first.
    `--quick` surfaces aren't measured, so fits ignore surface. It moves the car and camera, then puts them back, and moves the
    game's screenshot copies out of your user folder into the report. The report is
    local output and not committed.
-4. **Go and look.** `survey.py goto 3` (a saved spot) or `goto --at=X,Y,Z,DX,DY` (a find),
+4. **Fit-test the best.** `python tools/ingame/survey.py fit B01 --spot 3` (or `--at=…` from a
+   finder, plus `--to NODE` for corners) drives the drill's kind of run there: scripted
+   accelerate-and-brake on a straight, the game's AI along corners, hills and routes, a circle
+   sized to the drill in open areas. It then reports **FITS** or **DOES NOT FIT** with reasons:
+   contact, leaving the drill's surfaces, needing more length than the drill allows, or a start
+   spot the game had to nudge the car off. Nothing is saved to your drills or progress.
+5. **Go and look.** `survey.py goto 3` (a saved spot) or `goto --at=X,Y,Z,DX,DY` (a find),
    then `survey.py here` for room and surfaces, or `survey.py surfaces --along=20,60
    --side=-8,0,8` for a grid across the road.
-5. **Record it** in MAPS.md, and use the surfaces in the drill's `on_surface` rule.
+6. **Record it** in MAPS.md, and use the surfaces in the drill's `on_surface` rule.
 
 Smaller commands: `terrain X Y …` (terrain ground model at points), `configs [model]`,
 `levels`, `spots [--all]`. Not every find is drivable: the road network includes bridges,

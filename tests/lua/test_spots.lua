@@ -47,4 +47,20 @@ function T.save_spot_writes_the_file_shows_a_message_and_asks_the_car_for_surfac
   eq(jsonReadFile('settings/rallyAcademy/spots.json').spots[1].surfaces.FL, 'GRAVEL', 'surfaces filled in by the car')
 end
 
+-- Venue fit tests record telemetry without touching drills (tools/ingame/fit.py).
+function T.dev_recording_captures_samples_without_touching_the_drill()
+  local h, M = setup()
+  M.select('B01')
+  local before = jsonReadFile('settings/rallyAcademySetups.json')
+  eq(M.devRecordStart(), true, 'started')
+  has(h.vehicle.luaCommands[#h.vehicle.luaCommands], "rallyAcademy_telemetry.start(")
+  M.onTelemetry({id = h.vehicle.id, t = 1, x = 0, y = 0, z = 0, air = 5, w = {}})
+  M.onTelemetry({id = h.vehicle.id, t = 2, x = 0, y = 5, z = 0, air = 5, w = {}})
+  eq(M.devRecordStop(), 2, 'two samples kept')
+  eq(M.getLastRun().meta.drill, 'fit test', 'tagged as a fit test')
+  eq(jsonReadFile('settings/rallyAcademySetups.json'), before, 'no setup saved')
+  eq(h.lastState().attempts, 0, 'nothing scored')
+  eq(M.devRecordStop(), 0, 'stopping twice is harmless')
+end
+
 return T

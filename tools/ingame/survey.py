@@ -12,6 +12,8 @@ Run with the game loaded on the map you're surveying (docs/TESTING.md, "Finding 
   survey.py straights|corners|hills|crests   road sections from the map's AI road network
   survey.py open [--step=16]              open, flat, loose-surface areas from a terrain scan (slow)
   survey.py fits DRILL [--measure N]      places on this map that suit a drill's venueNeeds
+  survey.py fit DRILL (--spot ID | --at X,Y,Z,DX,DY) [--to NODE]
+                                          drive the drill's kind of run there: does it work?
   survey.py report [--quick] [--open]     HTML page: saved spots + the finders' best, with aerial
                                           views and measured surfaces, in venue-reports/<map>/
 
@@ -184,7 +186,8 @@ def show(sections, limit):
     for s in roads.dedupe(sections)[:limit]:
         extra = {k: v for k, v in s.items() if k not in ("kind", "pos", "dir", "nodes")}
         print(f"  {s['kind']:<9} at ({s['pos']['x']:.1f}, {s['pos']['y']:.1f})  " + ", ".join(f"{k} {v}" for k, v in extra.items()))
-        print(f"            goto --at={s['pos']['x']},{s['pos']['y']},{s['pos']['z']},{s['dir']['x']},{s['dir']['y']}")
+        print(f"            --at={s['pos']['x']},{s['pos']['y']},{s['pos']['z']},{s['dir']['x']},{s['dir']['y']}  --to {s['nodes'][-1]}"
+              if "nodes" in s else f"            --at={s['pos']['x']},{s['pos']['y']},{s['pos']['z']},{s['dir']['x']},{s['dir']['y']}")
 
 
 def find(args):
@@ -307,6 +310,27 @@ def fits_cmd(args):
     else:
         print(f"\n{len(matches)} candidates on {level()} (surfaces unchecked; add --measure 5 to check the best five):")
     show(matches, args.limit)
+
+
+def fit_cmd(args):
+    import fit
+    if args.spot:
+        spot = next((s for s in saved_spots(all_maps=True) if s["id"] == args.spot), None)
+        if not spot:
+            sys.exit(f"no spot #{args.spot}")
+        pos, direction = spot["pos"], spot["dir"]
+    elif args.at:
+        x, y, z, dx, dy = (float(v) for v in args.at.split(","))
+        pos, direction = {"x": x, "y": y, "z": z}, {"x": dx, "y": dy}
+    else:
+        sys.exit("give --spot ID or --at X,Y,Z,DX,DY")
+    r = fit.fit(args.drill, pos, direction, to_node=args.to)
+    print(f"{r['drill']} ({r['kind']}): {'FITS' if r['fits'] else 'DOES NOT FIT'}")
+    for p in r["problems"]:
+        print(f"  ✗ {p}")
+    for n in r["notes"]:
+        print(f"  · {n}")
+    sys.exit(0 if r["fits"] else 1)
 
 
 # --------------------------------------------------------------------------- report
@@ -509,6 +533,12 @@ def main():
     p.add_argument("--measure", type=int, default=0, help="place the car on the best N to measure them")
     p.add_argument("--limit", type=int, default=8)
     p.set_defaults(func=fits_cmd)
+    p = sub.add_parser("fit")
+    p.add_argument("drill")
+    p.add_argument("--spot", type=int)
+    p.add_argument("--at", help="X,Y,Z,DX,DY")
+    p.add_argument("--to", help="road node to drive to (corners, routes; from a finder's `nodes`)")
+    p.set_defaults(func=fit_cmd)
     p = sub.add_parser("report")
     p.add_argument("--quick", action="store_true", help="skip placing the car to measure surfaces")
     p.add_argument("--open", action="store_true", help="include the (slow) terrain scan for open areas")

@@ -73,6 +73,21 @@ class Hills(unittest.TestCase):
         self.assertTrue(roads.crests(nodes, adj))
 
 
+class Follow(unittest.TestCase):
+    def test_follows_the_road_through_a_bend_for_the_distance(self):
+        pts = [(0, 10 * k, 0) for k in range(6)] + arc(30, 50, 30, math.pi, math.pi / 2, 9)[1:] +               [(30 + 10 * k, 80, 0) for k in range(1, 6)]
+        nodes, links = polyline(pts)
+        adj = roads.build(nodes, links)
+        path = roads.follow(nodes, adj, roads.nearest(nodes, 0, 1), math.pi / 2, 100)
+        end = nodes[path[-1]]
+        self.assertGreater(end[0], 15)  # went round the bend to the east, not off into space
+        self.assertEqual(path[0], "n0")
+
+    def test_stops_when_nothing_goes_the_way_we_face(self):
+        nodes, links = polyline([(0, 10 * k, 0) for k in range(5)])
+        self.assertEqual(roads.follow(nodes, roads.build(nodes, links), "n0", -math.pi / 2, 50), ["n0"])
+
+
 class Network(unittest.TestCase):
     def test_chains_split_at_junctions(self):
         a, la = polyline([(0, 10 * k, 0) for k in range(5)], prefix="a")

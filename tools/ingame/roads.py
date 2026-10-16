@@ -213,3 +213,27 @@ def dedupe(sections, radius=25.0):
         if all(math.dist((s["pos"]["x"], s["pos"]["y"]), (k["pos"]["x"], k["pos"]["y"])) > radius for k in kept):
             kept.append(s)
     return kept
+
+
+def nearest(nodes, x, y):
+    """Name of the road node closest to (x, y)."""
+    return min(nodes, key=lambda n: (nodes[n][0] - x) ** 2 + (nodes[n][1] - y) ** 2)
+
+
+def follow(nodes, adj, start, heading, length):
+    """Walk the road from node `start` for `length` metres, setting off in `heading`
+    (radians) and at each node taking the link that turns least. -> list of node names."""
+    path, prev, cur, dist, h = [start], None, start, 0.0, heading
+    while dist < length:
+        options = [n for n in adj.get(cur, {}) if n != prev]
+        if not options:
+            break
+        nxt = min(options, key=lambda n: abs(_wrap(_heading(nodes, cur, n) - h)))
+        if prev is None and abs(_wrap(_heading(nodes, cur, nxt) - h)) > math.radians(100):
+            break  # nothing goes the way we're facing
+        dist += _dist(nodes, cur, nxt)
+        h = _heading(nodes, cur, nxt)
+        prev, cur = cur, nxt
+        path.append(cur)
+    return path
+

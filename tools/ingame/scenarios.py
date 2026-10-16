@@ -334,3 +334,20 @@ def mainmenu():
     expect(p, "the HUD panel is up", A.wait_panel())
     return p
 
+
+@scenario
+def fit():
+    """Venue fit test: B01 fits its straight, not facing the barrier; B05 fits the BMP dirt arena."""
+    import fit as F
+    p = []
+    sp = A.drill("B01")["environment"]["spawn"]
+    r = F.fit("B01", sp["pos"], sp["dir"])
+    expect(p, "B01 fits its own straight", r["fits"], r["problems"] or r["notes"])
+    sideways = {"x": sp["dir"]["y"], "y": -sp["dir"]["x"]}  # turned to face the barrier ~8 m away
+    r = F.fit("B01", sp["pos"], sideways)
+    expect(p, "B01 facing the barrier does not fit", not r["fits"], r["problems"])
+    arena = A.drill("A01")["environment"]["spawn"]  # BMP dirt arena
+    r = F.fit("B05", arena["pos"], arena["dir"])
+    expect(p, "B05's circle fits the dirt arena", r["fits"], r["problems"] or r["notes"])
+    return p
+

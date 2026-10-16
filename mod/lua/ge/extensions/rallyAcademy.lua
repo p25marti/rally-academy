@@ -735,6 +735,26 @@ function M.debugState()
           menuOpen = menuOpen, passed = cur.grade and cur.grade.passed} -- false = graded MISS, nil = not graded
 end
 
+-- Record the car's telemetry outside any drill (venue fit tests, tools/ingame/fit.py): no
+-- setup, progress or grading is touched. getLastRun() returns the record; devRecordStop()
+-- closes it and returns the sample count.
+function M.devRecordStart()
+  local veh = currentVehicle()
+  if not veh then return false end
+  if phase == 'ready' or phase == 'running' then backToSetup('Recording a venue fit test.') end
+  if RunRecord.isOpen(run) then endRun('abandoned') end
+  run = RunRecord.new({drill = 'fit test', level = levelId(), vehicleId = veh:getID()})
+  startSampling(veh)
+  logf('I', 'fit test: recording started')
+  return true
+end
+
+function M.devRecordStop()
+  if not RunRecord.isOpen(run) then return 0 end
+  endRun('finished')
+  return #run.samples
+end
+
 -- Forget a drill's saved progress (scenarios clean up the attempts they record).
 function M.devClearProgress(id)
   if type(id) ~= 'string' then return false end

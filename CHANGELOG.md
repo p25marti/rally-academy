@@ -73,6 +73,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - Every drill now says what kind of place it needs (`environment.venueNeeds`: shape, length,
   width, radius, grade, surfaces), and the venue tools use it: the report says which drills
   a place fits, and `survey.py fits <drill>` finds places for one.
+- Venue fit test (`survey.py fit <drill> --spot ID`): drives the drill's kind of run at a
+  candidate place and says whether it fits, without touching your drills or progress.
 - Venue tools for contributors: road-network finders (straights, corners, hills, crests),
   an open-area terrain scan, and an HTML venue report with aerial views
   (`tools/ingame/survey.py`).

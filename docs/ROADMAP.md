@@ -40,7 +40,7 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 ## Venue tooling: finding and testing drill locations
 
 Workflow: [TESTING → Finding a venue](TESTING.md#finding-a-venue). All six steps are planned;
-the first four are built.
+the first five are built.
 
 - [x] **Save spot** binding: bookmark where you are (pose, room, slope, nearest road,
       surfaces) while driving (`spots.lua`, `settings/rallyAcademy/spots.json`).
@@ -51,9 +51,10 @@ the first four are built.
 - [x] **Drill venue needs as data:** `environment.venueNeeds` on every drill (validated);
       the report says which drills each place fits, maybe fits or nearly fits, and
       `survey.py fits <drill>` searches a map for one ([DRILL_DATA](DRILL_DATA.md#venue-needs)).
-- [ ] **Fit test:** `dev.py ingame fit <drill> --spot <id>` drives the drill's scripted pass
-      run at a candidate and reports contact, leaving the surface, running out of room or a
-      nudged start, before any drill depends on the spot.
+- [x] **Fit test:** `survey.py fit <drill> --spot ID | --at …` drives the drill's kind of run
+      at a candidate (scripted braking on straights, the game's AI through corners and routes,
+      a sized circle in open areas) and reports contact, leaving the allowed surfaces, running
+      out of length, or a nudged start.
 - [ ] **Venues as data:** `venues.json` with named spots that drills refer to, instead of a
       copy in each drill's `environment`. Pairs with promoting setups into drill data (P1).
 
