@@ -15,7 +15,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/gameplay/rallyAcademy/exercises.json` | The drills: source of truth ([DRILL_DATA](docs/DRILL_DATA.md), [ADR 0002](docs/decisions/0002-drill-data-source-of-truth.md)) |
 | `mod/gameplay/rallyAcademy/venues.json` | Named venues (map, spawn) that drills refer to by id ([ADR 0007](docs/decisions/0007-venues-as-data.md)) |
 | `mod/lua/ge/extensions/rallyAcademy.lua` | GE extension: session state machine, timing, grading flow, engine hooks |
-| `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `layout.lua` (authored courses, car footprint), `remote.lua` (local HTTP commands), `runRecord.lua` (pure); `store.lua` (files), `course.lua` (drawing) |
+| `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `layout.lua` (authored courses, car footprint), `runRecord.lua` (pure); `store.lua` (files), `course.lua` (drawing) |
 | `mod/lua/vehicle/extensions/rallyAcademy/telemetry.lua` | Sampler inside the car's Lua VM ([ADR 0004](docs/decisions/0004-telemetry-transport.md)) |
 | `mod/ui/modules/apps/RallyAcademy/app.vue` | In-drive HUD panel (Vue HUD app) |
 | `mod/ui/ui-vue/mods/rallyAcademy/` | Academy screen: main menu, pause tab ([ADR 0005](docs/decisions/0005-main-menu-via-vue-ui-mods.md)) |

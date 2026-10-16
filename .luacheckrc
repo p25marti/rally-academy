@@ -8,7 +8,7 @@ codes = true
 read_globals = {
   "be", "extensions", "guihooks", "log", "dump", "dumpz",
   "vec3", "quat", "quatFromDir",
-  "jsonReadFile", "jsonWriteFile", "jsonEncode", "readFile", "writeFile", "FS",
+  "jsonReadFile", "jsonWriteFile", "readFile", "writeFile", "FS",
   "deepcopy", "tableSize", "scenetree", "core_vehicles", "core_input_actions",
   "spawn", "getPlayerVehicle", "setExtensionUnloadMode", "getCurrentLevelIdentifier",
   "getObjectByID", "core_levels", "debugDrawer", "ColorF", "freeroam_freeroam", "ui_router", "simTimeAuthority", "castRayStatic", "map", "ui_message",
@@ -21,7 +21,7 @@ files["mod/lua/vehicle/**"] = { read_globals = { "electrics", "wheels", "obj", "
 files["mod/scripts/**"] = { read_globals = { "load", "setExtensionUnloadMode" } }
 
 files["tests/lua/**"] = {
-  globals = { "_G", "vec3", "quatFromDir", "log", "dump", "be", "guihooks", "jsonReadFile", "jsonWriteFile", "jsonEncode",
+  globals = { "_G", "vec3", "quatFromDir", "log", "dump", "be", "guihooks", "jsonReadFile", "jsonWriteFile",
               "debugDrawer", "ColorF" },
 }
 files["tests/vendor/**"] = { only = {} } -- third-party, not linted

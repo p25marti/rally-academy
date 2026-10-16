@@ -82,12 +82,6 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   ground. A pass is **bronze**; the smaller silver and gold boxes inside it, with time targets
   (14 s, 10 s), earn **silver** and **gold**, and the HUD says what the next medal needs.
   Best medal and medal counts are saved and shown in the Academy screen.
-- **Direct commands over local HTTP:** the mod answers `http://127.0.0.1:29393/<command>` (retry,
-  next, previous, go-to-drill, menu, mark-start, venue-start, mark-finish, add-gate, clear-gates,
-  pass, miss, auto-retry, save-spot) and `/state`, so a Stream Deck web-request key (or any
-  script) drives it without key emulation and without the game having focus. Local only, fixed
-  commands, requests from web pages refused; on by default, `"remote": false` in
-  `settings/rallyAcademy/prefs.json` turns it off.
 - **Stream Deck and key bindings:** every Rally Academy command is now a bindable input action
   (new: Go to drill, Next / Previous drill, Mark start, Use venue start, Mark finish, Add gate,
   Clear gates, Auto-retry on/off), and the mod ships default bindings on F13–F24, keys no

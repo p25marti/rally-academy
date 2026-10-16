@@ -94,9 +94,6 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 | --- | --- |
 | Custom actions in `lua/ge/extensions/core/input/actions/*.json` appear in Options → Controls | verified 0.39.4 (`core_input_actions.getActiveActions()` lists them; bound by the owner) |
 | `"ctx": "tlua"` runs `onDown` in GE Lua | verified 0.39.4 (bound Retry key teleports to start) |
-| GE Lua `require('socket')` is LuaSocket 3.0-rc1 (TCP and UDP) | verified 0.39.4 — the remote listener: `tcp()`, `bind('127.0.0.1', port)`, `listen`, `settimeout(0)`, non-blocking `accept`/`receive` polled in `onUpdate`; answered while the game window was unfocused |
-| `jsonEncode(table)` (GE global) | verified 0.39.4 — remote replies |
-| Hook `onExtensionUnloaded()` runs on `extensions.reload` | verified 0.39.4 — the listener closes there; two reloads in a row re-bound the port |
 | A mod's `settings/inputmaps/keyboard_<suffix>.json` adds default bindings alongside the game's and the player's `keyboard.diff` | verified 0.39.4 — listed by `core_input_bindings.getUsedBindingsFiles()`; `getControlForAction('rally_academy_retry')` returned our control. Modifier syntax as in the game's files: `"ctrl shift r"` |
 | Alt+F4 inside a combo (Ctrl+Alt+Shift+F4) closes the game | observed 0.39.4 — never bind Alt (`dev.py validate` rejects it) |
 | F13–F24 (`"f13"`…) as bindings | verified 0.39.4 — real key presses (Windows `keybd_event`, as a Stream Deck Hotkey sends) of F16, F15 and F13 ran Next drill, Previous drill and Retry. Shift+F13/F14 not pressed yet |

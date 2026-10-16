@@ -156,43 +156,6 @@ function S.install()
     h.files[path] = json.encode(data)
     return true
   end
-  _G.jsonEncode = function(data) return json.encode(data) end -- verified 0.39.4
-
-  -- LuaSocket (verified 0.39.4: `require('socket')` is LuaSocket 3.0-rc1 in GE Lua), faked for
-  -- the remote-command listener. h.request(raw) queues a client that sends `raw` (in one or
-  -- more chunks); read back what the mod answered from client.sent.
-  h.net = {pending = {}, bound = nil, listening = false, bindError = nil}
-  local function newClient(chunks)
-    local c = {chunks = chunks, sent = '', closed = false}
-    function c.settimeout() end
-    function c.receive()
-      local nextChunk = table.remove(c.chunks, 1)
-      if nextChunk then return nil, 'timeout', nextChunk end
-      return nil, 'timeout', ''
-    end
-    function c.send(_, data) c.sent = c.sent .. data; return #data end
-    function c.close() c.closed = true end
-    return c
-  end
-  function h.request(...)
-    local c = newClient({...})
-    table.insert(h.net.pending, c)
-    return c
-  end
-  package.loaded['socket'] = {tcp = function()
-    local srv = {}
-    function srv.setoption() return 1 end
-    function srv.bind(_, host, port)
-      if h.net.bindError then return nil, h.net.bindError end
-      h.net.bound = host .. ':' .. port
-      return 1
-    end
-    function srv.listen() h.net.listening = true; return 1 end
-    function srv.settimeout() end
-    function srv.accept() return table.remove(h.net.pending, 1) end
-    function srv.close() h.net.listening = false; h.net.bound = nil end
-    return srv
-  end}
 
   function h.lastState()
     for i = #h.events, 1, -1 do

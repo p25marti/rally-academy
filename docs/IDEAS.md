@@ -150,18 +150,19 @@ Auto-retry lit when it's on.
 
 **Why.** On a rig you can't read a small HUD panel mid-drill; a glance down at the deck is easy.
 
-**What already helps.** The mod already serves commands and the session state over local
-HTTP (`http://127.0.0.1:29393/state`, [STREAM_DECK](STREAM_DECK.md)), so a plugin only has to poll
-`/state` and draw keys; commands work today with a web-request plugin.
+**What already helps.** Every command is already an input action with a default F13–F24 key
+([STREAM_DECK](STREAM_DECK.md)), and Lua publishes the full state (`rallyAcademyState`).
 OutGauge shows the game can send UDP to local tools; a 2023 community plugin
 ([streamdeck-beamng](https://github.com/tomaszpieczykolan/streamdeck-beamng)) reads OutGauge
 for a speedometer key.
 
 **Hard parts.** A Stream Deck plugin (Elgato SDK, Node/TypeScript) to write, package and keep
-working across Stream Deck updates.
+working across Stream Deck updates. The mod needs a small local channel: GE Lua sending state
+as UDP to localhost (check that the game's Lua has sockets) or the plugin reading a file.
 
-**Rough shape.** A plugin with one "Rally Academy status" key that polls `/state` a few times a
-second and shows phase, timer and medal; command keys call the existing paths.
+**Rough shape.** The mod sends a short JSON state over UDP to `127.0.0.1` when it changes; a
+plugin with one "Rally Academy status" key shows phase, timer and medal. Commands stay as
+hotkeys.
 
 ---
 
