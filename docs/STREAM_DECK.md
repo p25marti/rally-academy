@@ -43,6 +43,34 @@ actions left unbound.
 Row 1 is what you press while drilling; row 2 is setup; row 3 is scoring and extras. Retry sits
 top-left, where your thumb finds it without looking.
 
+### Icons (BEAM.deck)
+
+Picked from the [BEAM.deck icon pack](https://beamng.com/posts/1487204) (search the names in the
+Stream Deck icon library). Orange is for the keys you press every run, white for setup, green
+and red for scoring.
+
+| Key | Icon | Why |
+| --- | --- | --- |
+| Retry (F13) | `RestartB` | Orange "go back" arrow: the key you press most, and the brightest |
+| Go to drill (F14) | `Map_FastTravel01` | The game's own fast-travel marker; it means the same thing |
+| Previous drill (F15) | `Dir_LeftA1` | Plain arrows read as "browse", not as driving inputs |
+| Next drill (F16) | `Dir_RightA1` | |
+| Menu (F17) | `Menu3` | A stack of cards with an orange one: the drill cards in the Academy |
+| Move course here (F18) | `Home_Set2` | "Set home here", with an orange touch |
+| Venue start (F19) | `HomeA` | Back to the venue's home spot |
+| Mark finish (F20) | `Atlas_StartFinish` | An arrow up to a chequered line: finish, stop zone or stop line |
+| + Gate (F21) | `cone1` | Gates are what cones mark |
+| Clear gates (F22) | `delete1` | Bin with a cross |
+| Pass (F23) | `pass2` | Green tick |
+| Miss (F24) | `fail2` | Red cross |
+| Auto-retry (Shift+F13) | `Reset1a` | A loop: "keep going round". A plain Hotkey can't show on/off; a Hotkey Switch with `Toggle_On` / `Toggle_Off` can, but drifts out of step if you also toggle it in the HUD |
+| Save spot (Shift+F14) | `Map_Marker` | A map pin: bookmark this place |
+| spare | `StudentDriver` or blank | A label tile for the profile |
+
+Alternatives if you prefer: `Reset1b` (orange loop) for Retry, `FastTravel1` (plain chevrons) for
+Go to drill, `Dir_LeftB1` / `Dir_RightB1` (bold arrows), `flagB1` (chequered flag) for Mark
+finish, `cone2` (orange cone) for + Gate.
+
 ## Setting up the Stream Deck
 
 Once (about five minutes):
