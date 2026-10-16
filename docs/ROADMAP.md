@@ -39,7 +39,7 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 
 ## Venue tooling: finding and testing drill locations
 
-Workflow: [TESTING → Finding a venue](TESTING.md#finding-a-venue). All six steps are planned;
+Workflow: [VENUES.md](VENUES.md). All six steps are planned;
 all six are built.
 
 - [x] **Save spot** binding: bookmark where you are (pose, room, slope, nearest road,

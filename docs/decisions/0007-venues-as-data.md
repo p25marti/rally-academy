@@ -7,7 +7,7 @@
 Every drill carried its own copy of its venue in `environment`: `levelId`,
 `mapDisplayName` and the `spawn` pose Go to drill uses. 42 drills shared six venues; the
 BMP Gravel Track alone was copied into 23 drills. Moving a venue's spot meant editing every
-copy, and the venue tools (`survey.py`, [TESTING → Finding a venue](../TESTING.md#finding-a-venue))
+copy, and the venue tools (`survey.py`, [VENUES.md](../VENUES.md))
 had no single list of venues to work from.
 
 ## Decision

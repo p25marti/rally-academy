@@ -65,7 +65,8 @@ Venues live in `mod/gameplay/rallyAcademy/venues.json` and drills refer to one b
 (`environment.venue`, [ADR 0007](decisions/0007-venues-as-data.md)). When the mod loads the
 drills, it fills each drill's `environment.levelId`, `mapDisplayName` and `spawn` from its
 venue, so the HUD, the Academy screen and Go to drill read them from the drill as before.
-Change a venue once and every drill on it follows.
+Change a venue once and every drill on it follows. Finding and adding venues:
+[VENUES.md](VENUES.md).
 
 ```jsonc
 {

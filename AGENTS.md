@@ -126,7 +126,7 @@ clean up any progress you record (`A.clear_progress`). List it in TESTING.
 **Find a venue:** `survey.py fits <drill>` searches the map for the drill's `venueNeeds`. Or
 bookmark with the Save spot binding, or run the finders (`survey.py
 straights|corners|hills|crests|open`). Review them with `survey.py report`, prove the best with
-`survey.py fit <drill> --spot ID | --at …`, then record it in MAPS.md ([TESTING → Finding a venue](docs/TESTING.md#finding-a-venue)).
+`survey.py fit <drill> --spot ID | --at …`, then add it to `venues.json` ([docs/VENUES.md](docs/VENUES.md), the full workflow).
 
 **UI changes:**
 1. Use native components (`@/common/components/base`) and `--bng-*` colours.

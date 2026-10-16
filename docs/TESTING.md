@@ -94,46 +94,8 @@ Recorded runs pin the grading rules to real physics (`tests/lua/test_fixtures.lu
 
 ## Finding a venue
 
-Tools for finding and checking places for drills (venue ideas live in [MAPS.md](MAPS.md)).
-Load the map first.
-
-1. **Drive and bookmark.** Bind **Rally Academy: Save spot** (Options → Controls) and press
-   it wherever a drill could work. Each spot records pose, room to walls and barriers in eight
-   directions, slope, the nearest road's width, and the surface under each wheel, in
-   `<user folder>/settings/rallyAcademy/spots.json`.
-2. **Let the finders look too.** They search the map's AI road network, with no driving:
-   ```sh
-   python tools/ingame/survey.py straights --min-length 150   # braking and speed drills
-   python tools/ingame/survey.py corners --max-radius 40      # hairpins, decreasing/increasing radius
-   python tools/ingame/survey.py hills                        # climbs and descents
-   python tools/ingame/survey.py crests                       # jumps and crests
-   python tools/ingame/survey.py open                         # open flat loose areas (terrain scan, slow)
-   ```
-   Or start from a drill: `python tools/ingame/survey.py fits D03` searches the map for places
-   matching that drill's `venueNeeds` (add `--measure 5` to place the car on the best five
-   and check their real surfaces and room, gravel ranked before tarmac).
-3. **Review them together.** `python tools/ingame/survey.py report` (add `--open` for open
-   areas, `--quick` to skip measuring) writes `venue-reports/<map>/index.html`: one card per
-   saved spot or find, with an aerial view (HUD hidden), measured surfaces and room, and the
-   command to go there. Each card also lists the drills the place **fits**, **maybe** fits
-   (a saved spot can't prove a corner exists) or **nearly** fits, with what's missing. With
-   `--quick` surfaces aren't measured, so fits ignore surface. It moves the car and camera, then puts them back, and moves the
-   game's screenshot copies out of your user folder into the report. The report is
-   local output and not committed.
-4. **Fit-test the best.** `python tools/ingame/survey.py fit B01 --spot 3` (or `--at=…` from a
-   finder, plus `--to NODE` for corners) drives the drill's kind of run there: scripted
-   accelerate-and-brake on a straight, the game's AI along corners, hills and routes, a circle
-   sized to the drill in open areas. It then reports **FITS** or **DOES NOT FIT** with reasons:
-   contact, leaving the drill's surfaces, needing more length than the drill allows, or a start
-   spot the game had to nudge the car off. Nothing is saved to your drills or progress.
-5. **Go and look.** `survey.py goto 3` (a saved spot) or `goto --at=X,Y,Z,DX,DY` (a find),
-   then `survey.py here` for room and surfaces, or `survey.py surfaces --along=20,60
-   --side=-8,0,8` for a grid across the road.
-6. **Record it** in MAPS.md, and use the surfaces in the drill's `on_surface` rule.
-
-Smaller commands: `terrain X Y …` (terrain ground model at points), `configs [model]`,
-`levels`, `spots [--all]`. Not every find is drivable: the road network includes bridges,
-car parks and loops, which is why the report shows a picture.
+Finding, reviewing, fit-testing and adding drill venues has its own guide:
+[VENUES.md](VENUES.md).
 
 ## In-game smoke test
 

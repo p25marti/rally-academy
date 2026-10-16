@@ -1,0 +1,190 @@
+# Finding and adding a venue
+
+How to find a good place for a drill, prove it works, and make the drill use it. Every
+step runs against the live game; the tools are in `tools/ingame/`.
+
+```
+ find candidates  ──▶  review them  ──▶  prove the best  ──▶  add it to venues.json
+ (drive + bookmark,     (venue report:    (fit test: drive     (drills refer to it,
+  finders, `fits`)       pictures, fits)   the drill's run)     validate, Go to drill)
+```
+
+## Before you start
+
+- BeamNG.drive 0.39+ running, the mod linked (`python tools/dev.py link`), and the map you
+  want to survey loaded with a car. The tools talk to the game's MCP server on
+  `127.0.0.1:29292`.
+- Bind **Rally Academy: Save spot** in Options → Controls (a wheel button works well).
+- Know what the drill needs. Every drill has an `environment.venueNeeds` block in
+  `mod/gameplay/rallyAcademy/exercises.json`: the shape of place (straight, corner, open
+  area, hill, crest or route), length, width, radius, grade, allowed surfaces, and things to
+  check by eye ([DRILL_DATA → Venue needs](DRILL_DATA.md#venue-needs)).
+
+## 1. Find candidates
+
+Use any mix of these.
+
+**Drive and bookmark.** Drive the map as normal and press **Save spot** wherever a drill
+could work. Each press records your position and heading, the room to walls and barriers
+in eight directions, the slope, the nearest road's width, and the surface under each wheel.
+A message confirms it, for example "Spot 3 saved: room ahead 120 m, behind 80 m; road 9.0 m
+wide; slope 0.8°". Spots go to `<user folder>/settings/rallyAcademy/spots.json`.
+`python tools/ingame/survey.py spots` lists the ones on this map.
+
+**Search for a specific drill.** The quickest route when you know which drill you're placing:
+
+```sh
+python tools/ingame/survey.py fits D03              # places on this map matching D03's venueNeeds
+python tools/ingame/survey.py fits B01 --measure 5  # and check the best five on site
+```
+
+`--measure` drives the car to each of the best candidates to read the real surface and
+room. Places on loose surfaces rank above tarmac.
+
+**Browse by shape.** The finders search the map's AI road network, with no driving:
+
+```sh
+python tools/ingame/survey.py straights --min-length 150   # braking and speed drills
+python tools/ingame/survey.py corners --max-radius 40      # radius, direction, hairpin / decreasing / increasing
+python tools/ingame/survey.py hills                        # climbs and descents
+python tools/ingame/survey.py crests                       # crests and jumps
+python tools/ingame/survey.py open                         # open, flat, loose ground (terrain scan, slow)
+```
+
+Each result prints an `--at=X,Y,Z,DX,DY` pose (and `--to NODE` for road sections) that the
+later steps take.
+
+## 2. Review them
+
+```sh
+python tools/ingame/survey.py report            # add --open for open areas, --quick to skip measuring
+```
+
+This writes `venue-reports/<map>/index.html`, one self-contained page you can open or share
+(it isn't committed). It shows your saved spots plus the finders' best, one card each:
+
+- an **aerial view** (taken with the HUD hidden);
+- the numbers: length, width, radius, grade, **measured surface**, room in four directions;
+- **fits**: drills whose needs the place meets;
+- **maybe (by eye)**: a saved spot can't prove there's a corner, hill or crest, so those
+  drills are listed here for you to judge from the picture;
+- **nearly**: drills it misses by one thing, and what ("needs 8 m wide, is 7.3 m");
+- **check by eye**: the drills' features, such as runoff, camber or a water crossing;
+- the command to go there.
+
+The report moves the car and camera around, then puts them back. It also moves the game's
+screenshot copies out of your user folder into the report folder. With `--quick` the car isn't
+moved, surfaces aren't measured, and "fits" ignores surface.
+
+## 3. Go and look
+
+```sh
+python tools/ingame/survey.py goto 3                                   # a saved spot
+python tools/ingame/survey.py goto --at=-477.46,-627.93,141.04,-0.9484,0.3172   # a find
+python tools/ingame/survey.py here                                     # room and surface where you are
+python tools/ingame/survey.py surfaces --along=20,60 --side=-8,0,8     # surface grid across the road
+```
+
+Drive it yourself too. The numbers can't tell you whether a corner is fun or the sightlines
+make sense.
+
+## 4. Prove it with a fit test
+
+```sh
+python tools/ingame/survey.py fit C04 --spot 3
+python tools/ingame/survey.py fit C04 --at=-477.46,-627.93,141.04,-0.9484,0.3172 --to DR817_13
+```
+
+The fit test drives the drill's kind of run at the place:
+- **straight:** a scripted run to the drill's entry speed, then threshold braking;
+- **corner, hill, crest, route:** the game's AI drives along the road (to `--to`, or as far
+  as the drill needs, following the road the way the car faces);
+- **open area:** a steady circle sized to the drill.
+
+It then prints **FITS** or **DOES NOT FIT** with the reasons: contact, rolling over,
+leaving the drill's allowed surfaces, needing more length than the drill allows, or a
+start spot the game had to nudge the car off. Nothing is saved to your drills or progress,
+and the car is put back where it was, repaired.
+
+## 5. Add it to venues.json
+
+Venues are shared data: `mod/gameplay/rallyAcademy/venues.json` ([ADR 0007](decisions/0007-venues-as-data.md)).
+If the place is a spot on an existing venue (another corner at the BMP gravel track, say),
+skip to step 6. For a new venue, add an entry:
+
+```jsonc
+{
+  "id": "wcusa-quarry-hairpin",        // short, unique; drills refer to this
+  "mapsId": "W7",                      // the row you'll add to MAPS.md
+  "name": "West Coast USA: Quarry hairpin",  // shown in the HUD and the Academy
+  "levelId": "west_coast_usa",         // the map's folder name (survey.py levels)
+  "spawn": {                           // where Go to drill puts the car
+    "pos": {"x": -477.46, "y": -627.93, "z": 141.04},
+    "dir": {"x": -0.9484, "y": 0.3172, "z": 0},
+    "up":  {"x": 0, "y": 0, "z": 1}
+  },
+  "notes": "Gravel hairpin, radius ~14 m, 8 m wide; fit-tested for C04."
+}
+```
+
+The spawn is a default spot that's easy to reach. Players still press **Mark start** for
+the exact start (that's saved per player, per map). A saved spot's `pos` and `dir` from
+`spots.json` drop straight in.
+
+## 6. Point the drills at it
+
+In `exercises.json`, set the drill's `environment.venue` to the venue's id and update its
+`areaHint` (where on the venue, for this drill). Adjust `venueNeeds` if you learned
+something, and rule settings that depend on the place, such as `on_surface` surfaces.
+
+## 7. Check and record
+
+```sh
+python tools/dev.py validate     # venue well formed, every drill's venue found, no leftover copies
+```
+
+Then in the game: select the drill, press **Go to drill**, and check you land at the venue in
+the drill's car. Add a row to [MAPS.md](MAPS.md) for a new venue (id, where, surface,
+notes) and a CHANGELOG line.
+
+## Command reference
+
+| Command | What it does |
+| --- | --- |
+| `survey.py spots [--all]` | Saved spots on this map (or every map) |
+| `survey.py fits <drill> [--measure N]` | Places on this map that meet a drill's venueNeeds |
+| `survey.py straights / corners / hills / crests` | Road sections from the AI road network (`--limit`, `--min-length`, `--max-radius`) |
+| `survey.py open [--step 16]` | Open, flat, loose areas from a terrain scan (slow) |
+| `survey.py report [--quick] [--open]` | The HTML venue report |
+| `survey.py goto <id>` / `goto --at=…` | Put the car on a spot or a pose |
+| `survey.py here` | Room in eight directions and the surface under each wheel |
+| `survey.py surfaces --along=… --side=…` | Surface grid ahead of and across from the car |
+| `survey.py fit <drill> --spot ID / --at=… [--to NODE]` | Fit test: drive the drill's run there |
+| `survey.py terrain X Y …` | Terrain ground model at points (doesn't see road meshes) |
+| `survey.py configs [model]`, `survey.py levels` | Car configs, installed maps |
+
+All are `python tools/ingame/survey.py …`, run from the repo root.
+
+## Where things live
+
+| What | Where |
+| --- | --- |
+| Venues the drills use | `mod/gameplay/rallyAcademy/venues.json` |
+| What each drill needs | `environment.venueNeeds` in `mod/gameplay/rallyAcademy/exercises.json` |
+| Your saved spots | `<user folder>/settings/rallyAcademy/spots.json` |
+| Venue reports | `venue-reports/<map>/index.html` (local, not committed) |
+| Survey notes and venue ideas | [MAPS.md](MAPS.md) |
+| The tools | `tools/ingame/survey.py`, `roads.py` (finders), `venues.py` (matching), `fit.py` (fit test) |
+
+## Gotchas
+
+- **The road network isn't all rally roads.** It includes bridges, car parks, loops and
+  ramps. The longest "straight" on West Coast USA is a bridge, which is why the report shows
+  pictures.
+- **Drivability isn't a surface.** The road network's drivability is a road class (the asphalt
+  BMP straight is 0.5). Trust the measured surface instead.
+- **"Room" is to the first static object at bumper height.** A sign, gantry or pole can make it
+  read short; the fit test actually drives, so it's the better judge.
+- **Terrain scans miss roads.** `open` and `terrain` read the terrain only, not road meshes or
+  buildings on top. Check finds with `here` or a fit test.
+- **Map loads take a minute** and the tools can't reach the game meanwhile.

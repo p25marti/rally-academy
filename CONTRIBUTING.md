@@ -43,7 +43,7 @@ Say in your PR how you tested, and what you couldn't test.
   road, damage. The recipe is in [AGENTS.md](AGENTS.md#recipes).
 - **Find a venue** for a drill without a good spot yet: bookmark spots while driving, run
   `survey.py report`, and record what works in [MAPS.md](docs/MAPS.md)
-  ([how](docs/TESTING.md#finding-a-venue)).
+  ([how](docs/VENUES.md)).
 - **Improve a drill's text:** instructions and pass criteria live in `exercises.json`.
 - **Check an "unverified" row** in [BEAMNG_API_NOTES](docs/BEAMNG_API_NOTES.md) on your game
   version.

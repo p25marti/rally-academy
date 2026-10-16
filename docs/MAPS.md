@@ -18,7 +18,7 @@ advanced cornering, Johnson Valley for rough terrain) if that gives a better res
 Venues the drills use are data in `mod/gameplay/rallyAcademy/venues.json` (ids such as
 `bmp-gravel-track` = W1, `bmp-dirt-arena` = W2, `bmp-dirt-circle` = W3, `wcusa-quarry` = W4,
 `wcusa-offroad-circuit` = W5, `utah-ngrc-stages` = U1). This page keeps the survey notes;
-to move a venue, edit `venues.json`.
+to find, test and add venues, follow [VENUES.md](VENUES.md).
 
 ### West Coast USA (`west_coast_usa`): loose-surface training complex
 Load ≈ 80 s (biggest map).
@@ -125,7 +125,7 @@ One map per module (about six loads over the course), each drill where it fits b
 
 ## Method (repeatable)
 
-The tools are in the repo: [TESTING → Finding a venue](TESTING.md#finding-a-venue) (Save spot,
+The tools are in the repo: [VENUES.md](VENUES.md) (Save spot,
 `tools/ingame/survey.py` finders and report). The original survey that produced the table
 above used:
 1. **Routes**: start pose and checkpoints from the mission's `race.race.json`;
