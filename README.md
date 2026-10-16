@@ -11,6 +11,11 @@ instant retry to a marked start, run timing, and per-drill progress tracking.
 > Academy screen lives in the main menu (More... → Rally Academy) and the pause menu;
 > see the [roadmap](docs/ROADMAP.md).
 
+## Contributing
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md). Coding agents: [AGENTS.md](AGENTS.md). Product
+direction and the owner's standing decisions: [docs/PRODUCT.md](docs/PRODUCT.md).
+
 ## Quick start (developers)
 
 Requirements: Python 3.9+ and git. LuaJIT + luacheck are optional locally
