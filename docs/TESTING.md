@@ -16,6 +16,11 @@ exactly as CI does.
 
 - Live in `tests/lua/test_*.lua`. Each file returns a table of `name = function`.
   The runner (`tests/lua/run.lua`) has no dependencies.
+- Pure modules have their own files (`test_rules*.lua`, `test_gates.lua`,
+  `test_runRecord.lua`, `test_fixtures.lua` for recorded in-game runs). The extension is
+  tested by feature: `test_session`, `test_setups`, `test_telemetry`, `test_go_to_drill`,
+  `test_grading_flow`, `test_gates_flow` and `test_menu`, sharing `ra_helpers.lua` (a fresh
+  extension on the stubs, scripted runs that feed telemetry, and asserts).
 - `tests/lua/beamng_stubs.lua` fakes the engine: `be:getPlayerVehicle`, a
   controllable vehicle (position/velocity/teleports), `vec3`, `guihooks.trigger`
   (captured events), and `jsonReadFile`/`jsonWriteFile` (reads the real
@@ -28,14 +33,19 @@ exactly as CI does.
 - Prefer testing through the extension's public functions (`select`,
   `markStart`, `retry`, `onUpdate`, `recordAttempt`) and asserting on the
   published `rallyAcademyState` and on vehicle side effects.
+- Assert with the helpers (`H.eq`, `H.has`, `H.near`), which raise on failure. A bare
+  boolean expression asserts nothing.
 
 Add a test:
 
 ```lua
--- tests/lua/test_scoring.lua
+-- tests/lua/test_menu.lua (an extension test)
+local H = require('ra_helpers')
+local eq, setup = H.eq, H.setup
 local T = {}
-function T.speed_band_passes_inside_tolerance()
-  assert(require('ge.extensions.rallyAcademy.rules').speedBand(30, 27, 33))
+function T.menu_lists_the_drills_in_order()
+  local _, M = setup()
+  eq(M.getMenuData().lessons[1].id, 'A01', 'first drill')
 end
 return T
 ```
