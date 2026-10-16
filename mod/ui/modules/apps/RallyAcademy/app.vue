@@ -18,40 +18,66 @@
       search-group-name
       @value-changed="choose" />
 
-    <button v-if="lesson && lesson.environment && lesson.environment.levelId" class="ra-btn ra-goto" @click="cmd('goToDrill')">
+    <button v-if="lesson && lesson.environment && lesson.environment.levelId && !driving" class="ra-btn ra-goto" @click="cmd('goToDrill')">
       ⤳ Go to drill · {{ lesson.environment.mapDisplayName }}
     </button>
 
-    <p v-if="lesson" class="ra-instructions">
+    <!-- Instructions while setting up; once driving, the space goes to the run and its result. -->
+    <p v-if="lesson && !driving" class="ra-instructions">
       {{ lesson.instructions }}
       <span v-if="isAuto" class="ra-tag ready">Auto-graded</span>
       <span v-else class="ra-tag soon">Coming soon · Pass/Miss</span>
     </p>
 
+    <!-- Authored course: checklist, which side of the cone, and the parking aid near the box. -->
+    <div v-if="vm.course" class="ra-course">
+      <span v-for="(st, i) in courseSteps" :key="i" class="ra-step" :class="st.state">
+        {{ st.state === "passed" ? "✓" : st.state === "missed" ? "✗" : "·" }} {{ st.label }}
+      </span>
+      <span v-if="vm.course.keep" class="ra-keep">cone on your {{ vm.course.keep }}</span>
+      <div v-if="vm.course.clipped" class="ra-aid fail">Clipped {{ vm.course.clipped }}</div>
+      <div v-else-if="vm.course.aid" class="ra-aid">
+        {{ vm.course.aid }}
+        <span v-if="vm.course.fit" class="ra-medal" :class="vm.course.fit">in {{ vm.course.fit }}</span>
+      </div>
+    </div>
+
     <div class="ra-row">
       <span class="ra-timer" :class="{ running: vm.phase === 'running' }">{{ timerText }}</span>
-      <span class="ra-best">best {{ bestText }}</span>
+      <span class="ra-best">
+        best {{ bestText }}
+        <span v-if="bestTier" class="ra-medal" :class="bestTier">{{ bestTier }}</span>
+      </span>
     </div>
 
     <div class="ra-status">{{ vm.phase }} · {{ vm.successes }}/{{ vm.attempts }} successful · target {{ vm.required }}/{{ vm.target }}</div>
 
     <div v-if="vm.grade" class="ra-grade">
-      <div v-for="(c, i) in vm.grade.checks" :key="i" :class="c.ok ? 'ok' : 'fail'">{{ c.ok ? "✓" : "✗" }} {{ c.text }}</div>
+      <div v-if="vm.grade.tier" class="ra-result">
+        <span class="ra-medal big" :class="vm.grade.tier">{{ vm.grade.tier }}</span>
+        <span v-if="vm.grade.nextTier" class="ra-next">{{ vm.grade.nextTier.name }}: {{ vm.grade.nextTier.text }}</span>
+      </div>
+      <div v-for="(c, i) in gradeChecks" :key="i" :class="c.ok ? 'ok' : 'fail'">{{ c.ok ? "✓" : "✗" }} {{ c.text }}</div>
     </div>
+    <div v-if="vm.autoRetryIn" class="ra-countdown">Next attempt in {{ vm.autoRetryIn }}… (drive off to stay)</div>
 
     <div class="ra-buttons">
-      <button class="ra-btn" @click="cmd('markStart')">Mark start</button>
-      <button v-if="assessment.endWhen !== 'gates'" class="ra-btn" @click="cmd('markFinish')">{{ markFinishLabel }}</button>
+      <button class="ra-btn" @click="cmd('markStart')">{{ hasCourse ? "Move course here" : "Mark start" }}</button>
+      <button v-if="hasCourse && vm.hasStart && !vm.usingVenueStart" class="ra-btn" @click="cmd('useVenueStart')">Use venue start</button>
+      <button v-if="!hasCourse && assessment.endWhen !== 'gates'" class="ra-btn" @click="cmd('markFinish')">{{ markFinishLabel }}</button>
       <button v-if="assessment.gates" class="ra-btn ra-add-gate" @click="cmd('addGate')">
         + Gate ({{ vm.gateCount || 0 }}/{{ assessment.gates.count }})
       </button>
       <button v-if="assessment.gates && vm.gateCount" class="ra-btn" @click="cmd('clearGates')">Clear gates</button>
       <button class="ra-btn primary" @click="cmd('retry')">↻ Retry</button>
-      <button class="ra-btn" @click="cmd('recordAttempt', true)">✓ Pass</button>
+      <button v-if="!isAuto" class="ra-btn" @click="cmd('recordAttempt', true)">✓ Pass</button>
       <button class="ra-btn" @click="cmd('recordAttempt', false)">✕ Miss</button>
+      <button v-if="isAuto" class="ra-btn" :class="{ on: vm.autoRetry }" @click="cmd('setAutoRetry', !vm.autoRetry)">
+        Auto-retry {{ vm.autoRetry ? "on" : "off" }}
+      </button>
     </div>
 
-    <p class="ra-reason">{{ vm.reason }}</p>
+    <p v-if="!vm.autoRetryIn" class="ra-reason">{{ vm.reason }}</p>
   </div>
 </template>
 
@@ -90,6 +116,16 @@ const drillItems = computed(() => {
 })
 const assessment = computed(() => (lesson.value && lesson.value.assessment) || {})
 const isAuto = computed(() => assessment.value.mode === "automatic")
+const hasCourse = computed(() => !!assessment.value.course)
+const driving = computed(() => ["running", "review", "scored"].includes(vm.phase))
+// Lua lists may arrive as {} when empty, so check before iterating.
+const courseSteps = computed(() => (vm.course && Array.isArray(vm.course.steps) ? vm.course.steps : []))
+const gradeChecks = computed(() => (vm.grade && Array.isArray(vm.grade.checks) ? vm.grade.checks : []))
+const bestTier = computed(() => {
+  const p = vm.progress
+  const id = vm.selected
+  return (p && id && p[id] && p[id].bestTier) || null
+})
 
 const markFinishLabel = computed(() => {
   // An empty Lua table arrives as {} (an object), not [], so check before using it as a list.
@@ -123,10 +159,12 @@ const bestText = computed(() => {
   return fmt(p && id && p[id] ? p[id].bestTime : null, 2)
 })
 
-const COMMANDS = { goToDrill: 1, markStart: 1, markFinish: 1, addGate: 1, clearGates: 1, retry: 1, recordAttempt: 1 }
+const COMMANDS = { goToDrill: 1, markStart: 1, markFinish: 1, addGate: 1, clearGates: 1, retry: 1, recordAttempt: 1,
+                   useVenueStart: 1, setAutoRetry: 1 }
+const BOOL_ARG = { recordAttempt: 1, setAutoRetry: 1 }
 function cmd(name, arg) {
   if (!COMMANDS[name]) return
-  const args = name === "recordAttempt" ? (arg ? "true" : "false") : ""
+  const args = BOOL_ARG[name] ? (arg ? "true" : "false") : ""
   api.engineLua(`if extensions.rallyAcademy then extensions.rallyAcademy.${name}(${args}) end`)
 }
 
@@ -255,6 +293,78 @@ onMounted(() => {
   margin-top: 0.3rem;
 }
 
+.ra-course {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.45rem;
+  margin: 0.25rem 0;
+  .ra-step {
+    color: var(--bng-cool-gray-100);
+    &.next {
+      color: var(--bng-orange-400);
+      font-weight: 600;
+    }
+    &.passed {
+      color: var(--bng-add-green-400);
+    }
+    &.missed {
+      color: var(--bng-add-red-400);
+    }
+  }
+  .ra-keep {
+    margin-left: auto;
+    font-size: 0.9em;
+    color: var(--bng-cool-gray-100);
+  }
+  .ra-aid {
+    width: 100%;
+    font-variant-numeric: tabular-nums;
+    &.fail {
+      color: var(--bng-add-red-400);
+    }
+  }
+}
+
+.ra-medal {
+  display: inline-block;
+  padding: 0 0.3rem;
+  border-radius: var(--bng-corners-1);
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--bng-off-black);
+  &.bronze {
+    background-color: #c8813f;
+  }
+  &.silver {
+    background-color: #c9ccd6;
+  }
+  &.gold {
+    background-color: #f2c014;
+  }
+  &.big {
+    font-size: 1em;
+    padding: 0.05rem 0.45rem;
+  }
+}
+
+.ra-result {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 0.15rem;
+  .ra-next {
+    color: var(--bng-cool-gray-100);
+  }
+}
+
+.ra-countdown {
+  margin: 0.2rem 0;
+  color: var(--bng-orange-400);
+  font-weight: 600;
+}
+
 .ra-btn {
   padding: 0.15rem 0.4rem;
   font-size: 0.9em;
@@ -265,6 +375,9 @@ onMounted(() => {
   cursor: pointer;
   &:hover {
     background-color: rgb(var(--bng-cool-gray-600-rgb));
+  }
+  &.on {
+    border-color: var(--bng-orange-500);
   }
   &.primary {
     background-color: var(--bng-orange-500);

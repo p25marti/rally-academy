@@ -99,8 +99,17 @@ const chosen = computed(
 function statusText(lesson) {
   const p = progressOf(props.progress, lesson)
   if (!p || !p.totalAttempts) return "Not started"
-  if (p.lastSessionPassed) return "Block passed"
-  return `${p.totalPasses}/${p.totalAttempts} passed`
+  const medal = p.bestTier ? ` · best ${p.bestTier}` : ""
+  if (p.lastSessionPassed) return `Block passed${medal}`
+  return `${p.totalPasses}/${p.totalAttempts} passed${medal}`
+}
+
+// "2 gold, 3 silver, 1 bronze" for drills with medals.
+function medalText(p) {
+  const t = p && p.tiers
+  if (!t) return ""
+  const parts = ["gold", "silver", "bronze"].filter(n => t[n]).map(n => `${t[n]} ${n}`)
+  return parts.length ? ` Medals: ${parts.join(", ")}.` : ""
 }
 
 function progressText(lesson) {
@@ -109,7 +118,7 @@ function progressText(lesson) {
   const target = `Target: ${a.requiredPasses} of ${a.attempts} in a block.`
   if (!p || !p.totalAttempts) return `Not tried yet. ${target}`
   const best = p.bestTime ? ` Best time ${p.bestTime.toFixed(2)} s.` : ""
-  return `${p.totalPasses} passes from ${p.totalAttempts} attempts.${best} ${target}`
+  return `${p.totalPasses} passes from ${p.totalAttempts} attempts.${best}${medalText(p)} ${target}`
 }
 
 async function start() {

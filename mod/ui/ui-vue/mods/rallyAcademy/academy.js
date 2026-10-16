@@ -16,7 +16,8 @@ export function moduleName(lesson) {
 // Implemented = graded automatically; everything else is "Coming soon".
 export const isAuto = lesson => !!(lesson.assessment && lesson.assessment.mode === "automatic")
 
-// Saved progress for one drill, or null: {totalAttempts, totalPasses, bestTime, lastSessionPassed}
+// Saved progress for one drill, or null: {totalAttempts, totalPasses, bestTime, lastSessionPassed,
+// bestTier, tiers} (the last two for drills with medals)
 export const progressOf = (progress, lesson) => (progress && progress[lesson.id]) || null
 
 // Drills grouped by module, in curriculum order (the order Lua sends them).
