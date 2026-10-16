@@ -47,6 +47,7 @@
         {{ chosen.vehicle && chosen.vehicle.displayName }}<br />
         {{ chosen.environment && chosen.environment.mapDisplayName }}
       </p>
+      <p v-if="chosen.environment && chosen.environment.areaHint" class="ra-hint">{{ chosen.environment.areaHint }}</p>
       <div class="ra-section">Your progress</div>
       <p>{{ progressText(chosen) }}</p>
       <p v-if="chosen.parked" class="ra-parked-note">{{ chosen.parked }}</p>
@@ -265,6 +266,11 @@ async function start() {
   font-weight: 600;
   text-transform: uppercase;
   color: var(--bng-orange-400);
+}
+
+.ra-hint {
+  font-size: 0.9em;
+  color: var(--bng-cool-gray-100) !important;
 }
 
 .ra-parked-note {

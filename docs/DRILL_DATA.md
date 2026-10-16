@@ -43,8 +43,6 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "rules": []                        // typed rules; empty = no machine grading
       },
       "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)
-      "startTransform": null,              // {levelId, pos:{x,y,z}, rot:{x,y,z,w}} once authored
-      "finishGate": null,                  // {pos:{x,y,z}, radius} once authored
       "references": { "map": "url", "vehicle": "url" }
     }
   ]

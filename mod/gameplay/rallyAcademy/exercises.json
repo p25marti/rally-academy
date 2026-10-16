@@ -44,8 +44,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -115,8 +113,6 @@
           }
         ]
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -165,8 +161,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -229,8 +223,6 @@
           }
         ]
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -294,8 +286,6 @@
           }
         ]
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -344,8 +334,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -394,8 +382,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -444,8 +430,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -509,8 +493,6 @@
         ],
         "endWhen": "stopped"
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -582,8 +564,6 @@
           }
         ]
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -632,8 +612,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -682,8 +660,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -732,8 +708,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -782,8 +756,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -832,8 +804,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -882,8 +852,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -932,8 +900,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -982,8 +948,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1032,8 +996,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -1083,8 +1045,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1133,8 +1093,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/ibishu/"
@@ -1184,8 +1142,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1235,8 +1191,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1285,8 +1239,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1335,8 +1287,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1385,8 +1335,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1435,8 +1383,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1485,8 +1431,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1535,8 +1479,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1585,8 +1527,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1635,8 +1575,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1685,8 +1623,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1735,8 +1671,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://www.beamng.com/resources/winter-west-coast-usa.34794/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1785,8 +1719,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1835,8 +1767,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1886,8 +1816,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1937,8 +1865,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -1987,8 +1913,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/cherrier/"
@@ -2037,8 +1961,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/cherrier/"
@@ -2087,8 +2009,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -2137,8 +2057,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
@@ -2187,8 +2105,6 @@
         "mode": "selfAssessment",
         "rules": []
       },
-      "startTransform": null,
-      "finishGate": null,
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
