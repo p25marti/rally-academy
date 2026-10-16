@@ -1,6 +1,7 @@
 <template>
-  <div class="ra-exercises">
-    <div class="ra-grid">
+  <!-- compact (the pause menu's narrow card): the list, or one drill's details, not both. -->
+  <div class="ra-exercises" :class="{ compact }">
+    <div v-if="!compact || !showDetails" class="ra-grid">
       <template v-for="m in modules" :key="m.letter">
         <div class="ra-group-label">
           <span>{{ m.letter }} · {{ m.name }}</span>
@@ -11,7 +12,7 @@
           :key="l.id"
           class="ra-card"
           :class="{ selected: l.id === chosenId, soon: !isAuto(l) }"
-          @click="chosenId = l.id">
+          @click="pick(l.id)">
           <div class="ra-card-title">{{ l.id }} · {{ l.title }}</div>
           <div class="ra-card-sub">{{ l.environment && l.environment.mapDisplayName }}</div>
           <div class="ra-card-tags">
@@ -32,7 +33,8 @@
       </div>
     </div>
 
-    <aside v-if="chosen" class="ra-details">
+    <aside v-if="chosen && (!compact || showDetails)" class="ra-details">
+      <button v-if="compact" class="ra-back" @click="showDetails = false">← All drills</button>
       <div class="ra-details-title">{{ chosen.id }} · {{ chosen.title }}</div>
       <div class="ra-details-meta">{{ chosen.difficulty }} · {{ moduleName(chosen) }}</div>
       <div v-if="!isAuto(chosen)" class="ra-soon-note">
@@ -72,6 +74,7 @@ const props = defineProps({
   progress: { type: Object, default: () => ({}) },
   selected: { type: String, default: null },
   showBack: { type: Boolean, default: true }, // the pause menu has its own back
+  compact: { type: Boolean, default: false }, // narrow card: list and details take turns
 })
 defineEmits(["back"])
 
@@ -80,6 +83,11 @@ watch(
   () => props.selected,
   id => { if (!chosenId.value) chosenId.value = id },
 )
+const showDetails = ref(false)
+function pick(id) {
+  chosenId.value = id
+  if (props.compact) showDetails.value = true
+}
 const starting = ref(false)
 const startError = ref("")
 
@@ -123,6 +131,26 @@ async function start() {
   gap: 1rem;
   min-height: 0;
   height: 100%;
+}
+
+.ra-exercises.compact {
+  .ra-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ra-details {
+    flex: 1 1 auto;
+  }
+}
+
+.ra-back {
+  align-self: flex-start;
+  margin-bottom: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  color: var(--bng-off-white);
+  background-color: rgb(var(--bng-cool-gray-700-rgb));
+  border: 1px solid rgb(var(--bng-cool-gray-600-rgb));
+  border-radius: var(--bng-corners-1);
+  cursor: pointer;
 }
 
 .ra-grid {

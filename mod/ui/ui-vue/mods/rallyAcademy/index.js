@@ -28,11 +28,13 @@ const routes = [
 
 const PAUSE_TAB = "rallyAcademy"
 const PAUSE_PAGE = "/ui/ui-vue/mods/rallyAcademy/pause/PausePage.vue"
+// Every rail button needs a valid bngIcons name: the pause menu renders `icon` with BngIcon,
+// which reads `.glyph` of a null icon and throws, corrupting the whole Vue UI (0.39.4).
 const pausePages = [
-  { id: "exercises", label: "Exercises" },
-  { id: "analysis", label: "Analysis" },
-  { id: "about", label: "About" },
-  { id: "credits", label: "Credits" },
+  { id: "exercises", label: "Exercises", icon: "listBig" },
+  { id: "analysis", label: "Analysis", icon: "chartBars" },
+  { id: "about", label: "About", icon: "info" },
+  { id: "credits", label: "Credits", icon: "peopleOutline" },
 ]
 
 function toLuaRoutes(records) {
@@ -54,6 +56,9 @@ function addMenuButton(addButton) {
 
 async function registerPauseTab() {
   const pause = lua.extensions.ui_pause_actions
+  // Registrations live in Lua and survive UI reloads; re-registering a button keeps its old
+  // position, so start from an empty tab to get the buttons in this order every time.
+  await pause.unregisterModTab(PAUSE_TAB)
   const tab = await pause.registerModTab({ id: PAUSE_TAB, label: "Rally Academy", icon: "raceFlag" })
   if (!tab?.success) {
     console.error("Rally Academy: failed to add the pause-menu tab", tab)
@@ -64,6 +69,7 @@ async function registerPauseTab() {
       id: `${PAUSE_TAB}-${p.id}`,
       tabId: PAUSE_TAB,
       label: p.label,
+      icon: p.icon,
       componentName: PAUSE_PAGE,
       props: { page: p.id },
     })

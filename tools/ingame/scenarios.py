@@ -5,6 +5,7 @@ what happened and returns the problems it found (empty = all as expected).
 Braking scenarios use the BMP start straight on West Coast USA in the Covet Student
 Driver (B01's venue spot). They record attempts, then remove them from your progress.
 """
+import json
 import time
 
 import academy as A
@@ -182,4 +183,47 @@ def launch():
     expect(p, "clean launch passes", s.get("passed") is True, A.grade_lines())
     A.realistic()
     A.clear_progress("A02")
+    return p
+
+
+@scenario
+def pause():
+    """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""
+    p = []
+    lua("ui_router.navigate('play') return 1")
+    time.sleep(1)
+
+    def click_text(selector, text):
+        tagged = ui(f"var e=Array.from(document.querySelectorAll({json.dumps(selector)})).find(function(x){{"
+                    f"var r=x.getBoundingClientRect(); return r.width>0 && x.textContent.trim().indexOf({json.dumps(text)})>=0}});"
+                    "if(!e) return 'missing'; document.querySelectorAll('[data-ra-click]').forEach(function(x){x.removeAttribute('data-ra-click')});"
+                    "e.setAttribute('data-ra-click','1'); return 'ok'")
+        if tagged == "ok":
+            call("ui_click", {"selector": "[data-ra-click]"})
+            time.sleep(2.5)
+        return tagged
+
+    lua("ui_router.navigate('pause') return 1")
+    time.sleep(4)
+    expect(p, "Rally Academy tab in the pause menu", click_text(".tab-item", "Rally Academy") == "ok")
+    # Found by hand: rail buttons without an icon crashed the whole Vue UI on this click.
+    click_text("[class*=rail] button, [class*=rail-button]", "Exercises")  # the menu reopens on the last page
+    page = A.wait_for(lambda: ui("return document.querySelectorAll('.ra-pause-page .ra-card').length"), len(A.drills()))
+    expect(p, "Exercises lists every drill", page == len(A.drills()), page)
+    click_text(".ra-pause-page .ra-card", "A04")
+    expect(p, "picking a drill shows its details", "Throttle modulation" in str(ui(
+        "var d=document.querySelector('.ra-pause-page .ra-details'); return d ? d.innerText : ''")))
+    for label, marker in (("Analysis", ".ra-metric"), ("About", ".ra-panel"), ("Credits", ".ra-big")):
+        click_text("[class*=rail] button, [class*=rail-button]", label)
+        n = A.wait_for(lambda: ui(f"return document.querySelectorAll('.ra-pause-page {marker}').length > 0"), True)
+        expect(p, f"{label} page renders", n is True, n)
+    lua("ui_router.navigate('play') return 1")
+    time.sleep(2)
+    lua("ui_router.navigate('pause') return 1")
+    time.sleep(4)
+    native = ui("return Array.from(document.querySelectorAll('.tab-item')).filter(function(e){return e.getBoundingClientRect().width>0}).map(function(e){return e.textContent.trim()})")
+    has_vehicle = isinstance(native, list) and any("Vehicle" in t for t in native)  # names start with an icon glyph
+    expect(p, "reopened pause menu still has the game's own tabs", has_vehicle, len(native) if isinstance(native, list) else native)
+    lua("ui_router.navigate('play') return 1")
+    time.sleep(1)
     return p

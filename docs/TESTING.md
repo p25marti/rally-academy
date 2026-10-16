@@ -62,7 +62,8 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 
 | Scenario | What it checks |
 | --- | --- |
-| `smoke` | UI reload leaves one HUD panel, drop-down lists every drill, menu opens/closes with physics paused/resumed |
+| `smoke` | UI reload leaves one HUD panel; the drill drop-down opens on a click and picks; a drill without rules renders; menu opens/closes with physics paused/resumed |
+| `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), and the game's own tabs after reopening |
 | `b01` | Stop zone: clean PASS, late braking MISS, full brake MISS (lockup) |
 | `a04` | Gates marked down the straight; 30 km/h PASS, too fast at gate 3 MISS |
 | `stops` | A05 stop line and B02 lockup recovery, a PASS and a MISS each |

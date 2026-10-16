@@ -121,7 +121,7 @@ const pct = (n, of) => (of ? Math.round((100 * n) / of) + "%" : "0%")
 
 .ra-metrics {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: 0.5rem;
 }
 
@@ -148,6 +148,7 @@ const pct = (n, of) => (of ? Math.round((100 * n) / of) + "%" : "0%")
 
 .ra-columns {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: flex-start;
 }
@@ -160,12 +161,14 @@ const pct = (n, of) => (of ? Math.round((100 * n) / of) + "%" : "0%")
 }
 
 .ra-modules-panel {
-  flex: 0 0 28rem;
+  flex: 1 1 22rem;
+  max-width: 28rem;
 }
 
 .ra-table-panel {
-  flex: 1 1 auto;
+  flex: 999 1 24rem;
   min-width: 0;
+  overflow-x: auto;
 }
 
 .ra-panel-title {

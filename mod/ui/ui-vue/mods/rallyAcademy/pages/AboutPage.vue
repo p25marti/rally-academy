@@ -64,7 +64,7 @@ defineProps({
   overflow-y: auto;
   padding-right: 0.5rem;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
   grid-auto-rows: min-content;
   gap: 1rem;
   max-width: 80rem;
