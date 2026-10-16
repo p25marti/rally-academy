@@ -15,6 +15,14 @@
     "title": "Rally Academy: Open menu",
     "desc": "Open or close the Rally Academy screen (pauses the game while open)."
   },
+  "rally_academy_save_spot": {
+    "cat": "vehicle",
+    "order": 104,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.saveSpot() end",
+    "title": "Rally Academy: Save spot",
+    "desc": "Bookmark where you are as a possible drill venue (room, slope, road, surfaces)."
+  },
   "rally_academy_pass": {
     "cat": "vehicle",
     "order": 102,

@@ -4,12 +4,15 @@
 local M = {}
 -- Re-read our pure modules whenever the extension (re)loads: extensions.reload re-runs
 -- this file but `require` would keep the old modules (seen on 0.39.4).
-for _, name in ipairs({'runRecord', 'rules', 'gates', 'store', 'course'}) do package.loaded['ge/extensions/rallyAcademy/' .. name] = nil end
+for _, name in ipairs({'runRecord', 'rules', 'gates', 'store', 'course', 'spots'}) do
+  package.loaded['ge/extensions/rallyAcademy/' .. name] = nil
+end
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
 local Rules = require('ge/extensions/rallyAcademy/rules')
 local Gates = require('ge/extensions/rallyAcademy/gates')
 local Store = require('ge/extensions/rallyAcademy/store')
 local Course = require('ge/extensions/rallyAcademy/course')
+local Spots = require('ge/extensions/rallyAcademy/spots')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 local lessons, byId, lessonSummary = {}, {}, {}
 local progress = {schemaVersion = 1, lessons = {}} -- store.lua has the file formats
@@ -662,6 +665,64 @@ function M.saveLastRun(path)
   jsonWriteFile(path, run, false)
   logf('I', 'saved run record (%d samples) to %s', #run.samples, path)
   return path
+end
+
+-- Venue bookmarks ("Rally Academy: Save spot", spots.lua) --------------------------
+
+-- Nearest road from the AI road network: name, width (2 x node radius), drivability, distance.
+local function nearestRoad(pos)
+  if not (map and map.findClosestRoad and map.getMap) then return nil end
+  local n1, n2, dist = map.findClosestRoad(pos)
+  local nodes = n1 and (map.getMap() or {}).nodes
+  local a, b = nodes and nodes[n1], nodes and n2 and nodes[n2]
+  if not a then return nil end
+  local link = (a.links and a.links[n2]) or (b and b.links and b.links[n1]) or {}
+  local radius = b and math.min(a.radius or 0, b.radius or 0) or a.radius or 0
+  return {name = n1 .. '-' .. tostring(n2), width = 2 * radius, drivability = link.drivability, dist = dist or 0}
+end
+
+-- Distance to static objects (walls, barriers, trees) in eight directions, up to 150 m.
+local function roomAround(veh)
+  local p = veh:getPosition() + vec3(0, 0, 0.6)
+  local fwd = vec3(veh:getDirectionVector()):normalized()
+  local right = fwd:cross(vec3(0, 0, 1)):normalized()
+  local out = {}
+  for i, deg in ipairs(Spots.ROOM_ANGLES) do
+    local r = math.rad(deg)
+    out[i] = castRayStatic and castRayStatic(p, (fwd * math.cos(r) + right * math.sin(r)):normalized(), 150) or 150
+  end
+  return out
+end
+
+-- Save where the car is as a candidate venue. The car reports its wheels' surfaces back
+-- through onSpotSurfaces (names only exist in vehicle Lua).
+function M.saveSpot(note)
+  local veh = currentVehicle()
+  local snap = snapshotVehicle()
+  if not (veh and snap) then lastReason = 'No player vehicle'; output(); return nil end
+  local data = Store.loadSpots()
+  local spot = Spots.add(data.spots, Spots.record({level = levelId(), pos = snap.pos, dir = snap.dir, upZ = snap.up.z,
+    room = roomAround(veh), road = nearestRoad(veh:getPosition()), note = note}))
+  Store.saveSpots(data)
+  veh:queueLuaCommand(string.format("local mats = particles.getMaterialsParticlesTable() local s = {} "
+    .. "for i = 0, wheels.wheelRotatorCount - 1 do local w = wheels.wheelRotators[i] "
+    .. "local m = particles.getMaterialByID(mats, w.contactMaterialID1) s[w.name] = m and m.name or 'none' end "
+    .. "obj:queueGameEngineLua('if extensions.rallyAcademy then extensions.rallyAcademy.onSpotSurfaces(%d, ' .. serialize(s) .. ') end')",
+    spot.id))
+  local msg = Spots.summary(spot)
+  logf('I', '%s at (%.1f, %.1f, %.1f) on %s', msg, spot.pos.x, spot.pos.y, spot.pos.z, spot.level)
+  if ui_message then ui_message(msg, 6, 'rallyAcademy') end
+  lastReason = msg
+  output()
+  return spot.id
+end
+
+function M.onSpotSurfaces(id, surfaces)
+  local data = Store.loadSpots()
+  local spot = Spots.find(data.spots, id)
+  if not spot or type(surfaces) ~= 'table' then return end
+  spot.surfaces = surfaces
+  Store.saveSpots(data)
 end
 
 -- Developer hooks (tools/ingame scenarios) -----------------------------------------

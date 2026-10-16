@@ -6,6 +6,7 @@ local S = {}
 
 S.PROGRESS_FILE = 'settings/rallyAcademyProgress.json'
 S.SETUPS_FILE = 'settings/rallyAcademySetups.json'
+S.SPOTS_FILE = 'settings/rallyAcademy/spots.json'
 
 -- Read a saved file; `valid(t)` checks its shape. Returns the table (or `fallback`) and a
 -- warning when a file exists but can't be used.
@@ -40,6 +41,16 @@ function S.putSetup(setups, levelId, drillId, setup)
   setups.levels[levelId] = setups.levels[levelId] or {}
   setups.levels[levelId][drillId] = setup
   jsonWriteFile(S.SETUPS_FILE, setups, true)
+end
+
+-- spots = {schemaVersion = 1, spots = {{id, level, pos, dir, slopeDeg, room, road, surfaces, note}, ...}}
+-- (venue bookmarks, spots.lua)
+function S.loadSpots()
+  return read(S.SPOTS_FILE, function(t) return type(t.spots) == 'table' end, {schemaVersion = 1, spots = {}})
+end
+
+function S.saveSpots(spots)
+  jsonWriteFile(S.SPOTS_FILE, spots, true)
 end
 
 return S

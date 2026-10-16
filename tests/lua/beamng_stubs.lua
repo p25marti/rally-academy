@@ -23,6 +23,7 @@ function vec3mt.__mul(a, b)
   return vec3(a.x * b, a.y * b, a.z * b)
 end
 function vec3mt.__unm(a) return vec3(-a.x, -a.y, -a.z) end
+function vec3mt:cross(b) return vec3(self.y * b.z - self.z * b.y, self.z * b.x - self.x * b.z, self.x * b.y - self.y * b.x) end
 function vec3mt:length() return math.sqrt(self.x ^ 2 + self.y ^ 2 + self.z ^ 2) end
 function vec3mt:normalized()
   local l = self:length()
@@ -90,6 +91,12 @@ function S.install()
     pause = function(p) h.paused = p end,
     getPause = function() return h.paused end,
   }
+  -- Venue bookmarks (verified 0.39.4): static ray casts, the AI road map, on-screen messages.
+  h.rayDistance, h.messages = 40, {}
+  _G.castRayStatic = function() return h.rayDistance end
+  h.roads = {nodes = {a = {radius = 4, links = {b = {drivability = 0.5}}}, b = {radius = 3.5, links = {}}}}
+  _G.map = {findClosestRoad = function() return 'a', 'b', 1.2 end, getMap = function() return h.roads end}
+  _G.ui_message = function(msg) table.insert(h.messages, msg) end
   h.uiRoutes = {}
   _G.ui_router = {navigate = function(route) table.insert(h.uiRoutes, route) end} -- verified 0.39.4
   h.freeroamStarts = {}
