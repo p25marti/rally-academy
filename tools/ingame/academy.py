@@ -18,6 +18,17 @@ def drill(drill_id):
     return next(e for e in drills() if e["id"] == drill_id)
 
 
+def wait_for(fn, want, timeout=12):
+    """Poll fn() until it returns `want` (the HUD remounts for a moment after UI changes)."""
+    t0, got = time.time(), None
+    while time.time() - t0 < timeout:
+        got = safe(fn)
+        if got == want:
+            break
+        time.sleep(0.5)
+    return got
+
+
 def debug_state():
     return lua_json("return extensions.rallyAcademy.debugState()")
 

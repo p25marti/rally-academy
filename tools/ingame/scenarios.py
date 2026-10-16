@@ -39,9 +39,9 @@ def smoke():
     """Reload the mod and UI; panel, drill switching, menu open/close and pause handling."""
     p = []
     A.reload_mod()
-    n = ui(f"return document.querySelectorAll('{A.PANEL}').length")
+    n = A.wait_for(lambda: ui(f"return document.querySelectorAll('{A.PANEL}').length"), 1)
     expect(p, "one HUD panel after a UI reload", n == 1, n)
-    opts = ui(f"return document.querySelectorAll('{A.PANEL} option').length")
+    opts = A.wait_for(lambda: ui(f"return document.querySelectorAll('{A.PANEL} option').length"), len(A.drills()))
     expect(p, "drop-down lists every drill", opts == len(A.drills()), opts)
     A.choose("A04")
     expect(p, "selecting A04 shows the gate button", "Gate" in str(ui(f"return document.querySelector('{A.PANEL}').innerText")))
