@@ -56,6 +56,12 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   a **Rally Academy: Open menu** binding (Options → Controls) that opens it over the game
   with physics paused. Back returns you to driving.
 
+- **Three more drills graded automatically**: A05 braking accuracy (stop 0–2 m before a line
+  you mark with **Mark stop line**, without locking a wheel), B02 lockup recognition (lock the
+  wheels from 55+ km/h and release within 1 s), and A02 launches (reach 40 km/h with a 1–2
+  shift: no stall, no shift hanging in neutral, no long wheelspin).
+- Telemetry records whether the engine is running, for stall detection.
+
 ### Changed
 - Go to drill starts maps the way the game's Freeroam menu does, so it also works from
   the main menu.

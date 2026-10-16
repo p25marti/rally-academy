@@ -50,6 +50,8 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       speed, stop inside a 5 m zone, no sustained lock), checked against recorded runs.
       Cone contact is not graded yet (needs scene control).
 - [x] A04 speed hold: 27–33 km/h at three gates, no braking between them.
+- [x] A05 stop line, B02 lockup recovery, A02 launch and shift: automatic, checked against
+      recorded runs. Not graded yet: cone contact (A05), staying on the road (B02).
 
 ## P3 — Machine-readable drills
 
@@ -74,4 +76,4 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 | --- | --- | --- |
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
 | No in-game verification yet | Any engine API assumption may be wrong | BEAMNG_API_NOTES |
-| Pass/Miss is self-assessed (all drills but B01 and A04) | No objective grading | P2/P3 |
+| Pass/Miss is self-assessed (all but A02, A04, A05, B01, B02) | No objective grading | P2/P3 |

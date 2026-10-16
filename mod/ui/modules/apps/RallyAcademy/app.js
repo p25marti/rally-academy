@@ -20,7 +20,7 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
       '</div>',
       '<div style="display:flex;gap:5px;flex-wrap:wrap">',
       '<button ng-click="cmd(\'markStart\')">Mark start</button>',
-      '<button ng-if="vm.lesson.assessment.endWhen !== \'gates\'" ng-click="cmd(\'markFinish\')">{{vm.lesson.assessment.endWhen === \'stopped\' ? \'Mark stop zone\' : \'Mark finish\'}}</button>',
+      '<button ng-if="vm.lesson.assessment.endWhen !== \'gates\'" ng-click="cmd(\'markFinish\')">{{markFinishLabel()}}</button>',
       '<button class="ra-add-gate" ng-if="vm.lesson.assessment.gates" ng-click="cmd(\'addGate\')">+ Gate ({{vm.gateCount || 0}}/{{vm.lesson.assessment.gates.count}})</button>',
       '<button ng-if="vm.lesson.assessment.gates && vm.gateCount" ng-click="cmd(\'clearGates\')">Clear gates</button>',
       '<button ng-click="cmd(\'retry\')">↻ Retry</button>',
@@ -32,6 +32,11 @@ angular.module('beamng.apps').directive('rallyAcademy', [function () {
     ].join(''),
     link: function (scope, element) {
       scope.vm = { lessons: [], phase: 'loading', successes: 0, attempts: 0 };
+      scope.markFinishLabel = function () {
+        var a = (scope.vm.lesson && scope.vm.lesson.assessment) || {};
+        var line = (a.rules || []).some(function (r) { return r.type === 'stop_before_line'; });
+        return line ? 'Mark stop line' : a.endWhen === 'stopped' ? 'Mark stop zone' : 'Mark finish';
+      };
       scope.selectedId = null;
       // Seconds -> "12.3" or "1:02.34". Lua sends elapsed at ~4 Hz, so the live
       // clock shows tenths; final times show hundredths.

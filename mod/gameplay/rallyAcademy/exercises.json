@@ -89,10 +89,31 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No stall, no missed shift and no sustained wheelspin (>1 s).",
+        "successDefinition": "Reach 40 km/h with a 1-2 shift: no stall, no shift hanging in neutral over 1 s, no wheelspin over 1 s; then stop.",
         "metricToRecord": "Successful smooth launches / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "endWhen": "stopped",
+        "rules": [
+          {
+            "type": "entry_speed",
+            "minKmh": 40
+          },
+          {
+            "type": "gear_reached",
+            "gear": 2
+          },
+          {
+            "type": "no_stall"
+          },
+          {
+            "type": "clean_shifts",
+            "maxNeutralSeconds": 1.0
+          },
+          {
+            "type": "no_sustained_wheelspin",
+            "maxSeconds": 1.0
+          }
+        ]
       },
       "startTransform": null,
       "finishGate": null,
@@ -248,15 +269,30 @@
         }
       },
       "instructions": "Brake once from 40 km/h and stop at a cone-marked line.",
-      "resetInstructions": "Stationary 80 m before stop line; accelerate to 40 km/h at approach marker.",
+      "resetInstructions": "Mark the start about 80 m before the line. Mark the line by parking with your front bumper on it, facing the way you'll arrive, and pressing Mark stop line.",
       "props": "Use visible cone pair to indicate line; adjust start distance for runway available.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Front bumper ends 0–2 m before line; no contact, overshoot or wheel lock.",
+        "successDefinition": "Front bumper ends 0-2 m before the line, braking from 40 km/h, with no wheel lock. Cone contact: not graded yet.",
         "metricToRecord": "Accurate stops / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "endWhen": "stopped",
+        "rules": [
+          {
+            "type": "entry_speed",
+            "minKmh": 38
+          },
+          {
+            "type": "stop_before_line",
+            "minM": 0,
+            "maxM": 2
+          },
+          {
+            "type": "no_sustained_lockup",
+            "maxSeconds": 0.2
+          }
+        ]
       },
       "startTransform": null,
       "finishGate": null,
@@ -518,10 +554,21 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Recognize/stop locking within ~1 s and recover steering; finish within road width.",
+        "successDefinition": "From 55+ km/h, provoke a lockup and release it within 1 s, then stop. Staying within the road: not graded yet.",
         "metricToRecord": "Correct lockup recoveries / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "endWhen": "stopped",
+        "rules": [
+          {
+            "type": "entry_speed",
+            "minKmh": 55
+          },
+          {
+            "type": "lockup_recovered",
+            "minSeconds": 0.2,
+            "maxSeconds": 1.0
+          }
+        ]
       },
       "startTransform": null,
       "finishGate": null,

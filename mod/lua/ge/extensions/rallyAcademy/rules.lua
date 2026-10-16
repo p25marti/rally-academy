@@ -2,7 +2,8 @@
 -- Pure Lua (no engine globals), so every rule is unit-tested against synthetic
 -- and recorded runs. Each check returns a readable reason: the reason is the coaching.
 --
--- Run record samples (runRecord.lua, telemetry.lua): t (sim s), air (m/s), brk (0..1),
+-- Run record samples (runRecord.lua, telemetry.lua): t (sim s), air (m/s), brk/thr (0..1),
+-- gear (gearIndex: 0 neutral, -1 reverse), rpm, eng (1 = engine running),
 -- x, y, z (m), w = {{n = 'FR', s = wheel speed m/s, m = surface id, f = downforce}, ...}
 -- ctx: {zone = marked stop zone {pos, dir}, gates = marked gates (gates.lua), in order}
 local Gates = require('ge/extensions/rallyAcademy/gates')
@@ -60,18 +61,44 @@ function E.stop_zone(rule, samples, ctx)
   return true, string.format('Stopped in the zone (%.1f m %s its centre)', math.abs(along), along >= 0 and 'past' or 'before')
 end
 
--- Longest continuous lockup of any wheel while braking.
--- A wheel counts as locked when it turns slower than `ratio` x the car's speed.
--- rule: {type = 'no_sustained_lockup', maxSeconds = 0.5, ratio = 0.3, minKmh = 7}
-function E.no_sustained_lockup(rule, samples)
-  local ratio, minAir = rule.ratio or 0.3, (rule.minKmh or 7) / KMH
+-- A05: stop with the front bumper just before a line. The line is marked by parking with the
+-- front bumper on it, so the car's centre moves exactly as its bumper does.
+-- rule: {type = 'stop_before_line', minM = 0, maxM = 2, widthM = 8}; ctx.zone = {pos, dir}
+function E.stop_before_line(rule, samples, ctx)
+  local zone = ctx and ctx.zone
+  if not (zone and zone.pos and zone.dir) then
+    return false, 'No stop line marked: park with your front bumper on the line and press Mark stop line'
+  end
+  local last = samples[#samples]
+  if not (last and last.x and last.y) then return false, 'No position data for this run' end
+  local dx, dy = zone.dir.x, zone.dir.y
+  local n = math.sqrt(dx * dx + dy * dy)
+  if n == 0 then return false, 'Stop line has no direction: mark it again' end
+  dx, dy = dx / n, dy / n
+  local px, py = last.x - zone.pos.x, last.y - zone.pos.y
+  local before, side = -(px * dx + py * dy), math.abs(px * dy - py * dx)
+  local min, max, halfW = rule.minM or 0, rule.maxM or 2, (rule.widthM or 8) / 2
+  local target = string.format('target %g-%g m before it', min, max)
+  if side > halfW then return false, string.format('Stopped %.1f m to the side of the line', side - halfW) end
+  if before < min then return false, string.format('Stopped %.1f m past the line (%s)', min - before, target) end
+  if before > max then return false, string.format('Stopped %.1f m before the line (%s)', before, target) end
+  return true, string.format('Stopped %.1f m before the line (%s)', before, target)
+end
+
+local function wheelName(n)
+  local name = (WHEEL_NAMES[n] or tostring(n)):gsub('^%l', string.upper) -- 1st return only
+  return name
+end
+
+-- Longest continuous streak of `test(sample, wheel)` on any one wheel.
+-- Returns {t = seconds, wheel = 'FL', air = car speed (m/s) when it began}.
+local function longestWheelStreak(samples, test)
   local streakStart, worst = {}, {t = 0}
   for i, s in ipairs(samples) do
     local nextT = samples[i + 1] and samples[i + 1].t or s.t
     for _, w in ipairs(s.w or {}) do
-      local locked = (s.brk or 0) > 0.1 and (s.air or 0) > minAir and math.abs(w.s or 0) < ratio * s.air
-      if locked then
-        streakStart[w.n] = streakStart[w.n] or {t = s.t, air = s.air}
+      if test(s, w) then
+        streakStart[w.n] = streakStart[w.n] or {t = s.t, air = s.air or 0}
         local dur = nextT - streakStart[w.n].t
         if dur > worst.t then worst = {t = dur, wheel = w.n, air = streakStart[w.n].air} end
       else
@@ -79,14 +106,105 @@ function E.no_sustained_lockup(rule, samples)
       end
     end
   end
+  return worst
+end
+
+-- A wheel counts as locked when it turns slower than `ratio` x the car's speed while braking.
+local function longestLock(rule, samples)
+  local ratio, minAir = rule.ratio or 0.3, (rule.minKmh or 7) / KMH
+  return longestWheelStreak(samples, function(s, w)
+    return (s.brk or 0) > 0.1 and (s.air or 0) > minAir and math.abs(w.s or 0) < ratio * s.air
+  end)
+end
+
+-- Longest continuous lockup of any wheel while braking.
+-- rule: {type = 'no_sustained_lockup', maxSeconds = 0.5, ratio = 0.3, minKmh = 7}
+function E.no_sustained_lockup(rule, samples)
+  local worst = longestLock(rule, samples)
   local max = rule.maxSeconds or 0.5
   if worst.t > max then
-    local name = (WHEEL_NAMES[worst.wheel] or tostring(worst.wheel)):gsub('^%l', string.upper) -- 1st return only
     return false, string.format('%s wheel locked for %.1f s from %.0f km/h (limit %.1f s)',
-      name, worst.t, worst.air * KMH, max)
+      wheelName(worst.wheel), worst.t, worst.air * KMH, max)
   end
   if worst.t > 0 then return true, string.format('No sustained lockup (longest %.1f s)', worst.t) end
   return true, 'No lockup'
+end
+
+-- B02: provoke a lockup on purpose, then release it quickly.
+-- rule: {type = 'lockup_recovered', maxSeconds = 1.0, minSeconds = 0.2}
+function E.lockup_recovered(rule, samples)
+  local worst = longestLock(rule, samples)
+  local min, max = rule.minSeconds or 0.2, rule.maxSeconds or 1.0
+  if worst.t < min then
+    return false, string.format('No lockup to recover from (longest %.1f s): brake harder to provoke one', worst.t)
+  end
+  if worst.t > max then
+    return false, string.format('%s wheel stayed locked %.1f s from %.0f km/h (release within %.1f s)',
+      wheelName(worst.wheel), worst.t, worst.air * KMH, max)
+  end
+  return true, string.format('Locked %.1f s from %.0f km/h, then released (limit %.1f s)', worst.t, worst.air * KMH, max)
+end
+
+-- A wheel spinning: faster than the car by `ratio` plus `slackKmh`, on throttle.
+-- rule: {type = 'no_sustained_wheelspin', maxSeconds = 1.0, ratio = 1.25, slackKmh = 5}
+function E.no_sustained_wheelspin(rule, samples)
+  local ratio, slack = rule.ratio or 1.25, (rule.slackKmh or 5) / KMH
+  local worst = longestWheelStreak(samples, function(s, w)
+    return (s.thr or 0) > 0.1 and math.abs(w.s or 0) > (s.air or 0) * ratio + slack
+  end)
+  local max = rule.maxSeconds or 1.0
+  if worst.t > max then
+    return false, string.format('%s wheel spun for %.1f s from %.0f km/h (limit %.1f s)',
+      wheelName(worst.wheel), worst.t, worst.air * KMH, max)
+  end
+  if worst.t > 0 then return true, string.format('No sustained wheelspin (longest %.1f s)', worst.t) end
+  return true, 'No wheelspin'
+end
+
+-- The engine stopped after the run began. Uses the `eng` flag, not rpm: rpm reads ~160
+-- while the engine re-idles after a reset (0.39.4). Samples without `eng` can't stall.
+-- rule: {type = 'no_stall'}
+function E.no_stall(_rule, samples)
+  local wasRunning = false
+  for _, s in ipairs(samples) do
+    if s.eng == 1 then
+      wasRunning = true
+    elseif s.eng == 0 and wasRunning then
+      return false, string.format('Stalled at %.0f km/h', (s.air or 0) * KMH)
+    end
+  end
+  return true, 'No stall'
+end
+
+-- Reached a gear during the run (A02: the 1 -> 2 upshift).
+-- rule: {type = 'gear_reached', gear = 2}
+function E.gear_reached(rule, samples)
+  local top = 0
+  for _, s in ipairs(samples) do top = math.max(top, s.gear or 0) end
+  if top >= rule.gear then return true, string.format('Shifted up to gear %d', top) end
+  return false, string.format('Never reached gear %d (highest %d)', rule.gear, top)
+end
+
+-- A shift that hangs in neutral while moving: a missed or fumbled gear.
+-- rule: {type = 'clean_shifts', maxNeutralSeconds = 1.0, minKmh = 10}
+function E.clean_shifts(rule, samples)
+  local max, minAir = rule.maxNeutralSeconds or 1.0, (rule.minKmh or 10) / KMH
+  local inGear, since, worst, worstAir = false, nil, 0, 0
+  for _, s in ipairs(samples) do
+    local g = s.gear or 0
+    if g ~= 0 then
+      inGear, since = true, nil
+    elseif inGear and (s.air or 0) > minAir then
+      since = since or {t = s.t, air = s.air}
+      if s.t - since.t > worst then worst, worstAir = s.t - since.t, since.air end
+    else
+      since = nil
+    end
+  end
+  if worst > max then
+    return false, string.format('Missed a shift: %.1f s in neutral at %.0f km/h (limit %.1f s)', worst, worstAir * KMH, max)
+  end
+  return true, 'Clean shifts'
 end
 
 -- Gates ------------------------------------------------------------------------
@@ -169,6 +287,12 @@ R.TYPES = {
   entry_speed = {'minKmh'},
   stop_zone = {'lengthM', 'widthM'},
   no_sustained_lockup = {'maxSeconds'},
+  lockup_recovered = {'maxSeconds'},
+  no_sustained_wheelspin = {'maxSeconds'},
+  no_stall = {},
+  gear_reached = {'gear'},
+  clean_shifts = {},
+  stop_before_line = {'minM', 'maxM'},
   gates_passed = {},
   speed_at_gates = {'minKmh', 'maxKmh'},
   no_brake_between_gates = {},

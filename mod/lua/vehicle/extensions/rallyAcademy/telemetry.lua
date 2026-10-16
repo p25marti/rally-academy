@@ -24,9 +24,10 @@ local function send()
   buf:reset()
   local x, y, z = obj:getPositionXYZ()
   buf:putf('local m=extensions[%q] if m and m.onTelemetry then m.onTelemetry({id=%d,t=%.4f,x=%.2f,y=%.2f,z=%.2f,'
-    .. 'thr=%.3f,brk=%.3f,hb=%.3f,steer=%.3f,clutch=%.3f,gear=%d,rpm=%.0f,ws=%.3f,air=%.3f,abs=%d,w={',
+    .. 'thr=%.3f,brk=%.3f,hb=%.3f,steer=%.3f,clutch=%.3f,gear=%d,rpm=%.0f,eng=%d,ws=%.3f,air=%.3f,abs=%d,w={',
     target, obj:getId(), obj:getSimTime(), x, y, z, e.throttle or 0, e.brake or 0, e.parkingbrake or 0, e.steering or 0, e.clutch or 0,
-    e.gearIndex or 0, e.rpm or 0, e.wheelspeed or 0, e.airspeed or 0, (e.absActive or 0) > 0 and 1 or 0)
+    e.gearIndex or 0, e.rpm or 0, (e.engineRunning or 0) > 0 and 1 or 0, e.wheelspeed or 0, e.airspeed or 0,
+    (e.absActive or 0) > 0 and 1 or 0)
   for i = 0, wheels.wheelRotatorCount - 1 do
     local wd = wheels.wheelRotators[i]
     buf:putf('{n=%q,s=%.3f,m=%d,f=%.0f},', wd.name, wd.wheelSpeed or 0, wd.contactMaterialID1 or -1, wd.downForce or 0)

@@ -7,8 +7,9 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-**B01** (threshold braking) and **A04** (speed hold through gates) are graded
-automatically; every other drill is still
+Five drills are graded automatically: **A02** (launch and shift), **A04** (speed hold
+through gates), **A05** (stop before a line), **B01** (threshold braking) and **B02**
+(lockup recovery). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -121,6 +122,12 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `gates_passed` | none | Every marked gate driven through, in order, inside its width |
 | `speed_at_gates` | `minKmh`, `maxKmh` (optional `gate`: one gate, `-1` = last) | Speed when crossing each gate is inside the band |
 | `no_brake_between_gates` | none (optional `fromGate`, `toGate`) | No brake above 0.1 between the two gates while moving faster than 2 m/s |
+| `stop_before_line` | `minM`, `maxM` (optional `widthM` 8) | The car rests with its front bumper `minM`–`maxM` before the marked line. The line is marked by parking with the bumper on it, so the car's centre moves exactly as the bumper does |
+| `lockup_recovered` | `maxSeconds` (optional `minSeconds` 0.2) | The longest lock is at least `minSeconds` (you did provoke one) and at most `maxSeconds` (you released it) |
+| `no_sustained_wheelspin` | `maxSeconds` (optional `ratio` 1.25, `slackKmh` 5) | No wheel turns faster than `ratio` × the car's speed + `slackKmh` on throttle for longer than `maxSeconds` |
+| `no_stall` | none | The engine never stops after running during the run (`eng` flag; RPM reads ~160 while re-idling after a reset) |
+| `gear_reached` | `gear` | The highest gear used reaches `gear` |
+| `clean_shifts` | none (optional `maxNeutralSeconds` 1, `minKmh` 10) | No shift hangs in neutral longer than `maxNeutralSeconds` while moving |
 
 **Gates** (`gates.lua`, pure) are lines across the road: a centre, the direction the
 car faced when the gate was marked, and a width. A gate counts when the car's centre

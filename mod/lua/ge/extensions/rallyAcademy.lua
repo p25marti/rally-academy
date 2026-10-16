@@ -210,6 +210,11 @@ end
 -- Drills like B01 end when the car comes to rest instead of at a finish circle;
 -- drills like A04 end at their last gate.
 local function endsOnStop() return assessment().endWhen == 'stopped' end
+-- A05-style drills mark a line to stop before (front bumper on it), not a zone centre.
+local function usesStopLine()
+  for _, r in ipairs(assessment().rules or {}) do if r.type == 'stop_before_line' then return true end end
+  return false
+end
 local function endsAtLastGate() return assessment().endWhen == 'gates' end
 
 -- Does a run of this drill end on its own (so a run in progress can't be passed early)?
@@ -252,7 +257,9 @@ function M.markFinish()
   finishGate = {pos=snap.pos, radius=5, dir=snap.dir} -- dir orients a stop zone
   saveSetup()
   logf('I', 'finish marked for %s on %s at (%.1f, %.1f, %.1f)', selected, levelId(), snap.pos.x, snap.pos.y, snap.pos.z)
-  lastReason = endsOnStop()
+  lastReason = usesStopLine()
+    and 'Stop line marked and saved (where your front bumper is, across the way you are facing). Retry to begin.'
+    or endsOnStop()
     and 'Stop zone centre marked and saved (zone runs along the way you are facing). Retry to begin.'
     or '5 m finish circle captured and saved; retry to return to your start.'
   output()
@@ -387,13 +394,24 @@ local function drawStopZone(zone)
   end
 end
 
+-- Marked with the car's front bumper on the line; the car's centre was half a car length
+-- behind it, so draw the line ~2 m ahead of the marked centre (Covet: ~4 m long).
+local function drawStopLine(line)
+  local d = vec3(line.dir.x, line.dir.y, 0):normalized()
+  local r = vec3(d.y, -d.x, 0)
+  local mid = vec3(line.pos.x, line.pos.y, line.pos.z - 0.4) + d * 2
+  debugDrawer:drawCylinder(mid - r * 4, mid + r * 4, 0.08, colour('passed'))
+end
+
 local function drawCourse()
   if not (debugDrawer and ColorF) then return end
   for i, g in ipairs(gates) do
     local state = gateResults[i] or ((phase == 'ready' or phase == 'running') and i == gateIdx and 'next') or 'upcoming'
     drawGate(g, state)
   end
-  if finishGate and endsOnStop() and finishGate.dir then
+  if finishGate and usesStopLine() and finishGate.dir then
+    drawStopLine(finishGate)
+  elseif finishGate and endsOnStop() and finishGate.dir then
     drawStopZone(finishGate)
   elseif finishGate and finishGate.pos then
     local p = finishGate.pos

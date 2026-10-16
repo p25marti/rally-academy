@@ -2,9 +2,15 @@
 -- extensions.rallyAcademy.saveLastRun). Real BeamNG physics, not synthetic data:
 -- if a rule change breaks these, check the change against the real runs first.
 --
--- B01 fixtures (0.39.4, West Coast USA BMP start straight, Covet Student Driver,
--- scripted inputs): clean = eased threshold braking from 70 km/h into the zone;
--- overshoot = same technique braking 0.9 s later; lockup = full brake from 70 km/h.
+-- All recorded on 0.39.4, West Coast USA BMP start straight, Covet Student Driver, scripted
+-- inputs (arcade gearbox):
+-- B01: clean = eased threshold braking from 70 km/h into the zone; overshoot = same technique
+--      braking 0.9 s later; lockup = full brake from 70 km/h.
+-- A05: line marked 1 m beyond a calibration stop; clean = eased braking from 43 km/h;
+--      late = braking 0.5 s later; lockup = full brake.
+-- B02: from 62 km/h; recovered = full brake 0.6 s then eased; held = full brake to a stop;
+--      nolock = gentle 0.25 brake.
+-- A02: 0.6 throttle launch to 42 km/h (arcade shifts 1->2), eased stop.
 local json = require('json')
 local Rules = require('ge/extensions/rallyAcademy/rules')
 local T = {}
@@ -25,9 +31,9 @@ local function drillRules(id)
   end
 end
 
-local function grade(name)
+local function grade(name, drill)
   local rec = fixture(name)
-  return Rules.evaluate(drillRules('B01'), rec, {zone = rec.meta.finish}), rec
+  return Rules.evaluate(drillRules(drill or 'B01'), rec, {zone = rec.meta.finish, gates = rec.meta.gates}), rec
 end
 
 local function check(res, ruleType)
@@ -80,6 +86,39 @@ function T.recorded_samples_have_the_fields_the_rules_need()
   end
   assert(#s.w == 4 and s.w[1].n and s.w[1].s and s.w[1].m, 'four wheels with name, speed, surface')
   assert(rec.runStartT and rec.endT and rec.outcome == 'finished', 'run start/end and outcome')
+end
+
+-- A05, B02, A02: today's rules must agree with what the game showed for each recorded run.
+function T.a05_b02_a02_rules_still_agree_with_the_in_game_verdicts()
+  local runs = {a05_clean = 'A05', a05_late = 'A05', a05_lockup = 'A05',
+                b02_recovered = 'B02', b02_held = 'B02', b02_nolock = 'B02', a02_clean = 'A02'}
+  for name, drill in pairs(runs) do
+    local res, rec = grade(name, drill)
+    assert(rec.grade, name .. ' has no recorded grade')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+  end
+end
+
+function T.a05_recorded_runs_fail_for_the_right_reasons()
+  has(check(grade('a05_clean', 'A05'), 'stop_before_line').text, 'before the line')
+  local late = check(grade('a05_late', 'A05'), 'stop_before_line')
+  assert(not late.ok, 'late braking fails the line')
+  has(late.text, 'past the line')
+  assert(not check(grade('a05_lockup', 'A05'), 'no_sustained_lockup').ok, 'full brake locks a wheel')
+end
+
+function T.b02_recorded_runs_tell_lock_held_and_no_lock_apart()
+  assert(check(grade('b02_recovered', 'B02'), 'lockup_recovered').ok, 'short lock released')
+  has(check(grade('b02_held', 'B02'), 'lockup_recovered').text, 'stayed locked')
+  has(check(grade('b02_nolock', 'B02'), 'lockup_recovered').text, 'brake harder')
+end
+
+function T.a02_recorded_launch_has_engine_and_gear_data()
+  local res, rec = grade('a02_clean', 'A02')
+  assert(res.passed, 'clean launch passes')
+  assert(rec.samples[#rec.samples].eng == 1, 'engine-running flag recorded')
+  has(check(res, 'gear_reached').text, 'gear 2')
 end
 
 return T
