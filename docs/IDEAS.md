@@ -157,8 +157,9 @@ OutGauge shows the game can send UDP to local tools; a 2023 community plugin
 for a speedometer key.
 
 **Hard parts.** A Stream Deck plugin (Elgato SDK, Node/TypeScript) to write, package and keep
-working across Stream Deck updates. The mod needs a small local channel: GE Lua sending state
-as UDP to localhost (check that the game's Lua has sockets) or the plugin reading a file.
+working across Stream Deck updates. The mod needs a small local channel (GE Lua has LuaSocket);
+a local HTTP command server was built once and rolled back to keep things simple (commit
+2aa3530 has it), so this needs the owner's go-ahead first.
 
 **Rough shape.** The mod sends a short JSON state over UDP to `127.0.0.1` when it changes; a
 plugin with one "Rally Academy status" key shows phase, timer and medal. Commands stay as
