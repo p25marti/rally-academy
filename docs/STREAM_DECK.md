@@ -73,7 +73,11 @@ finish, `cone2` (orange cone) for + Gate.
 
 ## Setting up the Stream Deck
 
-Once (about five minutes):
+**Quickest:** double-click `extras/streamdeck/rally_academy.streamDeckProfile` to import the
+ready-made profile (this layout, these icons, built-in Hotkey actions only). See
+[its README](../extras/streamdeck/README.md) for auto-switching on another PC.
+
+To build it yourself instead (about five minutes):
 
 1. Open the Stream Deck app and create a profile, e.g. "Rally Academy". Optionally link it to
    `BeamNG.drive.exe` (profile settings → "Switch to this profile when this app is active").
@@ -84,12 +88,12 @@ Once (about five minutes):
 4. In the game, with a drill selected, press the keys: Next drill shows the drill's name,
    Retry puts you back at the start.
 
-### Sharing the profile
+### Updating the shared profile
 
-Export it (Stream Deck preferences → Profiles → right-click → Export) and commit the
-`.streamDeckProfile` file to `extras/streamdeck/`. Other drivers then double-click it to import.
-Elgato documents profiles as made in the app and exported, not hand-written, so we keep the
-exported file rather than generating one.
+Change it in the Stream Deck app, export it (Stream Deck preferences → Profiles → right-click →
+Export) over `extras/streamdeck/rally_academy.streamDeckProfile`, and check the keys still match
+the default bindings. Elgato documents profiles as made in the app and exported, not
+hand-written, so we keep the exported file rather than generating one.
 
 ## Troubleshooting
 

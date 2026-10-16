@@ -85,8 +85,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - **Stream Deck and key bindings:** every Rally Academy command is now a bindable input action
   (new: Go to drill, Next / Previous drill, Mark start, Use venue start, Mark finish, Add gate,
   Clear gates, Auto-retry on/off), and the mod ships default bindings on F13–F24, keys no
-  keyboard has, so a Stream Deck's Hotkey keys work out of the box. Layout and setup:
-  `docs/STREAM_DECK.md`.
+  keyboard has, so a Stream Deck's Hotkey keys work out of the box. A ready-made Stream Deck
+  Mk.2 profile with BEAM.deck icons is in `extras/streamdeck/` (double-click to import). Layout
+  and setup: `docs/STREAM_DECK.md`.
 - **Auto-retry:** after an auto-graded run, the next attempt starts after 3 s (drive off to
   stay where you are; it waits while a stop zone or gates still need marking). On by default; the HUD's Auto-retry button turns it off, remembered in
   `settings/rallyAcademy/prefs.json`.
