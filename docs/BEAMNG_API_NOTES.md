@@ -43,6 +43,9 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | `jsonReadFile(path)` / `jsonWriteFile(path, table, pretty)` | data and progress | verified 0.39.4 |
 | Writing `settings/rallyAcademyProgress.json` lands in the user folder | persistence | verified 0.39.4, survives a game restart |
 | `getCurrentLevelIdentifier()` returns the level folder name (e.g. `driver_training`) | per-map setups in `settings/rallyAcademySetups.json` | verified 0.39.4 |
+| `veh:getNodeCount()`, `veh:getNodePosition(i)` = node i's offset from `getPosition()` in **world** axes | the car's footprint for A01 (`park_in_box`, `markers_clear`) | verified 0.39.4 — Covet Student Driver: 759 nodes, 3.92 × 1.81 m, and its position is **not** the body's centre: the body reaches 1.85 m ahead, 2.07 m behind, 1.23 m left, 0.58 m right |
+| `veh:getSpawnWorldOOBB()` (`getCenter`, `getHalfExtents`, `getAxis`), `veh:getInitialLength()/Width()/Height()` | footprint fallback | verified 0.39.4 — agree with the nodes (half extents 0.905 × 1.96; 3.92 × 1.81 × 1.33). `be:getObjectOOBB` doesn't exist |
+| `be:getSurfaceHeightBelow(vec3)` → ground height under a point (start above the ground) | drawing authored courses at ground level | verified 0.39.4 — flat to ±0.25 m over 50 m of the BMP dirt arena |
 
 ## Vehicle Lua (telemetry)
 
@@ -74,6 +77,7 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 | GE `ui_message(msg, ttl, category)` shows an on-screen message | verified 0.39.4 | Save spot confirmation |
 | GE `extensions.ui_visibility.setCef(bool)` hides or shows the whole UI | verified 0.39.4 | venue report aerials; restore it in a `finally` |
 | Vehicle Lua has `serialize(table)` (a Lua literal), usable in `obj:queueGameEngineLua` | verified 0.39.4 | Save spot sends wheel surfaces back |
+| Vehicle Lua `input.event('steering' \| 'throttle' \| 'brake' \| 'parkingbrake', value, 2)` sets a driver input | verified 0.39.4 (filter 2; what the other filter values do wasn't checked) | scripted steering (`academy.follow_path`, the `a01` scenario); `electrics.values.steering_input` reads it back |
 | MCP `drive_to` (`waypoint` node or `pos`, `routeSpeed` m/s, `routeSpeedMode`, `aggression`, `avoidCars`) drives the player car's AI to a road node; `set_ai {mode: 'disabled'}` hands control back | verified 0.39.4 | venue fit tests drive corners and routes; a target off the road makes it route somewhere else, so aim at a node along the road (`roads.follow`) |
 | Electrics `engineRunning` (1/0) is recorded per sample as `eng` | verified 0.39.4 | stall detection; RPM alone reads ~160 while the engine re-idles after a reset |
 | Telemetry lags GE by about a frame: when `onUpdate` sees the car cross a line, the car's sample past it hasn't arrived yet | observed 0.39.4 | a run graded on the frame of the last gate saw "gate 3 not reached"; runs ending at a gate now keep recording 0.3 s before grading |

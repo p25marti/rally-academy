@@ -38,7 +38,9 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "mode": "selfAssessment",          // required: selfAssessment | automatic | hybrid
         "endWhen": "finish",               // optional: finish (circle, default) | stopped (car at rest) | gates (last gate)
         "gates": {"count": 3, "widthM": 10}, // optional: gates the driver marks with + Gate
-        "rules": []                        // typed rules; empty = no machine grading
+        "course": {...},                   // optional: an authored course (below); replaces gates
+        "rules": [],                       // typed rules; empty = no machine grading
+        "tiers": [...]                     // optional: silver and gold medals (below)
       },
       "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)
       "references": { "map": "url", "vehicle": "url" }
@@ -51,13 +53,50 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
 id format and uniqueness, `1 ≤ requiredPasses ≤ attempts`, known `mode`,
 `rules` is a list, known `endWhen`. Each rule needs a known `type` and that type's
 numeric parameters, and an `automatic` drill needs at least one rule. Gate rules
-and `endWhen: "gates"` need `assessment.gates`.
+and `endWhen: "gates"` need `assessment.gates` or gates in `assessment.course`; course
+rules need a course; `course` and `tiers` are checked as described below.
 
 Rules are objects such as `{"type": "stop_zone", "lengthM": 5, "widthM": 6}`. The
 types and their parameters are listed in [GRADING.md](GRADING.md#5-rule-engine);
 `R.TYPES` in `rules.lua` is the one list: `tools/dev.py validate` reads it (and `R.GATE_RULES`) from that file. In an
 `automatic` drill, the rules decide Pass or Miss when the run ends, and the HUD
 shows one ✓/✗ line per rule.
+
+## Authored courses
+
+A drill whose layout is fixed describes it in `assessment.course`, in metres from the start:
+`x` to the right, `y` ahead (the way the car faces at the start). The mod lays it out from the
+venue's spawn when you're on the drill's map, or from your Mark start (**Move course here**),
+and draws it; nothing needs marking ([PRODUCT](PRODUCT.md): drills set themselves up).
+
+```jsonc
+"course": {
+  "gates": [{"x": 0, "y": 8, "widthM": 3}],          // gates to drive through, in order
+  "cones": [{"x": 0, "y": 20, "keep": "left"}],      // keep the cone on your left (pass it on its right)
+  "box": {"x": -1.5, "y": 33, "lengthM": 6, "widthM": 3.2}  // parking box, square to the course
+}
+```
+
+The course's gates work like marked gates (`gates_passed`, live feedback, `endWhen: "gates"`),
+so a drill with a course has no `assessment.gates`. The cones and gate posts are drawn, not
+spawned: `markers_clear` measures the car's body against them. Course rules
+(`R.COURSE_RULES`: `cones_passed`, `markers_clear`, `park_in_box`) need a course.
+
+## Medal tiers
+
+`assessment.tiers` adds silver and gold on top of a pass (bronze). Each tier lists rules that
+replace the drill rule of the same type, or add to them:
+
+```jsonc
+"tiers": [
+  {"name": "silver", "rules": [{"type": "park_in_box", "insetM": 0.3}, {"type": "max_time", "maxSeconds": 14}]},
+  {"name": "gold",   "rules": [{"type": "park_in_box", "insetM": 0.5}, {"type": "max_time", "maxSeconds": 10}]}
+]
+```
+
+Names are `silver` then `gold` (`R.TIERS`); a tier's `park_in_box` box must be smaller than the
+last. Block targets (`requiredPasses`) still count passes; progress also keeps `bestTier` and
+`tiers` (medal counts).
 
 ## Venues
 

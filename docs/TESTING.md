@@ -63,6 +63,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | Scenario | What it checks |
 | --- | --- |
 | `smoke` | UI reload leaves one HUD panel; the drill drop-down opens on a click and picks; a drill without rules renders; menu opens/closes with physics paused/resumed |
+| `a01` | The course is laid out at the BMP dirt arena with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
 | `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), and the game's own tabs after reopening |
 | `b01` | Stop zone: clean PASS, late braking MISS, full brake MISS (lockup) |
 | `a04` | Gates marked down the straight; 30 km/h PASS, too fast at gate 3 MISS |
@@ -73,8 +74,8 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `fit` | Venue fit test: B01 fits its straight but not facing the barrier; B05's circle fits the BMP dirt arena |
 | `mainmenu` | From the main menu: Academy → A04 → Start drill lands in the drill with the HUD up (slow: map load) |
 
-The driving scenarios need West Coast USA loaded (e.g. Go to drill on B01): they mark their
-start on the BMP start straight, drive with the arcade gearbox, then restore the realistic
+The driving scenarios need West Coast USA loaded (e.g. Go to drill on B01): `a01` drives its
+course at the BMP dirt arena; the others mark their start on the BMP start straight, drive with the arcade gearbox, then restore the realistic
 gearbox and remove the attempts they recorded from your progress. Code: `tools/ingame/`
 (`game.py` talks to the server, `academy.py` holds mod helpers, `scenarios.py` the checks);
 scripts read the mod through `extensions.rallyAcademy.debugState()`, not its internals.
@@ -132,7 +133,7 @@ BeamNG version and result in the PR.
     **Retry** and hold about 30 km/h: each gate shows its speed as you pass it, and
     the run ends at gate 3 with PASS or MISS.
 14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 42 drills
-    show in order with your progress; only auto-graded drills (A04, B01) lack the
+    show in order with your progress; only auto-graded drills (A01, A02, A04, A05, B01, B02) lack the
     **Coming soon** tag. Pick one, then **Start drill**: its map loads, the
     menu closes, the HUD appears and you're in the drill car at its start or venue.
     The Analysis, About and Credits tabs open and show your totals, the version and the
@@ -141,6 +142,12 @@ BeamNG version and result in the PR.
     Analysis, About and Credits buttons show those pages. Then bind **Rally Academy: Open
     menu** (Options → Controls) and press it while driving: the Academy opens over the game
     and physics pause; press it again, or Back, and you're driving again where you were.
+16. **A01** (authored course, medals): **Go to drill**. You land at the BMP dirt arena ready
+    to drive, with a gate, a cone (a chevron shows the side to pass) and a parking box with
+    two smaller boxes inside it, drawn ahead. Drive through, keep the cone on your left, and
+    stop in the box: the HUD ticks Gate / Cone / Box, reads out the distance near the box,
+    and shows a medal and what the next one needs. Three seconds later you're back at the
+    start; drive off during the countdown and you stay put.
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.
 

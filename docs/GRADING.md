@@ -7,9 +7,9 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Five drills are graded automatically: **A02** (launch and shift), **A04** (speed hold
-through gates), **A05** (stop before a line), **B01** (threshold braking) and **B02**
-(lockup recovery). Every other drill is still
+Six drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+**A02** (launch and shift), **A04** (speed hold through gates), **A05** (stop before a
+line), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -40,7 +40,7 @@ these fields and is the best reference.
 | Primitive | What it checks | Drills |
 | --- | --- | --- |
 | Gate | A line with width and direction, crossed by the car (built: the car's centre; footprint later) | A04, A07, A08, C02, D01, D03 |
-| Zone or box | Whole car inside a polygon | A01 parking box, B01 5 m stop zone |
+| Zone or box | Whole car inside a box (built for A01: the car's measured footprint, `park_in_box`); B01's zone checks the car's centre | A01 parking box, B01 5 m stop zone |
 | Corridor or road edge | All wheels on the road or inside a lane, from an authored path or the surface under each wheel | about 20 drills |
 | Distance along path | Where the car is relative to apex or exit markers | B04, B07, C05 |
 | Line offset | Front bumper distance to a line | A05 (0–2 m), B03 |
@@ -59,14 +59,14 @@ Detectors turn raw samples into events with a start time, an end time and a size
 | Wheel lockup | Wheel speed near zero while the car moves, with duration | A03, A05, B01, B02, B04, D06 |
 | Wheelspin | Wheel speed well above ground speed for more than 1 s | A02, D04, E03 |
 | Stall, over-rev, missed shift | RPM, engine state, time in neutral or wrong gear | A02, A03, C04, E08 |
-| Reversing | Reverse gear or negative forward speed | A01, F03 |
+| Reversing | Distance travelled against the way the car points (built: `no_reverse`) | A01, F03 |
 | Handbrake count | Handbrake presses per run | C01, C02, C04 (exactly one), C08, E02 |
 | Slip angle | Angle between heading and direction of travel | C01, C02, C03, C06 |
 | Spin | Heading turns past a threshold against travel | most C, D and E drills |
 | Countersteer | Steering opposite the rotation, and time to unwind | B07, C03 (under 3 s), C05 |
 | Understeer | Yaw rate well below what steering and speed predict; needs a simple car model, tuned per car | B06, E02, E04 |
 | Airborne, landing, rollover | Wheel contact, landing impact, car tipping over | E05, E06, E07 |
-| Cone contact | Record each cone's spawn position and flag any that moves | about 15 drills |
+| Cone contact | Drawn cones and posts (authored courses): the car's footprint comes within the cone's radius (built: `markers_clear`). Real cones: record each one's spawn position and flag any that moves | about 15 drills |
 | Barrier contact, damage | Jump in damage total | D03, F01, F05 |
 | Puncture | Tyre deflation; F06 needs a damage baseline because it starts punctured | E07, F06 |
 | Recovery use | The game's own recover/reset was used | E08, F01, F04, F05, F08 |
@@ -134,6 +134,11 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `no_rollover` | none (optional `minUpZ` 0.35) | The car never tips past about 70° |
 | `no_handbrake` | none (optional `minKmh` 10) | Handbrake not pulled while moving |
 | `no_puncture` | none | No tyre goes flat during the run |
+| `cones_passed` | none | Every course cone is passed on its `keep` side (the car crosses the line through the cone, square to the course, with the cone on that side) |
+| `markers_clear` | none (optional `clearanceM` 0) | The car's body never comes within 0.15 m (+ `clearanceM`) of a drawn cone or gate post. The body is the footprint measured from the car's nodes when the run starts |
+| `park_in_box` | none (optional `insetM` 0, `label`) | At rest with all four corners of the body inside the course's box, shrunk by `insetM` on every side |
+| `no_reverse` | none (optional `maxM` 0.3) | The car travels no more than `maxM` backwards (against the way it points) |
+| `max_time` | `maxSeconds` | The run time is at most `maxSeconds` (medal time targets) |
 
 **Gates** (`gates.lua`, pure) are lines across the road: a centre, the direction the
 car faced when the gate was marked, and a width. A gate counts when the car's centre
@@ -155,6 +160,19 @@ recorded runs in `tests/fixtures/` (B01 clean, overshoot and lockup) pin the
 rules to real physics (`tests/lua/test_fixtures.lua`). B01's cone contact is
 not graded yet: it needs scene control (section 7).
 
+### Medal tiers
+
+A drill with `assessment.tiers` awards a medal for each pass: **bronze** for passing the
+drill's rules, **silver** and **gold** when the tier's rules pass too. A tier rule replaces
+the drill rule of the same type (A01: a parking box 0.3 m or 0.5 m smaller all round) or adds
+to them (a time target). `rules.grade` returns `tier` and `nextTier` (the first check the next
+medal failed, shown in the HUD as "gold: Rear-right corner 0.07 m over the right edge of the gold
+box"). Progress keeps the best medal and a count of each ([DRILL_DATA](DRILL_DATA.md#medal-tiers)).
+
+A01 targets (Covet Student Driver, 3.90 × 1.81 m): box 6.0 × 3.2 m, silver 5.4 × 2.6 m and
+14 s, gold 5.0 × 2.2 m and 10 s. A scripted run at 14 km/h takes about 9.7 s; gold leaves
+about 0.2 m each side, so a slightly crooked stop misses it.
+
 ## 6. Hybrid grading
 
 Some criteria test what the driver knows, not what the car did. These drills
@@ -170,7 +188,9 @@ need HUD prompts and the `hybrid` mode:
 
 ## 7. Scene control
 
-Spawn and reset cones and props on retry, enforce the vehicle config and
+Authored courses (A01) draw their cones and gate posts with `debugDrawer` and measure
+contact against the car's footprint, so they need no props. Real props remain the goal for
+drills that want physical cones: spawn and reset cones and props on retry, enforce the vehicle config and
 drivetrain ([VEHICLES](VEHICLES.md)), switch setups (F07) and inject a puncture (F06).
 
 ## Drill coverage

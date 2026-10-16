@@ -11,9 +11,10 @@ mod/                                            exactly the shipped zip root
 ├── lua/ge/extensions/rallyAcademy/
 │   ├── rules.lua      grading rules over a run record (pure)
 │   ├── gates.lua      gate geometry and crossings (pure)
+│   ├── layout.lua     authored courses laid out from the start; the car's footprint (pure)
 │   ├── runRecord.lua  per-attempt telemetry record (pure)
 │   ├── store.lua      saved progress and setups (jsonReadFile/jsonWriteFile only)
-│   └── course.lua     world markers: gates, stop zone/line, finish (debugDrawer only)
+│   └── course.lua     world markers: gates, cones, boxes, stop zone/line, finish (debugDrawer only)
 ├── lua/vehicle/extensions/rallyAcademy/telemetry.lua   sampler in the car's Lua VM
 ├── lua/ge/extensions/core/input/actions/
 │   └── rallyAcademy_actions.json               bindable actions: Retry, Pass, Miss, Open menu
@@ -81,6 +82,15 @@ mod/                                            exactly the shipped zip root
   the next gate each frame for live feedback ("Gate 2 of 3: 31 km/h") and for
   `endWhen: "gates"`. Grading re-reads crossings from the run record. `drawCourse`
   draws gates, the stop zone and the finish circle every frame with `debugDrawer`.
+- **Authored courses** (`layout.lua`, pure): a drill with `assessment.course` gets its gates,
+  cones and parking box laid out from the start (the venue spawn on the drill's map, or the
+  player's Mark start), heights from `be:getSurfaceHeightBelow`. The course's gates become
+  the drill's gates, so the gate code above runs unchanged. When a run starts, the car's
+  footprint is measured from its nodes (its position isn't the body's centre) and stored in
+  the run record with the course; `trackCourse` gives live feedback (cone side, a clipped
+  marker, the parking aid and the medal box the car is in), published as `course`.
+  Grading goes through `rules.grade`, which adds medal tiers. After a graded run,
+  auto-retry counts down 3 s of sim time, then calls Retry (cancelled if the car moves off).
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 

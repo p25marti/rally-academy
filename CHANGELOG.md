@@ -73,6 +73,23 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - Every drill now says what kind of place it needs (`environment.venueNeeds`: shape, length,
   width, radius, grade, surfaces), and the venue tools use it: the report says which drills
   a place fits, and `survey.py fits <drill>` finds places for one.
+- **A01 steering and spatial awareness is graded automatically, with medals.** Go to drill
+  lands you at the BMP dirt arena with the course laid out: a 3 m gate, a cone to keep on your
+  left and a parking box, drawn in the world. Stop once with the whole car inside the box,
+  without touching the gate posts or the cone and without reversing. The HUD ticks off
+  Gate / Cone / Box as you go, flags a clipped marker straight away, and near the box reads
+  out where you are ("0.6 m to go · 0.2 m left of centre") with the car's outline on the
+  ground. A pass is **bronze**; the smaller silver and gold boxes inside it, with time targets
+  (14 s, 10 s), earn **silver** and **gold**, and the HUD says what the next medal needs.
+  Best medal and medal counts are saved and shown in the Academy screen.
+- **Auto-retry:** after an auto-graded run, the next attempt starts after 3 s (drive off to
+  stay where you are; it waits while a stop zone or gates still need marking). On by default; the HUD's Auto-retry button turns it off, remembered in
+  `settings/rallyAcademy/prefs.json`.
+- Authored courses in the drill data (`assessment.course`: gates, cones, a parking box, laid out
+  from the start) and medal tiers (`assessment.tiers`); new rules `cones_passed`,
+  `markers_clear` (the car's measured footprint against drawn cones and posts), `park_in_box`,
+  `no_reverse` and `max_time`. **Move course here** re-lays a course from where you are;
+  **Use venue start** puts it back.
 - Venue fit test (`survey.py fit <drill> --spot ID`): drives the drill's kind of run at a
   candidate place and says whether it fits, without touching your drills or progress.
 - Venue tools for contributors: road-network finders (straights, corners, hills, crests),
