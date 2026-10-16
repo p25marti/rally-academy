@@ -80,5 +80,6 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 | Issue | Impact | Tracked by |
 | --- | --- | --- |
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
-| No in-game verification yet | Any engine API assumption may be wrong | BEAMNG_API_NOTES |
+| Cone contact isn't detected | Cones barely damage a car, so drills with cones (A01, A05, D01) can't grade it | scene control (GRADING §7) |
+| Owner hasn't driven the auto-graded drills on the rig yet | Scripted runs use the arcade gearbox; a real manual-gearbox stall or missed shift (A02) is only unit-tested | TESTING |
 | Pass/Miss is self-assessed (all but A02, A04, A05, B01, B02) | No objective grading | P2/P3 |

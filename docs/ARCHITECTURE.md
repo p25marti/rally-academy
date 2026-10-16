@@ -1,14 +1,21 @@
 # Architecture
 
-## Today (v0.1, imported scaffold)
+## Layout
 
 ```
-mod/
-├── gameplay/rallyAcademy/exercises.json        48 drills (data only)
+mod/                                            exactly the shipped zip root
+├── gameplay/rallyAcademy/exercises.json        the drills (data only; docs/DRILL_DATA.md)
 ├── scripts/rally_academy/modScript.lua         runs on mod activation: loads the extension
-├── lua/ge/extensions/rallyAcademy.lua          GE extension: state, timing, retry, progress
+├── lua/ge/extensions/rallyAcademy.lua          GE extension: session, timing, grading flow, engine hooks
+├── lua/ge/extensions/rallyAcademy/
+│   ├── rules.lua      grading rules over a run record (pure)
+│   ├── gates.lua      gate geometry and crossings (pure)
+│   ├── runRecord.lua  per-attempt telemetry record (pure)
+│   ├── store.lua      saved progress and setups (jsonReadFile/jsonWriteFile only)
+│   └── course.lua     world markers: gates, stop zone/line, finish (debugDrawer only)
+├── lua/vehicle/extensions/rallyAcademy/telemetry.lua   sampler in the car's Lua VM
 ├── lua/ge/extensions/core/input/actions/
-│   └── rallyAcademy_actions.json               bindable actions: Retry / Pass / Miss
+│   └── rallyAcademy_actions.json               bindable actions: Retry, Pass, Miss, Open menu
 ├── ui/modules/apps/RallyAcademy/               HUD panel (Vue HUD app: app.json "vue": true)
 │   ├── app.json  app.vue  app.png
 └── ui/ui-vue/mods/rallyAcademy/                Academy screen: main menu, pause tab (Vue UI mod)
@@ -78,37 +85,29 @@ mod/
 
 Known gaps are listed in [ROADMAP.md](ROADMAP.md).
 
-## Target architecture
+## Design
 
-Carried over from the original technical roadmap, refined:
+**Layers.** A pure-Lua core (no engine globals) behind thin engine-facing edges, so the logic
+is unit-tested under plain LuaJIT with stubs ([ADR 0003](decisions/0003-testing-without-the-game.md)):
 
-**Layers.** Keep a pure-Lua core (no engine globals) behind thin adapters:
+- **Pure:** `rules.lua`, `gates.lua`, `runRecord.lua`. Tested directly, including against
+  recorded in-game runs (`tests/fixtures/`).
+- **Edges:** `store.lua` (files), `course.lua` (drawing), the vehicle `telemetry.lua`, and the
+  engine calls inside `rallyAcademy.lua` (teleport, car swap, map load, UI routing, pause).
+  Tested through the BeamNG stubs and the in-game scenarios (`dev.py ingame`).
+- **Entry point:** `rallyAcademy.lua` holds the session state machine (idle → setup → ready →
+  running → review → scored) and wires the rest together. Per-run state lives in one table
+  that `resetRun()` replaces wholesale.
 
-```
-lua/ge/extensions/rallyAcademy.lua            entry point; wires adapters to the core; engine hooks
-lua/ge/extensions/rallyAcademy/session.lua    state machine (pure)
-lua/ge/extensions/rallyAcademy/rules.lua      rule evaluators (pure; split per type once it grows)
-lua/ge/extensions/rallyAcademy/telemetry.lua  vehicle sampling adapter (engine-facing)
-lua/ge/extensions/rallyAcademy/store.lua      progress persistence + schema migrations
-```
+**Telemetry** ([ADR 0004](decisions/0004-telemetry-transport.md)): the car's sampler sends one
+batched sample per frame to GE (inputs, gear, rpm, engine running, speeds, heading and
+velocity, up vector, damage, flat tyres, per-wheel speed/surface/downforce). Field list:
+`rules.lua` header.
 
-Pure modules are unit-tested directly; adapters are covered by the stubs and
-the in-game smoke test.
-
-**Telemetry.** Sample at a fixed, rate-limited interval into a canonical run
-record: `simTime, pos, orientation, vel, steering, throttle, brake, handbrake,
-wheelSlip, damage`. Engine-side position and velocity come from GE. Driver
-inputs and wheel data live in the vehicle's own Lua VM and must be pulled
-across (e.g. `queueLuaCommand` with a callback, or electrics streams). Which
-mechanism to use gets decided and recorded in BEAMNG_API_NOTES before building on it.
-
-**Scoring.** Each drill's `assessment.rules` becomes a list of typed rules
-evaluated over the run record: `gate`, `speed_range`, `brake_profile`,
-`no_handbrake`, `slip_angle_range`, `no_collision`, `exit_heading`. A drill is
-`automatic` (all rules machine-checked), `hybrid` (machine rules plus a human
-Pass/Miss), or `selfAssessment` (today's behaviour).
-
-Full capability list, per-drill needs and build order: [GRADING.md](GRADING.md).
+**Scoring.** Each drill's `assessment.rules` is a list of typed rules evaluated over the run
+record when the run ends; each returns a readable reason. A drill is `automatic` (rules
+decide Pass/Miss), `hybrid` (planned: rules plus a human answer) or `selfAssessment`
+(Pass/Miss buttons). Rule types, capabilities per drill and build order: [GRADING.md](GRADING.md).
 
 **UI technology.** BeamNG's UI is one shared embedded-Chromium page. Since 0.39 the game also has an
 official **Vue UI mod** system (`ui/ui-vue/mods/README.md` in the game folder):
@@ -127,13 +126,13 @@ route's `onLeave` hook). It calls
 app too (`ui/modules/apps/RallyAcademy/app.vue`, `"vue": true` in `app.json`), compiled at
 runtime by the same mod compiler, so the whole UI is Vue.
 
-**Authoring.** Start poses and gates are captured in-game and saved per
-`levelId`, then promoted into `exercises.json` (`startTransform`,
-`finishGate`, later gate lists). Longer stages can build on BeamNG's own
-race/rally path tooling.
+**Authoring.** Starts, finishes, stop zones/lines and gates are marked in-game and saved per
+map and drill (`store.lua`). Planned (ROADMAP P1): promote captured setups into
+`exercises.json` so a drill is ready without marking. Full stages are the game's Rally mode
+([ADR 0006](decisions/0006-stages-are-the-games-rally-mode.md)).
 
-**Progress.** Attempt summaries and mastery are stored separately and
-schema-versioned, with forward migrations in `store.lua`.
+**Progress** is saved per drill (`settings/rallyAcademyProgress.json`, `schemaVersion` 1).
+Schema changes get a migration in `store.lua`.
 
 **Edge cases to design for:** UI focus/menus open, physics paused, vehicle
 switched mid-run, damage reset, leaving the map, teleports breaking the

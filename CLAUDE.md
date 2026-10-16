@@ -21,6 +21,7 @@ summary of the docs, aimed at coding assistants.
 
 ```sh
 python tools/dev.py check --strict   # must pass
+python tools/dev.py ingame smoke     # with the game running, for UI or engine-facing changes
 ```
 
 Update `CHANGELOG.md` → `[Unreleased]` for user-visible changes, and the docs
@@ -29,9 +30,10 @@ known bug (`known_issue_*`) get flipped in the same commit that fixes the bug.
 
 ## Git
 
-Short-lived branches off `main` (`feat/…`, `fix/…`, `docs/…`, `chore/…`),
-Conventional Commit messages, PR with CI green, squash-merge. Never push tags
-or publish releases without the owner asking. Details: [DEVELOPMENT](docs/DEVELOPMENT.md#git-workflow).
+Short-lived branches off `main` (`feat/…`, `fix/…`, `docs/…`, `chore/…`) and
+Conventional Commit messages. While the owner works solo, fast-forward `main` from
+the branch once `check --strict` passes and push; open PRs if collaborators join.
+Never push tags or publish releases without the owner asking. Details: [DEVELOPMENT](docs/DEVELOPMENT.md#git-workflow).
 
 ## Getting builds onto the owner's machine
 

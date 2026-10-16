@@ -84,7 +84,7 @@ BeamNG version and result in the PR.
 1. `python tools/dev.py status`: link present, no conflicting zip.
 2. Launch BeamNG → Free Roam → any map (Automation Test Track is a good default) → any car.
 3. Add the panel. In 0.39: `Alt+Shift+U` (HUD Layouts) → select a layout →
-   **Edit Layout** → **＋ Add** → search "academy" → add **Rally Academy (Prototype)**.
+   **Edit Layout** → **＋ Add** → search "academy" → add **Rally Academy**.
    Tip: first **Layout Actions → Duplicate** your Freeroam layout and **Use Layout**
    on the copy, so your normal layout stays untouched. Panel appears; drill list shows 42 entries.
 4. `python tools/dev.py log`: no errors mentioning `rallyAcademy`.

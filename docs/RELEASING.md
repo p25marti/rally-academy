@@ -50,8 +50,8 @@ Before the first public upload:
 
 - [ ] Read BeamNG's current mod-repository rules on beamng.com. They change,
       and they decide what's accepted.
-- [ ] Decide the public licence and author name (currently `app.json` says
-      "Starter scaffold").
+- [ ] Decide the public licence and add a `LICENSE` file (the author in `app.json` is set:
+      Paul Martins).
 - [ ] Replace "Prototype"/"ALPHA" labelling if appropriate, and make sure the
       README credits section is accurate.
 - [ ] Prepare screenshots and a description (what it does, how to bind Retry,

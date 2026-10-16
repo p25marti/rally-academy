@@ -87,7 +87,8 @@ Typical cycle:
    `beamng.log` in chunks, so the last minute may not be there yet.
    To keep a real attempt as a test fixture, run `extensions.rallyAcademy.saveLastRun()`
    in the console after it; it lands in `<user folder>/settings/rallyAcademy/lastRun.json`.
-5. Run the [in-game smoke test](TESTING.md#in-game-smoke-test) before opening a PR.
+5. Run the [in-game scenarios](TESTING.md#automated-in-game-scenarios) (`dev.py ingame smoke`, plus the
+   driving ones for grading changes) and, for new UI, the manual [smoke test](TESTING.md#in-game-smoke-test).
 
 Avoid having the release zip (`mods/rally_academy.zip`) installed while the dev
 link exists. Two copies load and the results get confusing. `link` and `status`
@@ -111,7 +112,9 @@ warn about this.
 - Work on short-lived branches: `feat/<topic>`, `fix/<topic>`, `docs/<topic>`, `chore/<topic>`.
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
   `feat: auto-grade B01 stopping zone`, `fix: zero velocity on retry`.
-- Open a PR, fill in the template (including **how it was tested in-game**),
-  wait for CI, squash-merge.
+- Solo (the owner's choice for now): when `check --strict` passes, fast-forward `main`
+  from the branch (`git push . HEAD:main`), push, delete the branch. CI runs on `main`.
+  With collaborators: open a PR, fill in the template (including **how it was tested
+  in-game**), wait for CI, squash-merge.
 - Large or one-way decisions get a short record in [decisions/](decisions/).
 - Never commit build output (`dist/`), BeamNG logs or anything from your user folder.

@@ -89,19 +89,10 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 
 | Assumption | Status | Notes |
 | --- | --- | --- |
-| **Vue HUD apps from a mod:** `ui/modules/apps/<Name>/app.vue` + `"vue": true` in `app.json` | verified 0.39.4 | `ui_apps.getUIAppsData()` reports `hasAppVue = true`, `vueFile = /ui/modules/apps/RallyAcademy/app.vue`; rendered by `AppHost` through the runtime mod compiler (no Angular slot). Same directive name, so existing HUD layouts keep the panel. 3 of 3 UI reloads came back with exactly one panel. Imports: `useBridge().api.engineLua`, `useEvents()` (listeners removed on unmount) |
-| The game ships its own rally HUD apps (`rallyCornerCalls`, `rallyVisualPacenotes`, `rallyTimecard`, `rallyStageTiming`, `rallyRecce`, ...) | seen 0.39.4 | worth studying for the F-module stages |
-| *The rows below are about the old Angular panel (`app.js`), replaced by `app.vue`; kept for reference.* | | |
-| Legacy AngularJS apps in `ui/modules/apps/<Name>/` with `app.json` + `app.js` still load | verified 0.39.4 | catalogued by `ui_apps.getUIAppsData()` |
-| `bngApi` is injectable in directives | **broken 0.39.4** | `Unknown provider: bngApiProvider`. It is a **global**; stock apps use it without injecting |
 | `app.json` without `types` is filed under "Unknown" | verified 0.39.4 | we set `ui.apps.categories.rally` |
 | Adding an app: `Alt+Shift+U` (HUD Layouts) → layout → **Edit Layout** → **＋ Add app** | verified 0.39.4 | Layout Actions → Duplicate makes a separate layout; Use Layout switches |
-| Angular `element.scope()` is available for debugging | broken 0.39.4 | debug info is disabled; read the DOM instead |
-| Remounting HUD apps cleans up the old Angular scope | **broken 0.39.4** | after map loads/vehicle swaps an orphaned panel can stay alive and still receive events (2 `rallyAcademyState` listeners, 1 panel on screen). The panel destroys itself on the next event if its element is detached, deferred until after the broadcast: `$destroy()` during a `$broadcast` throws (`reading '$$nextSibling'`). Count listeners (`$rootScope.$$listenerCount`), not scopes: `ng-if` child scopes inherit the panel's properties |
-| Angular apps mount via `window.UIAppsServiceShim.mountDirective(slotId, appData)` (`ui/modules/apps/app-service.js`) into `.ui-angular-app-slot#bng-app-slot_<directive>_<instance>` | verified 0.39.4 | Angular's injector lives on `#angular-root` (`.data('$injector')`) |
-| Panel survives a UI reload | **broken 0.39.4** | the shim can mount into a slot Vue then replaces (same id) and ignores later mounts; ~½ of reloads left an empty panel. `app.js` self-heals (unmount + mount after 3 s empty, max 2 tries) — 0 failures in 15 reloads after the fix |
-| A mod `app.js` is loaded once per page | **broken 0.39.4** | often injected twice (two `?_dc=` script tags ms apart); don't keep per-load state that breaks if the file runs twice |
-| Editing `app.js` hot-refreshes the panel | unreliable 0.39.4 | can fail with `Directive cache refresh failed`; run `reloadUI()` after editing |
+| **Vue HUD apps from a mod:** `ui/modules/apps/<Name>/app.vue` + `"vue": true` in `app.json` | verified 0.39.4 | `ui_apps.getUIAppsData()` reports `hasAppVue = true`, `vueFile = /ui/modules/apps/RallyAcademy/app.vue`; rendered by `AppHost` through the runtime mod compiler (no Angular slot). Same directive name, so existing HUD layouts keep the panel. 3 of 3 UI reloads came back with exactly one panel. Imports: `useBridge().api.engineLua`, `useEvents()` (listeners removed on unmount) |
+| The game ships its own rally HUD apps (`rallyCornerCalls`, `rallyVisualPacenotes`, `rallyTimecard`, `rallyStageTiming`, `rallyRecce`, ...) | seen 0.39.4 | worth studying for the F-module stages |
 | Vue UI mods: files in `/ui/ui-vue/mods/<mod>/` (our `mod/ui/ui-vue/mods/rallyAcademy/`) are compiled at runtime; `index.js` exports `onLoad`/`onUnload` | verified 0.39.4 | `extensions.ui_uiMods.getVueMods()` lists them; edits hot-reload. Docs: `ui/ui-vue/mods/README.md` in the game folder |
 | Main-menu buttons via `events.on("MainMenuButtons", addButton)`; `iconId` is a `bngIcons` glyph name (we use `raceFlag`) | verified 0.39.4 | mod buttons show under **More...** (route `menu.others`), tagged "Mod", not on the top level |
 | Routes: `window.bngRoutes.add` + `ui_router_routeManager.registerModRoutes`; navigate with `ui_router.navigate(name)` | verified 0.39.4 | our `menu.rallyAcademy` opens from the main menu and also over the game view from inside a map |
@@ -136,3 +127,19 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 | Rally mode and pacenotes | module F | experimental in-game feature; 0.39 added a 30 km stage |
 | Stock cone prefabs are physics objects that move on contact | cone contact | from a community tutorial |
 | Game input setting "automatic clutch" can be read | A02/A03 clutch drills | see [VEHICLES](VEHICLES.md#what-to-look-for-in-a-drill-car) |
+
+## Appendix: the old Angular HUD panel
+
+Replaced by the Vue panel (`app.vue`) on 2026-10-16; kept for anyone writing an Angular
+HUD app on 0.39.
+
+| Assumption | Status | Notes |
+| --- | --- | --- |
+| Legacy AngularJS apps in `ui/modules/apps/<Name>/` with `app.json` + `app.js` still load | verified 0.39.4 | catalogued by `ui_apps.getUIAppsData()` |
+| `bngApi` is injectable in directives | **broken 0.39.4** | `Unknown provider: bngApiProvider`. It is a **global**; stock apps use it without injecting |
+| Angular `element.scope()` is available for debugging | broken 0.39.4 | debug info is disabled; read the DOM instead |
+| Remounting HUD apps cleans up the old Angular scope | **broken 0.39.4** | after map loads/vehicle swaps an orphaned panel can stay alive and still receive events (2 `rallyAcademyState` listeners, 1 panel on screen). The panel destroys itself on the next event if its element is detached, deferred until after the broadcast: `$destroy()` during a `$broadcast` throws (`reading '$$nextSibling'`). Count listeners (`$rootScope.$$listenerCount`), not scopes: `ng-if` child scopes inherit the panel's properties |
+| Angular apps mount via `window.UIAppsServiceShim.mountDirective(slotId, appData)` (`ui/modules/apps/app-service.js`) into `.ui-angular-app-slot#bng-app-slot_<directive>_<instance>` | verified 0.39.4 | Angular's injector lives on `#angular-root` (`.data('$injector')`) |
+| Panel survives a UI reload | **broken 0.39.4** | the shim can mount into a slot Vue then replaces (same id) and ignores later mounts; ~½ of reloads left an empty panel. `app.js` self-heals (unmount + mount after 3 s empty, max 2 tries) — 0 failures in 15 reloads after the fix |
+| A mod `app.js` is loaded once per page | **broken 0.39.4** | often injected twice (two `?_dc=` script tags ms apart); don't keep per-load state that breaks if the file runs twice |
+| Editing `app.js` hot-refreshes the panel | unreliable 0.39.4 | can fail with `Directive cache refresh failed`; run `reloadUI()` after editing |
