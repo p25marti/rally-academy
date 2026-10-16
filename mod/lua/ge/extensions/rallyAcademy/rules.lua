@@ -3,7 +3,9 @@
 -- and recorded runs. Each check returns a readable reason: the reason is the coaching.
 --
 -- Run record samples (runRecord.lua, telemetry.lua): t (sim s), air (m/s), brk/thr (0..1),
--- gear (gearIndex: 0 neutral, -1 reverse), rpm, eng (1 = engine running),
+-- gear (gearIndex: 0 neutral, -1 reverse), rpm, eng (1 = engine running), hb (handbrake),
+-- hx, hy (heading), vx, vy (velocity, m/s), uz (up vector z: 1 upright), dmg (beamstate damage),
+-- flat (deflated tyres),
 -- x, y, z (m), w = {{n = 'FR', s = wheel speed m/s, m = surface id, f = downforce}, ...}
 -- ctx: {zone = marked stop zone {pos, dir}, gates = marked gates (gates.lua), in order}
 local Gates = require('ge/extensions/rallyAcademy/gates')
@@ -207,6 +209,142 @@ function E.clean_shifts(rule, samples)
   return true, 'Clean shifts'
 end
 
+-- Car events: contact, spin, leaving the road, rollover, handbrake, puncture -----------
+
+-- Surface ids (wheels' contactMaterialID1) -> names, read in-game on 0.39.4 with
+-- particles.getMaterialByID (vehicle Lua only; GE has no `particles`).
+R.SURFACES = {
+  [2] = 'METAL', [3] = 'PLASTIC', [4] = 'RUBBER', [5] = 'GLASS', [6] = 'WOOD', [7] = 'FOLIAGE', [8] = 'CLOTH',
+  [9] = 'WATER', [10] = 'ASPHALT', [11] = 'ASPHALT_WET', [12] = 'SLIPPERY', [13] = 'ROCK', [14] = 'DIRT_DUSTY',
+  [15] = 'DIRT', [16] = 'SAND', [17] = 'SANDY_ROAD', [18] = 'MUD', [19] = 'GRAVEL', [20] = 'GRASS', [21] = 'ICE',
+  [22] = 'SNOW', [29] = 'RUMBLE_STRIP', [30] = 'COBBLESTONE', [31] = 'FOLIAGE_THIN', [32] = 'SPIKE_STRIP',
+}
+
+-- Angle between where the car points and where it's going, in degrees (0..180), or nil
+-- when it's too slow for that to mean anything.
+function R.slipDeg(s, minAir)
+  if not (s.hx and s.vx) then return nil end
+  local sp = math.sqrt(s.vx * s.vx + s.vy * s.vy)
+  if sp < (minAir or 1) then return nil end
+  local hn = math.sqrt(s.hx * s.hx + s.hy * s.hy)
+  if hn == 0 then return nil end
+  local c = (s.hx * s.vx + s.hy * s.vy) / (hn * sp)
+  return math.deg(math.acos(math.max(-1, math.min(1, c))))
+end
+
+-- Hitting something hard enough to damage the car (barriers, walls, other cars). Cones
+-- barely dent a car, so cone contact needs the cones themselves (scene control, later).
+-- A tyre deflating adds ~1000 damage, one sample after the flat flag (0.39.4), so damage
+-- gained within PUNCTURE_WINDOW of a tyre going flat is a puncture (no_puncture), not contact.
+-- rule: {type = 'no_damage', maxDamage = 50}
+local PUNCTURE_WINDOW = 0.3 -- s
+function E.no_damage(rule, samples)
+  local base, max, prev, punctureUntil = nil, rule.maxDamage or 50, nil, -math.huge
+  for i, s in ipairs(samples) do
+    if s.dmg then
+      base = base or s.dmg
+      if prev and (s.flat or 0) > (prev.flat or 0) then punctureUntil = s.t + PUNCTURE_WINDOW end
+      if prev and prev.dmg and s.t <= punctureUntil then base = base + (s.dmg - prev.dmg) end
+      prev = s
+      if s.dmg - base > max then
+        local before = samples[i - 1] or s
+        return false, string.format('Hit something at %.0f km/h (damage +%.0f)', (before.air or 0) * KMH, s.dmg - base)
+      end
+    end
+  end
+  if not base then return true, 'No contact (no damage data)' end
+  return true, 'No contact'
+end
+
+-- Spinning: the car slides more than `maxSlipDeg` off its direction of travel for longer
+-- than `maxSeconds` while moving faster than `minKmh`. Reverse gear is skipped (backing up
+-- reads as a 180 degree slide). Defaults from a recorded handbrake spin on 0.39.4: the car
+-- turned 143 degrees, sliding past 75 for 0.47 s but past 90 for only 0.2 s; normal runs
+-- stayed under 25. Drills that slide on purpose set their own limits.
+-- rule: {type = 'no_spin', maxSlipDeg = 70, minKmh = 10, maxSeconds = 0.3}
+function E.no_spin(rule, samples)
+  local maxSlip, minAir, maxT = rule.maxSlipDeg or 70, (rule.minKmh or 10) / KMH, rule.maxSeconds or 0.3
+  local since, worst = nil, 0
+  for _, s in ipairs(samples) do
+    local slip = (s.gear or 0) >= 0 and R.slipDeg(s, minAir) or nil
+    if slip and slip > maxSlip then
+      since = since or {t = s.t, air = s.air or 0}
+      if s.t - since.t > maxT then
+        return false, string.format('Spun at %.0f km/h (sliding %.0f° off your direction of travel)', since.air * KMH, slip)
+      end
+    else
+      since = nil
+    end
+    if slip and slip > worst then worst = slip end
+  end
+  return true, string.format('No spin (largest slide %.0f°)', worst)
+end
+
+-- Leaving the road: more than `maxWheelsOff` wheels touching a surface not in `surfaces`
+-- for longer than `maxSeconds`. Wheels in the air don't count either way.
+-- rule: {type = 'on_surface', surfaces = {'ASPHALT', 'GRAVEL'}, maxWheelsOff = 2, maxSeconds = 0.5}
+function E.on_surface(rule, samples, ctx)
+  local names = (ctx and ctx.surfaces) or R.SURFACES
+  local ok = {}
+  for _, n in ipairs(rule.surfaces or {}) do ok[n] = true end
+  local maxOff, maxT = rule.maxWheelsOff or 2, rule.maxSeconds or 0.5
+  local since, offName
+  for _, s in ipairs(samples) do
+    local off, name = 0, nil
+    for _, w in ipairs(s.w or {}) do
+      if w.m and w.m >= 0 then
+        local n = names[w.m] or ('surface ' .. w.m)
+        if not ok[n] then off, name = off + 1, n end
+      end
+    end
+    if off > maxOff then
+      if not since then since, offName = {t = s.t, air = s.air or 0, off = off}, name end
+      if s.t - since.t > maxT then
+        return false, string.format('Left the road: %d wheels on %s at %.0f km/h', since.off, offName, since.air * KMH)
+      end
+    else
+      since = nil
+    end
+  end
+  return true, 'Stayed on the road'
+end
+
+-- Rolled: the car's up vector tipped past ~70 degrees.
+-- rule: {type = 'no_rollover', minUpZ = 0.35}
+function E.no_rollover(rule, samples)
+  for _, s in ipairs(samples) do
+    if s.uz and s.uz < (rule.minUpZ or 0.35) then
+      return false, string.format('Rolled over at %.0f km/h', (s.air or 0) * KMH)
+    end
+  end
+  return true, 'Stayed upright'
+end
+
+-- Handbrake pulled while moving (the handbrake reads 1 at rest after a reset).
+-- rule: {type = 'no_handbrake', minKmh = 10}
+function E.no_handbrake(rule, samples)
+  local minAir = (rule.minKmh or 10) / KMH
+  for _, s in ipairs(samples) do
+    if (s.hb or 0) > 0.5 and (s.air or 0) > minAir then
+      return false, string.format('Used the handbrake at %.0f km/h', s.air * KMH)
+    end
+  end
+  return true, 'No handbrake'
+end
+
+-- A tyre went flat during the run.
+-- rule: {type = 'no_puncture'}
+function E.no_puncture(_rule, samples)
+  local base = nil
+  for _, s in ipairs(samples) do
+    if s.flat then
+      base = base or s.flat
+      if s.flat > base then return false, string.format('Punctured a tyre at %.0f km/h', (s.air or 0) * KMH) end
+    end
+  end
+  return true, 'No puncture'
+end
+
 -- Gates ------------------------------------------------------------------------
 
 local function gateList(ctx)
@@ -293,6 +431,12 @@ R.TYPES = {
   gear_reached = {'gear'},
   clean_shifts = {},
   stop_before_line = {'minM', 'maxM'},
+  no_damage = {},
+  no_spin = {},
+  on_surface = {},
+  no_rollover = {},
+  no_handbrake = {},
+  no_puncture = {},
   gates_passed = {},
   speed_at_gates = {'minKmh', 'maxKmh'},
   no_brake_between_gates = {},

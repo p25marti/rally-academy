@@ -45,13 +45,16 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 - [x] Telemetry sampling and per-attempt run records ([ADR 0004](decisions/0004-telemetry-transport.md),
       ARCHITECTURE → Telemetry).
 - [x] Generic gates: marked in-game, saved per map, drawn in the world, graded by rules.
-- [ ] Route deviation (corridor or road edge) and penalties.
+- [x] Car events: contact (damage), spin, leaving the road (wheel surfaces), rollover,
+      handbrake, puncture, checked against recorded runs.
+- [ ] Route deviation along an authored path (corridor), and penalties.
 - [x] One fully automatic drill end-to-end: **B01** threshold braking (entry
       speed, stop inside a 5 m zone, no sustained lock), checked against recorded runs.
       Cone contact is not graded yet (needs scene control).
 - [x] A04 speed hold: 27–33 km/h at three gates, no braking between them.
 - [x] A05 stop line, B02 lockup recovery, A02 launch and shift: automatic, checked against
-      recorded runs. Not graded yet: cone contact (A05), staying on the road (B02).
+      recorded runs. B02 also checks spin and staying on the road. Not graded yet: cone
+      contact (A05).
 
 ## P3 — Machine-readable drills
 

@@ -554,7 +554,7 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "From 55+ km/h, provoke a lockup and release it within 1 s, then stop. Staying within the road: not graded yet.",
+        "successDefinition": "From 55+ km/h, provoke a lockup and release it within 1 s, then stop without spinning and with the car on the road (asphalt or gravel).",
         "metricToRecord": "Correct lockup recoveries / 10",
         "mode": "automatic",
         "endWhen": "stopped",
@@ -567,6 +567,18 @@
             "type": "lockup_recovered",
             "minSeconds": 0.2,
             "maxSeconds": 1.0
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "ASPHALT",
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 2,
+            "maxSeconds": 0.5
           }
         ]
       },

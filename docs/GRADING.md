@@ -128,6 +128,12 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `no_stall` | none | The engine never stops after running during the run (`eng` flag; RPM reads ~160 while re-idling after a reset) |
 | `gear_reached` | `gear` | The highest gear used reaches `gear` |
 | `clean_shifts` | none (optional `maxNeutralSeconds` 1, `minKmh` 10) | No shift hangs in neutral longer than `maxNeutralSeconds` while moving |
+| `no_damage` | none (optional `maxDamage` 50) | Car damage (`beamstate.damage`) rises by no more than `maxDamage`: no hard contact. Damage within 0.3 s of a tyre going flat is the puncture's (~1000), not contact. Cones barely dent a car, so cone contact still needs scene control |
+| `no_spin` | none (optional `maxSlipDeg` 70, `maxSeconds` 0.3, `minKmh` 10) | The car never slides more than `maxSlipDeg` off its direction of travel for longer than `maxSeconds`. Reverse gear is skipped. Defaults come from a recorded handbrake spin; drills that slide on purpose set their own |
+| `on_surface` | `surfaces` (names, optional `maxWheelsOff` 2, `maxSeconds` 0.5) | No more than `maxWheelsOff` wheels touch a surface outside `surfaces` for longer than `maxSeconds`. Wheels in the air don't count. Surface names: `R.SURFACES` (ASPHALT, GRAVEL, DIRT, GRASS…) |
+| `no_rollover` | none (optional `minUpZ` 0.35) | The car never tips past about 70° |
+| `no_handbrake` | none (optional `minKmh` 10) | Handbrake not pulled while moving |
+| `no_puncture` | none | No tyre goes flat during the run |
 
 **Gates** (`gates.lua`, pure) are lines across the road: a centre, the direction the
 car faced when the gate was marked, and a width. A gate counts when the car's centre
@@ -231,7 +237,8 @@ Each step unlocks graded drills:
 1. Telemetry sampler, gates, zones and segment timing. This makes A04 and B01
    fully automatic (ROADMAP P2). Done: sampler, stop zone, lockup, gates and speed
    at gates; B01 and A04 are automatic. Segment timing between gates remains.
-2. Lockup, wheelspin, contact, damage and off-road detection. This covers most
+2. Lockup, wheelspin, contact, damage and off-road detection (all built, plus spin,
+   rollover, handbrake and puncture). This covers most
    of modules A, B and D.
 3. Slip angle, spin, countersteer and handbrake detection. This opens module C.
 4. Airborne, rollover, surface tracking, recovery use and block statistics,

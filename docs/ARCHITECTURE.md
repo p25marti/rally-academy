@@ -42,7 +42,9 @@ mod/
 - **Car and map changes:** switching car (or losing it) mid-run abandons the run
   back to `setup`, unscored. `onClientEndMission` drops the map's start/finish;
   `onClientPostStartMission` re-selects the drill to load the new map's setup.
-- **Telemetry and run records** ([ADR 0004](decisions/0004-telemetry-transport.md)):
+- **Telemetry and run records** ([ADR 0004](decisions/0004-telemetry-transport.md)). Each sample
+  has inputs, gear, rpm, engine running, speeds, heading and velocity (slip angle), up vector
+  (rollover), damage, flat-tyre count, and per wheel speed, surface and downforce:
   Retry loads `lua/vehicle/extensions/rallyAcademy/telemetry.lua` into the car and
   opens a record (`lua/ge/extensions/rallyAcademy/runRecord.lua`, pure Lua). The car
   sends one sample per frame to `M.onTelemetry`; samples from other cars, repeats

@@ -61,6 +61,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   wheels from 55+ km/h and release within 1 s), and A02 launches (reach 40 km/h with a 1–2
   shift: no stall, no shift hanging in neutral, no long wheelspin).
 - Telemetry records whether the engine is running, for stall detection.
+- **Car event checks** for grading: hard contact (damage), spinning out, leaving the road
+  (what the wheels are on), rolling over, using the handbrake and punctures. B02 now also
+  requires no spin and staying on the road.
 
 ### Changed
 - Go to drill starts maps the way the game's Freeroam menu does, so it also works from

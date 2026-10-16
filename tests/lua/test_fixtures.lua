@@ -11,6 +11,10 @@
 -- B02: from 62 km/h; recovered = full brake 0.6 s then eased; held = full brake to a stop;
 --      nolock = gentle 0.25 brake.
 -- A02: 0.6 throttle launch to 42 km/h (arcade shifts 1->2), eased stop.
+-- ev_*: events provoked on the same straight: offroad = steered off at 45 km/h, hit the
+--      edge (damage 0 -> 5722) and the arcade gearbox then reversed; spin = handbrake and
+--      full lock at 60 km/h (turned 143 degrees); contact = full lock onto the grass at 35
+--      km/h (no hit); puncture = beamstate.deflateRandomTire() at 45 km/h.
 local json = require('json')
 local Rules = require('ge/extensions/rallyAcademy/rules')
 local T = {}
@@ -119,6 +123,30 @@ function T.a02_recorded_launch_has_engine_and_gear_data()
   assert(res.passed, 'clean launch passes')
   assert(rec.samples[#rec.samples].eng == 1, 'engine-running flag recorded')
   has(check(res, 'gear_reached').text, 'gear 2')
+end
+
+local function ruleCheck(name, rule)
+  return Rules.evaluate({rule}, fixture(name)).checks[1]
+end
+
+function T.recorded_events_are_detected()
+  local SURF = {type = 'on_surface', surfaces = {'ASPHALT', 'GRAVEL'}, maxWheelsOff = 2, maxSeconds = 0.5}
+  has(ruleCheck('ev_offroad', {type = 'no_damage'}).text, 'Hit something')
+  assert(ruleCheck('ev_offroad', {type = 'no_spin'}).ok, 'reversing after the crash is not a spin')
+  has(ruleCheck('ev_spin', {type = 'no_spin'}).text, 'Spun at')
+  has(ruleCheck('ev_spin', {type = 'no_handbrake'}).text, 'Used the handbrake')
+  has(ruleCheck('ev_contact', SURF).text, 'Left the road')
+  has(ruleCheck('ev_puncture', {type = 'no_puncture'}).text, 'Punctured')
+  assert(ruleCheck('ev_puncture', {type = 'no_damage'}).ok, 'a puncture is not contact')
+end
+
+function T.recorded_clean_runs_raise_no_events()
+  for _, name in ipairs({'b02_recovered', 'a05_clean', 'a02_clean'}) do
+    for _, rule in ipairs({{type = 'no_spin'}, {type = 'no_rollover'}, {type = 'no_puncture'}}) do
+      local c = ruleCheck(name, rule)
+      assert(c.ok, name .. ': ' .. c.text)
+    end
+  end
 end
 
 return T
