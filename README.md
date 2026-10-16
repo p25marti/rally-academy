@@ -22,7 +22,7 @@ python tools/dev.py link       # live-link ./mod into your BeamNG mods folder
 python tools/dev.py log        # tail beamng.log, filtered to Rally Academy + errors
 ```
 
-Then in BeamNG: Free Roam → UI Apps → add **Rally Academy (Prototype)**.
+Then in BeamNG: Free Roam → UI Apps → add **Rally Academy**.
 
 ## Install (players)
 
