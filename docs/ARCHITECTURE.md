@@ -9,14 +9,15 @@ mod/
 ├── lua/ge/extensions/rallyAcademy.lua          GE extension: state, timing, retry, progress
 ├── lua/ge/extensions/core/input/actions/
 │   └── rallyAcademy_actions.json               bindable actions: Retry / Pass / Miss
-└── ui/modules/apps/RallyAcademy/               HUD app (AngularJS directive)
-    ├── app.json  app.js  app.png
+├── ui/modules/apps/RallyAcademy/               HUD panel (Vue HUD app: app.json "vue": true)
+│   ├── app.json  app.vue  app.png
+└── ui/ui-vue/mods/rallyAcademy/                Academy screen: main menu, pause tab (Vue UI mod)
 ```
 
 **Data flow**
 
 ```
- HUD (app.js) ──bngApi.engineLua("extensions.rallyAcademy.retry()")──▶ GE Lua
+ HUD (app.vue) ──api.engineLua("extensions.rallyAcademy.retry()")───▶ GE Lua
  Controls (actions.json) ──onDown "extensions.rallyAcademy.retry()"──▶ GE Lua
  GE Lua ──guihooks.trigger('rallyAcademyState', {...})──────────────▶ HUD
  GE Lua ──jsonReadFile / jsonWriteFile──▶ exercises.json (read) · settings/rallyAcademyProgress.json (r/w)
@@ -109,8 +110,7 @@ Pass/Miss), or `selfAssessment` (today's behaviour).
 
 Full capability list, per-drill needs and build order: [GRADING.md](GRADING.md).
 
-**UI technology.** BeamNG's UI is one shared embedded-Chromium page. The HUD panel
-is an AngularJS 1.x directive (legacy HUD apps). Since 0.39 the game also has an
+**UI technology.** BeamNG's UI is one shared embedded-Chromium page. Since 0.39 the game also has an
 official **Vue UI mod** system (`ui/ui-vue/mods/README.md` in the game folder):
 runtime-compiled `.vue` files that can add main-menu buttons, routes, pause-menu
 tabs and slots, with no build step. The main-menu **Academy screen** uses it
@@ -123,8 +123,9 @@ pause menu with a **Rally Academy** tab whose rail buttons show the same pages
 (`pause/PausePage.vue`), and the "Rally Academy: Open menu" binding opens the full screen
 over the game with physics paused (`openMenu`/`closeMenu`/`toggleMenu`, resumed by the
 route's `onLeave` hook). It calls
-`extensions.rallyAcademy.getMenuData()` and `startDrill(id)`. Rebuilding the HUD in
-Vue is the planned next step.
+`extensions.rallyAcademy.getMenuData()` and `startDrill(id)`. The HUD panel is a Vue HUD
+app too (`ui/modules/apps/RallyAcademy/app.vue`, `"vue": true` in `app.json`), compiled at
+runtime by the same mod compiler, so the whole UI is Vue.
 
 **Authoring.** Start poses and gates are captured in-game and saved per
 `levelId`, then promoted into `exercises.json` (`startTransform`,

@@ -30,8 +30,8 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 
 - [x] Main-menu **Rally Academy** screen (More... → Rally Academy): every drill in
       curriculum order, progress, details, **Start drill** ([ADR 0005](decisions/0005-main-menu-via-vue-ui-mods.md)).
-- [ ] Rebuild the HUD panel in Vue, if the Vue mod system can host HUD apps; then decide
-      whether drill selection moves out of the HUD drop-down.
+- [x] Rebuild the HUD panel in Vue (`app.vue`, a Vue HUD app). Drop-down kept.
+- [ ] Decide whether drill selection moves out of the HUD drop-down into the menus.
 - [x] Pause-menu **Rally Academy** tab (Esc) and an "Open menu" key binding that opens the
       screen over the game with physics paused. The pause tab's content still needs one
       real click to confirm (scripted clicks don't switch pause tabs).

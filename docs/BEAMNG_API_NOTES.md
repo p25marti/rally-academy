@@ -89,6 +89,9 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 
 | Assumption | Status | Notes |
 | --- | --- | --- |
+| **Vue HUD apps from a mod:** `ui/modules/apps/<Name>/app.vue` + `"vue": true` in `app.json` | verified 0.39.4 | `ui_apps.getUIAppsData()` reports `hasAppVue = true`, `vueFile = /ui/modules/apps/RallyAcademy/app.vue`; rendered by `AppHost` through the runtime mod compiler (no Angular slot). Same directive name, so existing HUD layouts keep the panel. 3 of 3 UI reloads came back with exactly one panel. Imports: `useBridge().api.engineLua`, `useEvents()` (listeners removed on unmount) |
+| The game ships its own rally HUD apps (`rallyCornerCalls`, `rallyVisualPacenotes`, `rallyTimecard`, `rallyStageTiming`, `rallyRecce`, ...) | seen 0.39.4 | worth studying for the F-module stages |
+| *The rows below are about the old Angular panel (`app.js`), replaced by `app.vue`; kept for reference.* | | |
 | Legacy AngularJS apps in `ui/modules/apps/<Name>/` with `app.json` + `app.js` still load | verified 0.39.4 | catalogued by `ui_apps.getUIAppsData()` |
 | `bngApi` is injectable in directives | **broken 0.39.4** | `Unknown provider: bngApiProvider`. It is a **global**; stock apps use it without injecting |
 | `app.json` without `types` is filed under "Unknown" | verified 0.39.4 | we set `ui.apps.categories.rally` |

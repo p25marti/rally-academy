@@ -66,6 +66,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   requires no spin and staying on the road.
 
 ### Changed
+- The in-drive panel is rebuilt in Vue, matching the Academy screen's look: tighter layout
+  (four grade lines fit without scrolling), auto-graded / Coming soon tag, Retry highlighted.
+  It no longer needs the old panel's workarounds for vanishing after UI reloads.
 - Go to drill starts maps the way the game's Freeroam menu does, so it also works from
   the main menu.
 - The panel no longer shows the "route detection and self-assessment only" note.

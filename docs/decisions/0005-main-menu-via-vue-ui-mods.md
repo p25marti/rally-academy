@@ -43,8 +43,8 @@ ships an official Vue UI mod system, documented in the game folder at
 
 ## Consequences
 
-- Two UI stacks for a while: Angular HUD and Vue menu. The planned next step is to
-  rebuild the HUD in Vue, if the Vue mod system can host HUD apps (to check).
+- The HUD panel was rebuilt as a Vue HUD app (`app.vue`, `"vue": true`) on 2026-10-16,
+  so the whole UI is Vue; the Angular panel's self-heal and orphan workarounds are gone.
 - The Vue mod API is new in 0.39 and may change between game versions. Re-test the
   menu after every game update; the in-game smoke test has a step for it.
 - In a map, a pause-menu tab (`ui_pause_actions.registerModTab`) shows the same pages
