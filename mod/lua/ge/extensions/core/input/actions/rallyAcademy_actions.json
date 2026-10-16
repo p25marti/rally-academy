@@ -38,5 +38,77 @@
     "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.recordAttempt(false) end",
     "title": "Rally Academy: Score miss",
     "desc": "Record an unsuccessful attempt after assessing the manoeuvre."
+  },
+  "rally_academy_go_to_drill": {
+    "cat": "vehicle",
+    "order": 105,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.goToDrill() end",
+    "title": "Rally Academy: Go to drill",
+    "desc": "Load the selected drill's map and car, and place you at its start."
+  },
+  "rally_academy_next_drill": {
+    "cat": "vehicle",
+    "order": 106,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.selectNext() end",
+    "title": "Rally Academy: Next drill",
+    "desc": "Select the next drill in curriculum order."
+  },
+  "rally_academy_previous_drill": {
+    "cat": "vehicle",
+    "order": 107,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.selectPrevious() end",
+    "title": "Rally Academy: Previous drill",
+    "desc": "Select the previous drill in curriculum order."
+  },
+  "rally_academy_mark_start": {
+    "cat": "vehicle",
+    "order": 108,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.markStart() end",
+    "title": "Rally Academy: Mark start / Move course here",
+    "desc": "Save where you are as the drill's start (a course drill lays its course out from here)."
+  },
+  "rally_academy_venue_start": {
+    "cat": "vehicle",
+    "order": 109,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.useVenueStart() end",
+    "title": "Rally Academy: Use venue start",
+    "desc": "Course drills: forget your marked start and lay the course out at the venue again."
+  },
+  "rally_academy_mark_finish": {
+    "cat": "vehicle",
+    "order": 110,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.markFinish() end",
+    "title": "Rally Academy: Mark finish / stop zone / stop line",
+    "desc": "Mark the drill's finish, stop zone or stop line where you are."
+  },
+  "rally_academy_add_gate": {
+    "cat": "vehicle",
+    "order": 111,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.addGate() end",
+    "title": "Rally Academy: Add gate",
+    "desc": "Mark the next gate across the road where you are."
+  },
+  "rally_academy_clear_gates": {
+    "cat": "vehicle",
+    "order": 112,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.clearGates() end",
+    "title": "Rally Academy: Clear gates",
+    "desc": "Remove the gates you marked for this drill."
+  },
+  "rally_academy_auto_retry": {
+    "cat": "vehicle",
+    "order": 113,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.toggleAutoRetry() end",
+    "title": "Rally Academy: Auto-retry on/off",
+    "desc": "Start the next attempt automatically after a graded run, or not."
   }
 }

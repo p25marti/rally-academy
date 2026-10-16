@@ -360,6 +360,27 @@ function M.setAutoRetry(on)
   output()
 end
 
+-- Key bindings (Stream Deck, docs/STREAM_DECK.md) --------------------------------------
+
+function M.toggleAutoRetry()
+  M.setAutoRetry(prefs.autoRetry == false)
+  if ui_message then ui_message('Rally Academy: auto-retry ' .. (prefs.autoRetry and 'on' or 'off'), 3, 'rallyAcademy') end
+end
+
+-- The next or previous drill in curriculum order (wrapping round), with a message so it
+-- works without looking at the HUD.
+local function step(by)
+  if #lessons == 0 then return end
+  local idx = 0
+  for i, l in ipairs(lessons) do if l.id == selected then idx = i end end
+  if idx == 0 then idx = by > 0 and 0 or 1 end
+  local lesson = lessons[(idx - 1 + by) % #lessons + 1]
+  M.select(lesson.id)
+  if ui_message then ui_message('Rally Academy: ' .. lesson.id .. ' · ' .. lesson.title, 4, 'rallyAcademy') end
+end
+function M.selectNext() step(1) end
+function M.selectPrevious() step(-1) end
+
 function M.markFinish()
   if not selected or courseDef() then return end
   local snap = snapshotVehicle()

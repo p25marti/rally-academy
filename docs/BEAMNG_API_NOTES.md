@@ -94,6 +94,9 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 | --- | --- |
 | Custom actions in `lua/ge/extensions/core/input/actions/*.json` appear in Options → Controls | verified 0.39.4 (`core_input_actions.getActiveActions()` lists them; bound by the owner) |
 | `"ctx": "tlua"` runs `onDown` in GE Lua | verified 0.39.4 (bound Retry key teleports to start) |
+| A mod's `settings/inputmaps/keyboard_<suffix>.json` adds default bindings alongside the game's and the player's `keyboard.diff` | verified 0.39.4 — listed by `core_input_bindings.getUsedBindingsFiles()`; `getControlForAction('rally_academy_retry')` returned our control. Modifier syntax as in the game's files: `"ctrl shift r"` |
+| Alt+F4 inside a combo (Ctrl+Alt+Shift+F4) closes the game | observed 0.39.4 — never bind Alt (`dev.py validate` rejects it) |
+| F13–F24 (`"f13"`…) as bindings | unverified — pending an in-game key press (Stream Deck Hotkey sends them; Elgato recommends them) |
 
 ## UI apps
 

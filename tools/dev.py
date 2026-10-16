@@ -37,6 +37,8 @@ MOD_NAME = "rally_academy"  # zip / unpacked folder name; keep stable across rel
 APP_JSON = Path("ui/modules/apps/RallyAcademy/app.json")
 EXERCISES_JSON = Path("gameplay/rallyAcademy/exercises.json")
 VENUES_JSON = Path("gameplay/rallyAcademy/venues.json")
+ACTIONS_JSON = Path("lua/ge/extensions/core/input/actions/rallyAcademy_actions.json")
+BINDINGS_JSON = Path("settings/inputmaps/keyboard_rallyAcademy.json")
 ALLOWED_TOP_LEVEL = {"gameplay", "lua", "ui", "art", "levels", "vehicles", "settings", "scripts"}
 # Grading rule types and their required numeric parameters; mirrors R.TYPES in
 # mod/lua/ge/extensions/rallyAcademy/rules.lua (docs/DRILL_DATA.md).
@@ -284,6 +286,28 @@ def validate_exercises(data: dict) -> list[str]:
     return errors
 
 
+def bindings_errors(actions: dict, bindings: dict) -> list[str]:
+    """Default key bindings (docs/STREAM_DECK.md): every action bound once, to a known action,
+    and no Alt: Ctrl+Alt+Shift+F4 contains Alt+F4, which closed the game (0.39.4)."""
+    errors, seen, bound = [], {}, set()
+    if bindings.get("devicetype") != "keyboard" or not isinstance(bindings.get("bindings"), list):
+        return [f"{BINDINGS_JSON}: needs devicetype 'keyboard' and a bindings list"]
+    for b in bindings["bindings"]:
+        action, control = b.get("action"), str(b.get("control", ""))
+        if action not in actions:
+            errors.append(f"{BINDINGS_JSON}: unknown action {action!r}")
+        if "alt" in control.split():
+            errors.append(f"{BINDINGS_JSON}: {action} uses Alt ({control!r}); Alt+F4 closes the game")
+        if control in seen:
+            errors.append(f"{BINDINGS_JSON}: {control!r} bound to both {seen[control]} and {action}")
+        seen[control] = action
+        bound.add(action)
+    missing = sorted(set(actions) - bound)
+    if missing:
+        errors.append(f"{BINDINGS_JSON}: actions without a default binding: {missing}")
+    return errors
+
+
 def cmd_validate(_args=None) -> None:
     version = read_version()
     json_files = sorted(MOD_DIR.rglob("*.json"))
@@ -310,6 +334,12 @@ def cmd_validate(_args=None) -> None:
     if errors:
         fail("venue data invalid:\n    " + "\n    ".join(errors))
     ok(f"{len(venues['venues'])} venues valid, every drill's venue found")
+
+    errors = bindings_errors(json.loads((MOD_DIR / ACTIONS_JSON).read_text(encoding="utf-8")),
+                             json.loads((MOD_DIR / BINDINGS_JSON).read_text(encoding="utf-8")))
+    if errors:
+        fail("default key bindings invalid:\n    " + "\n    ".join(errors))
+    ok("default key bindings cover every action, no Alt")
 
     stray = [p.name for p in MOD_DIR.iterdir() if p.name not in ALLOWED_TOP_LEVEL]
     if stray:

@@ -268,4 +268,29 @@ function T.onUpdate_does_not_log_every_frame()
   eq(#h.logs, before, 'no log spam while driving')
 end
 
+-- Key bindings (Stream Deck): step through the drills and toggle auto-retry without the HUD.
+function T.next_and_previous_drill_step_through_the_curriculum_and_wrap()
+  local h, M = H.setup()
+  M.select('A01')
+  M.selectNext()
+  eq(h.lastState().selected, 'A02', 'next')
+  H.has(h.messages[#h.messages], 'A02 · ')
+  M.selectPrevious()
+  M.selectPrevious()
+  local last = M.getMenuData().lessons
+  eq(h.lastState().selected, last[#last].id, 'previous from the first wraps to the last')
+  M.selectNext()
+  eq(h.lastState().selected, 'A01', 'and next wraps back')
+end
+
+function T.auto_retry_toggles_from_a_binding()
+  local h, M = H.setup()
+  M.select('A01')
+  M.toggleAutoRetry()
+  eq(h.lastState().autoRetry, false, 'off')
+  H.has(h.messages[#h.messages], 'auto-retry off')
+  M.toggleAutoRetry()
+  eq(h.lastState().autoRetry, true, 'on again')
+end
+
 return T

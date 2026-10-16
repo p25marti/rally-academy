@@ -61,6 +61,7 @@ unpacked dev link alongside it.
 - [ROADMAP.md](docs/ROADMAP.md) — priorities and known issues
 - [MAPS.md](docs/MAPS.md) — surveyed venues (gravel/dirt) and where each drill takes place
 - [VENUES.md](docs/VENUES.md) — how to find, fit-test and add a venue for a drill
+- [STREAM_DECK.md](docs/STREAM_DECK.md) — default key bindings (F13–F24) and a Stream Deck layout
 - [decisions/](docs/decisions/) — short records of why things are the way they are
 
 ## Credits

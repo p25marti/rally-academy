@@ -20,6 +20,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/ui/modules/apps/RallyAcademy/app.vue` | In-drive HUD panel (Vue HUD app) |
 | `mod/ui/ui-vue/mods/rallyAcademy/` | Academy screen: main menu, pause tab ([ADR 0005](docs/decisions/0005-main-menu-via-vue-ui-mods.md)) |
 | `tests/lua/` | Unit tests under LuaJIT with engine stubs; `tests/fixtures/` = recorded in-game runs |
+| `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
 | `docs/` | Everything else; `docs/decisions/` = ADRs |

@@ -1,0 +1,62 @@
+{
+  "devicetype": "keyboard",
+  "version": 1,
+  "bindings": [
+    {
+      "action": "rally_academy_retry",
+      "control": "f13"
+    },
+    {
+      "action": "rally_academy_go_to_drill",
+      "control": "f14"
+    },
+    {
+      "action": "rally_academy_previous_drill",
+      "control": "f15"
+    },
+    {
+      "action": "rally_academy_next_drill",
+      "control": "f16"
+    },
+    {
+      "action": "rally_academy_menu",
+      "control": "f17"
+    },
+    {
+      "action": "rally_academy_mark_start",
+      "control": "f18"
+    },
+    {
+      "action": "rally_academy_venue_start",
+      "control": "f19"
+    },
+    {
+      "action": "rally_academy_mark_finish",
+      "control": "f20"
+    },
+    {
+      "action": "rally_academy_add_gate",
+      "control": "f21"
+    },
+    {
+      "action": "rally_academy_clear_gates",
+      "control": "f22"
+    },
+    {
+      "action": "rally_academy_pass",
+      "control": "f23"
+    },
+    {
+      "action": "rally_academy_miss",
+      "control": "f24"
+    },
+    {
+      "action": "rally_academy_auto_retry",
+      "control": "shift f13"
+    },
+    {
+      "action": "rally_academy_save_spot",
+      "control": "shift f14"
+    }
+  ]
+}
