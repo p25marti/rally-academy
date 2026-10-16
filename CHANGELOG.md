@@ -74,6 +74,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   now points to it. F06 (punctures) and F07 (setup comparisons) stay, with the same IDs.
 
 ### Changed
+- The HUD app is listed as "Rally Academy" (was "Rally Academy (Prototype)"), and the Academy's
+  drill details show directions to the venue spot.
 - The in-drive panel is rebuilt in Vue, matching the Academy screen's look: tighter layout
   (four grade lines fit without scrolling), auto-graded / Coming soon tag, Retry highlighted.
   It no longer needs the old panel's workarounds for vanishing after UI reloads.
