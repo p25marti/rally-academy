@@ -1,9 +1,13 @@
 # Stream Deck and key bindings
 
-Every Rally Academy command is a game input action, so anything that can press a key can drive
-the drills: a keyboard, a button box, or an Elgato Stream Deck. The mod ships default bindings
-on keys no keyboard has (F13–F24), so a Stream Deck works out of the box and nothing collides
-with the game's own controls.
+Two ways to drive Rally Academy from a Stream Deck (or a button box, or a script):
+
+- **Direct commands** (recommended): each key calls the mod over local HTTP, e.g.
+  `http://127.0.0.1:29393/retry`. No key emulation, no clashes, and it works even when the game
+  window doesn't have focus. Needs a web-request plugin on the deck ([below](#direct-commands-no-f-keys)).
+- **Keys**: every command is also a game input action with a default key on F13–F24 (keys no
+  keyboard has), so a plain Stream Deck Hotkey works with nothing installed. The game window
+  must have focus.
 
 ## Default bindings
 
@@ -91,11 +95,54 @@ Export it (Stream Deck preferences → Profiles → right-click → Export) and 
 Elgato documents profiles as made in the app and exported, not hand-written, so we keep the
 exported file rather than generating one.
 
+## Direct commands (no F-keys)
+
+The mod listens on **`http://127.0.0.1:29393`**, on your own machine only, and is on by default.
+Each command is a path; GET or POST both work:
+
+| Path | Does |
+| --- | --- |
+| `/retry` | Back to the start, car repaired |
+| `/go-to-drill` | Load the selected drill's map and car, place you at its start |
+| `/previous`, `/next` | Select the previous or next drill |
+| `/menu` | Open or close the Academy screen |
+| `/mark-start` | Mark the start here (a course drill lays its course out from here) |
+| `/venue-start` | Course drills: lay the course out at the venue again |
+| `/mark-finish` | Mark the finish, stop zone or stop line here |
+| `/add-gate`, `/clear-gates` | Mark the next gate here; remove the marked gates |
+| `/pass`, `/miss` | Score a pass or miss (Miss abandons a run on graded drills) |
+| `/auto-retry` | Turn auto-retry on or off |
+| `/save-spot` | Bookmark this place as a possible venue |
+| `/state` | Read the session: drill, phase, time, attempts, medal, auto-retry |
+| `/` | List the commands |
+
+Every reply is JSON with the session state, e.g. `{"ok": true, "command": "next", "state":
+{"drill": "A02", "title": "Clutch engagement and launches", "phase": "setup", ...}}`.
+
+**On the Stream Deck:** install a web-request plugin from the Elgato Marketplace, such as
+[API Ninja](https://marketplace.elgato.com/product/api-ninja-fd59edeb-e7e5-412f-91ef-304c3e03f035)
+(BarRaider) or API Monkey (open source). For each key, add the plugin's request action, set the
+URL (e.g. `http://127.0.0.1:29393/next`) and method GET, and give it the icon from the table
+above. Same layout, same icons; only the action differs.
+
+**Safety.** The listener only accepts connections from this computer, only runs the fixed
+commands above (never code), and refuses requests from web pages (anything with an `Origin` or
+`Referer` header), so a website can't press keys for you.
+
+**Turning it off or moving it.** In `<user folder>/settings/rallyAcademy/prefs.json`, set
+`"remote": false`, or `"remotePort": 29400` if something else uses 29393, then restart the game
+(or run `extensions.rallyAcademy.setRemote(false)` in the console). If the port is taken, the mod
+logs `remote commands off: could not listen on 127.0.0.1:29393` and keeps working.
+
+**Try it** without a deck, in a terminal while the game runs: `curl http://127.0.0.1:29393/next`
+
 ## Troubleshooting
 
+- **Direct commands do nothing:** run `curl http://127.0.0.1:29393/state`; if it can't connect,
+  check `beamng.log` for `remote commands` (turned off, or the port was taken).
 - **Keys do nothing:** the game window must have focus (Stream Deck sends ordinary key
   presses). Check Options → Controls → search "Rally Academy" for the bindings.
 - **You changed a binding in Controls:** your change is saved in the user folder's
   `settings/inputmaps/keyboard.diff` and wins over the mod's default.
-- **Live state on the keys** (timer, medal, countdown) needs a Stream Deck plugin; it's in
-  [IDEAS](IDEAS.md).
+- **Live state on the keys** (timer, medal, countdown) needs a Stream Deck plugin reading
+  `/state`; it's in [IDEAS](IDEAS.md).

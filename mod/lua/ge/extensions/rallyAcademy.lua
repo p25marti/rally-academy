@@ -4,7 +4,7 @@
 local M = {}
 -- Re-read our pure modules whenever the extension (re)loads: extensions.reload re-runs
 -- this file but `require` would keep the old modules (seen on 0.39.4).
-for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots'}) do
+for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots', 'remote'}) do
   package.loaded['ge/extensions/rallyAcademy/' .. name] = nil
 end
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
@@ -14,6 +14,7 @@ local Layout = require('ge/extensions/rallyAcademy/layout')
 local Store = require('ge/extensions/rallyAcademy/store')
 local Course = require('ge/extensions/rallyAcademy/course')
 local Spots = require('ge/extensions/rallyAcademy/spots')
+local Remote = require('ge/extensions/rallyAcademy/remote')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 -- Named venues drills refer to (environment.venue); the loader fills in each drill's map,
 -- display name and spawn from it, so the rest of the mod reads them from the drill.
@@ -247,9 +248,17 @@ local function placeCourse()
   gates = course.gates
 end
 
+local startRemote, pollRemote, stopRemote -- defined under "Remote commands"
+
 function M.onExtensionLoaded()
   load()
+  startRemote()
   output(true)
+end
+
+-- Extension unloading or reloading: free the port, or the next load can't listen on it.
+function M.onExtensionUnloaded()
+  stopRemote()
 end
 
 function M.publish() output(true) end
@@ -716,6 +725,7 @@ local function autoRetryTick(dtSim)
 end
 
 function M.onUpdate(dtReal, dtSim)
+  pollRemote(dtReal)
   if awaitingCar then
     awaitT = awaitT + (dtReal or 0)
     if awaitT >= SPAWN_TIMEOUT then
@@ -1044,6 +1054,97 @@ function M.onSpotSurfaces(id, surfaces)
   Store.saveSpots(data)
 end
 
+-- Remote commands (remote.lua, docs/STREAM_DECK.md) -------------------------------------
+-- A local HTTP listener: http://127.0.0.1:<port>/<command>. Polled every frame and never
+-- blocks: accepting and reading use a zero timeout, and a request is answered once its head
+-- (and any body) has arrived. On by default; prefs.remote = false turns it off.
+
+local server, clients, remotePort = nil, {}, nil
+local CLIENT_TIMEOUT = 2 -- s to send a whole request
+
+-- The session as the remote endpoint reports it.
+local function remoteState()
+  local lesson = selected and byId[selected]
+  return {phase = phase, drill = selected, title = lesson and lesson.title or false,
+          elapsed = cur.elapsed, lastTime = cur.lastTime or false, attempts = attempts, successes = successes,
+          required = lesson and lesson.assessment.requiredPasses or 0, target = lesson and lesson.assessment.attempts or 0,
+          passed = cur.grade and cur.grade.passed, tier = cur.grade and cur.grade.tier or false,
+          autoRetry = prefs.autoRetry ~= false, autoRetryIn = cur.autoRetryIn or false, reason = lastReason}
+end
+
+local function runRemote(c)
+  logf('I', 'remote: /%s', c.path)
+  local ok, err = pcall(M[c.fn], c.arg)
+  if not ok then logf('E', 'remote: /%s failed: %s', c.path, tostring(err)) end
+  return ok, err
+end
+
+function startRemote()
+  if server or prefs.remote == false then return end
+  local okSocket, socket = pcall(require, 'socket')
+  if not okSocket then logf('W', 'remote commands off: no sockets in this game (%s)', tostring(socket)); return end
+  local port = tonumber(prefs.remotePort) or Remote.DEFAULT_PORT
+  local s = socket.tcp()
+  s:setoption('reuseaddr', true)
+  local ok, err = s:bind('127.0.0.1', port)
+  if ok then ok, err = s:listen(8) end
+  if not ok then
+    s:close()
+    logf('W', 'remote commands off: could not listen on 127.0.0.1:%d (%s)', port, tostring(err))
+    return
+  end
+  s:settimeout(0)
+  server, remotePort = s, port
+  logf('I', 'remote commands on http://127.0.0.1:%d', port)
+end
+
+function stopRemote()
+  for _, c in ipairs(clients) do c.sock:close() end
+  clients = {}
+  if server then server:close() end
+  server, remotePort = nil, nil
+end
+
+local function answer(c, status, body)
+  c.sock:send(Remote.response(status, jsonEncode(body)))
+  c.sock:close()
+end
+
+function pollRemote(dt)
+  if not server then return end
+  for _ = 1, 4 do -- a few new connections per frame
+    local sock = server:accept()
+    if not sock then break end
+    sock:settimeout(0)
+    clients[#clients + 1] = {sock = sock, buf = '', age = 0}
+  end
+  for i = #clients, 1, -1 do
+    local c = clients[i]
+    c.age = c.age + (dt or 0)
+    local data, err, partial = c.sock:receive(2048)
+    local chunk = data or partial
+    if chunk and #chunk > 0 then c.buf = c.buf .. chunk end
+    local headEnd = c.buf:find('\r\n\r\n', 1, true)
+    local done = false
+    if #c.buf > Remote.MAX_REQUEST then
+      answer(c, 413, {ok = false, error = 'Request too large'}); done = true
+    elseif headEnd and #c.buf >= headEnd + 3 + Remote.contentLength(c.buf:sub(1, headEnd)) then
+      answer(c, Remote.handle(Remote.parseRequest(c.buf:sub(1, headEnd + 1)), runRemote, remoteState)); done = true
+    elseif err == 'closed' or c.age > CLIENT_TIMEOUT then
+      c.sock:close(); done = true
+    end
+    if done then table.remove(clients, i) end
+  end
+end
+
+-- Turn remote commands on or off (saved), e.g. from the console.
+function M.setRemote(on)
+  prefs.remote = on == true
+  Store.savePrefs(prefs)
+  if prefs.remote then startRemote() else stopRemote() end
+  logf('I', 'remote commands %s', prefs.remote and 'on' or 'off')
+end
+
 -- Developer hooks (tools/ingame scenarios) -----------------------------------------
 
 -- A snapshot of the session for test scripts, instead of reading Lua internals.
@@ -1055,7 +1156,7 @@ function M.debugState()
           tier = cur.grade and cur.grade.tier, nextTier = cur.grade and cur.grade.nextTier and cur.grade.nextTier.text,
           hasCourse = course ~= nil, usingVenueStart = usingVenueStart, autoRetry = prefs.autoRetry ~= false,
           autoRetryIn = cur.autoRetryIn, clipped = cur.clipped, fit = cur.fit, aid = cur.aid,
-          car = carSize and carSize.car}
+          car = carSize and carSize.car, remotePort = remotePort}
 end
 
 -- Record the car's telemetry outside any drill (venue fit tests, tools/ingame/fit.py): no

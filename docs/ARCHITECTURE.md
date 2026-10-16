@@ -12,6 +12,7 @@ mod/                                            exactly the shipped zip root
 │   ├── rules.lua      grading rules over a run record (pure)
 │   ├── gates.lua      gate geometry and crossings (pure)
 │   ├── layout.lua     authored courses laid out from the start; the car's footprint (pure)
+│   ├── remote.lua     local HTTP commands: parsing, routing, replies (pure; the socket is in the extension)
 │   ├── runRecord.lua  per-attempt telemetry record (pure)
 │   ├── store.lua      saved progress and setups (jsonReadFile/jsonWriteFile only)
 │   └── course.lua     world markers: gates, cones, boxes, stop zone/line, finish (debugDrawer only)
@@ -91,6 +92,11 @@ mod/                                            exactly the shipped zip root
   marker, the parking aid and the medal box the car is in), published as `course`.
   Grading goes through `rules.grade`, which adds medal tiers. After a graded run,
   auto-retry counts down 3 s of sim time, then calls Retry (cancelled if the car moves off).
+- **Remote commands** (`remote.lua`, pure; socket in the extension): a TCP listener on
+  `127.0.0.1:29393` (prefs `remote`, `remotePort`) polled at the top of `onUpdate` with zero
+  timeouts. A request is answered once its head and body have arrived; the path picks one of a
+  fixed list of extension functions, run in `pcall`; the reply is JSON with the session state.
+  Browser requests (Origin/Referer) are refused. `onExtensionUnloaded` frees the port.
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 
