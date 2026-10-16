@@ -8,11 +8,15 @@
       <span class="ra-alpha">alpha</span>
     </div>
 
-    <select v-model="selectedId" class="ra-select" @change="choose">
-      <option v-for="x in vm.lessons" :key="x.id" :value="x.id">
-        {{ x.id }} · {{ x.title }}{{ x.parked ? " (needs RWD/AWD)" : "" }}
-      </option>
-    </select>
+    <!-- The game's own drop-down: a native <select> can't open its list in BeamNG's
+         off-screen UI browser (0.39.4), so it couldn't be clicked. -->
+    <BngDropdown
+      v-model="selectedId"
+      class="ra-select"
+      :items="drillItems"
+      show-search
+      search-group-name
+      @value-changed="choose" />
 
     <button v-if="lesson && lesson.environment && lesson.environment.levelId" class="ra-btn ra-goto" @click="cmd('goToDrill')">
       ⤳ Go to drill · {{ lesson.environment.mapDisplayName }}
@@ -53,6 +57,7 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue"
+import { BngDropdown } from "@/common/components/base"
 import { useBridge } from "@/bridge"
 import { useEvents } from "@/services/events"
 
@@ -63,6 +68,26 @@ const vm = reactive({ lessons: [], phase: "loading", successes: 0, attempts: 0 }
 const selectedId = ref(null)
 
 const lesson = computed(() => vm.lesson || null)
+
+// "01  FOUNDATION & PRECISION" -> "Foundation & precision"
+function moduleName(module) {
+  const raw = String(module || "").replace(/^\d+\s*/, "").toLowerCase()
+  return raw.charAt(0).toUpperCase() + raw.slice(1)
+}
+
+// Drill list for the drop-down, with a header per module (curriculum order, as Lua sends it).
+const drillItems = computed(() => {
+  const out = []
+  let letter = null
+  for (const x of Array.isArray(vm.lessons) ? vm.lessons : []) {
+    if (x.id.charAt(0) !== letter) {
+      letter = x.id.charAt(0)
+      out.push({ label: `${letter} · ${moduleName(x.module)}`, value: `module-${letter}`, group: true })
+    }
+    out.push({ label: `${x.id} · ${x.title}${x.parked ? " (needs RWD/AWD)" : ""}`, value: x.id, grouped: true })
+  }
+  return out
+})
 const assessment = computed(() => (lesson.value && lesson.value.assessment) || {})
 const isAuto = computed(() => assessment.value.mode === "automatic")
 
@@ -106,7 +131,8 @@ function cmd(name, arg) {
 }
 
 function choose() {
-  if (selectedId.value) api.engineLua(`extensions.rallyAcademy.select(${JSON.stringify(selectedId.value)})`)
+  const id = selectedId.value
+  if (id && !String(id).startsWith("module-")) api.engineLua(`extensions.rallyAcademy.select(${JSON.stringify(id)})`)
 }
 
 function onState(data) {
@@ -161,12 +187,7 @@ onMounted(() => {
 
 .ra-select {
   width: 100%;
-  padding: 0.25rem;
   font-size: 0.95em;
-  background-color: rgb(var(--bng-cool-gray-800-rgb));
-  color: var(--bng-off-white);
-  border: 1px solid rgb(var(--bng-cool-gray-600-rgb));
-  border-radius: var(--bng-corners-1);
 }
 
 .ra-instructions {

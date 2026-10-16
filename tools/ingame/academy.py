@@ -52,7 +52,7 @@ def wait_panel(timeout=40):
     t0 = time.time()
     while time.time() - t0 < timeout:
         time.sleep(1.5)
-        n = safe(ui, f"return document.querySelectorAll('{PANEL} option').length")
+        n = safe(ui, f"return document.querySelectorAll('{PANEL} .ra-select').length")
         if isinstance(n, int) and n > 0:
             return True
     return False

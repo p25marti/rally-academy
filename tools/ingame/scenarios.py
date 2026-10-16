@@ -8,7 +8,7 @@ Driver (B01's venue spot). They record attempts, then remove them from your prog
 import time
 
 import academy as A
-from game import inp, lua, state, ui
+from game import call, inp, lua, state, ui
 
 SCENARIOS = {}
 
@@ -52,8 +52,15 @@ def smoke():
     A.reload_mod()
     n = A.wait_for(lambda: ui(f"return document.querySelectorAll('{A.PANEL}').length"), 1)
     expect(p, "one HUD panel after a UI reload", n == 1, n)
-    opts = A.wait_for(lambda: ui(f"return document.querySelectorAll('{A.PANEL} option').length"), len(A.drills()))
-    expect(p, "drop-down lists every drill", opts == len(A.drills()), opts)
+    # The drill drop-down must open on a real click (a native <select> never did) and pick.
+    call("ui_click", {"selector": f"{A.PANEL} .ra-select"})
+    opts = A.wait_for(lambda: ui("return document.querySelectorAll('.dropdown-option-label').length"), len(A.drills()))
+    expect(p, "drop-down opens on a click and lists every drill", opts == len(A.drills()), opts)
+    ui("var o=Array.from(document.querySelectorAll('.dropdown-option-label')).find(function(e){return e.textContent.indexOf('B01 ')===0});"
+       "if(o) (o.closest('[bng-nav-item]')||o.parentElement).setAttribute('data-ra-pick','1'); return 1")
+    call("ui_click", {"selector": "[data-ra-pick]"})
+    picked = A.wait_for(lambda: A.debug_state().get("selected"), "B01")
+    expect(p, "picking B01 in the drop-down selects it", picked == "B01", picked)
     # Found by the demo run: a drill with no rules ({} from Lua, not []) crashed the Vue panel.
     A.choose("A01")
     title = A.wait_for(lambda: ui(f"var p=document.querySelector('{A.PANEL} .ra-instructions'); return p ? 'shown' : 'missing'"), "shown")

@@ -84,6 +84,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
+- The drill drop-down on the in-drive panel couldn't be clicked open (a native list doesn't open
+  in the game's UI). It's now the game's own drop-down, grouped by module, with search.
 - The in-drive panel disappeared when a drill without automatic grading was selected (an empty
   rules list from Lua isn't a JavaScript array).
 - Orphaned copies of the HUD panel (left alive by the game after map loads)
