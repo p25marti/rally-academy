@@ -54,6 +54,38 @@ Load ≈ 50 s. All six rally stages here are **tarmac**.
 | I4 | Mixed Circuit 1 | (713, 762, 178) | 6 GRAVEL / 8 ASPHALT, alternating | Surface transitions |
 | I5 | Quarry Loop | (−310, −1864, 161) | gravel/dirt middle, tarmac ends | 4.6 km |
 
+### Rally Forest (`Rally_Forest`): community map, narrow forest tracks
+
+**Community map, not stock:** Rally Forest by dpitkin
+(v1.5.1, 2022, from the BeamNG repository; `mods/repo/Rally_forest_15.zip`). Drills placed here
+only work for players who install it, so it suits optional or alternative venues, not the main
+lineup. About 2 × 2 km of dense forest, lakes and a small town; the map says "20% asphalt, 80%
+dirt road". Surveyed 2026-10-16 on 0.39.4 (`survey.py` finders, report, on-site measurements, fit
+tests in the Covet Student Driver).
+
+**Roads are single-lane forest tracks:** the AI road network gives 5 m everywhere on dirt, and
+measuring across the roads agrees (about 5–6 m of dusty dirt, then drivable dirt and grass verges,
+trees close by). Every corner drill's `venueNeeds.widthM` (6–8 m) rejects them, yet the fit tests
+below drove cleanly: the width rule is stricter than these roads need at drill speeds. The town's
+streets are tarmac, 7–9 m.
+
+| Id | Venue | Where | Surface | Notes |
+| --- | --- | --- | --- | --- |
+| R0 | **Dressed rally stage** | start gate (−13, 4), ends near (392, 50) | dirt | ~4.5 km loop of the whole map, marked by 118 arrow and checkpoint signs plus barriers (the map's `rally.prefab`, with a Sunburst rally DCT or Polo gravel). The player spawns at its start. Candidate for route and stage-style practice |
+| R1 | **Lake S-bend** | (164, 474), `--at=164.3,474.28,5.19,0.2097,-0.9778` | DIRT_DUSTY | 129° of linked bends between two lakes, min radius 14 m. **D02 fit test: FITS** (AI to 50 km/h, 149 m, no contact). The best-looking spot on the map |
+| R2 | Decreasing right | (418, 308), `--at=418.25,307.77,-2.35,0.773,-0.6344` | DIRT_DUSTY | 87°, radius 50 → 17 m. **D03 fit test: FITS** (40 km/h) |
+| R3 | Tight lakeside left | (−103, 40), `--at=-102.67,39.65,-1.69,-0.8017,0.5977` | DIRT_DUSTY | 123°, radius 9.5 m, decreasing; a lake on one side, trees on the other. **C04 fit test: FITS** (40 km/h), though it's not a full 150° hairpin |
+| R4 | Downhill | (225, −16), `--at=225.31,-16.26,5.62,-0.7879,-0.6158` | DIRT_DUSTY | 11% over 64 m. **D06 fit test: FITS** (35 km/h); check the bend on the slope by eye |
+| R5 | Crest | (349, 114), `--at=348.57,113.96,-0.35,0.0332,0.9994` | DIRT_DUSTY | 50 m over the top, open field alongside. **E05 fit test: FITS** (45 km/h) |
+| R6 | Tarmac → dirt | (236, −363) on a bend with an 8.8% descent; also `rally21` (−291, −402) | ASPHALT → DIRT | The only two places in the road network where paved roads meet dirt. D08 (mixed surfaces) by eye; its finder's 90 m straight at (8, −371) is tarmac all the way |
+| R7 | Longest dirt straight | (307, 462) | DIRT_DUSTY | 127 m, 5 m wide, −4.7%, drifting left after 60 m. Too short and narrow for the braking drills; no water seen (E08 unconfirmed) |
+| — | Clearings | (128, −25 … −70) | DIRT / GRASS | Irregular, with scattered trees: **B05 fit test: DOES NOT FIT** (hit a tree at 19 km/h). The terrain scan's other "open areas" were forest floor or a lakebed. **No usable open ground** for skidpad or course drills (A01, B05–B07, C07, D01) |
+
+Other corners from the finder, not fit-tested: 140° decreasing right (224, 292), increasing
+128° right (232, 315), 107° increasing left (−314, −366), 100° decreasing left (178, 142), 100°
+increasing right (237, −363). The full report with aerial views: `survey.py report --open` on
+the map (writes `venue-reports/rally_forest/`, not committed).
+
 ### Others
 | Map | Venue | Where | Surface | Notes |
 | --- | --- | --- | --- | --- |
