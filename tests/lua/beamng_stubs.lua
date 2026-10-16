@@ -85,6 +85,11 @@ function S.install()
     startLevel = function(path) table.insert(h.levelsLoaded, path) end,
   }
   -- verified 0.39.4: the Freeroam menu's way in (enters freeroam mode, then startLevel)
+  h.paused = false
+  _G.simTimeAuthority = { -- verified 0.39.4 (photomode uses the same calls)
+    pause = function(p) h.paused = p end,
+    getPause = function() return h.paused end,
+  }
   h.uiRoutes = {}
   _G.ui_router = {navigate = function(route) table.insert(h.uiRoutes, route) end} -- verified 0.39.4
   h.freeroamStarts = {}

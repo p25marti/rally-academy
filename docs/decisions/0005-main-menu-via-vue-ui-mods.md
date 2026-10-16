@@ -47,5 +47,5 @@ ships an official Vue UI mod system, documented in the game folder at
   rebuild the HUD in Vue, if the Vue mod system can host HUD apps (to check).
 - The Vue mod API is new in 0.39 and may change between game versions. Re-test the
   menu after every game update; the in-game smoke test has a step for it.
-- A pause-menu tab (`ui_pause_actions.registerModTab`) can reuse `AcademyMenu.vue`
-  for switching drills mid-session.
+- In a map, a pause-menu tab (`ui_pause_actions.registerModTab`) shows the same pages
+  (`pause/PausePage.vue`), and a key binding opens the full screen with physics paused.

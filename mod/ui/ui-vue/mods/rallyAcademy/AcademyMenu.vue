@@ -25,42 +25,21 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from "vue"
+import { ref } from "vue"
 import { BngScreenHeading, BngTabs } from "@/common/components/base"
 import { LayoutSingle } from "@/common/layouts"
 import { vBngBlur } from "@/common/directives"
-import { useBridge } from "@/bridge"
-import { academy } from "./academy.js"
+import { academy, useAcademyData } from "./academy.js"
 import ExercisesPage from "./pages/ExercisesPage.vue"
 import AnalysisPage from "./pages/AnalysisPage.vue"
 import AboutPage from "./pages/AboutPage.vue"
 import CreditsPage from "./pages/CreditsPage.vue"
 
-const { lua } = useBridge()
-
 const activeTab = ref(0)
-const lessons = ref([])
-const progress = ref({})
-const selected = ref(null)
-const info = ref({})
-const error = ref("")
+const { lessons, progress, selected, info, error } = useAcademyData()
 
-const back = () => lua.extensions.ui_router.navigate("menu")
-
-onBeforeMount(async () => {
-  try {
-    await lua.extensions.load("rallyAcademy") // already loaded by modScript.lua; harmless if so
-    const data = await academy("getMenuData")
-    lessons.value = Array.isArray(data && data.lessons) ? data.lessons : []
-    // Lua's empty table arrives as [] rather than {}
-    progress.value = data && data.progress && !Array.isArray(data.progress) ? data.progress : {}
-    selected.value = (data && data.selected) || (lessons.value[0] && lessons.value[0].id) || null
-    info.value = (data && data.info) || {}
-    if (!lessons.value.length) error.value = "No drills found. Is the Rally Academy mod enabled?"
-  } catch (e) {
-    error.value = "Couldn't reach the Rally Academy extension: " + (e && e.message ? e.message : e)
-  }
-})
+// Lua decides where Back goes: the game when in a map (and resumes physics), else the main menu.
+const back = () => academy("closeMenu")
 </script>
 
 <style scoped lang="scss">

@@ -80,6 +80,10 @@ BeamNG version and result in the PR.
     menu closes, the HUD appears and you're in the drill car at its start or venue.
     The Analysis, About and Credits tabs open and show your totals, the version and the
     author. Re-test this after every game update (the Vue mod API is new in 0.39).
+15. **In a map**: press Esc. The pause menu has a **Rally Academy** tab; its Exercises,
+    Analysis, About and Credits buttons show those pages. Then bind **Rally Academy: Open
+    menu** (Options → Controls) and press it while driving: the Academy opens over the game
+    and physics pause; press it again, or Back, and you're driving again where you were.
 
 When a step fails, paste the `dev.py log` output into the issue or the chat.
 

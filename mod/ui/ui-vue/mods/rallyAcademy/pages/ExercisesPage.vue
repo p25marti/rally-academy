@@ -46,7 +46,7 @@
         <BngButton :accent="isAuto(chosen) ? ACCENTS.main : ACCENTS.secondary" :disabled="starting" @click="start">
           {{ starting ? "Loading…" : isAuto(chosen) ? "Start drill" : "Practise (Pass/Miss)" }}
         </BngButton>
-        <BngButton :accent="ACCENTS.secondary" @click="$emit('back')">Back</BngButton>
+        <BngButton v-if="showBack" :accent="ACCENTS.secondary" @click="$emit('back')">Back</BngButton>
       </div>
       <p v-if="startError" class="ra-error">{{ startError }}</p>
     </aside>
@@ -62,6 +62,7 @@ const props = defineProps({
   lessons: { type: Array, default: () => [] },
   progress: { type: Object, default: () => ({}) },
   selected: { type: String, default: null },
+  showBack: { type: Boolean, default: true }, // the pause menu has its own back
 })
 defineEmits(["back"])
 

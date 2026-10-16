@@ -11,7 +11,7 @@ read_globals = {
   "jsonReadFile", "jsonWriteFile", "readFile", "writeFile", "FS",
   "deepcopy", "tableSize", "scenetree", "core_vehicles", "core_input_actions",
   "spawn", "getPlayerVehicle", "setExtensionUnloadMode", "getCurrentLevelIdentifier",
-  "getObjectByID", "core_levels", "debugDrawer", "ColorF", "freeroam_freeroam", "ui_router",
+  "getObjectByID", "core_levels", "debugDrawer", "ColorF", "freeroam_freeroam", "ui_router", "simTimeAuthority",
 }
 
 -- Vehicle Lua (runs inside each car's own VM), verified 0.39.4.

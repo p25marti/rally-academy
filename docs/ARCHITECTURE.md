@@ -116,7 +116,11 @@ tabs and slots, with no build step. The main-menu **Academy screen** uses it
 `mod/ui/ui-vue/mods/rallyAcademy/` (`index.js` registers the button and the
 `menu.rallyAcademy` route; `AcademyMenu.vue` is the screen, with the game's tabs for
 `pages/ExercisesPage.vue`, `AnalysisPage.vue`, `AboutPage.vue` and `CreditsPage.vue`;
-`academy.js` holds shared helpers). It calls
+`academy.js` holds shared helpers, including `useAcademyData()`). In a map, Esc opens the
+pause menu with a **Rally Academy** tab whose rail buttons show the same pages
+(`pause/PausePage.vue`), and the "Rally Academy: Open menu" binding opens the full screen
+over the game with physics paused (`openMenu`/`closeMenu`/`toggleMenu`, resumed by the
+route's `onLeave` hook). It calls
 `extensions.rallyAcademy.getMenuData()` and `startDrill(id)`. Rebuilding the HUD in
 Vue is the planned next step.
 

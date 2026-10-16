@@ -615,9 +615,53 @@ function M.getMenuData()
           info = {version = app.version, author = app.author}}
 end
 
+-- Opening the screen inside a map pauses physics (unless already paused); leaving it
+-- resumes only what we paused.
+local menuOpen, pausedForMenu = false, false
+local MENU_ROUTE = 'menu.rallyAcademy'
+
+local function inMap() return getCurrentLevelIdentifier and getCurrentLevelIdentifier() ~= nil end
+
+local function resumeIfWePaused()
+  if pausedForMenu and simTimeAuthority then simTimeAuthority.pause(false) end
+  pausedForMenu = false
+end
+
+-- Key binding / HUD: open the Academy screen (over the game when in a map).
+function M.openMenu()
+  if not (ui_router and ui_router.navigate) then return false end
+  if inMap() and simTimeAuthority and not pausedForMenu and not simTimeAuthority.getPause() then
+    simTimeAuthority.pause(true)
+    pausedForMenu = true
+  end
+  menuOpen = true
+  ui_router.navigate(MENU_ROUTE)
+  return true
+end
+
+-- Back button: to the game when in a map, else to the main menu.
+function M.closeMenu()
+  menuOpen = false
+  resumeIfWePaused()
+  if ui_router and ui_router.navigate then ui_router.navigate(inMap() and 'play' or 'menu') end
+end
+
+function M.toggleMenu()
+  if menuOpen then M.closeMenu() else M.openMenu() end
+end
+
+-- Route lifecycle (index.js luaRoute.onLeave): however the screen was left (Back, Esc,
+-- Start drill), resume what we paused.
+function M.onMenuLeave()
+  menuOpen = false
+  resumeIfWePaused()
+end
+
 -- Start button: select the drill and go to it (loads its map from the main menu).
 function M.startDrill(id)
   if type(id) ~= 'string' or not byId[id] then return false end
+  menuOpen = false
+  resumeIfWePaused()
   M.select(id)
   leaveMenuOnArrival = true
   M.goToDrill()

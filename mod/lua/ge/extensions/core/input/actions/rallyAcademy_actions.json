@@ -7,6 +7,14 @@
     "title": "Rally Academy: Retry",
     "desc": "Return immediately to the marked training start."
   },
+  "rally_academy_menu": {
+    "cat": "vehicle",
+    "order": 100,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.toggleMenu() end",
+    "title": "Rally Academy: Open menu",
+    "desc": "Open or close the Rally Academy screen (pauses the game while open)."
+  },
   "rally_academy_pass": {
     "cat": "vehicle",
     "order": 102,

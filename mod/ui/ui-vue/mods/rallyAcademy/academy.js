@@ -1,4 +1,5 @@
 // Helpers shared by the Academy screen's pages.
+import { ref } from "vue"
 import { runRaw } from "@/bridge/libs/Lua.js"
 
 // The bridge's `lua.*` only knows the game's own functions (LuaFunctionSignatures.js);
@@ -35,4 +36,32 @@ export function groupByModule(lessons, progress) {
     if (isAuto(l)) m.ready++
   }
   return out
+}
+
+// Load everything the pages show (extensions.rallyAcademy.getMenuData). Returns refs that
+// fill in once the data arrives; used by the full screen and the pause-menu cards.
+export function useAcademyData() {
+  const state = {
+    lessons: ref([]),
+    progress: ref({}),
+    selected: ref(null),
+    info: ref({}),
+    error: ref(""),
+    loaded: ref(false),
+  }
+  ;(async () => {
+    try {
+      const data = await academy("getMenuData")
+      state.lessons.value = Array.isArray(data && data.lessons) ? data.lessons : []
+      // Lua's empty table arrives as [] rather than {}
+      state.progress.value = data && data.progress && !Array.isArray(data.progress) ? data.progress : {}
+      state.selected.value = (data && data.selected) || (state.lessons.value[0] && state.lessons.value[0].id) || null
+      state.info.value = (data && data.info) || {}
+      if (!state.lessons.value.length) state.error.value = "No drills found. Is the Rally Academy mod enabled?"
+    } catch (e) {
+      state.error.value = "Couldn't reach the Rally Academy extension: " + (e && e.message ? e.message : e)
+    }
+    state.loaded.value = true
+  })()
+  return state
 }

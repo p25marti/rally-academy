@@ -1016,4 +1016,38 @@ function T.menu_start_selects_the_drill_and_loads_its_map()
   _G.extensions = nil
 end
 
+function T.menu_key_in_a_map_pauses_and_back_resumes()
+  local h, M = setup()
+  M.toggleMenu()
+  eq(h.uiRoutes[#h.uiRoutes], 'menu.rallyAcademy', 'screen opened')
+  eq(h.paused, true, 'physics paused while browsing')
+  M.toggleMenu()
+  eq(h.uiRoutes[#h.uiRoutes], 'play', 'back to driving')
+  eq(h.paused, false, 'resumed')
+end
+
+function T.menu_leaves_an_already_paused_game_paused()
+  local h, M = setup()
+  h.paused = true
+  M.openMenu()
+  M.onMenuLeave() -- left with Esc
+  eq(h.paused, true, 'the player paused it, so it stays paused')
+end
+
+function T.menu_start_drill_resumes_physics()
+  local h, M = setup()
+  M.openMenu()
+  M.startDrill('A01')
+  eq(h.paused, false, 'resumed for the drive')
+end
+
+function T.menu_back_from_the_main_menu_returns_there()
+  local h, M = setup()
+  h.level = nil
+  M.openMenu()
+  eq(h.paused, false, 'nothing to pause without a map')
+  M.closeMenu()
+  eq(h.uiRoutes[#h.uiRoutes], 'menu', 'main menu')
+end
+
 return T

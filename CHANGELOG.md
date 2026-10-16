@@ -52,6 +52,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   Tabs: **Exercises**, **Analysis** (attempts, pass rates, best times and progress per
   module, from your saved progress), **About** and **Credits**.
 
+- Open the Academy from inside a map: a **Rally Academy** tab in the pause menu (Esc), and
+  a **Rally Academy: Open menu** binding (Options → Controls) that opens it over the game
+  with physics paused. Back returns you to driving.
+
 ### Changed
 - Go to drill starts maps the way the game's Freeroam menu does, so it also works from
   the main menu.

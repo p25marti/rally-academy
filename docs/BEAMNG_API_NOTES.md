@@ -99,6 +99,9 @@ Spike 2026-10-15 on 0.39.4 (Covet student_driver, Driver Training); answers GRAD
 | The Vue bridge's `lua.*` only has functions listed in `LuaFunctionSignatures.js`; others need `runRaw` from `@/bridge/libs/Lua.js` | verified 0.39.4 | `lua.extensions.rallyAcademy` is undefined; `runRaw("extensions.rallyAcademy.getMenuData()")` returns the table |
 | `core_levels.startLevel` from the main menu loads the map but doesn't enter freeroam: no HUD layout, the menu route stays up | verified 0.39.4 | use `freeroam_freeroam.startFreeroam(path)`, as the Freeroam menu does |
 | After a map started from our menu, the UI stays on our route until `ui_router.navigate('play')` | verified 0.39.4 | the game's own main-menu exit handler navigates to `play` in freeroam; we do the same once the car is placed |
+| `simTimeAuthority.pause(bool)` / `getPause()` pause and resume physics (photomode uses them) | verified 0.39.4 | the Academy key binding pauses while the screen is open over a map |
+| Route lifecycle hook `meta.luaRoute.onLeave = "rallyAcademy.onMenuLeave"` runs when the route is left by any path | verified 0.39.4 | leaving our route with `ui_router.navigate('play')` called it and physics resumed |
+| Pause-menu mod tab: `ui_pause_actions.registerModTab` + `registerModButton({componentName, props})` | partly verified 0.39.4 | the **Rally Academy** tab shows in the pause menu's top bar and `getVisibleModTabs()` lists its 4 buttons; scripted clicks (DOM `click()`, `ui_click`) don't switch pause tabs, not even native ones visibly, so the card content needs a real click to confirm |
 | The game has its own **Rally** entry under More... | seen 0.39.4 | not investigated yet: may overlap with F-module stages (PRIOR_ART) |
 
 ## Developer loop
