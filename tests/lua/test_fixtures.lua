@@ -24,6 +24,9 @@
 --      to refuse a downshift that would over-rev, so no_over_rev is unit-tested only.
 -- A04 (course): BMP run-up, three gates 25 m apart, arcade gearbox, throttle-only speed hold:
 --      steady = 30.5 km/h target (29.3 / 30.0 / 29.1 at the gates: gold); fast = 40 km/h after 60 m.
+-- A05 (course): BMP dirt arena, stop line 60 m from the venue start, pure-pursuit script aimed at a
+--      bumper distance before the line, braking at 3.5 m/s2 from 44 km/h: gold = 0.48 m before;
+--      bronze = 1.25 m (misses silver's 1 m); just_past = 0.01 m past (a miss); past = 0.78 m past.
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -49,9 +52,16 @@ local function drillRules(id)
   end
 end
 
+-- Recordings with a marked zone or line (meta.finish): graded on the drill's rules minus the
+-- authored-course ones (A05's old marked-line runs predate its course).
+local COURSE_ONLY = {markers_clear = true, park_in_box = true, cones_passed = true}
 local function grade(name, drill)
   local rec = fixture(name)
-  return Rules.evaluate(drillRules(drill or 'B01'), rec, {zone = rec.meta.finish, gates = rec.meta.gates}), rec
+  local rules = {}
+  for _, r in ipairs(drillRules(drill or 'B01')) do
+    if not COURSE_ONLY[r.type] then rules[#rules + 1] = r end
+  end
+  return Rules.evaluate(rules, rec, {zone = rec.meta.finish, gates = rec.meta.gates}), rec
 end
 
 local function check(res, ruleType)
@@ -219,6 +229,18 @@ function T.a04_speed_hold_rules_and_medals_still_agree_with_the_in_game_verdicts
   local fast, frec = gradeCourse('a04_fast', 'A04')
   eq(fast.passed, frec.grade.passed, 'fast: same verdict')
   has(check(fast, 'speed_at_gates').text, 'gate 3 too fast')
+end
+
+function T.a05_course_line_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {a05c_gold = 'gold', a05c_bronze = 'bronze', a05c_just_past = false, a05c_past = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'A05')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('a05c_just_past', 'A05'), 'stop_before_line').text, 'Stopped 0.01 m past the line')
+  has(check(gradeCourse('a05c_gold', 'A05'), 'stop_before_line').text, 'Stopped 0.48 m before the line')
 end
 
 local function ruleCheck(name, rule)

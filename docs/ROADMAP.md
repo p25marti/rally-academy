@@ -83,7 +83,8 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       recorded runs.
 - [ ] Module A, drill by drill, to the same standard as A01 (course data, medals, coaching).
       Done: A01, A02 (course on the start straight, 0–40 time, medals), A03 (downshifts, over-rev,
-      medals), A04 (course, tighter speed bands for medals). Next: A05.
+      medals), A04 (course, tighter speed bands for medals), A05 (course stop line, bumper-exact,
+      medals). Next: A06.
 
 ## P3 — Machine-readable drills
 
@@ -114,6 +115,6 @@ live in [IDEAS.md](IDEAS.md) until the owner decides to pick one up.
 | Issue | Impact | Tracked by |
 | --- | --- | --- |
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
-| Cone contact isn't detected for marked courses | Cones barely damage a car; authored courses (A01) measure contact with their drawn cones instead, but marked drills (A05, D01) can't grade it | authored courses, scene control (GRADING §7) |
+| Cone contact isn't detected for marked courses | Cones barely damage a car; authored courses (A01, A05) measure contact with their drawn cones instead, but marked drills (B01, D01) can't grade it | authored courses, scene control (GRADING §7) |
 | Owner hasn't driven the auto-graded drills on the rig yet | Scripted runs use the arcade gearbox; a real manual-gearbox stall or missed shift (A02) is only unit-tested; A01's and A02's medal targets are set from scripted runs | TESTING |
 | Pass/Miss is self-assessed (all but A01–A05, B01, B02) | No objective grading | P2/P3 |

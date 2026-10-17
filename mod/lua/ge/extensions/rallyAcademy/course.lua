@@ -91,6 +91,22 @@ local function drawBox(box, boxes, fit)
   end
 end
 
+-- A course's stop line across the ground, and thin medal lines before it (each zone's far edge),
+-- coloured by medal; the zone the car's bumper is in now is drawn green.
+local function drawCourseLine(line, zones, fit)
+  local fx, fy = line.dir.x, line.dir.y
+  local rx, ry, half = fy, -fx, line.widthM / 2
+  local z = line.z - GROUND + 0.03
+  local function across(back, radius, col)
+    local cx, cy = line.x - fx * back, line.y - fy * back
+    debugDrawer:drawCylinder(vec3(cx - rx * half, cy - ry * half, z), vec3(cx + rx * half, cy + ry * half, z), radius, col)
+  end
+  across(0, 0.08, colour('missed'))
+  for _, zn in ipairs(zones or {}) do
+    across(zn.maxM, zn.name == fit and 0.05 or 0.03, colour(zn.name == fit and 'passed' or zn.name))
+  end
+end
+
 -- course = {
 --   gates = {...}, gateResults = {[i] = 'passed' | 'missed'}, nextGate = index or nil,
 --   finish = {pos, dir, radius} or nil, finishKind = 'line' | 'zone' | 'circle',
@@ -98,6 +114,7 @@ end
 --   cones = {{x, y, z, dir, keep}}, coneResults = {[i] = 'passed' | 'missed'}, nextCone = index or nil,
 --   box = {x, y, z, dir, lengthM, widthM}, boxes = {{name, inset}}, fit = medal box the car is in,
 --   footprint = the car's four corners (near the box), or nil
+--   line = {x, y, z, dir, widthM}, lineCones = {{x, y, z}}, lineZones = {{name, maxM}}: a stop line
 -- }
 function C.draw(course)
   if not (debugDrawer and ColorF) then return end
@@ -107,6 +124,10 @@ function C.draw(course)
   for i, c in ipairs(course.cones or {}) do
     drawCone(c, course.coneResults and course.coneResults[i])
     if i == course.nextCone then drawPassHint(c) end
+  end
+  if course.line then
+    drawCourseLine(course.line, course.lineZones, course.fit)
+    for _, c in ipairs(course.lineCones or {}) do drawCone(c, nil) end
   end
   if course.box then
     drawBox(course.box, course.boxes or {{name = 'bronze', inset = 0}}, course.fit)

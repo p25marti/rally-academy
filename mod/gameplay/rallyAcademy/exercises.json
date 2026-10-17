@@ -497,7 +497,7 @@
       },
       "environment": {
         "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Straight approach to a stop box marked on the open dirt.",
+        "areaHint": "BMP dirt arena (MAPS W2): the course is laid out from the venue's spawn: the stop line 60 m ahead, on flat dirt.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 100,
@@ -512,16 +512,24 @@
           ]
         }
       },
-      "instructions": "Brake once from 40 km/h and stop at a cone-marked line.",
-      "resetInstructions": "Mark the start about 80 m before the line. Mark the line by parking with your front bumper on it, facing the way you'll arrive, and pressing Mark stop line.",
-      "props": "Use visible cone pair to indicate line; adjust start distance for runway available.",
+      "instructions": "Reach 40 km/h, then brake once and stop with the front bumper just before the stop line (0-2 m). No wheel lock.",
+      "resetInstructions": "Go to drill puts you in the arena with the stop line and its cones laid out ahead. Move course here re-lays it from where you are.",
+      "props": "None: the line and its cones are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Front bumper ends 0-2 m before the line, braking from 40 km/h, with no wheel lock. Cone contact: not graded yet.",
+        "successDefinition": "Reach 38 km/h, then stop with the front bumper 0-2 m before the line (measured from the car's own bumper), with no wheel locked over 0.2 s and no cone touched. Silver: 0-1 m, no lock over 0.15 s. Gold: 0-0.5 m, no lock over 0.1 s.",
         "metricToRecord": "Accurate stops / 10",
         "mode": "automatic",
         "endWhen": "stopped",
+        "course": {
+          "line": {
+            "x": 0,
+            "y": 60,
+            "widthM": 8,
+            "label": "Stop line"
+          }
+        },
         "rules": [
           {
             "type": "entry_speed",
@@ -535,6 +543,43 @@
           {
             "type": "no_sustained_lockup",
             "maxSeconds": 0.2
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_reverse",
+            "maxM": 0.3
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "stop_before_line",
+                "minM": 0,
+                "maxM": 1
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.15
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "stop_before_line",
+                "minM": 0,
+                "maxM": 0.5
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.1
+              }
+            ]
           }
         ]
       },

@@ -195,19 +195,23 @@ def a04():
 
 @scenario
 def stops():
-    """A05 stop line and B02 lockup recovery: one PASS and one MISS each."""
+    """A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 lockup recovery (BMP run-up):
+    one PASS and one MISS each."""
     p = []
     A.reload_mod(ui_too=False)
     A.fresh_sampler()
     A.choose("A05")
-    sp = on_straight()
-    A.braking_run(42, lambda k, t: A.eased_brake(k))
-    pos, _ = state()
-    A.place({"x": pos[0], "y": pos[1], "z": pos[2]}, sp["dir"], ahead=1.0)  # line 1 m past the stop
-    A.click("Mark stop line")
-    s = precise(lambda: A.braking_run(42, lambda k, t: A.eased_brake(k)))
-    expect(p, "A05 eased stop passes", s.get("passed") is True, A.grade_lines())
-    expect(p, "A05 late braking misses", A.braking_run(42, lambda k, t: 0 if t < 0.5 else A.eased_brake(k)).get("passed") is False, A.grade_lines())
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A05)")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    front = 1.81  # Covet: front bumper ahead of the car's position (catalogued footprint)
+
+    def line_run(before_m):
+        return A.course_run("A05", [(0, 0), (0, 60 - front - before_m)], kmh=44, decel=3.5, max_throttle=0.7)
+    s = precise(lambda: line_run(1.0))
+    expect(p, "A05 stop just before the line passes", s.get("passed") is True, A.grade_lines())
+    expect(p, "A05 stop past the line misses", line_run(-1.0).get("passed") is False, A.grade_lines())
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
     A.choose("B02")
     on_straight()
     s = A.braking_run(62, lambda k, t: 1.0 if t < 0.6 else A.eased_brake(k))

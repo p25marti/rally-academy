@@ -57,6 +57,18 @@ function L.place(def, start)
     out.box = {x = x, y = y, z = start.pos.z, dir = dir, lengthM = def.box.lengthM, widthM = def.box.widthM,
                label = def.box.label}
   end
+  if def.line then
+    -- A line across the course to stop before (A05), with a cone at each end.
+    local x, y = L.toWorld(f, def.line.x or 0, def.line.y)
+    local half = (def.line.widthM or 8) / 2
+    out.line = {x = x, y = y, z = start.pos.z, dir = dir, widthM = def.line.widthM or 8, label = def.line.label}
+    out.lineCones = {}
+    for i, side in ipairs({-1, 1}) do
+      local cx, cy = x + f.rx * half * side, y + f.ry * half * side
+      out.lineCones[i] = {x = cx, y = cy, z = start.pos.z, dir = dir}
+      out.markers[#out.markers + 1] = {x = cx, y = cy, name = side < 0 and 'the left cone of the line' or 'the right cone of the line'}
+    end
+  end
   return out
 end
 
@@ -114,6 +126,20 @@ function L.boxFit(box, car, x, y, hx, hy, inset)
   worst.along, worst.side = dx * bx + dy * by, dx * by - dy * bx
   worst.inside = worst.margin >= 0
   return worst
+end
+
+-- Where the car's front bumper is against a line (facing `line.dir`): metres before it
+-- (negative = past it), and the body centre's offset to the side of the line's centre.
+function L.bumperToLine(line, car, x, y, hx, hy)
+  local lx, ly = unit(line.dir.x, line.dir.y)
+  local front = -math.huge
+  for _, c in ipairs(L.corners(car, x, y, hx, hy)) do
+    front = math.max(front, (c.x - line.x) * lx + (c.y - line.y) * ly)
+  end
+  local fx, fy = unit(hx, hy)
+  local midA, midS = (car.front - car.rear) / 2, (car.right - car.left) / 2
+  local cx, cy = x + fx * midA + fy * midS, y + fy * midA - fx * midS
+  return -front, (cx - line.x) * ly - (cy - line.y) * lx
 end
 
 -- Cones -------------------------------------------------------------------------

@@ -9,8 +9,8 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 **Status:** the telemetry sampler, run records and the rule engine exist.
 Seven drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
-medals), **A04** (speed hold through gates on a course, with medals) (speed hold through gates), **A05** (stop before a
-line), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
+medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
+on a course, with medals), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -123,7 +123,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `gates_passed` | none | Every marked gate driven through, in order, inside its width |
 | `speed_at_gates` | `minKmh`, `maxKmh` (optional `gate`: one gate, `-1` = last) | Speed when crossing each gate is inside the band |
 | `no_brake_between_gates` | none (optional `fromGate`, `toGate`) | No brake above 0.1 between the two gates while moving faster than 2 m/s |
-| `stop_before_line` | `minM`, `maxM` (optional `widthM` 8) | The car rests with its front bumper `minM`–`maxM` before the marked line. The line is marked by parking with the bumper on it, so the car's centre moves exactly as the bumper does |
+| `stop_before_line` | `minM`, `maxM` (optional `widthM` 8) | The car rests with its front bumper `minM`–`maxM` before the line. With an authored course line (`assessment.course.line`) the distance is measured from the car's own front bumper (its measured footprint); with a marked line, from where the car's centre was when the bumper was parked on it |
 | `lockup_recovered` | `maxSeconds` (optional `minSeconds` 0.2) | The longest lock is at least `minSeconds` (you did provoke one) and at most `maxSeconds` (you released it) |
 | `no_sustained_wheelspin` | `maxSeconds` (optional `ratio` 1.25, `slackKmh` 5) | No wheel turns faster than `ratio` × the car's speed + `slackKmh` on throttle for longer than `maxSeconds` |
 | `no_stall` | none | The engine never stops after running during the run (`eng` flag; RPM reads ~160 while re-idling after a reset) |
@@ -190,6 +190,11 @@ a box 1 m smaller all round; gold: under 6000 rpm, 0.4 s, 0.15 s, 1.5 m smaller.
 2nd at about 60 km/h (6200 rpm), so reaching the gate in 3rd means shifting up around 45 km/h:
 gear choice is part of the drill. Scripted with the sequential gearbox and scripted gears (the
 arcade box holds 2nd to 61 km/h): gold.
+
+A05 targets (BMP dirt arena, stop line 60 m from the venue start, from 38+ km/h): bronze 0–2 m before
+the line with no lock over 0.2 s; silver 0–1 m, 0.15 s; gold 0–0.5 m, 0.1 s. The line is drawn with a
+cone at each end and thin gold, silver and bronze lines before it; near it the HUD reads "1.4 m to
+the line". Scripted runs: 0.48 m (gold), 1.25 m (bronze), 0.01 m past (miss).
 
 A04 targets (BMP run-up, three gates 25 m apart): bronze 27–33 km/h at every gate with no braking
 between them; silver 28–32; gold 29–31. Gate speeds are shown to a tenth, since the medal bands are

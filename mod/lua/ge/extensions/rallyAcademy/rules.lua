@@ -26,6 +26,17 @@ end
 
 local E = {}
 
+-- The car's footprint for this run (measured at Retry), or a typical small car's.
+local function carOf(ctx)
+  return (ctx and ctx.car) or Layout.centredCar(4, 1.8)
+end
+
+local function heading(s)
+  if s.hx and (s.hx ~= 0 or s.hy ~= 0) then return s.hx, s.hy end
+  return nil
+end
+
+
 -- Peak speed reached on the run (the approach speed for a braking drill). Not "speed
 -- when the brake was first touched": right after a Retry the brake reads 0.3 (the
 -- game's idle hold, seen on 0.39.4), which would look like braking from 0 km/h.
@@ -68,6 +79,22 @@ end
 -- front bumper on it, so the car's centre moves exactly as its bumper does.
 -- rule: {type = 'stop_before_line', minM = 0, maxM = 2, widthM = 8}; ctx.zone = {pos, dir}
 function E.stop_before_line(rule, samples, ctx)
+  local min, max = rule.minM or 0, rule.maxM or 2
+  local target = string.format('target %g-%g m before it', min, max)
+  local line = ctx and ctx.course and ctx.course.line
+  if line then
+    -- An authored line: measure from the car's own front bumper (its measured footprint).
+    local last, hx, hy = samples[#samples], nil, nil
+    if last then hx, hy = heading(last) end
+    if not (last and last.x and hx) then return false, 'No position data for this run' end
+    local before, side = Layout.bumperToLine(line, carOf(ctx), last.x, last.y, hx, hy)
+    if math.abs(side) > line.widthM / 2 then
+      return false, string.format('Stopped %.1f m to the side of the line', math.abs(side) - line.widthM / 2)
+    end
+    if before < min then return false, string.format('Stopped %.2f m past the line (%s)', min - before, target) end
+    if before > max then return false, string.format('Stopped %.2f m before the line (%s)', before, target) end
+    return true, string.format('Stopped %.2f m before the line (%s)', before, target)
+  end
   local zone = ctx and ctx.zone
   if not (zone and zone.pos and zone.dir) then
     return false, 'No stop line marked: park with your front bumper on the line and press Mark stop line'
@@ -80,8 +107,7 @@ function E.stop_before_line(rule, samples, ctx)
   dx, dy = dx / n, dy / n
   local px, py = last.x - zone.pos.x, last.y - zone.pos.y
   local before, side = -(px * dx + py * dy), math.abs(px * dy - py * dx)
-  local min, max, halfW = rule.minM or 0, rule.maxM or 2, (rule.widthM or 8) / 2
-  local target = string.format('target %g-%g m before it', min, max)
+  local halfW = (rule.widthM or 8) / 2
   if side > halfW then return false, string.format('Stopped %.1f m to the side of the line', side - halfW) end
   if before < min then return false, string.format('Stopped %.1f m past the line (%s)', min - before, target) end
   if before > max then return false, string.format('Stopped %.1f m before the line (%s)', before, target) end
@@ -491,16 +517,6 @@ local function courseOf(ctx, what)
   local course = ctx and ctx.course
   if not (course and course[what]) then return nil end
   return course
-end
-
--- The car's footprint for this run (measured at Retry), or a typical small car's.
-local function carOf(ctx)
-  return (ctx and ctx.car) or Layout.centredCar(4, 1.8)
-end
-
-local function heading(s)
-  if s.hx and (s.hx ~= 0 or s.hy ~= 0) then return s.hx, s.hy end
-  return nil
 end
 
 -- Every course cone passed on the side its `keep` says.

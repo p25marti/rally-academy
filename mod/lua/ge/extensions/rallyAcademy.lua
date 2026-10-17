@@ -501,6 +501,21 @@ end
 
 -- The parking box and its medal boxes, lowest first: {{name, inset}} (bronze = the drill's
 -- own park_in_box rule, then each tier's smaller box).
+-- A course line's medal zones, widest first: {{name, maxM}} (metres before the line the front
+-- bumper may stop for that medal, from stop_before_line in the rules and the tiers).
+local function tierLines()
+  local out = {}
+  for _, r in ipairs(assessment().rules or {}) do
+    if r.type == 'stop_before_line' then out[1] = {name = 'bronze', maxM = r.maxM or 2, minM = r.minM or 0} end
+  end
+  for _, t in ipairs(assessment().tiers or {}) do
+    for _, r in ipairs(t.rules or {}) do
+      if r.type == 'stop_before_line' then out[#out + 1] = {name = t.name, maxM = r.maxM or 2, minM = r.minM or 0} end
+    end
+  end
+  return out
+end
+
 local function tierBoxes()
   local out = {{name = 'bronze', inset = 0}}
   for _, r in ipairs(assessment().rules or {}) do
@@ -564,6 +579,7 @@ local function drawCourse()
     zoneLength = zoneLength, zoneWidth = zoneWidth,
     cones = course and course.cones, coneResults = cur.coneResults, nextCone = active and cur.coneIdx or nil,
     box = course and course.box, boxes = course and course.box and tierBoxes(), fit = cur.fit,
+    line = course and course.line, lineCones = course and course.lineCones, lineZones = course and course.line and tierLines(),
     footprint = footprint,
   })
 end
@@ -607,6 +623,15 @@ local function trackCourse(veh, vpos)
       end
     end
   end
+  if course.line then
+    local before = Layout.bumperToLine(course.line, car, vpos.x, vpos.y, h.x, h.y)
+    cur.fit = nil
+    for _, z in ipairs(tierLines()) do
+      if before >= z.minM and before <= z.maxM then cur.fit = z.name end
+    end
+    cur.aid = math.abs(before) < 25 and (before >= 0 and string.format('%.1f m to the line', before)
+      or string.format('%.1f m past the line', -before)) or nil
+  end
   if not course.box then return end
   local first
   cur.fit = nil
@@ -639,6 +664,13 @@ function liveCourse()
     end
     steps[#steps + 1] = {label = course.box.label or 'Box', state = state}
   end
+  if course.line then
+    local state = 'todo'
+    for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
+      if c.type == 'stop_before_line' then state = c.ok and 'passed' or 'missed' end
+    end
+    steps[#steps + 1] = {label = course.line.label or 'Line', state = state}
+  end
   if phase == 'ready' or phase == 'running' then
     for _, st in ipairs(steps) do
       if st.state == 'todo' then st.state = 'next'; break end
@@ -658,7 +690,7 @@ local function setupMissing()
   local gateRules = {}
   for _, t in ipairs(Rules.GATE_RULES) do gateRules[t] = true end
   for _, r in ipairs(assessment().rules or {}) do
-    if ZONE_RULES[r.type] and not finishGate then return true end
+    if ZONE_RULES[r.type] and not finishGate and not (course and course.line) then return true end
     if gateRules[r.type] and #gates == 0 then return true end
   end
   return false

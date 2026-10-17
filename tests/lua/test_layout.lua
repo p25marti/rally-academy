@@ -94,4 +94,21 @@ function T.frame_handles_a_start_with_no_horizontal_direction()
   eq(y, 2, 'ahead is +y')
 end
 
+function T.bumper_to_line_measures_from_the_front_of_the_body()
+  local line = {x = 0, y = 10, dir = {x = 0, y = 1}, widthM = 8}
+  local before, side = L.bumperToLine(line, COVET, 0, 7, 0, 1)
+  near(before, 10 - 7 - 1.85, 1e-9, 'front bumper 1.15 m before the line')
+  near(side, -0.325, 1e-9, 'body centre 0.325 m left of the line centre')
+  near(L.bumperToLine(line, COVET, 0, 8.65, 0, 1), -0.5, 1e-9, 'half a metre past')
+end
+
+function T.a_course_line_gets_a_cone_at_each_end_as_markers()
+  local c = L.place({line = {x = 0, y = 60, widthM = 8, label = 'Stop line'}}, NORTH)
+  near(c.line.y, 60, 1e-9, 'line 60 m ahead')
+  eq(c.line.label, 'Stop line', 'label')
+  eq(#c.lineCones, 2, 'two cones')
+  near(c.lineCones[1].x, -4, 1e-9, 'left cone at the line end')
+  eq(c.markers[2].name, 'the right cone of the line', 'cones are markers')
+end
+
 return T

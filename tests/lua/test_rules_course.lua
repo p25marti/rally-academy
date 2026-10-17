@@ -140,4 +140,17 @@ function T.course_rules_explain_a_missing_course()
   has(check({type = 'markers_clear'}, rec, {}).text, 'no course laid out')
 end
 
+function T.stop_before_a_course_line_uses_the_front_bumper()
+  local course = L.place({line = {x = 0, y = 60, widthM = 8}}, START)
+  local rule = {type = 'stop_before_line', minM = 0, maxM = 2}
+  local function stopAt(y) return drive({{0, 0}, {0, y}}) end
+  local ok = R.evaluate({rule}, stopAt(60 - 1.85 - 0.4), {course = course, car = COVET}).checks[1]
+  eq(ok.ok, true, ok.text)
+  has(ok.text, 'Stopped 0.40 m before the line')
+  local past = R.evaluate({rule}, stopAt(60 - 1.85 + 0.3), {course = course, car = COVET}).checks[1]
+  has(past.text, 'Stopped 0.30 m past the line')
+  local gold = R.evaluate({{type = 'stop_before_line', minM = 0, maxM = 0.5}}, stopAt(60 - 1.85 - 0.8), {course = course, car = COVET}).checks[1]
+  has(gold.text, 'Stopped 0.80 m before the line (target 0-0.5 m before it)')
+end
+
 return T
