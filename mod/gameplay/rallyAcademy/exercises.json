@@ -672,8 +672,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight; predict the stopping point before each run.",
+        "venue": "bmp-gravel-runup",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): start 120 m behind the start line; the straight is flat from 60 m before the line to 50 m past it, then cambers and banks, so stops belong between the line and about 45 m past it.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 120,
@@ -692,7 +692,7 @@
         }
       },
       "instructions": "Before each run, estimate stopping spot, then brake from exactly 50 km/h; six runs per surface.",
-      "resetInstructions": "Set a saved start in each location; use same 50 km/h trigger and same car/tires.",
+      "resetInstructions": "Go to drill puts you 120 m behind the start line. Reach 50 km/h and brake so you stop on the flat, no more than about 45 m past the line.",
       "props": "Record separate pavement/gravel observations; surface runs need two saved positions.",
       "assessment": {
         "attempts": 12,
