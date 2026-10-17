@@ -929,7 +929,7 @@
       },
       "environment": {
         "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): start 120 m behind the start line; the straight is flat from 60 m before the start line to 50 m past it, then cambers and banks, so stops belong between the line and about 45 m past it.",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line: the stop zone sits on the flat gravel 30 m past the line.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,
@@ -944,15 +944,23 @@
           ]
         }
       },
-      "instructions": "From 70 km/h, brake progressively to the stop zone; adjust brake pressure near grip limit.",
-      "resetInstructions": "Go to drill puts you 120 m behind the start line. Accelerate to 70 km/h and mark the stop zone on the flat gravel 25-45 m past the line (the straight banks further on).",
-      "props": "Keep any ABS settings unchanged; watch front wheels / brake HUD.",
+      "instructions": "Reach 70 km/h on the run-up, then brake progressively at the grip limit and stop with the car's centre in the stop zone. No long lockups.",
+      "resetInstructions": "Go to drill puts you on the run-up with the stop zone laid out ahead. Move course here re-lays it from where you are.",
+      "props": "None: the stop zone is drawn for you. Keep any ABS settings unchanged.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Reach at least 65 km/h, then stop with the car's centre inside the 5 m x 6 m zone, with no wheel locked for more than 0.5 s. (Cone contact: not graded yet.)",
+        "successDefinition": "Reach at least 65 km/h, then stop with the car's centre inside the 5 m x 6 m stop zone, with no wheel locked for more than 0.5 s and no reversing. Silver: inside the 3 m x 4 m zone, no lock over 0.3 s. Gold: inside the 1.5 m x 3 m zone, no lock over 0.2 s.",
         "metricToRecord": "Successful threshold stops / 10",
         "mode": "automatic",
+        "endWhen": "stopped",
+        "course": {
+          "zone": {
+            "x": 0,
+            "y": 150,
+            "label": "Stop zone"
+          }
+        },
         "rules": [
           {
             "type": "entry_speed",
@@ -966,9 +974,42 @@
           {
             "type": "no_sustained_lockup",
             "maxSeconds": 0.5
+          },
+          {
+            "type": "no_reverse",
+            "maxM": 0.3
           }
         ],
-        "endWhen": "stopped"
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "stop_zone",
+                "lengthM": 3,
+                "widthM": 4
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "stop_zone",
+                "lengthM": 1.5,
+                "widthM": 3
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.2
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -987,7 +1028,7 @@
       },
       "environment": {
         "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): same braking zone as B01; the straight is flat from 60 m before the start line to 50 m past it, then cambers and banks, so stops belong between the line and about 45 m past it.",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line, with a large stop area on the flat 10-50 m past the line.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,
@@ -1002,16 +1043,23 @@
           ]
         }
       },
-      "instructions": "Briefly provoke lockup using heavy braking, release enough to restore rolling grip and stop.",
-      "resetInstructions": "Go to drill puts you 120 m behind the start line. Reach 60 km/h and brake so you stop before about 45 m past the line, while the gravel is still flat.",
+      "instructions": "Reach 55 km/h, brake hard enough to lock the wheels, release quickly to get them rolling again, and stop inside the stop area without spinning.",
+      "resetInstructions": "Go to drill puts you on the run-up with the stop area laid out ahead. Move course here re-lays it from where you are.",
       "props": "Verify ABS is absent/disabled; if ABS cannot be removed use another non-ABS configuration.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "From 55+ km/h, provoke a lockup and release it within 1 s, then stop without spinning and with the car on the road (asphalt or gravel).",
+        "successDefinition": "From 55+ km/h, provoke a lockup (at least 0.2 s) and release it within 1 s, then stop inside the 40 m stop area without spinning, on the road. Silver: released within 0.7 s. Gold: within 0.5 s.",
         "metricToRecord": "Correct lockup recoveries / 10",
         "mode": "automatic",
         "endWhen": "stopped",
+        "course": {
+          "zone": {
+            "x": 0,
+            "y": 150,
+            "label": "Stop area"
+          }
+        },
         "rules": [
           {
             "type": "entry_speed",
@@ -1033,6 +1081,33 @@
             ],
             "maxWheelsOff": 2,
             "maxSeconds": 0.5
+          },
+          {
+            "type": "stop_zone",
+            "lengthM": 40,
+            "widthM": 8
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "lockup_recovered",
+                "maxSeconds": 0.7,
+                "minSeconds": 0.2
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "lockup_recovered",
+                "maxSeconds": 0.5,
+                "minSeconds": 0.2
+              }
+            ]
           }
         ]
       },

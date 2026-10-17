@@ -130,20 +130,26 @@ def wait_graded(timeout=20):
     return debug_state()
 
 
-def braking_run(target_kmh, brake, throttle=1.0, max_s=25):
-    """Retry, accelerate to `target_kmh`, then brake with brake(kmh, seconds_since_braking).
-    Below 4 km/h the brake is released for the handbrake (arcade reverses on a held brake)."""
+def braking_run(target_kmh, brake, throttle=1.0, max_s=25, brake_after_m=None):
+    """Retry, accelerate to `target_kmh` (and, with `brake_after_m`, hold it until that far from the
+    start), then brake with brake(kmh, seconds_since_braking). Below 4 km/h the brake is released for
+    the handbrake (arcade reverses on a held brake)."""
     click("Retry")
     time.sleep(1.0)
     arcade()
     inp("parkingbrake", 0)
     inp("brake", 0)
+    start = state()[0]
     t0 = time.time()
-    while time.time() - t0 < 25:
-        _, spd = state()
-        if spd * 3.6 >= target_kmh:
+    while time.time() - t0 < 40:
+        pos, spd = state()
+        travelled = math.dist(pos[:2], start[:2])
+        if spd * 3.6 >= target_kmh and (brake_after_m is None or travelled >= brake_after_m):
             break
-        inp("throttle", throttle)
+        if brake_after_m is not None and spd * 3.6 >= target_kmh - 1:
+            inp("throttle", max(0.0, min(1.0, 0.25 + 0.08 * (target_kmh + 1 - spd * 3.6))))
+        else:
+            inp("throttle", throttle)
         time.sleep(0.05)
     inp("throttle", 0)
     tb = time.time()

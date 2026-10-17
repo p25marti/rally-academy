@@ -11,7 +11,8 @@ Nine drills are graded automatically: **A01** (gate, cone and parking box, with 
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
-**A08** (late apex and a steady exit, with medals), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
+**A08** (late apex and a steady exit, with medals), **B01** (threshold braking into a course stop zone, with medals) and **B02** (lockup recovery, with
+medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -204,6 +205,13 @@ allowed, silver 40 km/h and all four wheels on, gold 48 km/h; A08 bronze 25 km/h
 most one correction to the finish, silver 38 km/h and no corrections, gold 45 km/h. Scripted racing
 line (outside, late apex, track-out): A07 52 km/h and A08 47–50 km/h, both gold; the line clips the
 posts above about 55 km/h.
+
+B01 and B02 targets (BMP run-up, Covet Student Driver): B01 from 65+ km/h stops with the car's centre in
+a 5 × 6 m zone 30 m past the start line, no lock over 0.5 s; silver 3 × 4 m and 0.3 s; gold 1.5 × 3 m
+and 0.2 s (the zones are drawn nested). B02 from 55+ km/h locks the wheels at least 0.2 s and releases
+within 1 s, then stops in a 40 m stop area on the flat; silver releases within 0.7 s, gold 0.5 s.
+Scripted: B01 braking at 5 m/s² from 72 km/h stopped 0.7 m past the centre (gold); B02 locked 0.4–0.5 s
+(gold).
 
 A04 targets (BMP run-up, three gates 25 m apart): bronze 27–33 km/h at every gate with no braking
 between them; silver 28–32; gold 29–31. Gate speeds are shown to a tenth, since the medal bands are

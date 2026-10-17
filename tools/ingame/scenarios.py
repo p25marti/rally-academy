@@ -37,12 +37,12 @@ def precise(run, tries=2):
 
 
 def on_straight():
-    """Mark the start at B01's spawn (BMP start straight); needs West Coast USA loaded."""
+    """Mark the start at B01's spawn (the BMP run-up); needs West Coast USA loaded."""
     sp = A.drill("B01")["environment"]["spawn"]
     if A.debug_state().get("level") != "west_coast_usa":
         raise RuntimeError("load West Coast USA first (e.g. Go to drill on B01)")
     A.place(sp["pos"], sp["dir"])
-    A.click("Mark start")
+    lua("extensions.rallyAcademy.markStart() return 1")  # the button reads "Move course here" on course drills
     return sp
 
 
@@ -129,20 +129,24 @@ def a01():
 
 @scenario
 def b01():
-    """Threshold braking into a stop zone: clean PASS, late-braking MISS, full-brake MISS."""
+    """B01 on its course (BMP run-up, stop zone 30 m past the start line): threshold braking from 72
+    km/h into the zone earns a medal; braking too hard overshoots and misses; full brake locks and misses."""
     p = []
     A.reload_mod(ui_too=False)
     A.fresh_sampler()
     A.choose("B01")
-    on_straight()
-    A.braking_run(70, lambda k, t: A.eased_brake(k))  # calibration: where a clean stop ends
-    A.click("Mark stop zone")
-    s = precise(lambda: A.braking_run(70, lambda k, t: A.eased_brake(k)))
-    expect(p, "clean stop passes", s.get("passed") is True, A.grade_lines())
-    s = A.braking_run(70, lambda k, t: 0 if t < 0.9 else A.eased_brake(k))
-    expect(p, "braking 0.9 s late misses", s.get("passed") is False, A.grade_lines())
-    s = A.braking_run(70, lambda k, t: 1.0)
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on B01)")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    line = [(0, 0), (0, 150)]
+    s = precise(lambda: A.course_run("B01", line, kmh=72, decel=5.0, max_throttle=1.0, stop_within=0.4))
+    expect(p, "threshold stop in the zone earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {A.grade_lines()}")
+    s = A.course_run("B01", line, kmh=72, decel=7.5, max_throttle=1.0, stop_within=0.4)
+    expect(p, "braking too hard overshoots and misses", s.get("passed") is False, A.grade_lines())
+    s = A.braking_run(70, lambda k, t: 1.0, brake_after_m=110)
     expect(p, "full brake misses (lockup)", s.get("passed") is False, A.grade_lines())
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
     A.realistic()
     A.clear_progress("B01")
     return p
@@ -195,8 +199,8 @@ def a04():
 
 @scenario
 def stops():
-    """A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 lockup recovery (BMP run-up):
-    one PASS and one MISS each."""
+    """A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, a
+    40 m stop area): one PASS and one MISS each."""
     p = []
     A.reload_mod(ui_too=False)
     A.fresh_sampler()
@@ -213,10 +217,10 @@ def stops():
     expect(p, "A05 stop past the line misses", line_run(-1.0).get("passed") is False, A.grade_lines())
     lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
     A.choose("B02")
-    on_straight()
-    s = A.braking_run(62, lambda k, t: 1.0 if t < 0.6 else A.eased_brake(k))
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    s = A.braking_run(62, lambda k, t: 1.0 if t < 0.6 else A.eased_brake(k), brake_after_m=115)
     expect(p, "B02 lock then release passes", s.get("passed") is True, A.grade_lines())
-    s = A.braking_run(62, lambda k, t: 1.0)
+    s = A.braking_run(62, lambda k, t: 1.0, brake_after_m=115)
     expect(p, "B02 held lock misses", s.get("passed") is False, A.grade_lines())
     A.realistic()
     A.clear_progress("A05", "B02")
@@ -412,7 +416,7 @@ def events():
     # (survey.py surfaces: grass 8 m left of the road, 20 m along from B01's spot).
     sp = A.drill("B01")["environment"]["spawn"]
     A.place(sp["pos"], sp["dir"], ahead=20, side=-8)
-    A.click("Mark start")
+    lua("extensions.rallyAcademy.markStart() return 1")
     drive(20, lambda t: inp("brake", 0.0 if t < 1.0 else 0.5))
     c = A.rule_check({"type": "on_surface", "surfaces": ["ASPHALT", "GRAVEL"], "maxWheelsOff": 2, "maxSeconds": 0.5})
     expect(p, "driving onto the grass leaves the road", not c["ok"], c["text"])
@@ -430,6 +434,7 @@ def events():
     c = A.rule_check({"type": "no_damage"})
     expect(p, "a puncture is not contact", c["ok"], c["text"])
     A.realistic()
+    lua("extensions.rallyAcademy.useVenueStart() return 1")  # forget the starts this marked (one on the verge)
     A.clear_progress("B02")
     return p
 

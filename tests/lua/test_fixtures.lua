@@ -31,6 +31,10 @@
 --      racing line from tools/ingame/lines.py (outside, late apex, track-out); a07_gold = 50 km/h
 --      cap (52 at the exit); a07_clip = line 1 m left at the exit (left post); a08_gold = 46 km/h;
 --      a08_weave = weaving across the road after the exit gate (2 corrections).
+-- B01, B02 (course): BMP run-up, stop zone 30 m past the start line. b01c_gold = pure pursuit to the
+--      zone centre from 72 km/h braking at 5 m/s2 (0.7 m past the centre); b01c_past = 6.5 m/s2 (past
+--      the 5 m zone). b02c_gold = hold 62 km/h to 115 m, full brake 0.6 s then eased (0.5 s lock);
+--      b02c_held = full brake held to the stop.
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -63,7 +67,8 @@ local function grade(name, drill)
   local rec = fixture(name)
   local rules = {}
   for _, r in ipairs(drillRules(drill or 'B01')) do
-    if not COURSE_ONLY[r.type] then rules[#rules + 1] = r end
+    local needsZone = (r.type == 'stop_zone' or r.type == 'stop_before_line') and not rec.meta.finish
+    if not COURSE_ONLY[r.type] and not needsZone then rules[#rules + 1] = r end
   end
   return Rules.evaluate(rules, rec, {zone = rec.meta.finish, gates = rec.meta.gates}), rec
 end
@@ -169,6 +174,7 @@ local function gradeCourse(name, drill)
     if e.id == (drill or 'A01') then a = e.assessment end
   end
   return Rules.grade(a, rec, {course = rec.meta.course, gates = rec.meta.course.gates, car = rec.meta.car,
+                              zone = rec.meta.course.zone,
                               time = rec.score and rec.score.time}), rec
 end
 
@@ -258,6 +264,18 @@ function T.a07_a08_corner_rules_and_medals_still_agree_with_the_in_game_verdicts
   has(check(gradeCourse('a07_clip', 'A07'), 'markers_clear').text, 'Clipped the left post of the gate')
   eq(check(gradeCourse('a08_gold', 'A08'), 'steady_exit').text, 'Steady exit: no steering corrections', 'steady')
   has(check(gradeCourse('a08_weave', 'A08'), 'steady_exit').text, '2 steering corrections after the exit gate')
+end
+
+function T.b01_b02_course_zone_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {b01c_gold = {'B01', 'gold'}, b01c_past = {'B01', false}, b02c_gold = {'B02', 'gold'}, b02c_held = {'B02', false}}
+  for name, w in pairs(want) do
+    local res, rec = gradeCourse(name, w[1])
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, w[2], name .. ' medal')
+  end
+  has(check(gradeCourse('b01c_past', 'B01'), 'stop_zone').text, 'past the zone')
+  has(check(gradeCourse('b02c_held', 'B02'), 'lockup_recovered').text, 'stayed locked')
 end
 
 local function ruleCheck(name, rule)

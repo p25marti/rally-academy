@@ -86,6 +86,9 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       medals), A04 (course, tighter speed bands for medals), A05 (course stop line, bumper-exact,
       medals), A07 and A08 (corner course with exit, apex and finish gates; exit speed and a
       steady exit). A06 (calling the next bend aloud) needs a hybrid prompt: deferred.
+- [ ] Module B to the same standard. Done: B01 and B02 (course stop zones on the run-up, medals).
+      Next: B04 (trail braking on the corner venue), then B05-B07 on the dirt circle. B03 and B08
+      need hybrid prompts: deferred.
 
 ## P3 — Machine-readable drills
 

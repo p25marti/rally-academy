@@ -244,6 +244,8 @@ local function placeCourse()
   for _, g in ipairs(course.gates) do g.pos.z = groundZ(g.pos.x, g.pos.y, z0) + CAR_HEIGHT end
   for _, c in ipairs(course.cones) do c.z = groundZ(c.x, c.y, z0) + CAR_HEIGHT end
   if course.box then course.box.z = groundZ(course.box.x, course.box.y, z0) + CAR_HEIGHT end
+  if course.zone then course.zone.pos.z = groundZ(course.zone.pos.x, course.zone.pos.y, z0) + CAR_HEIGHT end
+  if course.line then course.line.z = groundZ(course.line.x, course.line.y, z0) + CAR_HEIGHT end
   gates = course.gates
 end
 
@@ -499,6 +501,24 @@ local function stopZoneSize()
   return 5, 6
 end
 
+-- The stop zone the rules grade: a marked one, or the course's.
+local function stopZone() return finishGate or (course and course.zone) end
+
+-- A stop zone's medal sizes, largest first: {{name, lengthM, widthM}} (the drill's stop_zone
+-- rule, then each tier's).
+local function tierZones()
+  local out = {}
+  for _, r in ipairs(assessment().rules or {}) do
+    if r.type == 'stop_zone' then out[1] = {name = 'bronze', lengthM = r.lengthM or 5, widthM = r.widthM or 6} end
+  end
+  for _, t in ipairs(assessment().tiers or {}) do
+    for _, r in ipairs(t.rules or {}) do
+      if r.type == 'stop_zone' then out[#out + 1] = {name = t.name, lengthM = r.lengthM or 5, widthM = r.widthM or 6} end
+    end
+  end
+  return out
+end
+
 -- The parking box and its medal boxes, lowest first: {{name, inset}} (bronze = the drill's
 -- own park_in_box rule, then each tier's smaller box).
 -- A course line's medal zones, widest first: {{name, maxM}} (metres before the line the front
@@ -574,8 +594,9 @@ local function drawCourse()
   Course.draw({
     gates = gates, gateResults = cur.gateResults,
     nextGate = active and cur.gateIdx or nil,
-    finish = finishGate,
+    finish = stopZone(),
     finishKind = usesStopLine() and 'line' or endsOnStop() and 'zone' or 'circle',
+    zoneTiers = course and course.zone and tierZones(),
     zoneLength = zoneLength, zoneWidth = zoneWidth,
     cones = course and course.cones, coneResults = cur.coneResults, nextCone = active and cur.coneIdx or nil,
     box = course and course.box, boxes = course and course.box and tierBoxes(), fit = cur.fit,
@@ -623,6 +644,18 @@ local function trackCourse(veh, vpos)
       end
     end
   end
+  if course.zone then
+    -- The car's position against the zone centre, as stop_zone grades it.
+    local z = course.zone
+    local dx, dy = vpos.x - z.pos.x, vpos.y - z.pos.y
+    local along, side = dx * z.dir.x + dy * z.dir.y, dx * z.dir.y - dy * z.dir.x
+    cur.fit = nil
+    for _, t in ipairs(tierZones()) do
+      if math.abs(along) <= t.lengthM / 2 and math.abs(side) <= t.widthM / 2 then cur.fit = t.name end
+    end
+    cur.aid = math.abs(along) < 30 and ((along < -0.05 and string.format('%.1f m to the zone centre', -along)
+      or along > 0.05 and string.format('%.1f m past the centre', along) or 'on the zone centre')) or nil
+  end
   if course.line then
     local before = Layout.bumperToLine(course.line, car, vpos.x, vpos.y, h.x, h.y)
     cur.fit = nil
@@ -664,6 +697,13 @@ function liveCourse()
     end
     steps[#steps + 1] = {label = course.box.label or 'Box', state = state}
   end
+  if course.zone then
+    local state = 'todo'
+    for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
+      if c.type == 'stop_zone' then state = c.ok and 'passed' or 'missed' end
+    end
+    steps[#steps + 1] = {label = course.zone.label or 'Stop zone', state = state}
+  end
   if course.line then
     local state = 'todo'
     for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
@@ -690,7 +730,7 @@ local function setupMissing()
   local gateRules = {}
   for _, t in ipairs(Rules.GATE_RULES) do gateRules[t] = true end
   for _, r in ipairs(assessment().rules or {}) do
-    if ZONE_RULES[r.type] and not finishGate and not (course and course.line) then return true end
+    if ZONE_RULES[r.type] and not stopZone() and not (course and course.line) then return true end
     if gateRules[r.type] and #gates == 0 then return true end
   end
   return false
@@ -707,7 +747,7 @@ local function finishRun(how, atTime)
     lastReason = (endsOnStop() and 'Stopped.' or 'Finish reached.') .. ' Grade the technique using Pass/Miss.'
     output(); return
   end
-  cur.grade = Rules.grade(a, run, {zone = finishGate, gates = gates, course = course,
+  cur.grade = Rules.grade(a, run, {zone = stopZone(), gates = gates, course = course,
                                    car = carSize and carSize.car, time = cur.lastTime})
   if run then run.grade = cur.grade end
   local firstFail

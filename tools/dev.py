@@ -75,7 +75,7 @@ def course_errors(course) -> list[str]:
     if not isinstance(course, dict):
         return ["assessment.course must be an object"]
     errors = []
-    unknown = set(course) - {"gates", "cones", "box", "line"}
+    unknown = set(course) - {"gates", "cones", "box", "line", "zone"}
     if unknown:
         errors.append(f"assessment.course: unknown keys {sorted(unknown)}")
     for kind in ("gates", "cones"):
@@ -95,6 +95,9 @@ def course_errors(course) -> list[str]:
                                 and _num(box.get("lengthM")) and box["lengthM"] > 0
                                 and _num(box.get("widthM")) and box["widthM"] > 0):
         errors.append("assessment.course.box needs numeric y (and x), lengthM > 0 and widthM > 0")
+    zone = course.get("zone")
+    if zone is not None and not (isinstance(zone, dict) and _num(zone.get("y")) and _num(zone.get("x", 0))):
+        errors.append("assessment.course.zone needs numeric y (and x)")
     line = course.get("line")
     if line is not None and not (isinstance(line, dict) and _num(line.get("y")) and _num(line.get("x", 0))
                                  and _num(line.get("widthM", 8)) and line.get("widthM", 8) > 0):

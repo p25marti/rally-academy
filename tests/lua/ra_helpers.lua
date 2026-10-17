@@ -130,8 +130,27 @@ function H.brakingRun(h, M, opts)
 end
 
 -- Start at the origin facing +y; stop zone centred at `zoneY`.
+-- A marked stop zone (Mark stop zone) needs a drill that uses one; no shipped drill does since B01
+-- got a course, so the tests use B01 as it was: entry speed, a 5 x 6 m marked zone, lockup.
+function H.setupMarkedZone()
+  local h = stubs.install()
+  local data = jsonReadFile('gameplay/rallyAcademy/exercises.json')
+  for _, e in ipairs(data.exercises) do
+    if e.id == 'B01' then
+      e.assessment.course, e.assessment.tiers = nil, nil
+      e.assessment.rules = {{type = 'entry_speed', minKmh = 65}, {type = 'stop_zone', lengthM = 5, widthM = 6},
+                            {type = 'no_sustained_lockup', maxSeconds = 0.5}}
+    end
+  end
+  jsonWriteFile('gameplay/rallyAcademy/exercises.json', data)
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  return h, M
+end
+
+-- B01 (marked zone, above): start at the origin facing +y, zone centred at `zoneY`.
 function H.setupB01(zoneY)
-  local h, M = H.setup()
+  local h, M = H.setupMarkedZone()
   M.select('B01')
   h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
   M.markStart()

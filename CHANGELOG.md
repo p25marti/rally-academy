@@ -112,6 +112,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **B01 threshold braking and B02 lockup recovery on courses, with medals.** Both lay out their stop
+  zone on the BMP run-up's flat gravel (no more Mark stop zone). B01: stop with the car's centre in
+  the zone, drawn with smaller silver (3 m) and gold (1.5 m) zones inside it, and less lockup for each
+  medal; the HUD reads "4.2 m to the zone centre". B02: lock and release inside a 40 m stop area;
+  silver and gold need a quicker release (0.7 s, 0.5 s).
 - **HUD fits long grade lists:** failed checks first, then the passed checks with numbers, up to
   five lines; the rest fold into "N more checks passed".
 - **B01, B02, B03 and A03 start on the BMP run-up**, 120 m behind the start line (new venue

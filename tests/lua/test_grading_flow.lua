@@ -88,7 +88,7 @@ end
 -- Auto-retry (on by default) follows a graded B01 run once the zone is marked, but not the
 -- first run, which is the one you mark the stop zone from.
 function T.auto_retry_waits_until_the_stop_zone_is_marked()
-  local h, M = setup()
+  local h, M = H.setupMarkedZone()
   M.select('B01')
   h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
   M.markStart()

@@ -67,6 +67,12 @@ function L.place(def, start)
     out.box = {x = x, y = y, z = start.pos.z, dir = dir, lengthM = def.box.lengthM, widthM = def.box.widthM,
                label = def.box.label}
   end
+  if def.zone then
+    -- A stop zone's centre (B01): shaped like a marked zone ({pos, dir}), so stop_zone grades it
+    -- as before; its size comes from the stop_zone rule (and each tier's smaller one).
+    local x, y = L.toWorld(f, def.zone.x or 0, def.zone.y)
+    out.zone = {pos = {x = x, y = y, z = start.pos.z}, dir = dir, label = def.zone.label}
+  end
   if def.line then
     -- A line across the course to stop before (A05), with a cone at each end.
     local x, y = L.toWorld(f, def.line.x or 0, def.line.y)

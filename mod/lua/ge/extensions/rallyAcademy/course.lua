@@ -23,15 +23,15 @@ local function drawGate(g, state)
   debugDrawer:drawCylinder(vec3(left.x, left.y, z1), vec3(right.x, right.y, z1), 0.05, c)
 end
 
-local function drawStopZone(zone, len, wid)
+local function drawStopZone(zone, len, wid, col, radius)
   local d = vec3(zone.dir.x, zone.dir.y, 0):normalized()
   local r = vec3(d.y, -d.x, 0)
   local centre = vec3(zone.pos.x, zone.pos.y, zone.pos.z - 0.4)
   local corners = {centre + d * (len / 2) + r * (wid / 2), centre + d * (len / 2) - r * (wid / 2),
                    centre - d * (len / 2) - r * (wid / 2), centre - d * (len / 2) + r * (wid / 2)}
-  local c = colour('passed')
+  local c = col or colour('passed')
   for i = 1, 4 do
-    debugDrawer:drawCylinder(corners[i], corners[i % 4 + 1], 0.06, c)
+    debugDrawer:drawCylinder(corners[i], corners[i % 4 + 1], radius or 0.06, c)
   end
 end
 
@@ -115,6 +115,7 @@ end
 --   box = {x, y, z, dir, lengthM, widthM}, boxes = {{name, inset}}, fit = medal box the car is in,
 --   footprint = the car's four corners (near the box), or nil
 --   line = {x, y, z, dir, widthM}, lineCones = {{x, y, z}}, lineZones = {{name, maxM}}: a stop line
+--   zoneTiers = {{name, lengthM, widthM}}: a course stop zone's medal sizes (drawn nested)
 -- }
 function C.draw(course)
   if not (debugDrawer and ColorF) then return end
@@ -139,6 +140,12 @@ function C.draw(course)
   if not (f and f.pos) then return end
   if course.finishKind == 'line' and f.dir then
     drawStopLine(f)
+  elseif course.finishKind == 'zone' and f.dir and course.zoneTiers then
+    -- a course stop zone with its medal zones nested inside; the one the car is in is green
+    for _, t in ipairs(course.zoneTiers) do
+      local current = t.name == course.fit
+      drawStopZone(f, t.lengthM, t.widthM, colour(current and 'passed' or t.name), current and 0.06 or 0.04)
+    end
   elseif course.finishKind == 'zone' and f.dir then
     drawStopZone(f, course.zoneLength or 5, course.zoneWidth or 6)
   else

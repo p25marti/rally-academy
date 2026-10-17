@@ -75,7 +75,8 @@ and draws it; nothing needs marking ([PRODUCT](PRODUCT.md): drills set themselve
                                                      // "headingDeg": -93 turns a gate to face a corner's road
   "cones": [{"x": 0, "y": 20, "keep": "left"}],      // keep the cone on your left (pass it on its right)
   "box": {"x": -1.5, "y": 33, "lengthM": 6, "widthM": 3.2}, // parking box, square to the course
-  "line": {"x": 0, "y": 60, "widthM": 8}            // a stop line, a cone at each end (A05)
+  "line": {"x": 0, "y": 60, "widthM": 8},           // a stop line, a cone at each end (A05)
+  "zone": {"x": 0, "y": 150}                        // a stop zone's centre; its size comes from the stop_zone rule (B01)
 }
 ```
 
