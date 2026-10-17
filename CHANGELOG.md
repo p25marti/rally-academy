@@ -89,9 +89,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   Mk.2 profile with BEAM.deck icons is in `extras/streamdeck/` (double-click to import). Layout
   and setup: `docs/STREAM_DECK.md`.
 - **A02 clutch engagement and launches, on a course with medals.** Go to drill lands you on the BMP
-  start line with a 40 km/h gate at 60 m and a stop box at 110 m drawn down the straight. Launch,
-  shift 1→2, be at 40 km/h through the gate and stop in the box. The run reports your 0–40 km/h
-  time; silver and gold need a quicker launch (4.5 s, 3.5 s), a quicker shift and less wheelspin.
+  start line with a 40 km/h gate drawn 60 m down the straight. Launch, shift 1→2 and be at 40 km/h
+  through the gate; the run ends there (nobody has to stop on the straight's banked end). The run
+  reports your 0–40 km/h time; silver and gold need a quicker launch (4.5 s, 3.5 s), a quicker shift
+  and less wheelspin.
 - **HUD fits long grade lists:** failed checks first, then the passed checks with numbers, up to
   five lines; the rest fold into "N more checks passed".
 - **B01, B02 and A03 start on the BMP run-up**, 120 m behind the start line (new venue

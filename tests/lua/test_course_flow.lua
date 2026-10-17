@@ -248,16 +248,16 @@ function T.the_run_record_carries_the_course_and_footprint_for_fixtures()
   eq(run.meta.car.front, 1.85, 'footprint in the record')
 end
 
--- A02: the same course machinery on a straight: a labelled gate and stop box.
-function T.a02_lays_out_a_labelled_gate_and_stop_box_at_its_venue()
+-- A02: the same course machinery on a straight: one labelled gate, and the run ends there.
+function T.a02_lays_out_a_labelled_gate_that_ends_the_run()
   local h, M = setup()
   h.level = 'west_coast_usa'
   M.select('A02')
   local s = h.lastState()
   eq(s.usingVenueStart, true, 'ready at the venue')
+  eq(#s.course.steps, 1, 'just the gate: no stop box')
   eq(s.course.steps[1].label, '40 km/h', 'gate label')
-  eq(s.course.steps[2].label, 'Stop box', 'box label')
-  eq(s.course.keep, false, 'no cone')
+  eq(s.lesson.assessment.endWhen, 'gates', 'the run ends at the gate')
 end
 
 return T

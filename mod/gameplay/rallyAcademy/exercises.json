@@ -124,7 +124,7 @@
       },
       "environment": {
         "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1): the course is laid out from the venue's spawn on the start line, down the main straight.",
+        "areaHint": "BMP Gravel Track (MAPS W1): the course is laid out from the venue's spawn on the tarmac start line, with the 40 km/h gate 60 m down the straight. The run ends at the gate, so nobody has to stop on the straight's banked end.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 120,
@@ -139,16 +139,16 @@
           ]
         }
       },
-      "instructions": "Launch, shift 1→2 and be at 40 km/h through the 40 km/h gate, then stop in the stop box. No stall, no long wheelspin.",
-      "resetInstructions": "Go to drill puts you on the start line with the gate and stop box laid out down the straight. Move course here re-lays it from where you are.",
-      "props": "None: the gate and stop box are drawn for you. Manual gearbox; keep the same clutch assist settings between attempts.",
+      "instructions": "Launch, shift 1→2 and be at 40 km/h or more through the 40 km/h gate. The run ends at the gate; then slow down and stop wherever you like. No stall, no long wheelspin.",
+      "resetInstructions": "Go to drill puts you on the start line with the gate laid out ahead. Move course here re-lays it from where you are.",
+      "props": "None: the gate is drawn for you. Manual gearbox; keep the same clutch assist settings between attempts.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Through the 40 km/h gate (60 m) at 40 km/h or more, having shifted 1→2, then stop inside the stop box (110 m): no stall, no shift hanging in neutral over 1 s, no wheelspin over 1 s, 0–40 km/h within 8 s of moving off. Silver: 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s. Gold: 0–40 in 3.5 s, shift under 0.4 s, wheelspin under 0.25 s.",
+        "successDefinition": "Through the 40 km/h gate (60 m) at 40 km/h or more, having shifted 1→2: no stall, no shift hanging in neutral over 1 s, no wheelspin over 1 s, 0–40 km/h within 8 s of moving off. The run ends at the gate. Silver: 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s. Gold: 0–40 in 3.5 s, shift under 0.4 s, wheelspin under 0.25 s.",
         "metricToRecord": "Clean launches / 10 (and your best 0–40 km/h time)",
         "mode": "automatic",
-        "endWhen": "stopped",
+        "endWhen": "gates",
         "course": {
           "gates": [
             {
@@ -157,14 +157,7 @@
               "widthM": 10,
               "label": "40 km/h"
             }
-          ],
-          "box": {
-            "x": 0,
-            "y": 110,
-            "lengthM": 12,
-            "widthM": 6,
-            "label": "Stop box"
-          }
+          ]
         },
         "rules": [
           {
@@ -198,13 +191,6 @@
           },
           {
             "type": "markers_clear"
-          },
-          {
-            "type": "park_in_box"
-          },
-          {
-            "type": "no_reverse",
-            "maxM": 0.3
           }
         ],
         "tiers": [

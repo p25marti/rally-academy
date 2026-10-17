@@ -15,9 +15,9 @@
 --      edge (damage 0 -> 5722) and the arcade gearbox then reversed; spin = handbrake and
 --      full lock at 60 km/h (turned 143 degrees); contact = full lock onto the grass at 35
 --      km/h (no hit); puncture = beamstate.deflateRandomTire() at 45 km/h.
--- A02 (course): BMP start straight from the venue start, pure-pursuit script along the centre line
---      braking into the stop box; gold = full throttle (0-40 in 2.6 s), bronze = 0.6 throttle (the
---      arcade's 0.6 s shift misses silver), slow = 34 km/h cap (too slow at the 40 km/h gate).
+-- A02 (course, ends at the 40 km/h gate): BMP start straight from the venue start, pure-pursuit
+--      script along the centre line; gold = full throttle (0-40 in 2.6 s), bronze = 0.4 throttle
+--      (a 0.6 s shift misses silver), slow = 34 km/h cap (too slow at the gate).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;

@@ -222,7 +222,7 @@ def stops():
 @scenario
 def launch():
     """A02 on its course (BMP start straight, from the venue start): a flat-out launch through the
-    40 km/h gate into the stop box earns a medal; 34 km/h at the gate misses. Needs West Coast USA."""
+    40 km/h gate earns a medal (the run ends at the gate); 34 km/h at the gate misses. Needs West Coast USA."""
     p = []
     A.reload_mod(ui_too=False)
     A.fresh_sampler()
@@ -232,7 +232,7 @@ def launch():
     lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
     s = A.debug_state()
     expect(p, "the course is laid out at the venue", s.get("hasCourse") and s.get("usingVenueStart"), s.get("reason"))
-    line = [(0, 0), (0, 110)]  # down the straight's centre line, stopping in the box
+    line = [(0, 0), (0, 80)]  # down the straight's centre line; the run ends at the gate (60 m)
     s = A.course_run("A02", line, kmh=48, decel=3.0, max_throttle=1.0)
     expect(p, "a flat-out launch passes with a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
            f"{s.get('tier')}: {s.get('reason')} {s.get('nextTier') or ''}")

@@ -174,8 +174,8 @@ A01 targets (Covet Student Driver, 3.90 × 1.81 m): box 6.0 × 3.2 m, silver 5.4
 14 s, gold 5.0 × 2.2 m and 10 s. A scripted run at 14 km/h takes about 9.7 s; gold leaves
 about 0.2 m each side, so a slightly crooked stop misses it.
 
-A02 targets (Covet Student Driver, BMP start straight, gravel): bronze is a clean pass (0–40 km/h
-within 8 s, shift under 1 s, wheelspin under 1 s, through the 40 km/h gate, stopped in the box);
+A02 targets (Covet Student Driver, from the BMP start line): bronze is a clean pass (0–40 km/h
+within 8 s, shift under 1 s, wheelspin under 1 s, through the 40 km/h gate; the run ends there);
 silver 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s; gold 3.5 s, 0.4 s, 0.25 s.
 Scripted with the arcade gearbox: 2.6 s flat out (gold), 3.4 s at 60% throttle with a 0.6–0.7 s
 shift (bronze). The targets leave room for a real clutch and manual shift; check them on the rig.
