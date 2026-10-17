@@ -35,6 +35,9 @@
 --      zone centre from 72 km/h braking at 5 m/s2 (0.7 m past the centre); b01c_past = 6.5 m/s2 (past
 --      the 5 m zone). b02c_gold = hold 62 km/h to 115 m, full brake 0.6 s then eased (0.5 s lock);
 --      b02c_held = full brake held to the stop.
+-- B04 (course): BMP downhill left, Covet Gravel Rally, racing line from lines.py at up to 60 km/h with
+--      scripted pedals: gold = brake 0.35 from the marker easing to 0 three metres before the apex;
+--      straight = brake 0.45 only before turn-in; late = brake 0.22 until 12 m past the apex.
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -276,6 +279,19 @@ function T.b01_b02_course_zone_rules_and_medals_still_agree_with_the_in_game_ver
   end
   has(check(gradeCourse('b01c_past', 'B01'), 'stop_zone').text, 'past the zone')
   has(check(gradeCourse('b02c_held', 'B02'), 'lockup_recovered').text, 'stayed locked')
+end
+
+function T.b04_trail_braking_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {b04_gold = 'gold', b04_straight = false, b04_late = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'B04')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('b04_gold', 'B04'), 'trail_braked').text, 'Trail-braked')
+  has(check(gradeCourse('b04_straight', 'B04'), 'trail_braked').text, 'carry the brake into the corner')
+  has(check(gradeCourse('b04_late', 'B04'), 'brake_off_by_gate').text, 'Still braking at the apex')
 end
 
 local function ruleCheck(name, rule)

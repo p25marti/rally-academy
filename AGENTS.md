@@ -101,8 +101,9 @@ Learned the hard way (0.39.4):
 
 ## Recipes
 
-**Generic tests** use A06 as "a self-assessed drill without a course"; when a drill gets graded, move
-any test that relied on it being self-assessed.
+**Generic tests** use A06 (Student Driver) and B08 (Gravel Rally) as "self-assessed drills without a
+course" (both wait on hybrid prompts); when a drill gets graded, move any test that relied on it being
+self-assessed. Marked gates and zones are tested on test-only copies (`H.setupMarkedGates`, `H.setupMarkedZone`).
 
 **Make a drill auto-graded:**
 1. Read its entry in `exercises.json` and the capability table in [GRADING](docs/GRADING.md).

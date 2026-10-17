@@ -38,7 +38,7 @@ function T.parked_drills_are_flagged_in_the_catalogue_and_explained_on_select()
   local s = h.lastState()
   eq(s.selected, 'C03', 'still selectable')
   assert(s.reason:find('Parked for now', 1, true), 'reason explains: ' .. s.reason)
-  M.select('B04')
+  M.select('B08')
   assert(not h.lastState().reason:find('Parked', 1, true), 'normal drills have no parked note')
 end
 
@@ -64,7 +64,7 @@ end
 function T.go_to_drill_on_the_same_map_swaps_the_car_then_waits_before_placing()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B04')                            -- Gravel Rally drill
+  M.select('B08')                            -- Gravel Rally drill
   M.goToDrill()
   eq(#h.levelsLoaded, 0, 'no map load on the same map')
   eq(h.spawned[1].model, 'covet', 'covet spawned')
@@ -75,7 +75,7 @@ function T.go_to_drill_on_the_same_map_swaps_the_car_then_waits_before_placing()
   M.onVehicleSpawned(h.vehicle.id, h.vehicle)  -- the game reports the new car
   tick(M, 0.4)
   eq(#h.vehicle.teleports, 1, 'placed shortly after the spawn event')
-  eq(h.vehicle.teleports[1].y, spawnOf('B04').y, 'at the venue spot')
+  eq(h.vehicle.teleports[1].y, spawnOf('B08').y, 'at the venue spot')
 end
 
 -- Seen in-game on 0.39.4: the spawn hook fires *inside* replaceVehicle; listening only
@@ -85,7 +85,7 @@ function T.go_to_drill_catches_a_spawn_event_fired_inside_replace_vehicle()
   h.level = 'west_coast_usa'
   h.syncSpawnHook = true
   _G.extensions = {rallyAcademy = M}
-  M.select('B04')
+  M.select('B08')
   M.goToDrill()
   tick(M, 0.4)
   _G.extensions = nil
@@ -95,7 +95,7 @@ end
 function T.choosing_another_drill_during_a_car_swap_cancels_it()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B04')
+  M.select('B08')
   M.goToDrill()
   M.select('B05')
   tick(M, 7)
@@ -105,7 +105,7 @@ end
 function T.go_to_drill_ignores_spawn_events_for_other_cars()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B04')
+  M.select('B08')
   M.goToDrill()
   M.onVehicleSpawned(77, {partConfig = 'vehicles/pickup/whatever.pc'})
   tick(M, 0.4)
@@ -115,7 +115,7 @@ end
 function T.go_to_drill_places_the_car_anyway_if_no_spawn_event_comes()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B04')
+  M.select('B08')
   M.goToDrill()
   tick(M, 6.5)
   eq(#h.vehicle.teleports, 1, 'placed after the timeout')
@@ -160,7 +160,7 @@ function T.choosing_another_drill_while_loading_cancels_the_arrival()
   local h, M = setup()
   M.select('A06')
   M.goToDrill()
-  M.select('B04')                            -- changed your mind during the load
+  M.select('B08')                            -- changed your mind during the load
   h.level = 'west_coast_usa'
   M.onClientPostStartMission('/levels/west_coast_usa/main.level.json')
   eq(#h.vehicle.teleports, 0, 'no surprise teleport')

@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **B04 trail braking is graded automatically, with medals**, on the BMP downhill left: brake from
+  the marker, keep easing the brake off as you turn in ("Trail-braked 1.2 s into the turn"), be off
+  it by the apex gate ("Still braking at the apex (35%)" otherwise). Medals for exit speed.
 - **B01 threshold braking and B02 lockup recovery on courses, with medals.** Both lay out their stop
   zone on the BMP run-up's flat gravel (no more Mark stop zone). B01: stop with the car's centre in
   the zone, drawn with smaller silver (3 m) and gold (1.5 m) zones inside it, and less lockup for each

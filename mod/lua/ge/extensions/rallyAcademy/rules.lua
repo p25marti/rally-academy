@@ -615,6 +615,54 @@ function E.max_time(rule, _samples, ctx)
   return false, string.format('Time %.1f s (target %g s)', t, rule.maxSeconds)
 end
 
+-- Trail braking (B04): still braking (over `minBrake`) while turning in (steering wheel past
+-- `minSteerDeg`) for at least `minSeconds` between two gates (default the first two: the braking
+-- marker and the apex).
+-- rule: {type = 'trail_braked', fromGate = 1, toGate = 2, minSeconds = 0.4, minBrake = 0.1, minSteerDeg = 20}
+function E.trail_braked(rule, samples, ctx)
+  local gates, err = gateList(ctx)
+  if not gates then return false, err end
+  local from, to = rule.fromGate or 1, rule.toGate or 2
+  local passes = Gates.passes(gates, samples)
+  if not (passes[from] and passes[from].reached) then return false, string.format('Gate %d not reached', from) end
+  local t0, t1 = passes[from].t, passes[to] and passes[to].reached and passes[to].t or math.huge
+  local minBrake, minSteer, need = rule.minBrake or 0.1, rule.minSteerDeg or 20, rule.minSeconds or 0.4
+  local overlap, prev = 0, nil
+  for _, s in ipairs(samples) do
+    if s.t >= t0 and s.t <= t1 then
+      if prev and (s.brk or 0) > minBrake and math.abs(s.steer or 0) > minSteer then overlap = overlap + (s.t - prev.t) end
+      prev = s
+    end
+  end
+  if overlap >= need then return true, string.format('Trail-braked %.1f s into the turn', overlap) end
+  if overlap > 0 then
+    return false, string.format('Only %.1f s of braking while turning in (target %.1f s): carry the brake into the corner', overlap, need)
+  end
+  return false, 'No braking while turning in: keep some brake on as you steer into the corner'
+end
+
+-- Brake fully released by a gate (B04: the apex) and kept off to the run's end.
+-- rule: {type = 'brake_off_by_gate', gate = 2, maxBrake = 0.05}
+function E.brake_off_by_gate(rule, samples, ctx)
+  local gates, err = gateList(ctx)
+  if not gates then return false, err end
+  local g = rule.gate or 2
+  g = g < 0 and #gates + 1 + g or g
+  local passes = Gates.passes(gates, samples)
+  if not (passes[g] and passes[g].reached) then return false, string.format('Gate %d not reached', g) end
+  local tg, maxBrake, worst, lastOn = passes[g].t, rule.maxBrake or 0.05, 0, nil
+  for _, s in ipairs(samples) do
+    local b = s.brk or 0
+    if s.t >= tg and (s.air or 0) > 2 and b > worst then worst = b end
+    if s.t < tg and b > maxBrake then lastOn = s.t end
+  end
+  if worst > maxBrake then
+    return false, string.format('Still braking at the apex (%.0f%%): release before you reach it', worst * 100)
+  end
+  if lastOn then return true, string.format('Brake off %.1f s before the apex', tg - lastOn) end
+  return true, 'Brake off at the apex'
+end
+
 -- A stable exit (A08): between two gates (default the last two) the steering doesn't swing back
 -- and forth. Unwinding the lock once is fine; each reversal of more than `minSwingDeg` degrees of
 -- steering wheel is a correction (`steer` is the wheel angle in degrees, electrics.steering).
@@ -681,10 +729,12 @@ R.TYPES = {
   progressive_downshifts = {'toGear'},
   no_over_rev = {'maxRpm'},
   steady_exit = {},
+  trail_braked = {},
+  brake_off_by_gate = {},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
-R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit'}
+R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked', 'brake_off_by_gate'}
 -- Rule types that need an authored course (assessment.course).
 R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box'}
 -- Medal tiers above a pass (bronze), in order (assessment.tiers).

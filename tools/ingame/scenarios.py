@@ -330,6 +330,47 @@ def corners():
 
 
 @scenario
+def trail():
+    """B04 on the BMP downhill left (Covet Gravel Rally): braking from the marker and easing off into the
+    turn earns a medal; braking only in a straight line before turning in misses."""
+    import lines as L
+    p = []
+    A.reload_mod(ui_too=False)
+    A.fresh_sampler()
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on B04)")
+    A.choose("B04")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) "
+        "extensions.rallyAcademy.goToDrill() return 1")
+    A.wait_for(lambda: "rally_gravel" in lua("return tostring(be:getPlayerVehicle(0).partConfig)"), True, timeout=20)
+    time.sleep(2)
+    apex = 118.7  # metres along lines.bmp_left() to the apex gate
+
+    def trail_pedals(_kmh, trav):
+        if trav < 50:
+            return None
+        if trav < apex - 3:
+            return (0.0, max(0.0, 0.35 * (1 - (trav - 50) / (apex - 53))))
+        return (0.6, 0.0)
+
+    def straight_pedals(_kmh, trav):
+        if trav < 45:
+            return None
+        return (0.0, 0.45) if trav < 62 else (0.25, 0.0)
+    kw = dict(kmh=60, decel=2.5, max_throttle=1.0, stop_within=0.5)
+    s = A.course_run("B04", L.bmp_left(), pedals=trail_pedals, **kw)
+    expect(p, "trail braking into the corner earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = A.course_run("B04", L.bmp_left(), pedals=straight_pedals, **kw)
+    expect(p, "braking only before turn-in misses", s.get("passed") is False and "into the corner" in str(s.get("reason")),
+           s.get("reason"))
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
+    A.realistic()
+    A.clear_progress("B04")
+    return p
+
+
+@scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""
     p = []

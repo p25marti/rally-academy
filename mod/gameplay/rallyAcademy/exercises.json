@@ -1173,8 +1173,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Medium-radius corner with runoff.",
+        "venue": "bmp-gravel-corner",
+        "areaHint": "BMP Gravel Track downhill left (MAPS W1): brake marker on the approach, the apex gate on the inside at the geometric apex, the exit gate across the road.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -1195,16 +1195,119 @@
           ]
         }
       },
-      "instructions": "Begin braking on approach and ease pressure off progressively while steering toward apex.",
-      "resetInstructions": "Stationary 75 m before chosen corner; brake marker unchanged.",
-      "props": "Choose safe low/medium-speed corner first; use brake input HUD.",
+      "instructions": "Brake on the approach from the Brake marker, keep easing the brake off as you steer into the corner, and be fully off it by the apex gate. Then drive out through the exit.",
+      "resetInstructions": "Go to drill puts you 67 m before the corner with the brake marker, apex gate and exit laid out. Move course here re-lays them from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Brake fully released by apex, no sustained lock, all four wheels on roadway and clean exit.",
-        "metricToRecord": "Successful trail-braking corners / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Brake from the marker and carry it into the turn-in for at least 0.4 s while steering, fully off by the 4 m apex gate, through the exit at 25 km/h or more, no wheel locked over 0.3 s, no more than one wheel off the gravel, no spin. Silver: 35 km/h at the exit, all four wheels on the gravel. Gold: 42 km/h.",
+        "metricToRecord": "Clean trail-braked entries / 10",
+        "mode": "automatic",
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 50,
+              "widthM": 8,
+              "label": "Brake"
+            },
+            {
+              "x": -34.86,
+              "y": 96.01,
+              "widthM": 4,
+              "headingDeg": -81.2,
+              "label": "Apex"
+            },
+            {
+              "x": -67.96,
+              "y": 90.47,
+              "widthM": 8,
+              "headingDeg": -122.3,
+              "label": "Exit"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "trail_braked",
+            "fromGate": 1,
+            "toGate": 2,
+            "minSeconds": 0.4
+          },
+          {
+            "type": "brake_off_by_gate",
+            "gate": 2
+          },
+          {
+            "type": "no_sustained_lockup",
+            "maxSeconds": 0.3
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 25,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 35,
+                "maxKmh": 150,
+                "gate": 3
+              },
+              {
+                "type": "on_surface",
+                "surfaces": [
+                  "GRAVEL"
+                ],
+                "maxWheelsOff": 0,
+                "maxSeconds": 0.3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 42,
+                "maxKmh": 150,
+                "gate": 3
+              },
+              {
+                "type": "on_surface",
+                "surfaces": [
+                  "GRAVEL"
+                ],
+                "maxWheelsOff": 0,
+                "maxSeconds": 0.3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

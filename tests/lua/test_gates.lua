@@ -168,4 +168,41 @@ function T.steady_exit_counts_steering_reversals_between_the_last_two_gates()
   eq(wobble.ok, true, wobble.text)
 end
 
+-- Trail braking through three gates at y = 40, 65, 90: braking and steering per y.
+local function trailRun(at)
+  local samples, t = {}, 0
+  for y = 0, 120, 0.5 do
+    t = t + 0.05
+    local brk, steer = at(y)
+    samples[#samples + 1] = {t = t, x = 0, y = y, air = 10, brk = brk, steer = steer, w = {}}
+  end
+  return {samples = samples, runStartT = samples[1].t}
+end
+
+function T.trail_braking_needs_brake_and_steering_together_before_the_apex()
+  local gates = threeGates()
+  local rule = {type = 'trail_braked'}
+  local function grade(at) return R.evaluate({rule}, trailRun(at), {gates = gates}).checks[1] end
+  -- brake 0.4 from the marker, easing off by y = 60, steering from y = 50: 10 m (1 s) of overlap
+  local trail = grade(function(y) return (y > 40 and y < 60) and 0.4 or 0, y > 50 and 60 or 0 end)
+  eq(trail.ok, true, trail.text)
+  has(trail.text, 'Trail-braked 0.9 s into the turn') -- sample edges trim a step
+  -- all braking done before steering: no overlap
+  local straight = grade(function(y) return (y > 40 and y < 50) and 0.6 or 0, y > 50 and 60 or 0 end)
+  eq(straight.ok, false, 'braked in a straight line only')
+  has(straight.text, 'No braking while turning in')
+end
+
+function T.brake_must_be_off_by_the_apex_gate()
+  local gates = threeGates()
+  local rule = {type = 'brake_off_by_gate', gate = 2}
+  local function grade(at) return R.evaluate({rule}, trailRun(at), {gates = gates}).checks[1] end
+  local off = grade(function(y) return (y > 40 and y < 60) and 0.4 or 0, 0 end)
+  eq(off.ok, true, off.text)
+  has(off.text, 'Brake off 0.5 s before the apex')
+  local late = grade(function(y) return (y > 40 and y < 75) and 0.35 or 0, 0 end)
+  eq(late.ok, false, 'still braking past the apex')
+  has(late.text, 'Still braking at the apex (35%)')
+end
+
 return T

@@ -64,7 +64,7 @@ end
 
 function T.self_assessed_drills_still_wait_for_pass_or_miss()
   local h, M = setup()
-  markStartAndFinish(h, M, 'B04')
+  markStartAndFinish(h, M, 'B08')
   M.retry()
   for _ = 1, 100 do h.vehicle.vel = stubs.vec3(0, 20, 0); h.vehicle.pos = h.vehicle.pos + stubs.vec3(0, 2, 0); M.onUpdate(0.1, 0.1) end
   local s = h.lastState()
