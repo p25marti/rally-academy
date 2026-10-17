@@ -263,7 +263,7 @@ def save(lvl, spots, args):
         spots = [s for s in data["maps"][name]["spots"] if s["kind"] not in args.kinds] + spots
     data["maps"][name] = {"level": name, "community": bool(args.community), "surveyed": datetime.date.today().isoformat(),
                           "game": args.game, "spots": spots}
-    CATALOG.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
+    CATALOG.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8", newline="\n")
     log(f"saved {len(spots)} spots for {name} to docs/{CATALOG.name}")
     render()
 
@@ -347,7 +347,7 @@ def render():
                 pos, at = where(s)
                 lines.append(f"| `{n}` | {pos} | {describe(s)} | {verdict(s)} | `{at}` |")
             lines.append("")
-    DOC.write_text("\n".join(lines), encoding="utf-8")
+    DOC.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     log(f"wrote docs/{DOC.name}")
 
 

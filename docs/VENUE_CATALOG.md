@@ -633,3 +633,4 @@ Maps with at least one usable spot, per surface and kind:
 | `utah` | (914, -244) | 58 m over the top, 1.4 m wide |  | `--at=913.74,-243.6,182.83,0.4803,0.8771` |
 | `utah` | (921, -205) | 18 m over the top, 1.4 m wide |  | `--at=921.38,-205.39,187.72,0.0467,0.9989` |
 | `utah` | (864, 363) | 44 m over the top, 3.6 m wide |  | `--at=864.09,363.24,223.43,-0.0266,0.9996` |
+
