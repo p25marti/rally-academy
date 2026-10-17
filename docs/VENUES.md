@@ -147,6 +147,25 @@ Then in the game: select the drill, press **Go to drill**, and check you land at
 the drill's car. Add a row to [MAPS.md](MAPS.md) for a new venue (id, where, surface,
 notes) and a CHANGELOG line.
 
+## The venue catalogue
+
+`tools/ingame/catalog.py` surveys a whole map in one go and keeps the results in the repo, by the
+**surface you actually drive on** (tarmac, gravel, dirt, snow, ice…) and kind of place (open
+ground, straight, corner, hairpin, hill, crest):
+
+```sh
+python tools/ingame/catalog.py scan --per-kind 20 --fits 2   # the loaded map (30-60 min)
+python tools/ingame/catalog.py scan --community              # a map players must install
+python tools/ingame/catalog.py render                        # rebuild the page from the data
+```
+
+It runs the road finders and an open-ground scan on every surface (plus wide road-network nodes,
+which is how car parks and paved pads show up), places the car at each spot to read the wheels'
+surfaces, room and slope, then fit-tests the best spots of each kind on each surface, judging
+"stayed on the road" against that spot's own surface. Results: `docs/venue-catalog.json` (data,
+one entry per map, replaced on a re-scan) and [VENUE_CATALOG.md](VENUE_CATALOG.md) (generated).
+Use it to find a venue fast, or, later, to offer a drill on the surface a player picks.
+
 ## Command reference
 
 | Command | What it does |
@@ -161,6 +180,8 @@ notes) and a CHANGELOG line.
 | `survey.py surfaces --along=… --side=…` | Surface grid ahead of and across from the car |
 | `survey.py fit <drill> --spot ID / --at=… [--to NODE]` | Fit test: drive the drill's run there |
 | `survey.py terrain X Y …` | Terrain ground model at points (doesn't see road meshes) |
+| `catalog.py scan [--per-kind N] [--fits N] [--community]` | Catalogue the loaded map by surface and kind ([above](#the-venue-catalogue)) |
+| `catalog.py render` | Regenerate VENUE_CATALOG.md from the data |
 | `survey.py configs [model]`, `survey.py levels` | Car configs, installed maps |
 
 All are `python tools/ingame/survey.py …`, run from the repo root.
@@ -174,6 +195,7 @@ All are `python tools/ingame/survey.py …`, run from the repo root.
 | Your saved spots | `<user folder>/settings/rallyAcademy/spots.json` |
 | Venue reports | `venue-reports/<map>/index.html` (local, not committed) |
 | Survey notes and venue ideas | [MAPS.md](MAPS.md) |
+| Every catalogued spot, by surface | [VENUE_CATALOG.md](VENUE_CATALOG.md), data in `docs/venue-catalog.json` |
 | The tools | `tools/ingame/survey.py`, `roads.py` (finders), `venues.py` (matching), `fit.py` (fit test) |
 
 ## Gotchas

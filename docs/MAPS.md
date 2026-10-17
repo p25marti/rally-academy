@@ -54,7 +54,33 @@ Load ≈ 50 s. All six rally stages here are **tarmac**.
 | I4 | Mixed Circuit 1 | (713, 762, 178) | 6 GRAVEL / 8 ASPHALT, alternating | Surface transitions |
 | I5 | Quarry Loop | (−310, −1864, 161) | gravel/dirt middle, tarmac ends | 4.6 km |
 
+### Surfaces across the maps (venue catalogue, 2026-10-17)
+
+`catalog.py scan` measured 482 spots on West Coast USA, Utah, Automation Test Track and Rally
+Forest, by the surface under the wheels, and fit-tested the best of each kind on each surface:
+[VENUE_CATALOG.md](VENUE_CATALOG.md). What it means for "choose your surface" drills
+([IDEAS](IDEAS.md#choose-your-surface)):
+
+- **Tarmac** is everywhere: long straights (B01-style braking fits on all three stock maps),
+  dozens of corners, hairpins and hills. **Open tarmac** is the gap: car parks always had a
+  lamp post or kerb in the circle. For handbrake turns on tarmac, use hairpins (C04 fits at
+  West Coast USA (406, −122), the asphalt loop pad, and (−1088, 2004); Utah (776, −144); ATT
+  (111, 172) and (−715, 413)).
+- **Dirt**: open ground fits B05's circle at the BMP dirt arena and circle (our venues), Utah
+  (968, 8) and (504, −952), and Rally Forest (112, −9). Dirt hairpins at ATT and West Coast USA.
+- **Gravel**: corners, hairpins, hills and crests on West Coast USA and Utah; no clear open gravel.
+  Long gravel straights exist in Utah, but braking from 70 km/h on gravel needed 213–237 m, more
+  than B01's 150 m.
+- **Snow**: only Automation Test Track's summit snowfield, about 176 × 224 m around (−568, 888).
+  Rough: circles of 37–44 m fit, but the fit tests logged +55 damage (rough snow or small rocks).
+  The mountain roads are tarmac with snowy verges.
+- **Ice**: none on any surveyed map.
+- **Sand, mud, rock**: a sand hairpin at ATT (−321, 196); mud and rock only in passing.
+
 ### Rally Forest (`Rally_Forest`): community map, narrow forest tracks
+
+**Skipped for now (owner, 2026-10-16), kept for later exercises.** Its spots are also in the
+[venue catalogue](VENUE_CATALOG.md) by surface.
 
 **Community map, not stock:** Rally Forest by dpitkin
 (v1.5.1, 2022, from the BeamNG repository; `mods/repo/Rally_forest_15.zip`). Drills placed here

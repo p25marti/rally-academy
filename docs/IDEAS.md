@@ -98,6 +98,28 @@ Prior art: the game's race and Rally editors, and the community
 [Rally Stage Creator](https://www.beamng.com/resources/rally-stage-creator.39134/) mod
 ([PRIOR_ART](PRIOR_ART.md)).
 
+## Choose your surface
+
+**The idea.** A drill offers the same exercise on different surfaces: handbrake turns on tarmac,
+dirt or snow; threshold braking on asphalt, gravel or ice. Pick one in the menu and Go to drill
+takes you to a matching spot.
+
+**Why.** Car control changes a lot with grip; practising the same technique across surfaces is
+how rally schools teach it (E01 already touches this).
+
+**What already helps.** The [venue catalogue](VENUE_CATALOG.md) lists measured, fit-tested spots
+per surface and kind on each surveyed map (`docs/venue-catalog.json`, from `catalog.py scan`).
+Venues are data ([ADR 0007](decisions/0007-venues-as-data.md)) and drills already declare the kind of
+place they need (`venueNeeds`).
+
+**Hard parts.** Per-surface thresholds (a stop zone on ice is longer), progress per surface, more
+map loads (snow and ice are on Automation Test Track), and authored courses fitting each spot.
+
+**Rough shape.** `environment.venues: {tarmac: id, dirt: id, snow: id}` on one drill (handbrake
+turns first), a surface picker in the HUD and Academy screen, and per-surface progress.
+
+---
+
 ## Attempt replays and telemetry charts
 
 **The idea.** For any past attempt, show what happened: speed and brake traces along the

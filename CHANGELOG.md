@@ -96,6 +96,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   `markers_clear` (the car's measured footprint against drawn cones and posts), `park_in_box`,
   `no_reverse` and `max_time`. **Move course here** re-lays a course from where you are;
   **Use venue start** puts it back.
+- Venue catalogue (`tools/ingame/catalog.py`): surveys a map's practice spots by the surface you
+  drive on and kind of place, measures and fit-tests them, and keeps the results in
+  `docs/venue-catalog.json` and `docs/VENUE_CATALOG.md`.
 - Venue fit test (`survey.py fit <drill> --spot ID`): drives the drill's kind of run at a
   candidate place and says whether it fits, without touching your drills or progress.
 - Venue tools for contributors: road-network finders (straights, corners, hills, crests),
