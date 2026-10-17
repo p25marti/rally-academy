@@ -179,6 +179,21 @@ function E.no_stall(_rule, samples)
   return true, 'No stall'
 end
 
+-- How long the car took from moving off (the run's start mark, about 1 m/s) to `kmh`: the
+-- launch's coaching number (A02: 0-40 km/h).
+-- rule: {type = 'time_to_speed', kmh = 40, maxSeconds = 8}
+function E.time_to_speed(rule, samples)
+  local first = samples[1]
+  for _, s in ipairs(samples) do
+    if (s.air or 0) * KMH >= rule.kmh then
+      local t = s.t - first.t
+      local text = string.format('0-%d km/h in %.1f s (target %g s)', rule.kmh, t, rule.maxSeconds)
+      return t <= rule.maxSeconds, text
+    end
+  end
+  return false, string.format('Never reached %d km/h', rule.kmh)
+end
+
 -- Reached a gear during the run (A02: the 1 -> 2 upshift).
 -- rule: {type = 'gear_reached', gear = 2}
 function E.gear_reached(rule, samples)
@@ -560,6 +575,7 @@ R.TYPES = {
   park_in_box = {},
   no_reverse = {},
   max_time = {'maxSeconds'},
+  time_to_speed = {'kmh', 'maxSeconds'},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).

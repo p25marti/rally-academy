@@ -183,7 +183,7 @@ _DRIVE_TICK = ("local v = be:getPlayerVehicle(0) "
                "return string.format('%.3f,%.3f,%.4f,%.4f,%.3f', q.x, q.y, d.x, d.y, w:length())")
 
 
-def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max_steer=0.55, timeout=40):
+def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max_steer=0.55, timeout=40, max_throttle=0.6):
     """Drive the player's car along world points (x, y) with pure pursuit and stop with its
     position on the last point: steady `kmh`, then braking at `decel` m/s2 to arrive slowly,
     and the handbrake for the last few centimetres (arcade reverses on a held brake). Use the
@@ -227,7 +227,7 @@ def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max
             if v < 1.2:  # arcade turns a held brake at low speed into reverse
                 b, p = 0.0, 0.0
         else:
-            t, b, p = min(0.6, max(0.08, (want - v) * 0.5 + 0.12)), 0.0, 0.0
+            t, b, p = min(max_throttle, max(0.08, (want - v) * 0.5 + 0.12)), 0.0, 0.0
         time.sleep(0.02)
     lua(_DRIVE_TICK.format(s=0, t=0, b=0, p=1))
     return stopped_at

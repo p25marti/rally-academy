@@ -5,6 +5,7 @@
 --
 -- Course coordinates are metres from the start: x to the right, y ahead (the way the car
 -- faces at the start). A placed course is in world x, y; the extension fills in heights.
+-- Any item may carry a `label`, which the HUD's checklist shows ("40 km/h", "Stop box").
 local Gates = require('ge/extensions/rallyAcademy/gates')
 local L = {}
 
@@ -39,6 +40,7 @@ function L.place(def, start)
   for i, g in ipairs(def.gates or {}) do
     local x, y = L.toWorld(f, g.x or 0, g.y)
     local gate = Gates.new({pos = {x = x, y = y, z = start.pos.z}, dir = dir}, g.widthM)
+    gate.label = g.label
     out.gates[i] = gate
     local half = gate.width / 2
     local label = #(def.gates) > 1 and (' of gate ' .. i) or ' of the gate'
@@ -47,12 +49,13 @@ function L.place(def, start)
   end
   for i, c in ipairs(def.cones or {}) do
     local x, y = L.toWorld(f, c.x or 0, c.y)
-    out.cones[i] = {x = x, y = y, z = start.pos.z, dir = dir, keep = c.keep or 'left'}
+    out.cones[i] = {x = x, y = y, z = start.pos.z, dir = dir, keep = c.keep or 'left', label = c.label}
     out.markers[#out.markers + 1] = {x = x, y = y, name = #(def.cones) > 1 and ('cone ' .. i) or 'the cone'}
   end
   if def.box then
     local x, y = L.toWorld(f, def.box.x or 0, def.box.y)
-    out.box = {x = x, y = y, z = start.pos.z, dir = dir, lengthM = def.box.lengthM, widthM = def.box.widthM}
+    out.box = {x = x, y = y, z = start.pos.z, dir = dir, lengthM = def.box.lengthM, widthM = def.box.widthM,
+               label = def.box.label}
   end
   return out
 end

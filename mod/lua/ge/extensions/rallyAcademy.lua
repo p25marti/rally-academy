@@ -625,17 +625,19 @@ function liveCourse()
   if not course then return nil end
   local steps = {}
   for i = 1, #course.gates do
-    steps[#steps + 1] = {label = #course.gates > 1 and ('Gate ' .. i) or 'Gate', state = cur.gateResults[i] or 'todo'}
+    local g = course.gates[i]
+    steps[#steps + 1] = {label = g.label or (#course.gates > 1 and ('Gate ' .. i) or 'Gate'), state = cur.gateResults[i] or 'todo'}
   end
   for i = 1, #course.cones do
-    steps[#steps + 1] = {label = #course.cones > 1 and ('Cone ' .. i) or 'Cone', state = cur.coneResults[i] or 'todo'}
+    local c = course.cones[i]
+    steps[#steps + 1] = {label = c.label or (#course.cones > 1 and ('Cone ' .. i) or 'Cone'), state = cur.coneResults[i] or 'todo'}
   end
   if course.box then
     local state = 'todo'
     for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
       if c.type == 'park_in_box' then state = c.ok and 'passed' or 'missed' end
     end
-    steps[#steps + 1] = {label = 'Box', state = state}
+    steps[#steps + 1] = {label = course.box.label or 'Box', state = state}
   end
   if phase == 'ready' or phase == 'running' then
     for _, st in ipairs(steps) do

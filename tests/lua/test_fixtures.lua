@@ -15,6 +15,9 @@
 --      edge (damage 0 -> 5722) and the arcade gearbox then reversed; spin = handbrake and
 --      full lock at 60 km/h (turned 143 degrees); contact = full lock onto the grass at 35
 --      km/h (no hit); puncture = beamstate.deflateRandomTire() at 45 km/h.
+-- A02 (course): BMP start straight from the venue start, pure-pursuit script along the centre line
+--      braking into the stop box; gold = full throttle (0-40 in 2.6 s), bronze = 0.6 throttle (the
+--      arcade's 0.6 s shift misses silver), slow = 34 km/h cap (too slow at the 40 km/h gate).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -106,7 +109,7 @@ end
 -- A05, B02, A02: today's rules must agree with what the game showed for each recorded run.
 function T.a05_b02_a02_rules_still_agree_with_the_in_game_verdicts()
   local runs = {a05_clean = 'A05', a05_late = 'A05', a05_lockup = 'A05',
-                b02_recovered = 'B02', b02_held = 'B02', b02_nolock = 'B02', a02_clean = 'A02'}
+                b02_recovered = 'B02', b02_held = 'B02', b02_nolock = 'B02'}
   for name, drill in pairs(runs) do
     local res, rec = grade(name, drill)
     assert(rec.grade, name .. ' has no recorded grade')
@@ -129,19 +132,21 @@ function T.b02_recorded_runs_tell_lock_held_and_no_lock_apart()
   has(check(grade('b02_nolock', 'B02'), 'lockup_recovered').text, 'brake harder')
 end
 
+-- a02_clean predates A02's course, so only its engine and gear data are checked.
 function T.a02_recorded_launch_has_engine_and_gear_data()
-  local res, rec = grade('a02_clean', 'A02')
-  assert(res.passed, 'clean launch passes')
+  local rec = fixture('a02_clean')
   assert(rec.samples[#rec.samples].eng == 1, 'engine-running flag recorded')
+  local res = Rules.evaluate({{type = 'gear_reached', gear = 2}, {type = 'no_stall'}}, rec)
+  assert(res.passed, 'shifted to 2nd without stalling')
   has(check(res, 'gear_reached').text, 'gear 2')
 end
 
--- A01: the course and footprint come from the record, the time from its score.
-local function gradeCourse(name)
+-- Course drills (A01, A02): the course and footprint come from the record, the time from its score.
+local function gradeCourse(name, drill)
   local rec = fixture(name)
   local a
   for _, e in ipairs(read(ROOT .. '/mod/gameplay/rallyAcademy/exercises.json').exercises) do
-    if e.id == 'A01' then a = e.assessment end
+    if e.id == (drill or 'A01') then a = e.assessment end
   end
   return Rules.grade(a, rec, {course = rec.meta.course, gates = rec.meta.course.gates, car = rec.meta.car,
                               time = rec.score and rec.score.time}), rec
@@ -167,6 +172,24 @@ function T.a01_recorded_misses_fail_for_the_right_reasons()
   local gold = gradeCourse('a01_gold')
   has(check(gold, 'park_in_box').text, 'Parked inside the box')
   eq(check(gold, 'no_reverse').ok, true, 'the handbrake stop does not read as reversing')
+end
+
+function T.a02_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {a02_gold = 'gold', a02_bronze = 'bronze', a02_slow = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'A02')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+end
+
+function T.a02_recorded_runs_give_the_right_coaching()
+  local gold = gradeCourse('a02_gold', 'A02')
+  has(check(gold, 'time_to_speed').text, '0-40 km/h in 2.')
+  local bronze = gradeCourse('a02_bronze', 'A02')
+  has(bronze.nextTier.text, 'in neutral')
+  has(check(gradeCourse('a02_slow', 'A02'), 'speed_at_gates').text, 'gate 1 too slow')
 end
 
 local function ruleCheck(name, rule)

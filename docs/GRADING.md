@@ -8,7 +8,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
 Six drills are graded automatically: **A01** (gate, cone and parking box, with medals),
-**A02** (launch and shift), **A04** (speed hold through gates), **A05** (stop before a
+**A02** (launch and shift on a course, with medals), **A04** (speed hold through gates), **A05** (stop before a
 line), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
@@ -139,6 +139,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `park_in_box` | none (optional `insetM` 0, `label`) | At rest with all four corners of the body inside the course's box, shrunk by `insetM` on every side |
 | `no_reverse` | none (optional `maxM` 0.3) | The car travels no more than `maxM` backwards (against the way it points) |
 | `max_time` | `maxSeconds` | The run time is at most `maxSeconds` (medal time targets) |
+| `time_to_speed` | `kmh`, `maxSeconds` | The car reaches `kmh` within `maxSeconds` of moving off (the run's start mark, about 1 m/s, so the clutch bite before it isn't counted): A02's 0–40 km/h time |
 
 **Gates** (`gates.lua`, pure) are lines across the road: a centre, the direction the
 car faced when the gate was marked, and a width. A gate counts when the car's centre
@@ -172,6 +173,12 @@ box"). Progress keeps the best medal and a count of each ([DRILL_DATA](DRILL_DAT
 A01 targets (Covet Student Driver, 3.90 × 1.81 m): box 6.0 × 3.2 m, silver 5.4 × 2.6 m and
 14 s, gold 5.0 × 2.2 m and 10 s. A scripted run at 14 km/h takes about 9.7 s; gold leaves
 about 0.2 m each side, so a slightly crooked stop misses it.
+
+A02 targets (Covet Student Driver, BMP start straight, gravel): bronze is a clean pass (0–40 km/h
+within 8 s, shift under 1 s, wheelspin under 1 s, through the 40 km/h gate, stopped in the box);
+silver 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s; gold 3.5 s, 0.4 s, 0.25 s.
+Scripted with the arcade gearbox: 2.6 s flat out (gold), 3.4 s at 60% throttle with a 0.6–0.7 s
+shift (bronze). The targets leave room for a real clutch and manual shift; check them on the rig.
 
 ## 6. Hybrid grading
 

@@ -57,7 +57,8 @@
         <span class="ra-medal big" :class="vm.grade.tier">{{ vm.grade.tier }}</span>
         <span v-if="vm.grade.nextTier" class="ra-next">{{ vm.grade.nextTier.name }}: {{ vm.grade.nextTier.text }}</span>
       </div>
-      <div v-for="(c, i) in gradeChecks" :key="i" :class="c.ok ? 'ok' : 'fail'">{{ c.ok ? "✓" : "✗" }} {{ c.text }}</div>
+      <div v-for="(c, i) in gradeChecks.shown" :key="i" :class="c.ok ? 'ok' : 'fail'">{{ c.ok ? "✓" : "✗" }} {{ c.text }}</div>
+      <div v-if="gradeChecks.folded" class="ok folded">✓ {{ gradeChecks.folded }} more checks passed</div>
     </div>
     <div v-if="vm.autoRetryIn" class="ra-countdown">Next attempt in {{ vm.autoRetryIn }}… (drive off to stay)</div>
 
@@ -120,7 +121,20 @@ const hasCourse = computed(() => !!assessment.value.course)
 const driving = computed(() => ["running", "review", "scored"].includes(vm.phase))
 // Lua lists may arrive as {} when empty, so check before iterating.
 const courseSteps = computed(() => (vm.course && Array.isArray(vm.course.steps) ? vm.course.steps : []))
-const gradeChecks = computed(() => (vm.grade && Array.isArray(vm.grade.checks) ? vm.grade.checks : []))
+// The panel fits about five grade lines: failed checks first (always all of them), then passed
+// checks that carry a number (the coaching: "0-40 km/h in 3.1 s"), then the rest; whatever
+// doesn't fit folds into "N more checks passed".
+const MAX_GRADE_LINES = 5
+const gradeChecks = computed(() => {
+  const all = vm.grade && Array.isArray(vm.grade.checks) ? vm.grade.checks : []
+  const failed = all.filter(c => !c.ok)
+  const passed = all.filter(c => c.ok)
+  const ranked = passed.filter(c => /\d/.test(c.text)).concat(passed.filter(c => !/\d/.test(c.text)))
+  const room = Math.max(0, MAX_GRADE_LINES - failed.length)
+  const keep = all.length <= MAX_GRADE_LINES ? passed : ranked.slice(0, room - 1 > 0 ? room - 1 : 0)
+  const kept = new Set(failed.concat(keep))
+  return { shown: all.filter(c => kept.has(c)), folded: passed.length - keep.length }
+})
 const bestTier = computed(() => {
   const p = vm.progress
   const id = vm.selected
@@ -283,6 +297,9 @@ onMounted(() => {
   }
   .fail {
     color: var(--bng-add-red-400);
+  }
+  .folded {
+    opacity: 0.75;
   }
 }
 

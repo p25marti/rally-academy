@@ -221,14 +221,25 @@ def stops():
 
 @scenario
 def launch():
-    """A02: a 60% throttle launch to 42 km/h with an (arcade) 1-2 shift passes."""
+    """A02 on its course (BMP start straight, from the venue start): a flat-out launch through the
+    40 km/h gate into the stop box earns a medal; 34 km/h at the gate misses. Needs West Coast USA."""
     p = []
     A.reload_mod(ui_too=False)
     A.fresh_sampler()
     A.choose("A02")
-    on_straight()
-    s = A.braking_run(42, lambda k, t: A.eased_brake(k), throttle=0.6)
-    expect(p, "clean launch passes", s.get("passed") is True, A.grade_lines())
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A02)")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    s = A.debug_state()
+    expect(p, "the course is laid out at the venue", s.get("hasCourse") and s.get("usingVenueStart"), s.get("reason"))
+    line = [(0, 0), (0, 110)]  # down the straight's centre line, stopping in the box
+    s = A.course_run("A02", line, kmh=48, decel=3.0, max_throttle=1.0)
+    expect(p, "a flat-out launch passes with a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
+           f"{s.get('tier')}: {s.get('reason')} {s.get('nextTier') or ''}")
+    s = A.course_run("A02", line, kmh=34, decel=3.0, max_throttle=0.6)
+    expect(p, "34 km/h at the 40 km/h gate misses", s.get("passed") is False and "too slow" in str(s.get("reason")),
+           s.get("reason"))
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
     A.realistic()
     A.clear_progress("A02")
     return p

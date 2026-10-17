@@ -88,6 +88,12 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   keyboard has, so a Stream Deck's Hotkey keys work out of the box. A ready-made Stream Deck
   Mk.2 profile with BEAM.deck icons is in `extras/streamdeck/` (double-click to import). Layout
   and setup: `docs/STREAM_DECK.md`.
+- **A02 clutch engagement and launches, on a course with medals.** Go to drill lands you on the BMP
+  start line with a 40 km/h gate at 60 m and a stop box at 110 m drawn down the straight. Launch,
+  shift 1→2, be at 40 km/h through the gate and stop in the box. The run reports your 0–40 km/h
+  time; silver and gold need a quicker launch (4.5 s, 3.5 s), a quicker shift and less wheelspin.
+- **HUD fits long grade lists:** failed checks first, then the passed checks with numbers, up to
+  five lines; the rest fold into "N more checks passed".
 - **Auto-retry:** after an auto-graded run, the next attempt starts after 3 s (drive off to
   stay where you are; it waits while a stop zone or gates still need marking). On by default; the HUD's Auto-retry button turns it off, remembered in
   `settings/rallyAcademy/prefs.json`.

@@ -124,7 +124,7 @@
       },
       "environment": {
         "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight from the start line.",
+        "areaHint": "BMP Gravel Track (MAPS W1): the course is laid out from the venue's spawn on the start line, down the main straight.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 120,
@@ -139,20 +139,42 @@
           ]
         }
       },
-      "instructions": "Launch from 0 to 40 km/h; shift 1→2; then roll to a controlled stop.",
-      "resetInstructions": "Stationary in 1st gear at fixed start cone; save with clutch disengaged.",
-      "props": "Manual gearbox; retain identical clutch-assist settings.",
+      "instructions": "Launch, shift 1→2 and be at 40 km/h through the 40 km/h gate, then stop in the stop box. No stall, no long wheelspin.",
+      "resetInstructions": "Go to drill puts you on the start line with the gate and stop box laid out down the straight. Move course here re-lays it from where you are.",
+      "props": "None: the gate and stop box are drawn for you. Manual gearbox; keep the same clutch assist settings between attempts.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Reach 40 km/h with a 1-2 shift: no stall, no shift hanging in neutral over 1 s, no wheelspin over 1 s; then stop.",
-        "metricToRecord": "Successful smooth launches / 10",
+        "successDefinition": "Through the 40 km/h gate (60 m) at 40 km/h or more, having shifted 1→2, then stop inside the stop box (110 m): no stall, no shift hanging in neutral over 1 s, no wheelspin over 1 s, 0–40 km/h within 8 s of moving off. Silver: 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s. Gold: 0–40 in 3.5 s, shift under 0.4 s, wheelspin under 0.25 s.",
+        "metricToRecord": "Clean launches / 10 (and your best 0–40 km/h time)",
         "mode": "automatic",
         "endWhen": "stopped",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 60,
+              "widthM": 10,
+              "label": "40 km/h"
+            }
+          ],
+          "box": {
+            "x": 0,
+            "y": 110,
+            "lengthM": 12,
+            "widthM": 6,
+            "label": "Stop box"
+          }
+        },
         "rules": [
           {
-            "type": "entry_speed",
-            "minKmh": 40
+            "type": "gates_passed"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 40,
+            "maxKmh": 80,
+            "gate": 1
           },
           {
             "type": "gear_reached",
@@ -168,6 +190,59 @@
           {
             "type": "no_sustained_wheelspin",
             "maxSeconds": 1.0
+          },
+          {
+            "type": "time_to_speed",
+            "kmh": 40,
+            "maxSeconds": 8
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "park_in_box"
+          },
+          {
+            "type": "no_reverse",
+            "maxM": 0.3
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "time_to_speed",
+                "kmh": 40,
+                "maxSeconds": 4.5
+              },
+              {
+                "type": "clean_shifts",
+                "maxNeutralSeconds": 0.6
+              },
+              {
+                "type": "no_sustained_wheelspin",
+                "maxSeconds": 0.5
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "time_to_speed",
+                "kmh": 40,
+                "maxSeconds": 3.5
+              },
+              {
+                "type": "clean_shifts",
+                "maxNeutralSeconds": 0.4
+              },
+              {
+                "type": "no_sustained_wheelspin",
+                "maxSeconds": 0.25
+              }
+            ]
           }
         ]
       },

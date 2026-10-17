@@ -124,4 +124,17 @@ function T.never_reaching_second_fails()
   eq(c.text, 'Never reached gear 2 (highest 1)', 'text')
 end
 
+function T.time_to_speed_times_the_launch_from_moving_off()
+  -- 4 m/s2 for 5 s: 40 km/h (11.1 m/s) after about 2.8 s
+  local rule = {type = 'time_to_speed', kmh = 40, maxSeconds = 3.5}
+  local c = check({rule}, run({{5, 4, {thr = 1}}}))
+  eq(c.ok, true, 'quick launch')
+  has(c.text, '0-40 km/h in 2.8 s (target 3.5 s)')
+  local slow = check({rule}, run({{8, 2, {thr = 0.5}}}))
+  eq(slow.ok, false, 'slow launch')
+  has(slow.text, '0-40 km/h in 5.5 s')
+  local never = check({rule}, run({{3, 2, {thr = 0.5}}}))
+  eq(never.text, 'Never reached 40 km/h', 'never got there')
+end
+
 return T

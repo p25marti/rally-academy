@@ -68,7 +68,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `b01` | Stop zone: clean PASS, late braking MISS, full brake MISS (lockup) |
 | `a04` | Gates marked down the straight; 30 km/h PASS, too fast at gate 3 MISS |
 | `stops` | A05 stop line and B02 lockup recovery, a PASS and a MISS each |
-| `launch` | A02 launch with a 1-2 shift passes |
+| `launch` | A02 on its course (BMP start straight, from the venue start): a flat-out launch earns a medal; 34 km/h at the 40 km/h gate misses |
 | `events` | A handbrake spin, a run on the grass verge and a puncture are detected (and the puncture isn't contact) |
 | `goto` | Go to drill loads Utah in the gravel Covet for E08, then West Coast USA again for B01 (slow: two map loads) |
 | `fit` | Venue fit test: B01 fits its straight but not facing the barrier; B05's circle fits the BMP dirt arena |
