@@ -83,7 +83,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       recorded runs.
 - [ ] Module A, drill by drill, to the same standard as A01 (course data, medals, coaching).
       Done: A01, A02 (course on the start straight, 0–40 time, medals), A03 (downshifts, over-rev,
-      medals). Next: A04.
+      medals), A04 (course, tighter speed bands for medals). Next: A05.
 
 ## P3 — Machine-readable drills
 

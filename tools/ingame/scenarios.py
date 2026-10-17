@@ -150,18 +150,16 @@ def b01():
 
 @scenario
 def a04():
-    """Gates: mark three gates down the straight, then 30 km/h PASS and 38 km/h MISS."""
+    """A04 on its course (BMP run-up, three gates 25 m apart): a steady 30 km/h earns a medal; 40 km/h at
+    gate 3 misses. Needs West Coast USA."""
     p = []
     A.reload_mod(ui_too=False)
     A.fresh_sampler()
     A.choose("A04")
-    sp = on_straight()
-    if A.debug_state().get("gateCount"):
-        A.click("Clear gates")
-    for d in (30, 55, 80):
-        A.place(sp["pos"], sp["dir"], ahead=d)
-        A.click("+ Gate")
-    expect(p, "three gates marked", A.debug_state().get("gateCount") == 3)
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A04)")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    expect(p, "three gates laid out at the venue", A.debug_state().get("gateCount") == 3, A.debug_state().get("reason"))
 
     def hold(target_of_d):
         A.click("Retry")
@@ -185,9 +183,11 @@ def a04():
         return s
 
     s = hold(lambda d: 30)
-    expect(p, "steady 30 km/h passes", s.get("passed") is True, A.grade_lines())
+    expect(p, "steady 30 km/h passes with a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver", "bronze"),
+           f"{s.get('tier')}: {A.grade_lines()}")
     s = hold(lambda d: 30 if d < 60 else 40)
     expect(p, "too fast at gate 3 misses", s.get("passed") is False, A.grade_lines())
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
     A.realistic()
     A.clear_progress("A04")
     return p

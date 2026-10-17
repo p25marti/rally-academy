@@ -22,6 +22,8 @@
 --      to 61 km/h at the gate, then braking): clean = down to 2nd at 40 km/h (gold); skip = 3rd
 --      straight to 1st; stay = 3rd to the stop. No over-rev was recorded: the sequential box seems
 --      to refuse a downshift that would over-rev, so no_over_rev is unit-tested only.
+-- A04 (course): BMP run-up, three gates 25 m apart, arcade gearbox, throttle-only speed hold:
+--      steady = 30.5 km/h target (29.3 / 30.0 / 29.1 at the gates: gold); fast = 40 km/h after 60 m.
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -207,6 +209,16 @@ function T.a03_downshift_rules_and_medals_still_agree_with_the_in_game_verdicts(
   eq(check(gradeCourse('a03_clean', 'A03'), 'progressive_downshifts').text, 'Downshifted 3→2', 'clean sequence')
   has(check(gradeCourse('a03_skip', 'A03'), 'progressive_downshifts').text, 'Skipped from 3rd to 1st')
   has(check(gradeCourse('a03_stay', 'A03'), 'progressive_downshifts').text, 'Stayed in 3rd')
+end
+
+function T.a04_speed_hold_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local steady, rec = gradeCourse('a04_steady', 'A04')
+  eq(steady.passed, rec.grade.passed, 'steady: same verdict')
+  eq(steady.tier, 'gold', 'steady: gold')
+  has(check(steady, 'speed_at_gates').text, 'Gate speeds 29.3 / 30.0 / 29.1 km/h')
+  local fast, frec = gradeCourse('a04_fast', 'A04')
+  eq(fast.passed, frec.grade.passed, 'fast: same verdict')
+  has(check(fast, 'speed_at_gates').text, 'gate 3 too fast')
 end
 
 local function ruleCheck(name, rule)

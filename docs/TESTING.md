@@ -66,7 +66,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `a01` | The course is laid out at the BMP dirt arena with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
 | `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), and the game's own tabs after reopening |
 | `b01` | Stop zone: clean PASS, late braking MISS, full brake MISS (lockup) |
-| `a04` | Gates marked down the straight; 30 km/h PASS, too fast at gate 3 MISS |
+| `a04` | A04 on its course (BMP run-up, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 stop line and B02 lockup recovery, a PASS and a MISS each |
 | `gears` | A03 on its course (BMP run-up, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
 | `launch` | A02 on its course (from the BMP start line; the run ends at the 40 km/h gate): a flat-out launch earns a medal; 34 km/h at the gate misses |

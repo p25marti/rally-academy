@@ -9,7 +9,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 **Status:** the telemetry sampler, run records and the rule engine exist.
 Seven drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
-medals), **A04** (speed hold through gates), **A05** (stop before a
+medals), **A04** (speed hold through gates on a course, with medals) (speed hold through gates), **A05** (stop before a
 line), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
@@ -190,6 +190,10 @@ a box 1 m smaller all round; gold: under 6000 rpm, 0.4 s, 0.15 s, 1.5 m smaller.
 2nd at about 60 km/h (6200 rpm), so reaching the gate in 3rd means shifting up around 45 km/h:
 gear choice is part of the drill. Scripted with the sequential gearbox and scripted gears (the
 arcade box holds 2nd to 61 km/h): gold.
+
+A04 targets (BMP run-up, three gates 25 m apart): bronze 27–33 km/h at every gate with no braking
+between them; silver 28–32; gold 29–31. Gate speeds are shown to a tenth, since the medal bands are
+only 2 km/h wide. A scripted throttle-only hold at 30.5 km/h read 29.3 / 30.0 / 29.1: gold.
 
 ## 6. Hybrid grading
 

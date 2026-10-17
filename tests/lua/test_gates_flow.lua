@@ -1,9 +1,9 @@
--- Gates through the extension: marking, live feedback, A04 grading, drawing.
+-- Gates through the extension: marking, live feedback, grading, drawing (A04 as a marked-gate
+-- drill, H.setupMarkedGates; the shipped A04 has a course).
 local H = require('ra_helpers')
 local stubs = H.stubs
 local near = H.near
 local eq = H.eq
-local setup = H.setup
 local reloadExtension = H.reloadExtension
 local has = H.has
 local setupB01 = H.setupB01
@@ -18,7 +18,7 @@ function T.a04_steady_speed_through_three_gates_is_graded_pass()
   eq(s.phase, 'scored', 'ends at the last gate and is graded')
   eq(s.successes, 1, 'pass recorded')
   eq(#s.grade.checks, 2, 'speed and braking checks')
-  has(s.grade.checks[1].text, '30 / 30 / 30 km/h')
+  has(s.grade.checks[1].text, '30.0 / 30.0 / 30.0 km/h')
   local log = h.logText('rallyAcademy')
   has(log, 'gate 1 passed at 30 km/h')
   has(log, 'A04: last gate in')
@@ -31,7 +31,7 @@ function T.a04_grades_the_last_gate_when_telemetry_lags_a_frame()
   local h, M = setupA04()
   local s = gateRun(h, M, {lag = true})
   eq(s.phase, 'scored', 'graded')
-  has(s.grade.checks[1].text, '30 / 30 / 30 km/h')
+  has(s.grade.checks[1].text, '30.0 / 30.0 / 30.0 km/h')
   eq(s.successes, 1, 'pass')
   near(s.lastTime, 90 / (30 / 3.6), 0.2, 'timed at the last gate, not after the grading delay')
 end
@@ -41,7 +41,7 @@ function T.a04_too_fast_or_braking_between_gates_is_a_miss()
   local s = gateRun(h, M, {kmhAt = function(y) return y > 70 and 38 or 30 end})
   eq(s.phase, 'scored', 'graded')
   eq(s.successes, 0, 'miss')
-  has(s.reason, 'MISS: Gate speeds 30 / 30 / 38 km/h')
+  has(s.reason, 'MISS: Gate speeds 30.0 / 30.0 / 38.0 km/h')
   s = gateRun(h, M, {brakeAt = function(y) return y > 50 and y < 52 end})
   eq(s.grade.checks[2].ok, false, 'braking check failed')
   has(s.reason, 'Braked between gates 1 and 3')
@@ -84,7 +84,7 @@ function T.pass_is_refused_mid_run_when_the_run_ends_at_a_gate()
 end
 
 function T.gate_drill_without_gates_says_to_mark_them_on_retry()
-  local h, M = setup()
+  local h, M = H.setupMarkedGates()
   M.select('A04')
   h.vehicle.pos = stubs.vec3(0, 0, 0)
   M.markStart()

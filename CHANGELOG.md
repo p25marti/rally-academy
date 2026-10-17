@@ -99,6 +99,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   skipping a gear on the way down ("Skipped from 4th to 2nd") and over-revving ("Over-revved to
   7200 rpm in 2nd at 45 km/h"). Silver and gold need lower revs, quicker shifts, less lockup and a
   more accurate stop.
+- **A04 throttle modulation on a course, with medals.** The three gates are laid out for you on the
+  BMP run-up (no more + Gate). Hold 30 km/h through them without braking: 27–33 km/h is a pass,
+  28–32 silver, 29–31 gold. Gate speeds now show tenths ("29.3 / 30.0 / 29.1 km/h").
 - **HUD fits long grade lists:** failed checks first, then the passed checks with numbers, up to
   five lines; the rest fold into "N more checks passed".
 - **B01, B02, B03 and A03 start on the BMP run-up**, 120 m behind the start line (new venue

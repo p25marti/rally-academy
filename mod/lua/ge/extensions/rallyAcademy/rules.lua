@@ -454,7 +454,7 @@ function E.speed_at_gates(rule, samples, ctx)
       speeds[#speeds + 1] = '-'
       problem = problem or string.format('gate %d not reached', i)
     else
-      speeds[#speeds + 1] = string.format('%.0f', p.kmh)
+      speeds[#speeds + 1] = string.format('%.1f', p.kmh) -- tenths: medal bands are 2 km/h wide
       if p.kmh < min then problem = problem or string.format('gate %d too slow', i)
       elseif p.kmh > max then problem = problem or string.format('gate %d too fast', i) end
     end

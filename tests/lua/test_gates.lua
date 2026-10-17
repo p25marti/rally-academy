@@ -99,14 +99,14 @@ end
 function T.steady_30_through_three_gates_passes_a04()
   local res = R.evaluate(A04, run({}), {gates = threeGates()})
   eq(res.passed, true, 'passed')
-  eq(res.checks[1].text, 'Gate speeds 30 / 30 / 30 km/h (band 27-33)', 'speeds listed')
+  eq(res.checks[1].text, 'Gate speeds 30.0 / 30.0 / 30.0 km/h (band 27-33)', 'speeds listed')
   eq(res.checks[2].text, 'No braking between gates 1 and 3', 'no brake')
 end
 
 function T.too_fast_at_one_gate_fails_and_names_it()
   local res = R.evaluate(A04, run({kmhAt = function(y) return y > 80 and 36 or 30 end}), {gates = threeGates()})
   eq(res.passed, false, 'failed')
-  has(res.checks[1].text, '30 / 30 / 36 km/h')
+  has(res.checks[1].text, '30.0 / 30.0 / 36.0 km/h')
   has(res.checks[1].text, 'gate 3 too fast')
 end
 
@@ -122,7 +122,7 @@ function T.speed_at_one_gate_only()
   local rule = {{type = 'speed_at_gates', minKmh = 25, maxKmh = 200, gate = -1}}
   local res = R.evaluate(rule, run({kmhAt = function(y) return y > 80 and 24 or 40 end}), {gates = threeGates()})
   eq(res.passed, false, 'last gate too slow')
-  eq(res.checks[1].text, 'Gate 3: 24 km/h (band 25-200): gate 3 too slow', 'only the last gate')
+  eq(res.checks[1].text, 'Gate 3: 24.0 km/h (band 25-200): gate 3 too slow', 'only the last gate')
 end
 
 function T.gates_passed_reports_misses_and_unreached_gates()

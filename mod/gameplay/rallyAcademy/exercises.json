@@ -396,8 +396,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight: mark three 25 m timing zones.",
+        "venue": "bmp-gravel-runup",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line: three gates 25 m apart from 30 m in. The run ends at gate 3, on the flat.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 110,
@@ -412,21 +412,39 @@
           ]
         }
       },
-      "instructions": "Bring the car to 30 km/h, then hold that speed through three gates 25 m apart.",
-      "resetInstructions": "Mark the start 30 m before the first gate, facing down the straight. Drive to each gate spot in turn (25 m apart) and press + Gate.",
-      "props": "Speedometer only; the build-up to the first gate is not graded.",
+      "instructions": "Bring the car to 30 km/h, then hold that speed through the three gates 25 m apart, without braking. The run ends at gate 3.",
+      "resetInstructions": "Go to drill puts you on the run-up with the three gates laid out ahead. Move course here re-lays them from where you are.",
+      "props": "None: the gates are drawn for you. Speedometer only; the build-up to the first gate is not graded.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Speed at each of the three gates between 27 and 33 km/h; no braking between the first and last gate.",
+        "successDefinition": "Speed at each of the three gates between 27 and 33 km/h, no braking between the first and last gate, and no gate post touched. Silver: 28-32 km/h at every gate. Gold: 29-31 km/h.",
         "metricToRecord": "Runs with all three gates in band",
         "mode": "automatic",
         "endWhen": "gates",
-        "gates": {
-          "count": 3,
-          "widthM": 10
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 30,
+              "widthM": 10
+            },
+            {
+              "x": 0,
+              "y": 55,
+              "widthM": 10
+            },
+            {
+              "x": 0,
+              "y": 80,
+              "widthM": 10
+            }
+          ]
         },
         "rules": [
+          {
+            "type": "gates_passed"
+          },
           {
             "type": "speed_at_gates",
             "minKmh": 27,
@@ -434,6 +452,31 @@
           },
           {
             "type": "no_brake_between_gates"
+          },
+          {
+            "type": "markers_clear"
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 28,
+                "maxKmh": 32
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 29,
+                "maxKmh": 31
+              }
+            ]
           }
         ]
       },

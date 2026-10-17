@@ -140,9 +140,27 @@ function H.setupB01(zoneY)
   return h, M
 end
 
--- A04 with its start at y = 0 and gates at y = 40, 65, 90, all facing north (+y).
+-- Marked gates (+ Gate) need a drill that uses them; no shipped drill does since A04 got a course,
+-- so the tests use A04 as it was: three gates the driver marks, 10 m wide, graded on speed.
+function H.setupMarkedGates()
+  local h = stubs.install()
+  local data = jsonReadFile('gameplay/rallyAcademy/exercises.json')
+  for _, e in ipairs(data.exercises) do
+    if e.id == 'A04' then
+      e.assessment.course, e.assessment.tiers = nil, nil
+      e.assessment.gates = {count = 3, widthM = 10}
+      e.assessment.rules = {{type = 'speed_at_gates', minKmh = 27, maxKmh = 33}, {type = 'no_brake_between_gates'}}
+    end
+  end
+  jsonWriteFile('gameplay/rallyAcademy/exercises.json', data)
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  return h, M
+end
+
+-- A04 (marked gates, above) with its start at y = 0 and gates at y = 40, 65, 90, all facing north (+y).
 function H.setupA04()
-  local h, M = H.setup()
+  local h, M = H.setupMarkedGates()
   M.select('A04')
   h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
   M.markStart()
