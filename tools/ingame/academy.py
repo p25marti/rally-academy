@@ -183,11 +183,13 @@ _DRIVE_TICK = ("local v = be:getPlayerVehicle(0) "
                "return string.format('%.3f,%.3f,%.4f,%.4f,%.3f', q.x, q.y, d.x, d.y, w:length())")
 
 
-def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max_steer=0.55, timeout=40, max_throttle=0.6):
+def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max_steer=0.55, timeout=40, max_throttle=0.6,
+                on_tick=None):
     """Drive the player's car along world points (x, y) with pure pursuit and stop with its
     position on the last point: steady `kmh`, then braking at `decel` m/s2 to arrive slowly,
     and the handbrake for the last few centimetres (arcade reverses on a held brake). Use the
-    arcade gearbox. Returns the distance from the last point when the car stopped."""
+    arcade gearbox. `on_tick(kmh, to_go)` may return vehicle Lua to run in the car that tick (e.g. a
+    scripted gear change). Returns the distance from the last point when the car stopped."""
     path = _resample(points)
     remaining = [0.0] * len(path)
     for i in range(len(path) - 2, -1, -1):
@@ -196,6 +198,10 @@ def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max
     idx, t0, stopped_at = 0, time.time(), None
     while time.time() - t0 < timeout:
         x, y, hx, hy, v = (float(f) for f in lua(_DRIVE_TICK.format(s=s, t=t, b=b, p=p)).split(","))
+        if on_tick:
+            extra = on_tick(v * 3.6, remaining[idx])
+            if extra:
+                lua(f"be:getPlayerVehicle(0):queueLuaCommand({json.dumps(extra)}) return 1")
         # Closest path point ahead of the last one (never go back along the path).
         best = min(range(idx, min(idx + 80, len(path))), key=lambda i: math.dist((x, y), path[i]))
         idx = best
@@ -233,11 +239,22 @@ def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max
     return stopped_at
 
 
-def course_run(drill_id, local_points, **kw):
-    """Retry the drill and drive course-frame points (see course_points); returns the graded state."""
+def sequential():
+    """Sequential gearbox with an automatic clutch: scripts choose gears with shiftToGearIndex."""
+    vlua('controller.mainController.setGearboxMode("sequential") return 1')
+
+
+def shift_to(gear):
+    """Vehicle Lua for an on_tick hook: select a gear (sequential mode)."""
+    return f"controller.mainController.shiftToGearIndex({gear})"
+
+
+def course_run(drill_id, local_points, gearbox="arcade", **kw):
+    """Retry the drill and drive course-frame points (see course_points); returns the graded state.
+    gearbox: 'arcade' (shifts itself) or 'sequential' (shift with on_tick returning shift_to(n))."""
     click("Retry")
     time.sleep(1.0)
-    arcade()
+    sequential() if gearbox == "sequential" else arcade()
     inp("parkingbrake", 0)
     follow_path(course_points(drill_id, local_points), **kw)
     return wait_graded()

@@ -96,8 +96,13 @@ Learned the hard way (0.39.4):
   - Physics varies run to run by about a metre; check verdicts, not exact numbers.
   - Steering a line: `academy.follow_path` (pure pursuit through MCP, one round trip per
     tick) drives course-frame points; precision to ~0.1 m.
+  - Choosing gears: `course_run(..., gearbox="sequential", on_tick=...)` with `A.shift_to(n)`
+    (the arcade box shifts on its own and holds 2nd to ~60 km/h in the Covet).
 
 ## Recipes
+
+**Generic tests** use A06 as "a self-assessed drill without a course"; when a drill gets graded, move
+any test that relied on it being self-assessed.
 
 **Make a drill auto-graded:**
 1. Read its entry in `exercises.json` and the capability table in [GRADING](docs/GRADING.md).

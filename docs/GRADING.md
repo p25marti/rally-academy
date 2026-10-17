@@ -7,8 +7,9 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Six drills are graded automatically: **A01** (gate, cone and parking box, with medals),
-**A02** (launch and shift on a course, with medals), **A04** (speed hold through gates), **A05** (stop before a
+Seven drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+**A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
+medals), **A04** (speed hold through gates), **A05** (stop before a
 line), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
@@ -139,6 +140,8 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `park_in_box` | none (optional `insetM` 0, `label`) | At rest with all four corners of the body inside the course's box, shrunk by `insetM` on every side |
 | `no_reverse` | none (optional `maxM` 0.3) | The car travels no more than `maxM` backwards (against the way it points) |
 | `max_time` | `maxSeconds` | The run time is at most `maxSeconds` (medal time targets) |
+| `progressive_downshifts` | `toGear` | After the highest gear reached, the car goes down one gear at a time to `toGear` (3→2, not 4→2); neutral and reverse are skipped, going lower at the stop is fine |
+| `no_over_rev` | `maxRpm` | The engine never spins past `maxRpm` (the Covet Student Driver's limiter is 6500 rpm); names the gear and speed where it did |
 | `time_to_speed` | `kmh`, `maxSeconds` | The car reaches `kmh` within `maxSeconds` of moving off (the run's start mark, about 1 m/s, so the clutch bite before it isn't counted): A02's 0–40 km/h time |
 
 **Gates** (`gates.lua`, pure) are lines across the road: a centre, the direction the
@@ -179,6 +182,14 @@ within 8 s, shift under 1 s, wheelspin under 1 s, through the 40 km/h gate; the 
 silver 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s; gold 3.5 s, 0.4 s, 0.25 s.
 Scripted with the arcade gearbox: 2.6 s flat out (gold), 3.4 s at 60% throttle with a 0.6–0.7 s
 shift (bronze). The targets leave room for a real clutch and manual shift; check them on the rig.
+
+A03 targets (Covet Student Driver, BMP run-up): bronze is through the 60 km/h gate at 55–75 km/h in
+3rd or higher, down one gear at a time to 2nd, under 6700 rpm, shifts under 1 s, no lock over
+0.5 s, stopped in the 12 × 6 m box; silver: under 6300 rpm, shifts under 0.6 s, locks under 0.3 s,
+a box 1 m smaller all round; gold: under 6000 rpm, 0.4 s, 0.15 s, 1.5 m smaller. The Covet tops out
+2nd at about 60 km/h (6200 rpm), so reaching the gate in 3rd means shifting up around 45 km/h:
+gear choice is part of the drill. Scripted with the sequential gearbox and scripted gears (the
+arcade box holds 2nd to 61 km/h): gold.
 
 ## 6. Hybrid grading
 

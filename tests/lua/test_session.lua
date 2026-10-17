@@ -29,7 +29,7 @@ end
 
 function T.retry_requires_a_marked_start()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   M.retry()
   eq(h.lastState().phase, 'setup', 'still in setup')
   eq(#h.vehicle.teleports, 0, 'no teleport')
@@ -37,7 +37,7 @@ end
 
 function T.retry_teleports_to_marked_start()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   h.vehicle.pos = stubs.vec3(10, 20, 30)
   M.markStart()
   h.vehicle.pos = stubs.vec3(500, 0, 0)
@@ -52,7 +52,7 @@ end
 -- rotation built from the plain (not negated) direction vector.
 function T.retry_faces_the_marked_direction()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   h.vehicle.dir = stubs.vec3(0, 1, 0)
   M.markStart()
   h.vehicle.dir = stubs.vec3(1, 0, 0) -- car turned since
@@ -62,7 +62,7 @@ end
 
 function T.retry_repairs_damage()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   M.markStart()
   h.vehicle.damage = 1500
   M.retry()
@@ -75,7 +75,7 @@ end
 -- (Damage is still not repaired; see ROADMAP.)
 function T.retry_leaves_car_at_rest()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   M.markStart()
   h.vehicle.vel = stubs.vec3(0, 25, 0)
   M.retry()
@@ -162,10 +162,10 @@ function T.finish_gate_stops_timer_and_requests_review()
   assert(s.lastTime and s.lastTime > 4 and s.lastTime < 5.5, 'finish time ~4.8 s, got ' .. tostring(s.lastTime))
 end
 
--- A03 has no finish gate here, so the driver ends each run with Pass/Miss.
+-- A06 has no finish gate here, so the driver ends each run with Pass/Miss.
 function T.record_attempt_persists_progress()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   M.markStart()
   M.retry()
   drive(h, M, 1.0, {x = 0, y = 10, z = 0})
@@ -177,25 +177,25 @@ function T.record_attempt_persists_progress()
   eq(s.attempts, 2, 'attempts')
   eq(s.successes, 1, 'successes')
   local saved = jsonReadFile('settings/rallyAcademyProgress.json')
-  eq(saved.lessons.A03.totalAttempts, 2, 'saved attempts')
-  eq(saved.lessons.A03.totalPasses, 1, 'saved passes')
+  eq(saved.lessons.A06.totalAttempts, 2, 'saved attempts')
+  eq(saved.lessons.A06.totalPasses, 1, 'saved passes')
 end
 
 function T.no_finish_gate_pass_records_run_time_as_best()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   M.markStart()
   M.retry()
   M.onUpdate(0.1, 0.1) -- a frame at rest after Retry, as in the game (origin is captured here)
   drive(h, M, 2.0, {x = 0, y = 10, z = 0})
   M.recordAttempt(true)
-  local best = jsonReadFile('settings/rallyAcademyProgress.json').lessons.A03.bestTime
+  local best = jsonReadFile('settings/rallyAcademyProgress.json').lessons.A06.bestTime
   assert(best and math.abs(best - 2.0) < 1e-6, 'best 2.0 s, got ' .. tostring(best))
 end
 
 function T.scoring_before_driving_is_ignored()
   local h, M = setup()
-  M.select('A03')
+  M.select('A06')
   M.markStart()
   M.retry()
   M.recordAttempt(true)
@@ -260,7 +260,7 @@ end
 
 function T.onUpdate_does_not_log_every_frame()
   local h, M = setup()
-  markStartAndFinish(h, M, 'A03')
+  markStartAndFinish(h, M, 'A06')
   M.retry()
   drive(h, M, 1.0, {x = 0, y = 10, z = 0})
   local before = #h.logs

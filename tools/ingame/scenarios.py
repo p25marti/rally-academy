@@ -63,9 +63,9 @@ def smoke():
     picked = A.wait_for(lambda: A.debug_state().get("selected"), "B01")
     expect(p, "picking B01 in the drop-down selects it", picked == "B01", picked)
     # Found by the demo run: a drill with no rules ({} from Lua, not []) crashed the Vue panel.
-    A.choose("A03")
+    A.choose("A06")
     title = A.wait_for(lambda: ui(f"var p=document.querySelector('{A.PANEL} .ra-instructions'); return p ? 'shown' : 'missing'"), "shown")
-    expect(p, "panel renders a drill without grading rules (A03)", title == "shown", title)
+    expect(p, "panel renders a drill without grading rules (A06)", title == "shown", title)
     A.choose("A04")
     expect(p, "selecting A04 shows the gate button", "Gate" in str(ui(f"return document.querySelector('{A.PANEL}').innerText")))
     if A.debug_state().get("level") != "unknown":
@@ -242,6 +242,47 @@ def launch():
     lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
     A.realistic()
     A.clear_progress("A02")
+    return p
+
+
+def _gear_plan(down_to):
+    """on_tick hook for A03: 1st, 2nd at 25 km/h, 3rd at 45; after 58 km/h, `down_to` below 40 km/h."""
+    st = {"g": 0, "peak": 0}
+
+    def plan(kmh, _to_go):
+        st["peak"] = max(st["peak"], kmh)
+        if st["peak"] < 58:
+            want = 1 if kmh < 25 else (2 if kmh < 45 else 3)
+        else:
+            want = 3 if kmh >= 40 else down_to
+        if want != st["g"]:
+            st["g"] = want
+            return A.shift_to(want)
+    return plan
+
+
+@scenario
+def gears():
+    """A03 on its course (BMP run-up): up to 3rd and 60 km/h, then down to 2nd one gear at a time into
+    the stop box passes with a medal; 3rd straight to 1st misses. Sequential gearbox, scripted gears."""
+    p = []
+    A.reload_mod(ui_too=False)
+    A.fresh_sampler()
+    A.choose("A03")
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A03)")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    line = [(0, 0), (0, 155)]
+    kw = dict(gearbox="sequential", kmh=62, decel=2.2, max_throttle=0.9)
+    s = A.course_run("A03", line, on_tick=_gear_plan(2), **kw)
+    expect(p, "3rd to 2nd into the box passes with a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
+           f"{s.get('tier')}: {s.get('reason')} {s.get('nextTier') or ''}")
+    s = A.course_run("A03", line, on_tick=_gear_plan(1), **kw)
+    expect(p, "3rd straight to 1st misses", s.get("passed") is False and "Skipped from 3rd to 1st" in str(s.get("reason")),
+           s.get("reason"))
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
+    A.realistic()
+    A.clear_progress("A03")
     return p
 
 

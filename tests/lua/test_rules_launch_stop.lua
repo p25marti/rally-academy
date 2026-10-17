@@ -137,4 +137,43 @@ function T.time_to_speed_times_the_launch_from_moving_off()
   eq(never.text, 'Never reached 40 km/h', 'never got there')
 end
 
+local function gears(list) -- {gear, seconds} pairs at 10 m/s
+  local samples, t = {}, 0
+  for _, g in ipairs(list) do
+    for _ = 1, math.floor(g[2] / DT + 0.5) do
+      t = t + DT
+      samples[#samples + 1] = {t = t, x = 0, y = t * 10, air = 10, gear = g[1], rpm = g[3] or 3000, w = {}}
+    end
+  end
+  return {samples = samples, runStartT = samples[1].t}
+end
+
+function T.downshifts_one_gear_at_a_time_pass()
+  local c = check({{type = 'progressive_downshifts', toGear = 2}},
+    gears({{1, 1}, {2, 1}, {3, 2}, {0, 0.3}, {2, 1}, {1, 1}}))
+  eq(c.ok, true, c.text)
+  eq(c.text, 'Downshifted 3→2', 'text')
+end
+
+function T.skipping_a_gear_on_the_way_down_fails()
+  local c = check({{type = 'progressive_downshifts', toGear = 2}}, gears({{1, 1}, {2, 1}, {3, 1}, {4, 2}, {2, 1}}))
+  eq(c.ok, false, 'skipped 3rd')
+  eq(c.text, 'Skipped from 4th to 2nd: go down one gear at a time', 'text')
+end
+
+function T.staying_in_a_high_gear_or_never_climbing_fails()
+  local stay = check({{type = 'progressive_downshifts', toGear = 2}}, gears({{1, 1}, {2, 1}, {3, 3}}))
+  eq(stay.text, 'Stayed in 3rd: downshift to 2nd as you slow', 'stayed in 3rd')
+  local low = check({{type = 'progressive_downshifts', toGear = 2}}, gears({{1, 1}, {2, 3}}))
+  eq(low.text, 'Never above 2nd, so nothing to downshift', 'never above 2nd')
+end
+
+function T.over_rev_names_the_gear_and_speed()
+  local c = check({{type = 'no_over_rev', maxRpm = 6700}}, gears({{3, 1, 5000}, {2, 0.2, 7300}, {2, 1, 5000}}))
+  eq(c.ok, false, 'over-revved')
+  has(c.text, 'Over-revved to 7300 rpm in 2nd at 36 km/h (limit 6700)')
+  local fine = check({{type = 'no_over_rev', maxRpm = 6700}}, gears({{3, 1, 6450}}))
+  eq(fine.text, 'Peak 6450 rpm (limit 6700)', 'under the limit')
+end
+
 return T

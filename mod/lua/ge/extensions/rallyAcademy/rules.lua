@@ -203,6 +203,57 @@ function E.gear_reached(rule, samples)
   return false, string.format('Never reached gear %d (highest %d)', rule.gear, top)
 end
 
+local ORDINAL = {'1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'}
+local function gearName(g) return ORDINAL[g] or (tostring(g) .. 'th') end
+
+-- Slowing down through the gears one at a time after the highest gear reached, down to `toGear`
+-- (A03: 3rd -> 2nd, not 4th -> 2nd). Neutral and reverse are skipped; going lower than `toGear`
+-- at the stop is fine.
+-- rule: {type = 'progressive_downshifts', toGear = 2}
+function E.progressive_downshifts(rule, samples)
+  local top, topAt = 0, nil
+  for i, s in ipairs(samples) do
+    if (s.gear or 0) > top then top, topAt = s.gear, i end
+  end
+  if top <= rule.toGear then
+    return false, string.format('Never above %s, so nothing to downshift', gearName(rule.toGear))
+  end
+  local seq, last = {top}, top
+  for i = topAt + 1, #samples do
+    local g = samples[i].gear or 0
+    if g > 0 and g ~= last then
+      if g < last - 1 and last > rule.toGear then
+        return false, string.format('Skipped from %s to %s: go down one gear at a time', gearName(last), gearName(g))
+      end
+      if g < last then seq[#seq + 1] = g end
+      last = g
+      if g <= rule.toGear then break end
+    end
+  end
+  if last > rule.toGear then
+    return false, string.format('Stayed in %s: downshift to %s as you slow', gearName(last), gearName(rule.toGear))
+  end
+  local names = {}
+  for i, g in ipairs(seq) do names[i] = tostring(g) end
+  return true, 'Downshifted ' .. table.concat(names, '→')
+end
+
+-- The engine never spins past `maxRpm`: a downshift at too high a speed (or bouncing off the
+-- limiter, for tighter limits). The Covet Student Driver's limiter is 6500 rpm (0.39.4).
+-- rule: {type = 'no_over_rev', maxRpm = 6700}
+function E.no_over_rev(rule, samples)
+  local peak, at = 0, nil
+  for _, s in ipairs(samples) do
+    if (s.rpm or 0) > peak then peak, at = s.rpm, s end
+  end
+  if not at then return true, 'No rpm data' end
+  if peak > rule.maxRpm then
+    return false, string.format('Over-revved to %.0f rpm in %s at %.0f km/h (limit %d)', peak,
+      gearName(at.gear or 0), (at.air or 0) * KMH, rule.maxRpm)
+  end
+  return true, string.format('Peak %.0f rpm (limit %d)', peak, rule.maxRpm)
+end
+
 -- A shift that hangs in neutral while moving: a missed or fumbled gear.
 -- rule: {type = 'clean_shifts', maxNeutralSeconds = 1.0, minKmh = 10}
 function E.clean_shifts(rule, samples)
@@ -576,6 +627,8 @@ R.TYPES = {
   no_reverse = {},
   max_time = {'maxSeconds'},
   time_to_speed = {'kmh', 'maxSeconds'},
+  progressive_downshifts = {'toGear'},
+  no_over_rev = {'maxRpm'},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).

@@ -93,6 +93,12 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   through the gate; the run ends there (nobody has to stop on the straight's banked end). The run
   reports your 0–40 km/h time; silver and gold need a quicker launch (4.5 s, 3.5 s), a quicker shift
   and less wheelspin.
+- **A03 gear selection and downshifting is graded automatically, with medals.** Go to drill puts
+  you on the BMP run-up with a 60 km/h gate and a stop box on the flat past the start line. Reach
+  60 km/h in 3rd, then brake and downshift one gear at a time to 2nd and stop in the box. New checks:
+  skipping a gear on the way down ("Skipped from 4th to 2nd") and over-revving ("Over-revved to
+  7200 rpm in 2nd at 45 km/h"). Silver and gold need lower revs, quicker shifts, less lockup and a
+  more accurate stop.
 - **HUD fits long grade lists:** failed checks first, then the passed checks with numbers, up to
   five lines; the rest fold into "N more checks passed".
 - **B01, B02, B03 and A03 start on the BMP run-up**, 120 m behind the start line (new venue

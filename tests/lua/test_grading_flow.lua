@@ -58,7 +58,7 @@ function T.changing_drill_clears_the_shown_grade()
   local h, M = setupB01(107)
   brakingRun(h, M, {})
   assert(h.lastState().grade, 'graded first')
-  M.select('A03')
+  M.select('A06')
   eq(h.lastState().grade, false, 'grade cleared on drill change')
 end
 

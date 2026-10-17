@@ -249,7 +249,7 @@
       },
       "environment": {
         "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): accelerate along the run-up and downshift to stop by an end gate on the flat, up to 45 m past the start line.",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line: the 60 km/h gate 70 m in, the stop box on the flat 35 m past the line.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 200,
@@ -264,16 +264,121 @@
           ]
         }
       },
-      "instructions": "Accelerate to 60 km/h and downshift progressively to 2nd as you slow before the end gate.",
-      "resetInstructions": "Go to drill puts you 120 m behind the start line. Mark the end gate on the flat, no more than 45 m past the line.",
-      "props": "Use tachometer HUD; no racing downshifts.",
+      "instructions": "Accelerate through the gears to 60 km/h at the 60 km/h gate, then brake and downshift one gear at a time to 2nd, and stop in the stop box. No over-revving, no lockup, no stall.",
+      "resetInstructions": "Go to drill puts you on the run-up with the gate and stop box laid out ahead. Move course here re-lays it from where you are.",
+      "props": "None: the gate and stop box are drawn for you. Manual gearbox; watch the rev counter.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Correct shifts without over-rev, wheel lock, stall or missed shift; stop before gate.",
+        "successDefinition": "Through the 60 km/h gate (70 m) at 55-75 km/h in 3rd or higher, then downshift one gear at a time to 2nd while braking and stop inside the stop box (155 m): never above 6700 rpm (the limiter is 6500), no shift hanging in neutral over 1 s, no wheel locked over 0.5 s, no stall, no reversing. Silver: under 6300 rpm, shifts under 0.6 s, no lock over 0.3 s, inside the silver box (1 m smaller all round). Gold: under 6000 rpm, shifts under 0.4 s, no lock over 0.15 s, inside the gold box (1.5 m smaller).",
         "metricToRecord": "Clean gear sequences / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "endWhen": "stopped",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 70,
+              "widthM": 10,
+              "label": "60 km/h"
+            }
+          ],
+          "box": {
+            "x": 0,
+            "y": 155,
+            "lengthM": 12,
+            "widthM": 6,
+            "label": "Stop box"
+          }
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 55,
+            "maxKmh": 75,
+            "gate": 1
+          },
+          {
+            "type": "gear_reached",
+            "gear": 3
+          },
+          {
+            "type": "progressive_downshifts",
+            "toGear": 2
+          },
+          {
+            "type": "no_over_rev",
+            "maxRpm": 6700
+          },
+          {
+            "type": "clean_shifts",
+            "maxNeutralSeconds": 1.0
+          },
+          {
+            "type": "no_sustained_lockup",
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_stall"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "park_in_box"
+          },
+          {
+            "type": "no_reverse",
+            "maxM": 0.3
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "no_over_rev",
+                "maxRpm": 6300
+              },
+              {
+                "type": "clean_shifts",
+                "maxNeutralSeconds": 0.6
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.3
+              },
+              {
+                "type": "park_in_box",
+                "insetM": 1.0
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "no_over_rev",
+                "maxRpm": 6000
+              },
+              {
+                "type": "clean_shifts",
+                "maxNeutralSeconds": 0.4
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.15
+              },
+              {
+                "type": "park_in_box",
+                "insetM": 1.5
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
