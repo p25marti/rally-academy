@@ -149,7 +149,8 @@ function T.stop_before_a_course_line_uses_the_front_bumper()
   has(ok.text, 'Stopped 0.40 m before the line')
   local past = R.evaluate({rule}, stopAt(60 - 1.85 + 0.3), {course = course, car = COVET}).checks[1]
   has(past.text, 'Stopped 0.30 m past the line')
-  local gold = R.evaluate({{type = 'stop_before_line', minM = 0, maxM = 0.5}}, stopAt(60 - 1.85 - 0.8), {course = course, car = COVET}).checks[1]
+  local goldRule = {type = 'stop_before_line', minM = 0, maxM = 0.5}
+  local gold = R.evaluate({goldRule}, stopAt(60 - 1.85 - 0.8), {course = course, car = COVET}).checks[1]
   has(gold.text, 'Stopped 0.80 m before the line (target 0-0.5 m before it)')
 end
 
