@@ -106,6 +106,12 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   dirt arena, with a cone at each end and gold, silver and bronze bands before it. Stop with the
   front bumper 0–2 m before it (silver 1 m, gold 0.5 m), measured from your car's own bumper; the
   HUD reads out the distance as you approach.
+- **A07 basic racing lines and A08 apex and exit selection are graded, with medals**, on a new
+  BMP corner venue: a 124° downhill left with a straight approach. A07: through the 3 m exit gate at
+  the track-out, all wheels on the gravel; medals for exit speed (40 and 48 km/h). A08: a 3 m
+  late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
+  corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
+  road (`headingDeg`).
 - **HUD fits long grade lists:** failed checks first, then the passed checks with numbers, up to
   five lines; the rest fold into "N more checks passed".
 - **B01, B02, B03 and A03 start on the BMP run-up**, 120 m behind the start line (new venue

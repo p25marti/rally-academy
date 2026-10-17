@@ -74,6 +74,30 @@
       "notes": "120 m behind the start line on the gravel run-up, facing the line. Flat (roll under 0.5 degrees) from 60 m before the line to 50 m past it; stops belong there, before the straight cambers and banks. Clear for 150 m ahead (measured 0.39.4)."
     },
     {
+      "id": "bmp-gravel-corner",
+      "mapsId": "W1",
+      "name": "West Coast USA: BMP Gravel Track, downhill left",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 194.2,
+          "y": 352.98,
+          "z": 132.57
+        },
+        "dir": {
+          "x": -0.6583,
+          "y": -0.7528,
+          "z": -0.0024
+        },
+        "up": {
+          "x": 0.0865,
+          "y": -0.0788,
+          "z": 0.9931
+        }
+      },
+      "notes": "67 m of straight approach (8 m wide gravel) into a 124 degree downhill left, radius 32 m, 110 m long, dropping about 12 m, that exits onto the circuit's north-east straight (road network DR1181; measured 0.39.4). Gravel about 5 m either side of the centre line, then dirt and grass."
+    },
+    {
       "id": "bmp-dirt-circle",
       "mapsId": "W3",
       "name": "West Coast USA: BMP dirt circle",

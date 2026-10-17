@@ -71,7 +71,8 @@ and draws it; nothing needs marking ([PRODUCT](PRODUCT.md): drills set themselve
 
 ```jsonc
 "course": {
-  "gates": [{"x": 0, "y": 8, "widthM": 3}],          // gates to drive through, in order
+  "gates": [{"x": 0, "y": 8, "widthM": 3}],          // gates to drive through, in order;
+                                                     // "headingDeg": -93 turns a gate to face a corner's road
   "cones": [{"x": 0, "y": 20, "keep": "left"}],      // keep the cone on your left (pass it on its right)
   "box": {"x": -1.5, "y": 33, "lengthM": 6, "widthM": 3.2}, // parking box, square to the course
   "line": {"x": 0, "y": 60, "widthM": 8}            // a stop line, a cone at each end (A05)

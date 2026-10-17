@@ -27,6 +27,10 @@
 -- A05 (course): BMP dirt arena, stop line 60 m from the venue start, pure-pursuit script aimed at a
 --      bumper distance before the line, braking at 3.5 m/s2 from 44 km/h: gold = 0.48 m before;
 --      bronze = 1.25 m (misses silver's 1 m); just_past = 0.01 m past (a miss); past = 0.78 m past.
+-- A07, A08 (course): BMP downhill left (venue bmp-gravel-corner), Covet Gravel Rally, pure-pursuit
+--      racing line from tools/ingame/lines.py (outside, late apex, track-out); a07_gold = 50 km/h
+--      cap (52 at the exit); a07_clip = line 1 m left at the exit (left post); a08_gold = 46 km/h;
+--      a08_weave = weaving across the road after the exit gate (2 corrections).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -241,6 +245,19 @@ function T.a05_course_line_rules_and_medals_still_agree_with_the_in_game_verdict
   end
   has(check(gradeCourse('a05c_just_past', 'A05'), 'stop_before_line').text, 'Stopped 0.01 m past the line')
   has(check(gradeCourse('a05c_gold', 'A05'), 'stop_before_line').text, 'Stopped 0.48 m before the line')
+end
+
+function T.a07_a08_corner_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {a07_gold = {'A07', 'gold'}, a07_clip = {'A07', false}, a08_gold = {'A08', 'gold'}, a08_weave = {'A08', false}}
+  for name, w in pairs(want) do
+    local res, rec = gradeCourse(name, w[1])
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, w[2], name .. ' medal')
+  end
+  has(check(gradeCourse('a07_clip', 'A07'), 'markers_clear').text, 'Clipped the left post of the gate')
+  eq(check(gradeCourse('a08_gold', 'A08'), 'steady_exit').text, 'Steady exit: no steering corrections', 'steady')
+  has(check(gradeCourse('a08_weave', 'A08'), 'steady_exit').text, '2 steering corrections after the exit gate')
 end
 
 local function ruleCheck(name, rule)

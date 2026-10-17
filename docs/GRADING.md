@@ -7,10 +7,11 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Seven drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Nine drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
-on a course, with medals), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
+on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
+**A08** (late apex and a steady exit, with medals), **B01** (threshold braking) and **B02** (lockup recovery). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -140,6 +141,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `park_in_box` | none (optional `insetM` 0, `label`) | At rest with all four corners of the body inside the course's box, shrunk by `insetM` on every side |
 | `no_reverse` | none (optional `maxM` 0.3) | The car travels no more than `maxM` backwards (against the way it points) |
 | `max_time` | `maxSeconds` | The run time is at most `maxSeconds` (medal time targets) |
+| `steady_exit` | none (optional `fromGate` −2, `toGate` −1, `maxCorrections` 1, `minSwingDeg` 10) | Between the two gates the steering doesn't swing back and forth: unwinding once is fine, each reversal of more than `minSwingDeg` degrees of steering wheel is a correction (`steer` is the wheel angle in degrees) |
 | `progressive_downshifts` | `toGear` | After the highest gear reached, the car goes down one gear at a time to `toGear` (3→2, not 4→2); neutral and reverse are skipped, going lower at the stop is fine |
 | `no_over_rev` | `maxRpm` | The engine never spins past `maxRpm` (the Covet Student Driver's limiter is 6500 rpm); names the gear and speed where it did |
 | `time_to_speed` | `kmh`, `maxSeconds` | The car reaches `kmh` within `maxSeconds` of moving off (the run's start mark, about 1 m/s, so the clutch bite before it isn't counted): A02's 0–40 km/h time |
@@ -195,6 +197,13 @@ A05 targets (BMP dirt arena, stop line 60 m from the venue start, from 38+ km/h)
 the line with no lock over 0.2 s; silver 0–1 m, 0.15 s; gold 0–0.5 m, 0.1 s. The line is drawn with a
 cone at each end and thin gold, silver and bronze lines before it; near it the HUD reads "1.4 m to
 the line". Scripted runs: 0.48 m (gold), 1.25 m (bronze), 0.01 m past (miss).
+
+A07 and A08 targets (BMP downhill left: 124°, radius 32 m, Covet Gravel Rally; the 3 m gates leave
+about 0.55 m each side of the car): A07 bronze 30 km/h at the exit gate, one wheel off the gravel
+allowed, silver 40 km/h and all four wheels on, gold 48 km/h; A08 bronze 25 km/h at the exit, at
+most one correction to the finish, silver 38 km/h and no corrections, gold 45 km/h. Scripted racing
+line (outside, late apex, track-out): A07 52 km/h and A08 47–50 km/h, both gold; the line clips the
+posts above about 55 km/h.
 
 A04 targets (BMP run-up, three gates 25 m apart): bronze 27–33 km/h at every gate with no braking
 between them; silver 28–32; gold 29–31. Gate speeds are shown to a tenth, since the medal bands are

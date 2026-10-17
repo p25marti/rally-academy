@@ -643,8 +643,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Pick one medium-speed corner on the circuit.",
+        "venue": "bmp-gravel-corner",
+        "areaHint": "BMP Gravel Track downhill left (MAPS W1): 67 m approach into a 124° left, radius 32 m; the exit gate sits at the track-out.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -665,16 +665,95 @@
           ]
         }
       },
-      "instructions": "Compare early, middle and late-apex lines; finish with 10 scored laps using the most repeatable line.",
-      "resetInstructions": "Stationary 60 m before braking marker, same approach line.",
-      "props": "Run 3 exploratory passes per line before 10 scored attempts.",
+      "instructions": "Take the downhill left on the line you choose (try early, middle and late apexes) and drive through the 3 m exit gate at the track-out, as fast as you can keep all four wheels on the gravel.",
+      "resetInstructions": "Go to drill puts you 67 m before the corner with the exit gate laid out. Move course here re-lays it from where you are.",
+      "props": "None: the exit gate is drawn for you. Explore the three apex lines before your scored block.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Clean corner, all wheels on pavement and through a 3 m exit gate.",
-        "metricToRecord": "Clean exits and exit speed at gate",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Through the 3 m exit gate at 30 km/h or more without touching its posts, no more than one wheel off the gravel (for over 0.5 s), no spin, no contact. Silver: 40 km/h at the exit and all four wheels on the gravel. Gold: 48 km/h.",
+        "metricToRecord": "Clean exits and exit speed at the gate",
+        "mode": "automatic",
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -69.31,
+              "y": 92.71,
+              "widthM": 3,
+              "headingDeg": -122.2,
+              "label": "Exit"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 30,
+            "maxKmh": 150,
+            "gate": -1
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 40,
+                "maxKmh": 150,
+                "gate": -1
+              },
+              {
+                "type": "on_surface",
+                "surfaces": [
+                  "GRAVEL"
+                ],
+                "maxWheelsOff": 0,
+                "maxSeconds": 0.3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 48,
+                "maxKmh": 150,
+                "gate": -1
+              },
+              {
+                "type": "on_surface",
+                "surfaces": [
+                  "GRAVEL"
+                ],
+                "maxWheelsOff": 0,
+                "maxSeconds": 0.3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -692,8 +771,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same corner as A07.",
+        "venue": "bmp-gravel-corner",
+        "areaHint": "BMP Gravel Track downhill left (MAPS W1): the same corner as A07, with a late-apex gate on the inside, the exit gate and a finish 27 m on.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -714,16 +793,124 @@
           ]
         }
       },
-      "instructions": "Move the apex gate slightly later and target a stable, straight corner exit.",
-      "resetInstructions": "Reuse A07 checkpoint and exit gate.",
-      "props": "Place paired cones at apex and exit; preserve cone layout.",
+      "instructions": "Turn in late through the 3 m apex gate on the inside, then the 3 m exit gate at the track-out, and drive straight to the finish without steering corrections.",
+      "resetInstructions": "Go to drill puts you 67 m before the corner with the apex gate, exit gate and finish laid out. Move course here re-lays them from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Pass a 3 m apex gate without touching either cone, then a 3 m exit gate, with no corrections after exit.",
+        "successDefinition": "Through the 3 m apex gate and the 3 m exit gate without touching any post, at least 25 km/h at the exit, at most one steering correction between the exit gate and the finish, no more than one wheel off the gravel, no spin. Silver: 38 km/h at the exit, no corrections, all four wheels on the gravel. Gold: 45 km/h.",
         "metricToRecord": "Gate success / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -44.04,
+              "y": 95.94,
+              "widthM": 3,
+              "headingDeg": -93.6,
+              "label": "Apex"
+            },
+            {
+              "x": -69.31,
+              "y": 92.71,
+              "widthM": 3,
+              "headingDeg": -122.2,
+              "label": "Exit"
+            },
+            {
+              "x": -84.69,
+              "y": 69.43,
+              "widthM": 8,
+              "headingDeg": -152.8,
+              "label": "Finish"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "steady_exit",
+            "fromGate": 2,
+            "toGate": 3,
+            "maxCorrections": 1
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 25,
+            "maxKmh": 150,
+            "gate": 2
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 38,
+                "maxKmh": 150,
+                "gate": 2
+              },
+              {
+                "type": "steady_exit",
+                "fromGate": 2,
+                "toGate": 3,
+                "maxCorrections": 0
+              },
+              {
+                "type": "on_surface",
+                "surfaces": [
+                  "GRAVEL"
+                ],
+                "maxWheelsOff": 0,
+                "maxSeconds": 0.3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 45,
+                "maxKmh": 150,
+                "gate": 2
+              },
+              {
+                "type": "steady_exit",
+                "fromGate": 2,
+                "toGate": 3,
+                "maxCorrections": 0
+              },
+              {
+                "type": "on_surface",
+                "surfaces": [
+                  "GRAVEL"
+                ],
+                "maxWheelsOff": 0,
+                "maxSeconds": 0.3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

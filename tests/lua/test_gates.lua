@@ -140,4 +140,32 @@ function T.gate_rules_without_gates_say_how_to_mark_them()
   has(res.checks[1].text, 'press + Gate')
 end
 
+-- steady_exit: steering after the second-to-last gate, synthetic: 3 gates, steer(y) per sample.
+local function steerRun(steerAt)
+  local samples, t = {}, 0
+  for y = 0, 120, 0.5 do
+    t = t + 0.05
+    samples[#samples + 1] = {t = t, x = 0, y = y, air = 10, steer = steerAt(y), w = {}}
+  end
+  return {samples = samples, runStartT = samples[1].t}
+end
+
+function T.steady_exit_counts_steering_reversals_between_the_last_two_gates()
+  local gates = threeGates()
+  local rule = {type = 'steady_exit', maxCorrections = 1}
+  -- unwinding once from 80 to 0 degrees after gate 2 (y = 65): steady
+  local function grade(steerAt) return R.evaluate({rule}, steerRun(steerAt), {gates = gates}).checks[1] end
+  -- steer is the steering wheel angle in degrees
+  local unwind = grade(function(y) return y < 65 and 80 or math.max(0, 80 - (y - 65) * 10) end)
+  eq(unwind.ok, true, unwind.text)
+  eq(unwind.text, 'Steady exit: no steering corrections', 'text')
+  -- sawing: +15 / -15 degrees every 4 m after gate 2: many corrections
+  local saw = grade(function(y) return y < 65 and 0 or ((math.floor((y - 65) / 4) % 2 == 0) and 15 or -15) end)
+  eq(saw.ok, false, 'sawing fails')
+  has(saw.text, 'steering corrections after the exit gate (limit 1)')
+  -- small wobble under the swing threshold isn't a correction
+  local wobble = grade(function(y) return y < 65 and 0 or ((math.floor(y) % 2 == 0) and 3 or -3) end)
+  eq(wobble.ok, true, wobble.text)
+end
+
 return T

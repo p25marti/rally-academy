@@ -291,6 +291,41 @@ def gears():
 
 
 @scenario
+def corners():
+    """A07 and A08 on the BMP downhill left (Covet Gravel Rally, scripted racing line from lines.py):
+    a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss.
+    Swaps to the drill car with Go to drill (same map)."""
+    import lines as L
+    p = []
+    A.reload_mod(ui_too=False)
+    A.fresh_sampler()
+    if A.debug_state().get("level") != "west_coast_usa":
+        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A07)")
+    A.choose("A07")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) "
+        "extensions.rallyAcademy.goToDrill() return 1")
+    A.wait_for(lambda: "rally_gravel" in lua("return tostring(be:getPlayerVehicle(0).partConfig)"), True, timeout=20)
+    time.sleep(2)
+    kw = dict(decel=2.5, max_throttle=0.9, stop_within=0.5)
+    s = A.course_run("A07", L.bmp_left(), kmh=50, **kw)
+    expect(p, "A07 racing line earns a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = A.course_run("A07", L.bmp_left({"DR1181_11": -0.5, "DR1181_12": -3.3}), kmh=45, **kw)
+    expect(p, "A07 clipping the exit post misses", s.get("passed") is False and "Clipped" in str(s.get("reason")), s.get("reason"))
+    lua("extensions.rallyAcademy.select('A08') extensions.rallyAcademy.useVenueStart() return 1")
+    s = A.course_run("A08", L.bmp_left(), kmh=46, **kw)
+    expect(p, "A08 late apex and steady exit earns a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = A.course_run("A08", L.bmp_left({"DR1181_13": -0.5, "DR1181_14": -4.2, "DR1181_15": -0.5}), kmh=44, **kw)
+    expect(p, "A08 weaving after the exit misses", s.get("passed") is False and "steering correction" in str(s.get("reason")),
+           s.get("reason"))
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
+    A.realistic()
+    A.clear_progress("A07", "A08")
+    return p
+
+
+@scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""
     p = []

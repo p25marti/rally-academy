@@ -5,6 +5,7 @@
 -- Run record samples (runRecord.lua, telemetry.lua): t (sim s), air (m/s), brk/thr (0..1),
 -- gear (gearIndex: 0 neutral, -1 reverse), rpm, eng (1 = engine running), hb (handbrake),
 -- hx, hy (heading), vx, vy (velocity, m/s), uz (up vector z: 1 upright), dmg (beamstate damage),
+-- steer (steering wheel angle in degrees, electrics.steering: about +80 mid-corner in the Covet),
 -- flat (deflated tyres),
 -- x, y, z (m), w = {{n = 'FR', s = wheel speed m/s, m = surface id, f = downforce}, ...}
 -- ctx: {zone = marked stop zone {pos, dir}, gates = marked gates (gates.lua), in order}
@@ -614,6 +615,40 @@ function E.max_time(rule, _samples, ctx)
   return false, string.format('Time %.1f s (target %g s)', t, rule.maxSeconds)
 end
 
+-- A stable exit (A08): between two gates (default the last two) the steering doesn't swing back
+-- and forth. Unwinding the lock once is fine; each reversal of more than `minSwingDeg` degrees of
+-- steering wheel is a correction (`steer` is the wheel angle in degrees, electrics.steering).
+-- rule: {type = 'steady_exit', fromGate = -2, toGate = -1, maxCorrections = 1, minSwingDeg = 10}
+function E.steady_exit(rule, samples, ctx)
+  local gates, err = gateList(ctx)
+  if not gates then return false, err end
+  local function index(i, default) i = i or default; return i < 0 and #gates + 1 + i or i end
+  local from, to = index(rule.fromGate, -2), index(rule.toGate, -1)
+  local passes = Gates.passes(gates, samples)
+  if not (passes[from] and passes[from].reached) then return false, string.format('Gate %d not reached', from) end
+  local t0, t1 = passes[from].t, passes[to] and passes[to].reached and passes[to].t or math.huge
+  local swing, max = rule.minSwingDeg or 10, rule.maxCorrections or 1
+  local ext, dir, corrections = nil, 0, 0
+  for _, s in ipairs(samples) do
+    if s.t >= t0 and s.t <= t1 and s.steer then
+      local v = s.steer
+      if not ext then
+        ext = v
+      elseif dir == 0 then
+        if math.abs(v - ext) >= swing then dir, ext = (v > ext) and 1 or -1, v end
+      elseif dir == 1 then
+        if v > ext then ext = v elseif ext - v >= swing then corrections, dir, ext = corrections + 1, -1, v end
+      else
+        if v < ext then ext = v elseif v - ext >= swing then corrections, dir, ext = corrections + 1, 1, v end
+      end
+    end
+  end
+  if not ext then return false, 'No steering data after the exit gate' end
+  local text = corrections == 0 and 'Steady exit: no steering corrections'
+    or string.format('%d steering correction%s after the exit gate (limit %d)', corrections, corrections == 1 and '' or 's', max)
+  return corrections <= max, text
+end
+
 R.evaluators = E
 
 -- Rule types and their required parameters. tools/dev.py validate reads this table and
@@ -645,10 +680,11 @@ R.TYPES = {
   time_to_speed = {'kmh', 'maxSeconds'},
   progressive_downshifts = {'toGear'},
   no_over_rev = {'maxRpm'},
+  steady_exit = {},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
-R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates'}
+R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit'}
 -- Rule types that need an authored course (assessment.course).
 R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box'}
 -- Medal tiers above a pass (bronze), in order (assessment.tiers).
