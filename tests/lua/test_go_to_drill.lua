@@ -169,7 +169,7 @@ end
 -- Venues are shared data (venues.json); the loader fills each drill's map, name and spawn.
 function T.drills_get_their_venue_filled_in_on_load()
   local h, M = setup()
-  M.select('B01')
+  M.select('A04')
   local env = h.lastState().lesson.environment
   eq(env.venue, 'bmp-gravel-track', 'venue id kept')
   eq(env.levelId, 'west_coast_usa', 'map from the venue')

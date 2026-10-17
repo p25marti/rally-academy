@@ -262,8 +262,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel Introduction layout: shift through the gears around the lap.",
+        "venue": "bmp-gravel-runup",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): accelerate along the run-up and downshift to stop by an end gate on the flat, up to 45 m past the start line.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 200,
@@ -279,7 +279,7 @@
         }
       },
       "instructions": "Accelerate to 60 km/h and downshift progressively to 2nd as you slow before the end gate.",
-      "resetInstructions": "Stationary at start cone; mark 50 m end gate.",
+      "resetInstructions": "Go to drill puts you 120 m behind the start line. Mark the end gate on the flat, no more than 45 m past the line.",
       "props": "Use tachometer HUD; no racing downshifts.",
       "assessment": {
         "attempts": 10,
@@ -562,8 +562,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Main straight (~150 m) into a marked 5 m stop zone.",
+        "venue": "bmp-gravel-runup",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): start 120 m behind the start line; the straight is flat from 60 m before the start line to 50 m past it, then cambers and banks, so stops belong between the line and about 45 m past it.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,
@@ -579,7 +579,7 @@
         }
       },
       "instructions": "From 70 km/h, brake progressively to the stop zone; adjust brake pressure near grip limit.",
-      "resetInstructions": "Stationary 150 m before braking line; accelerate to 70 km/h at trigger cone.",
+      "resetInstructions": "Go to drill puts you 120 m behind the start line. Accelerate to 70 km/h and mark the stop zone on the flat gravel 25-45 m past the line (the straight banks further on).",
       "props": "Keep any ABS settings unchanged; watch front wheels / brake HUD.",
       "assessment": {
         "attempts": 10,
@@ -620,8 +620,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same braking zone as B01.",
+        "venue": "bmp-gravel-runup",
+        "areaHint": "BMP Gravel Track run-up (MAPS W1): same braking zone as B01; the straight is flat from 60 m before the start line to 50 m past it, then cambers and banks, so stops belong between the line and about 45 m past it.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,
@@ -637,7 +637,7 @@
         }
       },
       "instructions": "Briefly provoke lockup using heavy braking, release enough to restore rolling grip and stop.",
-      "resetInstructions": "Stationary 150 m upstream; fixed 60 km/h trigger.",
+      "resetInstructions": "Go to drill puts you 120 m behind the start line. Reach 60 km/h and brake so you stop before about 45 m past the line, while the gravel is still flat.",
       "props": "Verify ABS is absent/disabled; if ABS cannot be removed use another non-ABS configuration.",
       "assessment": {
         "attempts": 10,

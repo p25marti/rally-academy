@@ -94,6 +94,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   time; silver and gold need a quicker launch (4.5 s, 3.5 s), a quicker shift and less wheelspin.
 - **HUD fits long grade lists:** failed checks first, then the passed checks with numbers, up to
   five lines; the rest fold into "N more checks passed".
+- **B01, B02 and A03 start on the BMP run-up**, 120 m behind the start line (new venue
+  `bmp-gravel-runup`), so their stops land on flat gravel instead of the start straight's banked
+  end (it banks 9–16° from 100 m past the line).
 - **Auto-retry:** after an auto-graded run, the next attempt starts after 3 s (drive off to
   stay where you are; it waits while a stop zone or gates still need marking). On by default; the HUD's Auto-retry button turns it off, remembered in
   `settings/rallyAcademy/prefs.json`.

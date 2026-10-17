@@ -47,7 +47,31 @@
           "z": 1.0
         }
       },
-      "notes": "Purpose-built rallycross venue: gravel track 14-16 m wide with a tarmac start line, berms, a jump and 9 layouts. The spawn faces down the ~150 m start straight."
+      "notes": "Purpose-built rallycross venue: gravel track 14-16 m wide with a tarmac start line, berms, a jump and 9 layouts. The spawn faces down the start straight, which is flat only for its first ~50 m: it cambers from 60 m and banks 9-16 degrees from 100 m (measured 0.39.4). Drills that stop go on the run-up venue (below) or stop within ~45 m of the line."
+    },
+    {
+      "id": "bmp-gravel-runup",
+      "mapsId": "W1",
+      "name": "West Coast USA: BMP Gravel Track, run-up",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 207.97,
+          "y": 239.66,
+          "z": 117.64
+        },
+        "dir": {
+          "x": -0.8147,
+          "y": -0.5794,
+          "z": 0.0227
+        },
+        "up": {
+          "x": -0.0115,
+          "y": 0.0554,
+          "z": 0.9984
+        }
+      },
+      "notes": "120 m behind the start line on the gravel run-up, facing the line. Flat (roll under 0.5 degrees) from 60 m before the line to 50 m past it; stops belong there, before the straight cambers and banks. Clear for 150 m ahead (measured 0.39.4)."
     },
     {
       "id": "bmp-dirt-circle",
