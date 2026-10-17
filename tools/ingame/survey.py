@@ -240,11 +240,12 @@ return table.concat(out, ';')""")
     return rows
 
 
-def open_areas(step=16.0, min_cells=12, flat=0.985, max_dz=3.0):
-    """Connected loose, flat terrain cells, largest first (terrain only: roads and buildings
-    on top aren't seen, so check candidates with `here`)."""
+def open_areas(step=16.0, min_cells=12, flat=0.985, max_dz=3.0, surfaces=LOOSE):
+    """Connected flat terrain cells on `surfaces` (ground model name parts; None = any),
+    largest first (terrain only: roads, buildings and trees on top aren't seen, so check
+    candidates with `here`)."""
     ok = {(math.floor(x / step), math.floor(y / step)): (x, y, z, gm) for x, y, z, gm, nz in terrain_grid(step)
-          if any(k in gm for k in LOOSE) and nz >= flat}
+          if gm and (surfaces is None or any(k in gm for k in surfaces)) and nz >= flat}
     seen, out = set(), []
     for key in ok:
         if key in seen:

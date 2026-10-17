@@ -118,8 +118,10 @@ def _circle(area_m, seconds=24, kmh=20):
     inp("parkingbrake", 1)
 
 
-def fit(drill_id, pos, direction, to_node=None):
-    """Run the fit test with the car placed at pos/direction. -> {fits, problems, notes}."""
+def fit(drill_id, pos, direction, to_node=None, surfaces=None):
+    """Run the fit test with the car placed at pos/direction. -> {fits, problems, notes}.
+    `surfaces` overrides the drill's allowed surfaces (the venue catalogue tests each place on
+    its own surface: a handbrake turn on snow, not "on gravel")."""
     drill = A.drill(drill_id)
     needs = drill["environment"]["venueNeeds"]
     kind = needs["kind"]
@@ -163,8 +165,9 @@ def fit(drill_id, pos, direction, to_node=None):
             span = max(max(xs) - min(xs), max(ys) - min(ys))
             notes.append(f"circle about {span:.0f} m across")
         checks = [{"type": "no_damage"}, {"type": "no_rollover"}]
-        if needs.get("surfaces"):
-            checks.append({"type": "on_surface", "surfaces": needs["surfaces"], "maxWheelsOff": 2, "maxSeconds": 0.5})
+        allowed = surfaces or needs.get("surfaces")
+        if allowed:
+            checks.append({"type": "on_surface", "surfaces": allowed, "maxWheelsOff": 2, "maxSeconds": 0.5})
         for rule in checks:
             c = A.rule_check(rule)
             (notes if c["ok"] else problems).append(c["text"])
