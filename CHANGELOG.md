@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **C02 brake-induced rotation is graded automatically, with medals**, on the BMP downhill left: turn
+  in, pulse the brake to swing the rear into the corner ("Rear stepped out 12.2°"), catch it and drive
+  out between the exit posts. Medals for a bigger rotation and more exit speed.
 - **B06 understeer correction is graded automatically, with medals**, on the BMP dirt circle: turn into
   a drawn half circle too fast so the front pushes wide ("Front pushed 2.9 m wide"), then ease off and
   bring the car back onto the line ("Back on the line by the regain"). Silver and gold for regaining the

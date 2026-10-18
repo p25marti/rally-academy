@@ -427,6 +427,45 @@ def understeer():
     return p
 
 
+def _corner_pulse_run(drill, kmh, pulse_at, pulse_m, then_kmh, offsets=None):
+    """The BMP downhill left in 2nd (sequential): hold `kmh`, a full-brake pulse of `pulse_m` metres from
+    `pulse_at` metres, then hold `then_kmh`, along lines.bmp_left(offsets)."""
+    import lines as L
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        def hold(target):
+            return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+        if trav < pulse_at:
+            return hold(kmh)
+        return (0.0, 1.0) if trav < pulse_at + pulse_m else hold(then_kmh)
+    return A.course_run(drill, L.bmp_left(offsets), gearbox="sequential", on_tick=on_tick, pedals=pedals,
+                        kmh=kmh + 15, max_throttle=1.0, timeout=40, stop_within=0.5)
+
+
+C02_LINE = {"DR1181_7": 1.8, "DR1181_8": 2.2, "DR1181_9": 2.2}  # inside: the rotated car tightens the line
+
+
+@scenario
+def rotation():
+    """C02 on the BMP downhill left (Covet Gravel Rally): a brake pulse after turn-in rotates the car for a
+    medal; a gentle pulse at lower speed doesn't rotate it and misses."""
+    p = []
+    A.drill_session("C02")
+    s = _corner_pulse_run("C02", 65, 73, 7, 46, C02_LINE)
+    expect(p, "a brake pulse after turn-in rotates the car for a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _corner_pulse_run("C02", 55, 78, 5, 40, C02_LINE)
+    expect(p, "no rotation misses", s.get("passed") is False and "lift or brake harder" in str(s.get("reason")), s.get("reason"))
+    A.end_session("C02")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

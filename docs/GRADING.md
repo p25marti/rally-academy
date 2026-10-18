@@ -7,14 +7,15 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Thirteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Fourteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
 **A08** (late apex and a steady exit, with medals), **B01** (threshold braking into a course stop zone, with medals), **B02** (lockup recovery, with
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
-**B07** (catching an oversteer slide, with medals). Every other drill is still
+**B07** (catching an oversteer slide, with medals) and **C02** (brake-induced rotation into a corner, with
+medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -246,6 +247,13 @@ entry speed into the ring: 30 km/h doesn't push (0.3 m); 40–42 km/h pushes 3�
 35 m (just after turn-in) brings it back by the Regain gate (gold at 40, silver at 42), lifting at 45 m only
 by the Exit (bronze); 46 km/h with no lift runs 12 m wide.
 
+C02 targets (BMP downhill left, Covet Gravel Rally): a Turn in gate where the straight ends, a 10 m Apex
+gate (the gravel's width) and a 6 m Exit gate at the track-out. Bronze: the rear steps out 8°+ between the
+Turn in and Apex gates (`rear_slide`), no post touched, no handbrake, no spin, 25 km/h at the Exit; silver
+12° and 40 km/h; gold 15° and 45 km/h. Scripted from 62–66 km/h with a full-brake pulse of 7–8 m just after
+the Turn in gate: 8–39° of rotation, very sensitive to the pulse (the same inputs gave 11.5° and 12.2°); a
+5 m pulse from 55 km/h gave 2°. The follower needs the line ~2 m further inside after a rotation.
+
 B07 targets (BMP dirt circle, Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
 then a 7 m exit lane 18 m long. Bronze: the rear steps out 8°+ between the Turn in gate and the lane end,
 through both lane gates without spinning, at most three steering corrections in the lane, and at the
@@ -304,7 +312,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | B07 | Oversteer correction | Rear slide, spin, exit lane, countersteer unwound, corrections | Automatic |
 | B08 | Longitudinal weight transfer | Contact, spin, which-input prompt | Hybrid |
 | C01 | Lift-off oversteer | Slip angle, no handbrake, spin, corridor | Automatic |
-| C02 | Brake-induced rotation | Slip angle, no handbrake, spin, exit gate | Automatic |
+| C02 | Brake-induced rotation | Rear slide between gates, no handbrake, spin, posts, exit gate and speed | Automatic |
 | C03 | Throttle-induced oversteer | Slip angle, spin, countersteer under 3 s | Automatic |
 | C04 | Handbrake rotation | Handbrake count = 1, stall, spin, corridor, barrier contact | Automatic |
 | C05 | Countersteering and recovery | Spin, countersteer unwound by marker, exit lane | Automatic |

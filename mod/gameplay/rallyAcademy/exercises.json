@@ -1776,8 +1776,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open 90-degree gravel corner.",
+        "venue": "bmp-gravel-corner",
+        "areaHint": "BMP Gravel Track downhill left (MAPS W1): a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate between two posts at the track-out.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -1794,16 +1794,103 @@
           ]
         }
       },
-      "instructions": "Initiate mild turn-in then apply a short controlled brake pulse for rotation.",
-      "resetInstructions": "Stationary 60 m before turn; fixed brake cone.",
-      "props": "Brake pulse duration adjustable; throttle steady after release.",
+      "instructions": "Arrive at about 65 km/h. Turn in at the Turn in gate, then give the brake a short, firm pulse (about half a second) to load the front and swing the rear into the corner. Release, catch it on steady throttle and drive out through the Exit gate. No handbrake.",
+      "resetInstructions": "Go to drill puts you 67 m before the Turn in gate, with the corner's gates laid out. Move course here re-lays them from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Rotate into corner without handbrake or full spin; clean exit between two cones.",
-        "metricToRecord": "Successful brake-rotation attempts",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "The rear steps out at least 8 degrees between the Turn in and Apex gates, through all three gates without touching a post, no handbrake, no spin, out of the Exit at 25 km/h or more. Silver: 12 degrees and 40 km/h. Gold: 15 degrees and 45 km/h.",
+        "metricToRecord": "Clean brake-rotated corners / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_handbrake"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "rear_slide",
+            "minSlipDeg": 8,
+            "fromGate": 1,
+            "toGate": 2
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 25,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -1.41,
+              "y": 67.35,
+              "widthM": 8,
+              "headingDeg": -15.4,
+              "label": "Turn in"
+            },
+            {
+              "x": -34.56,
+              "y": 97.99,
+              "widthM": 10,
+              "headingDeg": -81.2,
+              "label": "Apex"
+            },
+            {
+              "x": -69.31,
+              "y": 92.71,
+              "widthM": 6,
+              "headingDeg": -122.2,
+              "label": "Exit"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 12,
+                "fromGate": 1,
+                "toGate": 2
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 40,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 15,
+                "fromGate": 1,
+                "toGate": 2
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 45,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

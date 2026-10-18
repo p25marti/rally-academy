@@ -52,6 +52,11 @@
 --      a lift, then holding a slower speed: gold = 40 km/h, lift 10 m at 35 m, then 26 (2.9 m push, back
 --      by the regain gate); silver = 42, lift 12 m (4.1 m push); bronze = 40, lift at 45 m (back only by
 --      the exit); nopush = 30 km/h; wide = 46 km/h, no lift (12 m wide).
+-- C02 (course): BMP downhill left, Covet Gravel Rally in 2nd (sequential), lines.bmp_left with the line
+--      ~2 m further inside at nodes 7-9, holding an entry speed, then a full-brake pulse after the Turn in
+--      gate, then holding an exit speed: gold = 65 km/h, 8 m pulse from 74 m (38.8°); silver = 65, 7 m
+--      from 73 m (12.2°); bronze = same inputs another run (11.5°: physics varies); miss = 55 km/h, 5 m
+--      from 78 m (2.3°).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -346,6 +351,17 @@ function T.b06_understeer_rules_and_medals_still_agree_with_the_in_game_verdicts
   has(check(gradeCourse('b06_gold', 'B06'), 'ran_wide').text, 'Front pushed 2.9 m wide')
   has(check(gradeCourse('b06_nopush', 'B06'), 'ran_wide').text, 'carry more speed in')
   has(check(gradeCourse('b06_wide', 'B06'), 'ran_wide').text, 'the push got away')
+end
+
+function T.c02_brake_rotation_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {c02_gold = 'gold', c02_silver = 'silver', c02_bronze = 'bronze', c02_miss = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'C02')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('c02_miss', 'C02'), 'rear_slide').text, 'lift or brake harder')
 end
 
 local function ruleCheck(name, rule)

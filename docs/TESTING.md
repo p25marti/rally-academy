@@ -74,6 +74,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `a04` | A04 on its course (BMP run-up, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, 40 m stop area), a PASS and a MISS each |
 | `trail` | B04 on the BMP downhill left: trail braking into the corner earns a medal; braking only before turn-in misses |
+| `rotation` | C02 on the BMP downhill left: a brake pulse after turn-in rotates the car for a medal; no rotation misses |
 | `understeer` | B06 on the BMP dirt circle: a push corrected by lifting earns a medal; too slow to push, or no lift, misses |
 | `oversteer` | B07 on the BMP dirt circle: a hard brake at turn-in steps the rear out and the caught slide earns a medal; no slide misses |
 | `circle` | B05 on the BMP dirt circle: two laps on the throttle with brake dabs earn gold; no dabs, or lifting off to brake, miss |
