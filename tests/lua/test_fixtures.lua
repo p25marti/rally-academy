@@ -61,6 +61,11 @@
 --      steer 0.5 right for 8 m, then 0.8 left with 0.8 brake for 8 m, then the pursuit holds 45 km/h:
 --      bronze = 8.8°; clip = the same inputs (10.7°, then the right post of the Apex gate); norotate =
 --      a 5 m flick at 0.6 with brake throughout (2.7°); noflick = no steering away.
+-- C04 (course): BMP dirt arena, Covet Gravel Rally in 2nd (sequential), pure pursuit up to a 4.5 m radius
+--      turn round the pivot cone and back, braking to an entry speed before the cone, then the handbrake
+--      with a steering override (0.3-0.4 lock) from 45 m, then holding an exit speed: gold = 50 km/h,
+--      brake to 45, 6 m pull at 0.3 lock, exit 30 (30.4°, 36 km/h out); silver = exit 24 (28.2°, 30 km/h);
+--      bronze = brake to 42, 5 m at 0.4 (24.0°); noswing = brake to 38 (17.1°); nohandbrake = no pull.
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -379,6 +384,19 @@ function T.c08_flick_rules_still_agree_with_the_in_game_verdicts()
   has(check(gradeCourse('c08_bronze', 'C08'), 'flick').text, 'Flicked')
   has(check(gradeCourse('c08_noflick', 'C08'), 'flick').text, 'No flick')
   has(check(gradeCourse('c08_norotate', 'C08'), 'rear_slide').text, 'lift or brake harder')
+end
+
+function T.c04_handbrake_hairpin_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {c04_gold = 'gold', c04_silver = 'silver', c04_bronze = 'bronze', c04_noswing = false, c04_nohandbrake = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'C04')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('c04_gold', 'C04'), 'handbrake_pulls').text, '1 handbrake pull')
+  has(check(gradeCourse('c04_noswing', 'C04'), 'rear_slide').text, 'pull the handbrake firmly')
+  has(check(gradeCourse('c04_nohandbrake', 'C04'), 'handbrake_pulls').text, 'pull it once')
 end
 
 local function ruleCheck(name, rule)

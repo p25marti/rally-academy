@@ -1956,8 +1956,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tightest hairpin or the roundabout (Tie the Knot layout).",
+        "venue": "bmp-dirt-arena",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced: a hairpin laid out on the open dirt, turning left round a pivot cone and back out through an exit gate.",
         "venueNeeds": {
           "kind": "corner",
           "shape": "hairpin",
@@ -1975,16 +1975,115 @@
           ]
         }
       },
-      "instructions": "Brake before entry, briefly apply handbrake to rotate, release, and drive through exit gate.",
-      "resetInstructions": "Stationary 70 m before 160–180° gravel bend; face uphill/downhill as chosen.",
-      "props": "Select one broad, safe hairpin; preserve same approach speed.",
+      "instructions": "Approach at about 50 km/h and brake to about 40 before the Pivot cone. Turn in left with half lock, then pull the handbrake once, firmly, to swing the rear round the cone (keep it on your left). Release it and drive out through the Exit gate the way you came.",
+      "resetInstructions": "Go to drill puts you 34 m before the Entry gate, with the hairpin laid out. Move course here re-lays it from where you are.",
+      "props": "None: the cone and gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Make hairpin within road edges; one handbrake application; no stall, spin or barrier touch.",
-        "metricToRecord": "Clean hairpin rotations / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Round the Pivot cone on your left and out through the Exit gate, one handbrake pull, the rear swinging at least 20 degrees, no post or cone touched, no stall, no spin, out at 15 km/h or more. Silver: 25 degrees and 25 km/h out. Gold: 25 degrees and 32 km/h out.",
+        "metricToRecord": "Clean handbrake hairpins / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "cones_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "handbrake_pulls",
+            "count": 1
+          },
+          {
+            "type": "rear_slide",
+            "minSlipDeg": 20,
+            "fromGate": 1,
+            "toGate": 2,
+            "hint": "turn in harder and pull the handbrake firmly to swing the rear round"
+          },
+          {
+            "type": "no_stall"
+          },
+          {
+            "type": "no_spin",
+            "maxSlipDeg": 120,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 15,
+            "maxKmh": 150,
+            "gate": 2
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 34,
+              "widthM": 6,
+              "label": "Entry"
+            },
+            {
+              "x": -9,
+              "y": 34,
+              "widthM": 6,
+              "headingDeg": 180,
+              "label": "Exit"
+            }
+          ],
+          "cones": [
+            {
+              "x": -4.5,
+              "y": 44,
+              "keep": "left",
+              "label": "Pivot"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 25,
+                "fromGate": 1,
+                "toGate": 2,
+                "hint": "turn in harder and pull the handbrake firmly to swing the rear round"
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 25,
+                "maxKmh": 150,
+                "gate": 2
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 25,
+                "fromGate": 1,
+                "toGate": 2,
+                "hint": "turn in harder and pull the handbrake firmly to swing the rear round"
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 32,
+                "maxKmh": 150,
+                "gate": 2
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",

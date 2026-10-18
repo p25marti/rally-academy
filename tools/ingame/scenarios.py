@@ -513,6 +513,49 @@ def flick():
     return p
 
 
+def _hairpin_run(pull_m=6, entry_kmh=45, lock=-0.3, exit_kmh=30):
+    """C04: 50 km/h, brake to `entry_kmh` before the pivot cone, the handbrake for `pull_m` metres from 45 m
+    at `lock` steering, then hold `exit_kmh` round a 4.5 m turn and back out."""
+    path = ([(0, y) for y in range(0, 44)]
+            + [(-4.5 + 4.5 * math.cos(a), 44 + 4.5 * math.sin(a)) for a in (i * math.pi / 30 for i in range(31))]
+            + [(-9, 44 - y) for y in range(1, 30)])
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        if trav < 38:
+            return (max(0.0, min(1.0, 0.3 + (50 - v) * 0.1)), 0.0, 0.0)
+        if trav < 45:
+            return (0.0, 0.6 if v > entry_kmh else 0.0, 0.0)
+        if trav < 45 + pull_m:
+            return (0.0, 0.0, 1.0)
+        return (max(0.1, min(1.0, 0.3 + (exit_kmh - v) * 0.1)), 0.0, 0.0)
+
+    def steer(_v, trav):
+        return lock if 45 <= trav < 45 + pull_m else None
+    return A.course_run("C04", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, steer=steer, kmh=65,
+                        max_throttle=1.0, timeout=40, stop_within=0.5)
+
+
+@scenario
+def hairpin():
+    """C04 on the BMP dirt arena (Covet Gravel Rally): one firm handbrake pull swings the car round the pivot
+    cone for a medal; no handbrake misses."""
+    p = []
+    A.drill_session("C04")
+    s = _hairpin_run()
+    expect(p, "one handbrake pull round the cone earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _hairpin_run(pull_m=0)
+    expect(p, "no handbrake misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("C04")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

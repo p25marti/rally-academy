@@ -7,7 +7,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Fifteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Sixteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
@@ -15,7 +15,7 @@ on a course, with medals), **A07** (racing line and exit speed through a corner,
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
 **B07** (catching an oversteer slide, with medals) **C02** (brake-induced rotation into a corner, with
-medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
+medals), **C04** (handbrake hairpin round a cone, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -152,8 +152,9 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `circle_laps` | none (optional `laps`, default the circle's) | The car goes round the course circle (`assessment.course.circle`) that many times the way it is meant to be driven; going round the wrong way says so |
 | `circle_corridor` | `widthM` (optional `maxSeconds` 0.3) | The car's position stays within `widthM` / 2 of the circle's line, allowing up to `maxSeconds` outside at a time; says the furthest it ran off |
 | `throttle_held` | none (optional `maxGapSeconds` 0.3, `minThrottle` 0.05, `fromKmh` 0) | From the first moment on the throttle at `fromKmh` (pulling away and changing up before then is free) to the end, the throttle never drops under `minThrottle` for longer than `maxGapSeconds` |
-| `rear_slide` | none (optional `minSlipDeg` 8, `turn` 'left', `fromGate` 1, `toGate` −1) | Between the two gates the rear steps out at least `minSlipDeg`: the slip angle with the car pointing further into the `turn` than it travels (`R.signedSlipDeg`). The front pushing wide doesn't count |
+| `rear_slide` | none (optional `minSlipDeg` 8, `turn` 'left', `fromGate` 1, `toGate` −1, `hint`: the coaching on a miss) | Between the two gates the rear steps out at least `minSlipDeg`: the slip angle with the car pointing further into the `turn` than it travels (`R.signedSlipDeg`). The front pushing wide doesn't count |
 | `settled_by_gate` | none (optional `gate` −1, `maxSlipDeg` 4, `maxSteerDeg` 45) | Where the car crosses the gate, the slide is over (slip within `maxSlipDeg`) and the countersteer unwound (steering wheel within `maxSteerDeg` of straight); the gate's `label` names it in the text |
+| `handbrake_pulls` | none (optional `count` 1, `minKmh` 5) | The handbrake goes on (over 0.5) exactly `count` times while moving |
 | `flick` | none (optional `fromGate` 1, `toGate` 2, `turn` 'left', `awayDeg` 30, `intoDeg` 60, `maxSeconds` 1.5) | Between the two gates the steering wheel goes at least `awayDeg` away from the turn, then at least `intoDeg` into it within `maxSeconds` (a Scandinavian flick) |
 | `ran_wide` | none (optional `minM` 1, `maxM` 5, `fromGate` 1, `toGate` −1) | Between the two gates the car runs outside the course circle's line by `minM` to `maxM`: a mild push, not a trip off the circle |
 | `back_on_line_by_gate` | none (optional `gate` −1, `maxM` 1.5) | Where the car crosses the gate it is within `maxM` of the course circle's line |
@@ -256,6 +257,13 @@ rotation comes from the pulse), no post touched, no handbrake, no spin, 25 km/h 
 the Turn in gate: 8–39° of rotation, very sensitive to the pulse (the same inputs gave 11.5° and 12.2°); a
 5 m pulse from 55 km/h gave 2°. The follower needs the line ~2 m further inside after a rotation.
 
+C04 targets (BMP dirt arena, Covet Gravel Rally): 34 m to an Entry gate, a Pivot cone to turn left round
+(4.5 m from the line) and an Exit gate back the way you came, 9 m to the left. Bronze: one handbrake pull, the
+rear swinging 20°+ between the gates, cone kept on the left, no post or cone touched, no stall, no spin
+(slides up to 120° allowed for 0.5 s), 15 km/h out of the Exit; silver 25° and 25 km/h; gold 25° and 32 km/h.
+Scripted: a pull at full lock makes the front plough (rear locked, slip −3 to −5°); turning in with a third
+of the lock and pulling from ~45 km/h swings the rear 24–31°; from 38 km/h only 17°.
+
 C08 targets: C02's corner with a Flick gate 40 m into the approach. Bronze: between the Flick and Apex gates,
 60° of steering away from the corner then 60° into it within 1.5 s (`flick`), and the rear steps out 8°+;
 otherwise as C02 (silver 12° and 40 km/h, gold 15° and 45 km/h). The Covet Gravel Rally barely answers a
@@ -323,7 +331,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | C01 | Lift-off oversteer | Slip angle, no handbrake, spin, corridor | Automatic |
 | C02 | Brake-induced rotation | Rear slide between gates, no handbrake, spin, posts, exit gate and speed | Automatic |
 | C03 | Throttle-induced oversteer | Slip angle, spin, countersteer under 3 s | Automatic |
-| C04 | Handbrake rotation | Handbrake count = 1, stall, spin, corridor, barrier contact | Automatic |
+| C04 | Handbrake rotation | Handbrake count = 1, rear slide, stall, spin, cone and gates, exit speed | Automatic |
 | C05 | Countersteering and recovery | Spin, countersteer unwound by marker, exit lane | Automatic |
 | C06 | Controlled slip angle | Slip angle held through arc, spin, corridor | Automatic |
 | C07 | Lateral weight transfer | Gate sequence, cone contact, spin, abrupt stop | Automatic |

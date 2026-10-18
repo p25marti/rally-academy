@@ -214,7 +214,7 @@ def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max
     position on the last point: steady `kmh`, then braking at `decel` m/s2 to arrive slowly,
     and the handbrake for the last few centimetres (arcade reverses on a held brake). Use the
     arcade gearbox. `on_tick(kmh, to_go)` may return vehicle Lua to run in the car that tick (e.g. a
-    scripted gear change). `pedals(kmh, travelled_m)` may return (throttle, brake) to override the
+    scripted gear change). `pedals(kmh, travelled_m)` may return (throttle, brake[, handbrake]) to override the
     speed control that tick (e.g. trail braking). `steer(kmh, travelled_m)` may return a steering input
     (-1 left .. 1 right) to override the pursuit that tick (e.g. a Scandinavian flick). Returns the distance
     from the last point when the car stopped."""
@@ -265,7 +265,9 @@ def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max
         if pedals and p == 0.0:
             override = pedals(v * 3.6, remaining[0] - remaining[idx])
             if override:
-                t, b = override
+                t, b = override[0], override[1]
+                if len(override) > 2:
+                    p = override[2]
         if steer:
             forced = steer(v * 3.6, remaining[0] - remaining[idx])
             if forced is not None:

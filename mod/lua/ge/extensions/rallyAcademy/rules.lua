@@ -437,6 +437,23 @@ function E.no_handbrake(rule, samples)
   return true, 'No handbrake'
 end
 
+-- Handbrake pulls while moving (C04: exactly one): each time the handbrake goes on (over 0.5) above
+-- `minKmh` counts once.
+-- rule: {type = 'handbrake_pulls', count = 1, minKmh = 5}
+function E.handbrake_pulls(rule, samples)
+  local minAir, want = (rule.minKmh or 5) / KMH, rule.count or 1
+  local pulls, on = 0, false
+  for _, s in ipairs(samples) do
+    local now = (s.hb or 0) > 0.5
+    if now and not on and (s.air or 0) > minAir then pulls = pulls + 1 end
+    on = now
+  end
+  local text = string.format('%d handbrake pull%s (target %d)', pulls, pulls == 1 and '' or 's', want)
+  if pulls == want then return true, text end
+  if pulls == 0 then return false, text .. ': pull it once to rotate the car' end
+  return false, text .. ': one firm pull, then drive out'
+end
+
 -- A tyre went flat during the run.
 -- rule: {type = 'no_puncture'}
 function E.no_puncture(_rule, samples)
@@ -826,7 +843,8 @@ end
 -- The rear stepped out: between two gates (default the first and the last) the car's slip angle
 -- with the rear out (R.signedSlipDeg, the drill's `turn`) reaches `minSlipDeg`. Normal cornering at
 -- the limit on dirt reads about 5-7 degrees in the Covet Gravel Rally (0.39.4).
--- rule: {type = 'rear_slide', minSlipDeg = 8, turn = 'left', fromGate = 1, toGate = -1}
+-- `hint` is the coaching when it doesn't (default: lift or brake harder as you turn in).
+-- rule: {type = 'rear_slide', minSlipDeg = 8, turn = 'left', fromGate = 1, toGate = -1, hint = '...'}
 function E.rear_slide(rule, samples, ctx)
   local t0, t1 = gateWindow(ctx, samples, rule.fromGate or 1, rule.toGate or -1)
   if not t0 then return false, t1 end
@@ -838,7 +856,8 @@ function E.rear_slide(rule, samples, ctx)
     end
   end
   if worst >= need then return true, string.format('Rear stepped out %.1f° (target %g°+)', worst, need) end
-  return false, string.format('The rear only stepped out %.1f° (target %g°): lift or brake harder as you turn in', worst, need)
+  return false, string.format('The rear only stepped out %.1f° (target %g°): %s', worst, need,
+    rule.hint or 'lift or brake harder as you turn in')
 end
 
 -- Settled by a gate (B07: the end of the exit lane): there the slide is over (slip angle within
@@ -980,6 +999,7 @@ R.TYPES = {
   settled_by_gate = {},
   ran_wide = {},
   flick = {},
+  handbrake_pulls = {},
   back_on_line_by_gate = {},
 }
 

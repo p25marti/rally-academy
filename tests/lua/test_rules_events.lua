@@ -129,4 +129,14 @@ function T.a_puncture_is_not_contact()
   eq(hit.ok, false, 'a hit after the puncture still counts')
 end
 
+function T.handbrake_pulls_counts_each_pull_while_moving()
+  local one = check({type = 'handbrake_pulls', count = 1}, run(function(i, s) if i >= 50 and i < 60 then s.hb = 1 end end))
+  eq(one.ok, true, 'one held pull'); eq(one.text, '1 handbrake pull (target 1)', 'text')
+  local two = check({type = 'handbrake_pulls', count = 1},
+    run(function(i, s) if (i >= 50 and i < 55) or (i >= 70 and i < 75) then s.hb = 1 end end))
+  eq(two.ok, false, 'two pulls'); has(two.text, '2 handbrake pulls (target 1): one firm pull')
+  local none = check({type = 'handbrake_pulls', count = 1}, run(function(i, s) if i < 5 then s.hb, s.air = 1, 0 end end))
+  eq(none.ok, false, 'held at rest only'); has(none.text, 'pull it once to rotate the car')
+end
+
 return T
