@@ -134,7 +134,8 @@ file from the user folder into `tests/fixtures/` and note how it was driven at t
 decorated with `@scenario`. Use the `academy.py` helpers, return a list of problems, and
 clean up any progress you record (`A.clear_progress`). List it in TESTING.
 
-**Find a venue:** `survey.py fits <drill>` searches the map for the drill's `venueNeeds`. Or
+**Find a venue:** `scan.py [--level NAME]` maps a whole map's surfaces and flat ground in seconds, with an
+HTML report (start here for open ground). `survey.py fits <drill>` searches the map for the drill's `venueNeeds`. Or
 bookmark with the Save spot binding, or run the finders (`survey.py
 straights|corners|hills|crests|open`). Review them with `survey.py report`, prove the best with
 `survey.py fit <drill> --spot ID | --at …`, then add it to `venues.json` ([docs/VENUES.md](docs/VENUES.md), the full workflow).

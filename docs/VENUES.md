@@ -24,6 +24,21 @@ step runs against the live game; the tools are in `tools/ingame/`.
 
 Use any mix of these.
 
+**Scan the whole map's surfaces (fastest).** `python tools/ingame/scan.py [--level NAME]` reads the
+terrain's own material map and heights from inside the game, a million points in a few seconds with no
+driving, and writes `venue-reports/<map>/scan/index.html`: the map coloured by surface (flat ground on
+the chosen surfaces bright, candidates outlined and numbered), the map's surface totals, and a card per
+candidate with its biggest flat square, slope, bumps, room to the nearest object, an aerial view and a
+`--at` pose for the fit test. Flat means flat at a car's scale: slope across 20 m (5 % by default) and
+no point more than 0.25 m off the mean height within 9 m. Patchwork textures count when 70 % of the
+ground within 5 m is on the surfaces. `--surfaces grass` (or any families) looks for other ground,
+written to `scan-<surfaces>/`; `--aerial 0` leaves the camera alone.
+Limits: it sees terrain only. Roads, decal surfaces (the BMP dirt circle is a decal) and buildings sit on
+top; trees are objects on grass terrain. Each candidate's room (horizontal rays from its centre, under
+20 m = "cluttered") and the aerial view catch most of that. Rivers aren't masked (water planes and water
+blocks are). First runs (0.39.4): West Coast USA's best flat loose square is 48 m of dirt in the BMP
+oval's infield; nefr is 98 % grass terrain, with only small dirt patches, but has flat open grass fields.
+
 **Drive and bookmark.** Drive the map as normal and press **Save spot** wherever a drill
 could work. Each press records your position and heading, the room to walls and barriers
 in eight directions, the slope, the nearest road's width, and the surface under each wheel.
@@ -173,7 +188,8 @@ Use it to find a venue fast, or, later, to offer a drill on the surface a player
 | `survey.py spots [--all]` | Saved spots on this map (or every map) |
 | `survey.py fits <drill> [--measure N]` | Places on this map that meet a drill's venueNeeds |
 | `survey.py straights / corners / hills / crests` | Road sections from the AI road network (`--limit`, `--min-length`, `--max-radius`) |
-| `survey.py open [--step 16]` | Open, flat, loose areas from a terrain scan (slow) |
+| `scan.py [--level NAME] [--surfaces …] [--aerial N]` | Whole-map surface and flatness scan with a report ([above](#1-find-candidates)) |
+| `survey.py open [--step 16]` | Open, flat, loose areas from a terrain scan (slow; `scan.py` supersedes it) |
 | `survey.py report [--quick] [--open]` | The HTML venue report |
 | `survey.py goto <id>` / `goto --at=…` | Put the car on a spot or a pose |
 | `survey.py here` | Room in eight directions and the surface under each wheel |
