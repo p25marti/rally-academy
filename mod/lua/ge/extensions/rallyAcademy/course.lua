@@ -107,6 +107,30 @@ local function drawCourseLine(line, zones, fit)
   end
 end
 
+-- A course circle (B05): the line to hold, dashed, and each medal corridor's edges either side of
+-- it; the corridor the car is in now is drawn green.
+local RING_SEGMENTS = 64
+local function drawRing(circle, radius, thick, col, dashed)
+  local z = circle.z - GROUND + 0.03
+  for i = 0, RING_SEGMENTS - 1 do
+    if not dashed or i % 2 == 0 then
+      local a, b = i / RING_SEGMENTS * 2 * math.pi, (i + 1) / RING_SEGMENTS * 2 * math.pi
+      debugDrawer:drawCylinder(vec3(circle.x + math.cos(a) * radius, circle.y + math.sin(a) * radius, z),
+        vec3(circle.x + math.cos(b) * radius, circle.y + math.sin(b) * radius, z), thick, col)
+    end
+  end
+end
+
+local function drawCircle(circle, corridors, fit)
+  drawRing(circle, circle.radiusM, 0.03, colour('hint'), true)
+  for _, m in ipairs(corridors or {}) do
+    local current = m.name == fit
+    local col, thick = colour(current and 'passed' or m.name), current and 0.06 or 0.04
+    drawRing(circle, circle.radiusM - m.widthM / 2, thick, col)
+    drawRing(circle, circle.radiusM + m.widthM / 2, thick, col)
+  end
+end
+
 -- course = {
 --   gates = {...}, gateResults = {[i] = 'passed' | 'missed'}, nextGate = index or nil,
 --   finish = {pos, dir, radius} or nil, finishKind = 'line' | 'zone' | 'circle',
@@ -116,6 +140,7 @@ end
 --   footprint = the car's four corners (near the box), or nil
 --   line = {x, y, z, dir, widthM}, lineCones = {{x, y, z}}, lineZones = {{name, maxM}}: a stop line
 --   zoneTiers = {{name, lengthM, widthM}}: a course stop zone's medal sizes (drawn nested)
+--   circle = {x, y, z, radiusM}, corridors = {{name, widthM}}: a circle to lap and its medal corridors
 -- }
 function C.draw(course)
   if not (debugDrawer and ColorF) then return end
@@ -130,6 +155,7 @@ function C.draw(course)
     drawCourseLine(course.line, course.lineZones, course.fit)
     for _, c in ipairs(course.lineCones or {}) do drawCone(c, nil) end
   end
+  if course.circle then drawCircle(course.circle, course.corridors, course.fit) end
   if course.box then
     drawBox(course.box, course.boxes or {{name = 'bronze', inset = 0}}, course.fit)
     if course.footprint then

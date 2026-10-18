@@ -697,6 +697,108 @@ function E.steady_exit(rule, samples, ctx)
   return corrections <= max, text
 end
 
+-- Circles (B05): laps, holding the line, throttle and brake together ---------------------
+
+-- Laps driven round the course's circle, the way it is meant to be driven.
+-- rule: {type = 'circle_laps', laps = 2}; ctx.course.circle = {x, y, radiusM, turn, laps}
+function E.circle_laps(rule, samples, ctx)
+  local course = courseOf(ctx, 'circle')
+  if not course then return false, 'This drill has no circle laid out' end
+  local circle, swept = course.circle, 0
+  for i = 2, #samples do
+    local a, b = samples[i - 1], samples[i]
+    if a.x and b.x then swept = swept + Layout.circleSweep(circle, a, b) end
+  end
+  local need, laps = rule.laps or circle.laps or 1, swept / (2 * math.pi)
+  local way = circle.turn == 'right' and 'clockwise' or 'anticlockwise'
+  if laps >= need - 0.02 then return true, string.format('%d lap%s %s', need, need == 1 and '' or 's', way) end
+  if laps < 0 then return false, string.format('Went round the wrong way: drive it %s', way) end
+  return false, string.format('Only %.1f of %d laps', laps, need)
+end
+
+-- Holds the circle's line: the car stays within `widthM` / 2 of it, allowing a moment outside
+-- (`maxSeconds`). The text gives the furthest it ran off the line.
+-- rule: {type = 'circle_corridor', widthM = 6, maxSeconds = 0.3}
+function E.circle_corridor(rule, samples, ctx)
+  local course = courseOf(ctx, 'circle')
+  if not course then return false, 'This drill has no circle laid out' end
+  local circle, half, allow = course.circle, rule.widthM / 2, rule.maxSeconds or 0.3
+  local worst, worstOff, n, outT, outMax, longest, prev = 0, 0, 0, 0, 0, 0, nil
+  for _, s in ipairs(samples) do
+    if s.x then
+      local off = Layout.circleOffset(circle, s.x, s.y)
+      n = n + 1
+      if math.abs(off) > math.abs(worstOff) then worstOff = off end
+      if math.abs(off) > half then
+        if prev then outT = outT + (s.t - prev.t) end
+        if math.abs(off) > math.abs(outMax) then outMax = off end
+        if outT > longest then longest, worst = outT, outMax end
+      else
+        outT, outMax = 0, 0
+      end
+      prev = s
+    end
+  end
+  if n == 0 then return false, 'No position data for this run' end
+  if longest > allow then
+    return false, string.format('Ran %.2f m %s the line (corridor ±%g m)', math.abs(worst),
+      worst > 0 and 'wide of' or 'inside', half)
+  end
+  return true, string.format('Held the line: %.1f m off at most (corridor ±%g m)', math.abs(worstOff), half)
+end
+
+-- Throttle stays on: from the first moment at `fromKmh` (pulling away and changing up before then
+-- is free) to the end of the run, it never drops under `minThrottle` for longer than `maxGapSeconds`.
+-- rule: {type = 'throttle_held', maxGapSeconds = 0.3, minThrottle = 0.05, fromKmh = 0}
+function E.throttle_held(rule, samples)
+  local min, allow, from = rule.minThrottle or 0.05, rule.maxGapSeconds or 0.3, (rule.fromKmh or 0) / KMH
+  local started, gap, longest, prev = false, 0, 0, nil
+  for _, s in ipairs(samples) do
+    local on = (s.thr or 0) >= min
+    if on and (s.air or 0) >= from then started = true end
+    if on then
+      gap = 0
+    elseif started and prev then
+      gap = gap + (s.t - prev.t)
+      longest = math.max(longest, gap)
+    end
+    prev = s
+  end
+  if not started then
+    return false, from > 0 and string.format('Never on the throttle at %d km/h', rule.fromKmh) or 'Never on the throttle'
+  end
+  if longest > allow then
+    return false, string.format('Off the throttle for %.1f s (limit %g s): keep your right foot on', longest, allow)
+  end
+  if longest > 0 then return true, string.format('Throttle held (longest lift %.1f s)', longest) end
+  return true, 'Throttle held all the way round'
+end
+
+-- Left-foot braking: at least `minCount` brake applications made with the throttle still on,
+-- each held `minSeconds` or longer.
+-- rule: {type = 'left_foot_brakes', minCount = 3, minSeconds = 0.2, minBrake = 0.05, minThrottle = 0.05}
+function E.left_foot_brakes(rule, samples)
+  local minBrake, minThr = rule.minBrake or 0.05, rule.minThrottle or 0.05
+  local need, hold = rule.minCount or 3, rule.minSeconds or 0.2
+  local count, on, prev, brakedOff = 0, 0, nil, 0
+  local function close() if on >= hold then count = count + 1 end; on = 0 end
+  for _, s in ipairs(samples) do
+    local brk = (s.brk or 0) > minBrake
+    if brk and (s.thr or 0) >= minThr then
+      if prev then on = on + (s.t - prev.t) end
+    else
+      if brk and prev then brakedOff = brakedOff + (s.t - prev.t) end
+      close()
+    end
+    prev = s
+  end
+  close()
+  local text = string.format('%d brake dab%s on the throttle (target %d+)', count, count == 1 and '' or 's', need)
+  if count >= need then return true, text end
+  if brakedOff > hold then return false, text .. ': you lifted to brake' end
+  return false, text .. ': dab it to tighten the line'
+end
+
 R.evaluators = E
 
 -- Rule types and their required parameters. tools/dev.py validate reads this table and
@@ -731,12 +833,16 @@ R.TYPES = {
   steady_exit = {},
   trail_braked = {},
   brake_off_by_gate = {},
+  circle_laps = {},
+  circle_corridor = {'widthM'},
+  throttle_held = {},
+  left_foot_brakes = {},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
 R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked', 'brake_off_by_gate'}
 -- Rule types that need an authored course (assessment.course).
-R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box'}
+R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box', 'circle_laps', 'circle_corridor'}
 -- Medal tiers above a pass (bronze), in order (assessment.tiers).
 R.TIERS = {'silver', 'gold'}
 

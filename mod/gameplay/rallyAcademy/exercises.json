@@ -1325,8 +1325,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-circle",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Drive the circle around the infield.",
+        "venue": "bmp-dirt-ring",
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40): a 15 m ring round its centre, driven anticlockwise.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 50,
@@ -1339,18 +1339,96 @@
           ]
         }
       },
-      "instructions": "With right foot steady on light throttle, apply short left-foot brake pressure to adjust rotation.",
-      "resetInstructions": "Stationary 50 m before semicircle; approach 30 km/h.",
-      "props": "Maintain same initial speed; pedal overlay recommended.",
+      "instructions": "Drive two laps of the ring anticlockwise. Keep your right foot on the throttle the whole way round, and dab the brake with your left foot to tighten the line whenever the car runs wide.",
+      "resetInstructions": "Go to drill puts you on the ring facing the way round. Move course here lays the ring out from where you are, its centre 15 m to your left.",
+      "props": "None: the ring and its corridors are drawn for you. A pedal overlay helps.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Track the intended circle without hitting markers, spinning or stopping throttle entirely.",
-        "metricToRecord": "Clean brake-assisted arcs / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Two anticlockwise laps of the 15 m ring inside the 6 m corridor (a moment outside is fine), throttle never off for more than 0.5 s, at least two left-foot brake applications made with the throttle on, no spin. Silver: 4 m corridor, three applications, throttle gaps under 0.3 s. Gold: 3 m corridor, four applications, both laps in 22 s.",
+      "metricToRecord": "Clean brake-assisted laps / 10",
+      "mode": "automatic",
+      "endWhen": "laps",
+      "course": {
+        "circle": {
+          "x": -15,
+          "y": 0,
+          "radiusM": 15,
+          "turn": "left",
+          "laps": 2
+        }
       },
-      "references": {
+      "rules": [
+        {
+          "type": "circle_laps"
+        },
+        {
+          "type": "circle_corridor",
+          "widthM": 6,
+          "maxSeconds": 0.5
+        },
+        {
+          "type": "throttle_held",
+          "maxGapSeconds": 0.5,
+          "fromKmh": 25
+        },
+        {
+          "type": "left_foot_brakes",
+          "minCount": 2,
+          "minSeconds": 0.2
+        },
+        {
+          "type": "no_spin"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "silver",
+          "rules": [
+            {
+              "type": "circle_corridor",
+              "widthM": 4,
+              "maxSeconds": 0.3
+            },
+            {
+              "type": "left_foot_brakes",
+              "minCount": 3,
+              "minSeconds": 0.2
+            },
+            {
+              "type": "throttle_held",
+              "maxGapSeconds": 0.3,
+              "fromKmh": 25
+            }
+          ]
+        },
+        {
+          "name": "gold",
+          "rules": [
+            {
+              "type": "circle_corridor",
+              "widthM": 3,
+              "maxSeconds": 0.3
+            },
+            {
+              "type": "left_foot_brakes",
+              "minCount": 4,
+              "minSeconds": 0.2
+            },
+            {
+              "type": "throttle_held",
+              "maxGapSeconds": 0.3,
+              "fromKmh": 25
+            },
+            {
+              "type": "max_time",
+              "maxSeconds": 22
+            }
+          ]
+        }
+      ]
+    },
+    "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
       }

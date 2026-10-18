@@ -112,6 +112,12 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **B05 left-foot braking is graded automatically, with medals**, on the BMP dirt circle: two laps
+  of a 15 m ring drawn on the dirt, with silver and gold corridors either side of the line. Keep
+  your right foot on the throttle all the way round ("Off the throttle for 0.6 s" otherwise) and dab
+  the brake with your left foot to tighten the line ("4 brake dabs on the throttle"). The HUD ticks
+  off each lap and says how far off the line you are. Courses can now have a circle to lap, and a
+  drill can end after its laps (`endWhen: "laps"`).
 - **B04 trail braking is graded automatically, with medals**, on the BMP downhill left: brake from
   the marker, keep easing the brake off as you turn in ("Trail-braked 1.2 s into the turn"), be off
   it by the apex gate ("Still braking at the apex (35%)" otherwise). Medals for exit speed.

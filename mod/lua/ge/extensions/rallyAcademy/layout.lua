@@ -41,7 +41,8 @@ end
 
 -- Lay a course definition out from a start pose. Returns
 -- {gates = {...} (gates.lua format), cones = {{x, y, dir, keep}}, box = {x, y, dir, lengthM, widthM},
---  markers = {{x, y, name}}} with world x, y; heights are left to the caller.
+--  markers = {{x, y, name}}, zone, line, circle = {x, y, radiusM, turn, laps}} with world x, y;
+-- heights are left to the caller.
 function L.place(def, start)
   local f = L.frame(start)
   local dir = {x = f.fx, y = f.fy}
@@ -85,7 +86,30 @@ function L.place(def, start)
       out.markers[#out.markers + 1] = {x = cx, y = cy, name = side < 0 and 'the left cone of the line' or 'the right cone of the line'}
     end
   end
+  if def.circle then
+    -- A circle to lap (B05): its centre, the radius of the line to hold and which way round
+    -- ('left' = anticlockwise seen from above). The corridor either side of the line comes from
+    -- the circle_corridor rule (and each tier's narrower one).
+    local x, y = L.toWorld(f, def.circle.x or 0, def.circle.y or 0)
+    out.circle = {x = x, y = y, z = start.pos.z, radiusM = def.circle.radiusM, turn = def.circle.turn or 'left',
+                  laps = def.circle.laps or 1, label = def.circle.label}
+  end
   return out
+end
+
+-- Circles --------------------------------------------------------------------------
+
+-- How far round the circle moving from a to b goes, in radians: positive the way the circle
+-- is driven (its `turn`), negative against it.
+function L.circleSweep(circle, a, b)
+  local d = math.atan2(b.y - circle.y, b.x - circle.x) - math.atan2(a.y - circle.y, a.x - circle.x)
+  if d > math.pi then d = d - 2 * math.pi elseif d < -math.pi then d = d + 2 * math.pi end
+  return circle.turn == 'right' and -d or d
+end
+
+-- Metres off the circle's line: positive outside it, negative inside.
+function L.circleOffset(circle, x, y)
+  return math.sqrt((x - circle.x) ^ 2 + (y - circle.y) ^ 2) - circle.radiusM
 end
 
 -- A stable text fingerprint of a course definition (keys sorted, numbers to the millimetre): a

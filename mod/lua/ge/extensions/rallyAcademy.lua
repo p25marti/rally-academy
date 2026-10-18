@@ -60,11 +60,12 @@ local GRADE_DELAY = 0.3 -- s of sim time
 --   coneIdx, coneResults  next cone, each cone's live result ('passed' | 'wrong')
 --   clipped            the first marker the car touched (live), fit = medal box the car is in now
 --   aid                parking aid text near the box; autoRetryIn = countdown after a graded run
+--   swept              radians driven round a course circle (endWhen 'laps'), the right way positive
 local cur
 local function resetRun()
   cur = {elapsed = 0, lastTime = nil, grade = nil, settleT = 0, originPos = nil, stillT = 0,
          gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0,
-         coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil}
+         coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil, swept = 0}
 end
 resetRun()
 local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
@@ -260,7 +261,7 @@ local function placeCourse()
   local z0 = startState.pos.z
   for _, g in ipairs(course.gates) do g.pos.z = groundZ(g.pos.x, g.pos.y, z0) + CAR_HEIGHT end
   for _, c in ipairs(course.cones) do c.z = groundZ(c.x, c.y, z0) + CAR_HEIGHT end
-  for _, key in ipairs({'box', 'zone', 'line'}) do -- the stopping targets (TARGETS below)
+  for _, key in ipairs({'box', 'zone', 'line', 'circle'}) do -- the targets (TARGETS below)
     local item = course[key]
     local at = item and (item.pos or item)
     if at then at.z = groundZ(at.x, at.y, z0) + CAR_HEIGHT end
@@ -333,6 +334,8 @@ local function usesStopLine()
   return false
 end
 local function endsAtLastGate() return assessment().endWhen == 'gates' end
+-- B05-style drills end after their laps of the course circle.
+local function endsOnLaps() return assessment().endWhen == 'laps' end
 
 -- Does a run of this drill end on its own (so a run in progress can't be passed early)?
 local function hasEnd() return finishGate ~= nil or course ~= nil or (endsAtLastGate() and #gates > 0) end
@@ -580,6 +583,17 @@ local TARGETS = {
      return fit, math.abs(before) < 25 and (before >= 0 and string.format('%.1f m to the line', before)
        or string.format('%.1f m past the line', -before)) or nil
    end},
+  {key = 'circle', rule = 'circle_corridor', label = 'Hold the line',
+   medal = function(r) return {widthM = r.widthM} end,
+   track = function(circle, medals, _car, x, y)
+     local off = Layout.circleOffset(circle, x, y)
+     local fit
+     for _, m in ipairs(medals) do
+       if math.abs(off) <= m.widthM / 2 then fit = m.name end
+     end
+     return fit, math.abs(off) < 0.1 and 'on the line'
+       or string.format('%.1f m %s the line', math.abs(off), off > 0 and 'wide of' or 'inside')
+   end},
 }
 
 -- A target's medal sizes, bronze (the drill's own rule) first, then each tier's: {{name, ...}}.
@@ -657,6 +671,7 @@ local function drawCourse()
     box = course and course.box, boxes = course and course.box and medalsFor(targetNamed('box')), fit = cur.fit,
     line = course and course.line, lineCones = course and course.lineCones,
     lineZones = course and course.line and medalsFor(targetNamed('line')),
+    circle = course and course.circle, corridors = course and course.circle and medalsFor(targetNamed('circle')),
     footprint = footprint,
   })
 end
@@ -708,6 +723,10 @@ function liveCourse()
   for i = 1, #course.cones do
     local c = course.cones[i]
     steps[#steps + 1] = {label = c.label or (#course.cones > 1 and ('Cone ' .. i) or 'Cone'), state = cur.coneResults[i] or 'todo'}
+  end
+  for i = 1, course.circle and course.circle.laps or 0 do
+    local done = cur.swept >= i * 2 * math.pi
+    steps[#steps + 1] = {label = 'Lap ' .. i, state = done and 'passed' or 'todo'}
   end
   for _, t in ipairs(TARGETS) do
     local item = course[t.key]
@@ -866,10 +885,21 @@ function M.onUpdate(dtReal, dtSim)
     end
   end
   if course then trackCourse(veh, vpos) end
+  if course and course.circle and cur.prevPos then
+    local laps = course.circle.laps
+    local before = math.floor(cur.swept / (2 * math.pi))
+    cur.swept = cur.swept + Layout.circleSweep(course.circle, cur.prevPos, vpos)
+    local done = math.floor(cur.swept / (2 * math.pi))
+    if done > before and done >= 1 then
+      logf('I', '%s: lap %d of %d at %.1f s', selected, done, laps, cur.elapsed)
+      lastReason, cur.uiAccum = string.format('Lap %d of %d.', done, laps), 1
+      if endsOnLaps() and done >= laps and not cur.endingIn then cur.endingIn, cur.endTime = GRADE_DELAY, cur.elapsed end
+    end
+  end
   cur.prevPos = vpos
   if cur.endingIn then
     cur.endingIn = cur.endingIn - math.max(0, dtSim or 0)
-    if cur.endingIn <= 0 then cur.endingIn = nil; finishRun('last gate', cur.endTime); return end
+    if cur.endingIn <= 0 then cur.endingIn = nil; finishRun(endsOnLaps() and 'last lap' or 'last gate', cur.endTime); return end
   end
   if endsOnStop() then
     if cur.elapsed > 1 and speed < STOPPED_SPEED and fromOrigin > STOPPED_MIN_DIST then

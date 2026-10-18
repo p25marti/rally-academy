@@ -38,6 +38,10 @@
 -- B04 (course): BMP downhill left, Covet Gravel Rally, racing line from lines.py at up to 60 km/h with
 --      scripted pedals: gold = brake 0.35 from the marker easing to 0 three metres before the apex;
 --      straight = brake 0.45 only before turn-in; late = brake 0.22 until 12 m past the apex.
+-- B05 (course): BMP dirt circle (venue bmp-dirt-ring), Covet Gravel Rally in 2nd (sequential), pure
+--      pursuit round the 15 m ring, throttle held (0.15 or more) with 0.25 brake dabs every 25 m:
+--      gold = 32 km/h (0.8 m off the line at most); wide = 38 km/h (runs 4 m wide); nobrake = 34 km/h,
+--      no dabs; lift = 34 km/h, throttle off for each 0.3 brake dab.
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -292,6 +296,20 @@ function T.b04_trail_braking_rules_and_medals_still_agree_with_the_in_game_verdi
   has(check(gradeCourse('b04_gold', 'B04'), 'trail_braked').text, 'Trail-braked')
   has(check(gradeCourse('b04_straight', 'B04'), 'trail_braked').text, 'carry the brake into the corner')
   has(check(gradeCourse('b04_late', 'B04'), 'brake_off_by_gate').text, 'Still braking at the apex')
+end
+
+function T.b05_left_foot_braking_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {b05_gold = 'gold', b05_wide = false, b05_nobrake = false, b05_lift = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'B05')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('b05_gold', 'B05'), 'left_foot_brakes').text, 'brake dabs on the throttle')
+  has(check(gradeCourse('b05_wide', 'B05'), 'circle_corridor').text, 'wide of the line')
+  has(check(gradeCourse('b05_nobrake', 'B05'), 'left_foot_brakes').text, 'dab it to tighten the line')
+  has(check(gradeCourse('b05_lift', 'B05'), 'left_foot_brakes').text, 'you lifted to brake')
 end
 
 local function ruleCheck(name, rule)

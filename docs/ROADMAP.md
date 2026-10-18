@@ -87,7 +87,8 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       medals), A07 and A08 (corner course with exit, apex and finish gates; exit speed and a
       steady exit). A06 (calling the next bend aloud) needs a hybrid prompt: deferred.
 - [ ] Module B to the same standard. Done: B01 and B02 (course stop zones on the run-up, medals).
-      B04 (trail braking on the corner venue). Next: B05-B07 on the dirt circle. B03 and B08 need
+      B04 (trail braking on the corner venue). B05 (left-foot braking: laps of a course circle on the
+      dirt circle). Next: B07 and B06 on the dirt circle. B03 and B08 need
       hybrid prompts: deferred.
 
 ## P3 — Machine-readable drills
@@ -121,4 +122,4 @@ live in [IDEAS.md](IDEAS.md) until the owner decides to pick one up.
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
 | Cone contact isn't detected for marked courses | Cones barely damage a car; authored courses (A01, A05) measure contact with their drawn cones instead, but marked drills (B01, D01) can't grade it | authored courses, scene control (GRADING §7) |
 | Owner hasn't driven the auto-graded drills on the rig yet | Scripted runs use the arcade gearbox; a real manual-gearbox stall or missed shift (A02) is only unit-tested; A01's and A02's medal targets are set from scripted runs | TESTING |
-| Pass/Miss is self-assessed (all but A01–A05, A07, A08, B01, B02, B04) | No objective grading | P2/P3 |
+| Pass/Miss is self-assessed (all but A01–A05, A07, A08, B01, B02, B04, B05) | No objective grading | P2/P3 |

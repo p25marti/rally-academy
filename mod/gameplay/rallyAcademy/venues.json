@@ -122,6 +122,30 @@
       "notes": "About 50 m circular dusty-dirt infield, dead flat: a natural skidpad."
     },
     {
+      "id": "bmp-dirt-ring",
+      "mapsId": "W3",
+      "name": "West Coast USA: BMP dirt circle, on a 15 m ring",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 265.0,
+          "y": 25.05,
+          "z": 127.2
+        },
+        "dir": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The dirt circle's south edge, 15 m from its centre (265, 40.05) and facing east: the start of an anticlockwise lap of a 15 m ring. Dirt to 23 m or more from the centre all round, the nearest obstacle 30 m out (measured 0.39.4)."
+    },
+    {
       "id": "wcusa-quarry",
       "mapsId": "W4",
       "name": "West Coast USA: Quarry",

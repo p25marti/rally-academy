@@ -6,6 +6,7 @@ Braking scenarios use the BMP start straight on West Coast USA in the Covet Stud
 Driver (B01's venue spot). They record attempts, then remove them from your progress.
 """
 import json
+import math
 import time
 
 import academy as A
@@ -309,6 +310,42 @@ def trail():
     expect(p, "braking only before turn-in misses", s.get("passed") is False and "into the corner" in str(s.get("reason")),
            s.get("reason"))
     A.end_session("B04")
+    return p
+
+
+def _ring_run(kmh, dab_every=25.0, brake=0.25, dab_m=3.0, lift=False):
+    """Two-plus laps of the B05 ring in 2nd (sequential), throttle held, brake dabs every `dab_every` m."""
+    ring = [(-15 + 15 * math.cos(a), 15 * math.sin(a)) for a in (i * 0.02 for i in range(int(2.3 * 2 * math.pi / 0.02)))]
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        thr = max(0.15, min(0.6, 0.25 + (min(kmh, 12 + trav * 0.8) - v) * 0.05))
+        if trav > 20 and trav % dab_every < dab_m:
+            return (0.0 if lift else thr, brake)
+        return (thr, 0.0)
+    return A.course_run("B05", ring, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 10,
+                        max_throttle=1.0, timeout=60, stop_within=0.5)
+
+
+@scenario
+def circle():
+    """B05 on the BMP dirt circle (Covet Gravel Rally): two laps of the 15 m ring on steady throttle with
+    left-foot brake dabs earn gold; no dabs, or lifting off to brake, miss."""
+    p = []
+    A.drill_session("B05")
+    s = _ring_run(32)
+    expect(p, "laps on the throttle with brake dabs earn gold", s.get("passed") is True and s.get("tier") == "gold",
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _ring_run(34, dab_every=1e9)
+    expect(p, "no brake dabs misses", s.get("passed") is False and "brake dabs" in str(s.get("reason")), s.get("reason"))
+    s = _ring_run(34, brake=0.3, dab_m=4, lift=True)
+    expect(p, "lifting off to brake misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("B05")
     return p
 
 

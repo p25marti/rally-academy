@@ -36,7 +36,7 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "successDefinition": "Per-run PASS criteria in plain English.",
         "metricToRecord": "Successful precise parks / 10",
         "mode": "selfAssessment",          // required: selfAssessment | automatic | hybrid
-        "endWhen": "finish",               // optional: finish (circle, default) | stopped (car at rest) | gates (last gate)
+        "endWhen": "finish",               // optional: finish (circle, default) | stopped (car at rest) | gates (last gate) | laps (course circle)
         "gates": {"count": 3, "widthM": 10}, // optional: gates the driver marks with + Gate
         "course": {...},                   // optional: an authored course (below); replaces gates
         "rules": [],                       // typed rules; empty = no machine grading
@@ -76,14 +76,18 @@ and draws it; nothing needs marking ([PRODUCT](PRODUCT.md): drills set themselve
   "cones": [{"x": 0, "y": 20, "keep": "left"}],      // keep the cone on your left (pass it on its right)
   "box": {"x": -1.5, "y": 33, "lengthM": 6, "widthM": 3.2}, // parking box, square to the course
   "line": {"x": 0, "y": 60, "widthM": 8},           // a stop line, a cone at each end (A05)
-  "zone": {"x": 0, "y": 150}                        // a stop zone's centre; its size comes from the stop_zone rule (B01)
+  "zone": {"x": 0, "y": 150},                       // a stop zone's centre; its size comes from the stop_zone rule (B01)
+  "circle": {"x": -15, "y": 0, "radiusM": 15, "turn": "left", "laps": 2} // a ring to lap (B05): its centre,
+                                                     // the line's radius, which way round; the corridor comes
+                                                     // from the circle_corridor rule; endWhen "laps" ends the run
 }
 ```
 
 The course's gates work like marked gates (`gates_passed`, live feedback, `endWhen: "gates"`),
 so a drill with a course has no `assessment.gates`. The cones and gate posts are drawn, not
 spawned: `markers_clear` measures the car's body against them. Course rules
-(`R.COURSE_RULES`: `cones_passed`, `markers_clear`, `park_in_box`) need a course.
+(`R.COURSE_RULES`: `cones_passed`, `markers_clear`, `park_in_box`, `circle_laps`, `circle_corridor`)
+need a course, and `endWhen: "laps"` needs a circle in it.
 
 ## Medal tiers
 

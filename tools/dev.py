@@ -76,7 +76,7 @@ def course_errors(course) -> list[str]:
     if not isinstance(course, dict):
         return ["assessment.course must be an object"]
     errors = []
-    unknown = set(course) - {"gates", "cones", "box", "line", "zone"}
+    unknown = set(course) - {"gates", "cones", "box", "line", "zone", "circle"}
     if unknown:
         errors.append(f"assessment.course: unknown keys {sorted(unknown)}")
     for kind in ("gates", "cones"):
@@ -103,6 +103,12 @@ def course_errors(course) -> list[str]:
     if line is not None and not (isinstance(line, dict) and _num(line.get("y")) and _num(line.get("x", 0))
                                  and _num(line.get("widthM", 8)) and line.get("widthM", 8) > 0):
         errors.append("assessment.course.line needs numeric y (and x) and widthM > 0")
+    circle = course.get("circle")
+    if circle is not None and not (isinstance(circle, dict) and _num(circle.get("x", 0)) and _num(circle.get("y", 0))
+                                   and _num(circle.get("radiusM")) and circle["radiusM"] > 0
+                                   and circle.get("turn", "left") in ("left", "right")
+                                   and isinstance(circle.get("laps", 1), int) and circle.get("laps", 1) >= 1):
+        errors.append("assessment.course.circle needs radiusM > 0, numeric x and y, turn 'left' or 'right' and laps >= 1")
     return errors
 
 
@@ -136,7 +142,7 @@ def tier_errors(tiers, rule_types_: dict, base_rules: list) -> list[str]:
     return errors
 
 
-END_WHEN = {"finish", "stopped", "gates"}
+END_WHEN = {"finish", "stopped", "gates", "laps"}
 ZIP_EPOCH = (2020, 1, 1, 0, 0, 0)  # fixed timestamp => reproducible zips
 SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
 # The mod logs as `|I|GELua.rallyAcademy.rallyAcademy| ...` (extension name + tag).
@@ -279,6 +285,8 @@ def validate_exercises(data: dict) -> list[str]:
         uses_gates = a.get("endWhen") == "gates" or any(r.get("type") in gate_rules for r in rule_list)
         if uses_gates and gates is None and not course_gates:
             errors.append(f"{where}: gate rules and endWhen 'gates' need assessment.gates (or gates in assessment.course)")
+        if a.get("endWhen") == "laps" and not (isinstance(course, dict) and course.get("circle")):
+            errors.append(f"{where}: endWhen 'laps' needs a circle in assessment.course")
         course_rules = set(lua_name_list("COURSE_RULES"))
         if any(r.get("type") in course_rules for r in rule_list) and course is None:
             errors.append(f"{where}: course rules ({sorted(course_rules)}) need assessment.course")
