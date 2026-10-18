@@ -6,13 +6,13 @@ local near = H.near
 local eq = H.eq
 local reloadExtension = H.reloadExtension
 local has = H.has
-local setupB01 = H.setupB01
-local setupA04 = H.setupA04
+local setupZoneDrill = H.setupZoneDrill
+local setupGateDrill = H.setupGateDrill
 local gateRun = H.gateRun
 local T = {}
 
 function T.a04_steady_speed_through_three_gates_is_graded_pass()
-  local h, M = setupA04()
+  local h, M = setupGateDrill()
   eq(h.lastState().gateCount, 3, 'three gates marked')
   local s = gateRun(h, M, {})
   eq(s.phase, 'scored', 'ends at the last gate and is graded')
@@ -21,14 +21,14 @@ function T.a04_steady_speed_through_three_gates_is_graded_pass()
   has(s.grade.checks[1].text, '30.0 / 30.0 / 30.0 km/h')
   local log = h.logText('rallyAcademy')
   has(log, 'gate 1 passed at 30 km/h')
-  has(log, 'A04: last gate in')
+  has(log, 'T03: last gate in')
   eq(#M.getLastRun().meta.gates, 3, 'gates kept with the run record')
 end
 
 -- Found in-game: the run ended on the frame of the last gate, before the car's sample
 -- past it had arrived, so grading saw "gate 3 not reached".
 function T.a04_grades_the_last_gate_when_telemetry_lags_a_frame()
-  local h, M = setupA04()
+  local h, M = setupGateDrill()
   local s = gateRun(h, M, {lag = true})
   eq(s.phase, 'scored', 'graded')
   has(s.grade.checks[1].text, '30.0 / 30.0 / 30.0 km/h')
@@ -37,7 +37,7 @@ function T.a04_grades_the_last_gate_when_telemetry_lags_a_frame()
 end
 
 function T.a04_too_fast_or_braking_between_gates_is_a_miss()
-  local h, M = setupA04()
+  local h, M = setupGateDrill()
   local s = gateRun(h, M, {kmhAt = function(y) return y > 70 and 38 or 30 end})
   eq(s.phase, 'scored', 'graded')
   eq(s.successes, 0, 'miss')
@@ -48,14 +48,14 @@ function T.a04_too_fast_or_braking_between_gates_is_a_miss()
 end
 
 function T.live_gate_feedback_names_the_gate_and_speed()
-  local h, M = setupA04()
+  local h, M = setupGateDrill()
   gateRun(h, M, {giveUpAtY = 50})
   eq(h.lastState().phase, 'running', 'still between gates')
   eq(h.lastState().reason, 'Gate 1 of 3: 30 km/h', 'live message')
 end
 
 function T.add_gate_stops_at_the_drill_count_and_clear_gates_resets()
-  local h, M = setupA04()
+  local h, M = setupGateDrill()
   M.addGate()
   has(h.lastState().reason, 'All 3 gates are marked')
   eq(h.lastState().gateCount, 3, 'no fourth gate')
@@ -65,9 +65,9 @@ function T.add_gate_stops_at_the_drill_count_and_clear_gates_resets()
 end
 
 function T.gates_are_saved_per_map_and_reloaded()
-  local h = setupA04()
+  local h = setupGateDrill()
   local M = reloadExtension()
-  M.select('A04')
+  M.select('T03')
   eq(h.lastState().gateCount, 3, 'gates restored after a restart')
   h.level = 'utah'
   M.onClientEndMission('/levels/west_coast_usa/')
@@ -76,7 +76,7 @@ function T.gates_are_saved_per_map_and_reloaded()
 end
 
 function T.pass_is_refused_mid_run_when_the_run_ends_at_a_gate()
-  local h, M = setupA04()
+  local h, M = setupGateDrill()
   gateRun(h, M, {giveUpAtY = 20})
   eq(h.lastState().phase, 'running', 'mid-run')
   M.recordAttempt(true)
@@ -84,8 +84,8 @@ function T.pass_is_refused_mid_run_when_the_run_ends_at_a_gate()
 end
 
 function T.gate_drill_without_gates_says_to_mark_them_on_retry()
-  local h, M = H.setupMarkedGates()
-  M.select('A04')
+  local h, M = H.setup()
+  M.select('T03')
   h.vehicle.pos = stubs.vec3(0, 0, 0)
   M.markStart()
   M.retry()
@@ -93,7 +93,7 @@ function T.gate_drill_without_gates_says_to_mark_them_on_retry()
 end
 
 function T.gates_are_drawn_with_the_next_one_highlighted()
-  local h, M = setupA04()
+  local h, M = setupGateDrill()
   h.draws = {}
   M.onUpdate(0.1, 0.1)
   eq(#h.draws, 9, 'two posts and a bar per gate')
@@ -108,7 +108,7 @@ function T.gates_are_drawn_with_the_next_one_highlighted()
 end
 
 function T.b01_stop_zone_is_drawn()
-  local h, M = setupB01(107)
+  local h, M = setupZoneDrill(107)
   h.draws = {}
   M.onUpdate(0.1, 0.1)
   eq(#h.draws, 4, 'four sides of the zone')

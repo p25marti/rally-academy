@@ -8,18 +8,20 @@ local T = {}
 
 function T.menu_data_lists_every_drill_in_order_with_progress()
   local h, M = setup()
-  M.select('A06')
+  M.select('T01')
   h.vehicle.pos = stubs.vec3(0, 0, 0)
   M.markStart()
   M.retry()
   drive(h, M, 1, {x = 0, y = 5, z = 0})
   M.recordAttempt(true)
   local d = M.getMenuData()
-  eq(#d.lessons, 42, 'all drills')
+  local shipped = 0
+  for _, l in ipairs(d.lessons) do if not H.stubs.isTestDrill(l.id) then shipped = shipped + 1 end end
+  eq(shipped, 42, 'all shipped drills (plus the test drills T01-T04 the stubs add)')
   eq(d.lessons[1].id, 'A01', 'curriculum order starts at A01')
   eq(d.lessons[42].id, 'F07', 'and ends at F07')
-  eq(d.progress.A06.totalPasses, 1, 'progress included')
-  eq(d.selected, 'A06', 'current HUD drill')
+  eq(d.progress.T01.totalPasses, 1, 'progress included')
+  eq(d.selected, 'T01', 'current HUD drill')
   eq(d.info.version, jsonReadFile('ui/modules/apps/RallyAcademy/app.json').version, 'mod version for About')
   assert(d.info.author, 'author for Credits')
 end
@@ -65,7 +67,7 @@ end
 function T.menu_start_drill_resumes_physics()
   local h, M = setup()
   M.openMenu()
-  M.startDrill('A06')
+  M.startDrill('T01')
   eq(h.paused, false, 'resumed for the drive')
 end
 

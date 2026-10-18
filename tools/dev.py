@@ -343,6 +343,15 @@ def cmd_validate(_args=None) -> None:
         fail("venue data invalid:\n    " + "\n    ".join(errors))
     ok(f"{len(venues['venues'])} venues valid, every drill's venue found")
 
+    test_drills = json.loads((ROOT / "tests" / "fixtures" / "test_drills.json").read_text(encoding="utf-8"))
+    errors = validate_exercises(test_drills)
+    venue_ids = {v["id"] for v in venues["venues"]}
+    errors += [f"{e['id']}: unknown venue {e['environment'].get('venue')}" for e in test_drills["exercises"]
+               if e["environment"].get("venue") not in venue_ids]
+    if errors:
+        fail("test drills (tests/fixtures/test_drills.json) invalid:\n    " + "\n    ".join(errors))
+    ok(f"{len(test_drills['exercises'])} test drills valid")
+
     errors = bindings_errors(json.loads((MOD_DIR / ACTIONS_JSON).read_text(encoding="utf-8")),
                              json.loads((MOD_DIR / BINDINGS_JSON).read_text(encoding="utf-8")))
     if errors:

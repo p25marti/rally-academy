@@ -130,28 +130,10 @@ function H.brakingRun(h, M, opts)
 end
 
 -- Start at the origin facing +y; stop zone centred at `zoneY`.
--- A marked stop zone (Mark stop zone) needs a drill that uses one; no shipped drill does since B01
--- got a course, so the tests use B01 as it was: entry speed, a 5 x 6 m marked zone, lockup.
-function H.setupMarkedZone()
-  local h = stubs.install()
-  local data = jsonReadFile('gameplay/rallyAcademy/exercises.json')
-  for _, e in ipairs(data.exercises) do
-    if e.id == 'B01' then
-      e.assessment.course, e.assessment.tiers = nil, nil
-      e.assessment.rules = {{type = 'entry_speed', minKmh = 65}, {type = 'stop_zone', lengthM = 5, widthM = 6},
-                            {type = 'no_sustained_lockup', maxSeconds = 0.5}}
-    end
-  end
-  jsonWriteFile('gameplay/rallyAcademy/exercises.json', data)
-  local M = stubs.loadExtension('rallyAcademy')
-  M.onExtensionLoaded()
-  return h, M
-end
-
--- B01 (marked zone, above): start at the origin facing +y, zone centred at `zoneY`.
-function H.setupB01(zoneY)
-  local h, M = H.setupMarkedZone()
-  M.select('B01')
+-- T04 (a test drill with a marked stop zone): start at the origin facing +y, zone centred at `zoneY`.
+function H.setupZoneDrill(zoneY)
+  local h, M = H.setup()
+  M.select('T04')
   h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
   M.markStart()
   h.vehicle.pos = stubs.vec3(0, zoneY, 0)
@@ -159,28 +141,11 @@ function H.setupB01(zoneY)
   return h, M
 end
 
--- Marked gates (+ Gate) need a drill that uses them; no shipped drill does since A04 got a course,
--- so the tests use A04 as it was: three gates the driver marks, 10 m wide, graded on speed.
-function H.setupMarkedGates()
-  local h = stubs.install()
-  local data = jsonReadFile('gameplay/rallyAcademy/exercises.json')
-  for _, e in ipairs(data.exercises) do
-    if e.id == 'A04' then
-      e.assessment.course, e.assessment.tiers = nil, nil
-      e.assessment.gates = {count = 3, widthM = 10}
-      e.assessment.rules = {{type = 'speed_at_gates', minKmh = 27, maxKmh = 33}, {type = 'no_brake_between_gates'}}
-    end
-  end
-  jsonWriteFile('gameplay/rallyAcademy/exercises.json', data)
-  local M = stubs.loadExtension('rallyAcademy')
-  M.onExtensionLoaded()
-  return h, M
-end
-
--- A04 (marked gates, above) with its start at y = 0 and gates at y = 40, 65, 90, all facing north (+y).
-function H.setupA04()
-  local h, M = H.setupMarkedGates()
-  M.select('A04')
+-- T03 (a test drill with marked gates) with its start at y = 0 and gates at y = 40, 65, 90, all
+-- facing north (+y).
+function H.setupGateDrill()
+  local h, M = H.setup()
+  M.select('T03')
   h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
   M.markStart()
   for _, y in ipairs({40, 65, 90}) do

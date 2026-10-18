@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "_comment": "Test-only drills, added to the catalogue by tests/lua/beamng_stubs.lua so engine tests never depend on how a shipped drill is graded: T01/T02 self-assessed (finish circle, Pass/Miss), T03 marked gates (+ Gate), T04 a marked stop zone (Mark stop zone). Validated by dev.py validate like shipped drills.",
+  "exercises": [
+    {
+      "id": "T01",
+      "module": "99  TESTS",
+      "title": "Test: self-assessed, Student Driver",
+      "difficulty": "Test",
+      "vehicle": {
+        "displayName": "Ibishu Covet Student Driver",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
+      },
+      "environment": {
+        "venue": "bmp-gravel-track",
+        "areaHint": "Test drill (tests only).",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 100
+        }
+      },
+      "instructions": "Test drill.",
+      "resetInstructions": "Mark a start.",
+      "props": "None.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Test.",
+        "metricToRecord": "Test.",
+        "mode": "selfAssessment",
+        "rules": []
+      }
+    },
+    {
+      "id": "T02",
+      "module": "99  TESTS",
+      "title": "Test: self-assessed, Gravel Rally",
+      "difficulty": "Test",
+      "vehicle": {
+        "displayName": "Ibishu Covet Gravel Rally",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
+      },
+      "environment": {
+        "venue": "bmp-gravel-track",
+        "areaHint": "Test drill (tests only).",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 100
+        }
+      },
+      "instructions": "Test drill.",
+      "resetInstructions": "Mark a start.",
+      "props": "None.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Test.",
+        "metricToRecord": "Test.",
+        "mode": "selfAssessment",
+        "rules": []
+      }
+    },
+    {
+      "id": "T03",
+      "module": "99  TESTS",
+      "title": "Test: marked gates",
+      "difficulty": "Test",
+      "vehicle": {
+        "displayName": "Ibishu Covet Student Driver",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
+      },
+      "environment": {
+        "venue": "bmp-gravel-track",
+        "areaHint": "Test drill (tests only).",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 100
+        }
+      },
+      "instructions": "Test drill.",
+      "resetInstructions": "Mark a start.",
+      "props": "None.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Test.",
+        "metricToRecord": "Test.",
+        "mode": "automatic",
+        "endWhen": "gates",
+        "gates": {
+          "count": 3,
+          "widthM": 10
+        },
+        "rules": [
+          {
+            "type": "speed_at_gates",
+            "minKmh": 27,
+            "maxKmh": 33
+          },
+          {
+            "type": "no_brake_between_gates"
+          }
+        ]
+      }
+    },
+    {
+      "id": "T04",
+      "module": "99  TESTS",
+      "title": "Test: marked stop zone",
+      "difficulty": "Test",
+      "vehicle": {
+        "displayName": "Ibishu Covet Student Driver",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
+      },
+      "environment": {
+        "venue": "bmp-gravel-track",
+        "areaHint": "Test drill (tests only).",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 100
+        }
+      },
+      "instructions": "Test drill.",
+      "resetInstructions": "Mark a start.",
+      "props": "None.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Test.",
+        "metricToRecord": "Test.",
+        "mode": "automatic",
+        "endWhen": "stopped",
+        "rules": [
+          {
+            "type": "entry_speed",
+            "minKmh": 65
+          },
+          {
+            "type": "stop_zone",
+            "lengthM": 5,
+            "widthM": 6
+          },
+          {
+            "type": "no_sustained_lockup",
+            "maxSeconds": 0.5
+          }
+        ]
+      }
+    }
+  ]
+}

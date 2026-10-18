@@ -35,6 +35,11 @@ exactly as CI does.
   published `rallyAcademyState` and on vehicle side effects.
 - Assert with the helpers (`H.eq`, `H.has`, `H.near`), which raise on failure. A bare
   boolean expression asserts nothing.
+- Engine tests use the **test drills** T01-T04 from `tests/fixtures/test_drills.json`, which the stubs
+  add after the shipped catalogue: T01/T02 self-assessed (Student Driver / Gravel Rally), T03 marked
+  gates, T04 a marked stop zone. Shipped drills keep changing as they get courses and medals, so tests
+  about the engine shouldn't depend on them; tests about a drill (its fixtures, its course) use it by
+  name. `dev.py validate` checks the test drills like shipped ones.
 
 Add a test:
 

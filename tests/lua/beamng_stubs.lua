@@ -150,7 +150,13 @@ function S.install()
     local f = io.open(ROOT .. '/mod/' .. path, 'r')
     if not f then return nil end
     local text = f:read('*a'); f:close()
-    return json.decode(text)
+    local data = json.decode(text)
+    if path == S.EXERCISES then
+      -- Test-only drills (T01-T04) go after the shipped ones, so engine tests don't depend on how
+      -- any shipped drill is graded (tests/fixtures/test_drills.json).
+      for _, e in ipairs(S.testDrills()) do table.insert(data.exercises, e) end
+    end
+    return data
   end
   _G.jsonWriteFile = function(path, data)
     h.files[path] = json.encode(data)
@@ -172,6 +178,17 @@ function S.install()
 
   return h
 end
+
+S.EXERCISES = 'gameplay/rallyAcademy/exercises.json'
+
+function S.testDrills()
+  local f = assert(io.open(ROOT .. '/tests/fixtures/test_drills.json', 'r'))
+  local text = f:read('*a'); f:close()
+  return json.decode(text).exercises
+end
+
+-- Ids of the shipped drills only (the catalogue the stubs serve also holds T01-T04).
+function S.isTestDrill(id) return tostring(id):match('^T%d%d$') ~= nil end
 
 -- Loads a fresh copy of a GE extension module (bypasses require's cache).
 function S.loadExtension(name)

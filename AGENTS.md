@@ -102,9 +102,9 @@ Learned the hard way (0.39.4):
 
 ## Recipes
 
-**Generic tests** use A06 (Student Driver) and B08 (Gravel Rally) as "self-assessed drills without a
-course" (both wait on hybrid prompts); when a drill gets graded, move any test that relied on it being
-self-assessed. Marked gates and zones are tested on test-only copies (`H.setupMarkedGates`, `H.setupMarkedZone`).
+**Engine tests use test-only drills** (T01-T04, `tests/fixtures/test_drills.json`, added to the catalogue by
+the stubs): T01/T02 self-assessed (Student Driver / Gravel Rally), T03 marked gates, T04 a marked stop zone.
+Don't build engine tests on shipped drills: converting a drill would break them.
 
 **Make a drill auto-graded:**
 1. Read its entry in `exercises.json` and the capability table in [GRADING](docs/GRADING.md).

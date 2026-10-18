@@ -20,7 +20,7 @@ function T.every_active_drill_pins_a_fwd_covet_and_a_map()
   stubs.install()
   for id, e in pairs(drills()) do
     assert(e.environment.levelId == 'west_coast_usa' or e.environment.levelId == 'utah', id .. ' map')
-    if not e.parked then
+    if not e.parked and not stubs.isTestDrill(id) then
       eq(e.vehicle.modelId, 'covet', id .. ' model')
       assert(e.vehicle.configPath == 'vehicles/covet/student_driver.pc' or e.vehicle.configPath == 'vehicles/covet/rally_gravel.pc',
         id .. ' config ' .. tostring(e.vehicle.configPath))
@@ -38,13 +38,13 @@ function T.parked_drills_are_flagged_in_the_catalogue_and_explained_on_select()
   local s = h.lastState()
   eq(s.selected, 'C03', 'still selectable')
   assert(s.reason:find('Parked for now', 1, true), 'reason explains: ' .. s.reason)
-  M.select('B08')
+  M.select('T02')
   assert(not h.lastState().reason:find('Parked', 1, true), 'normal drills have no parked note')
 end
 
 function T.go_to_drill_on_another_map_loads_it_then_places_the_car()
   local h, M = setup()                       -- stub starts on driver_training
-  M.select('A06')                            -- venue: west_coast_usa gravel track, Student Driver
+  M.select('T01')                            -- venue: west_coast_usa gravel track, Student Driver
   M.goToDrill()
   eq(h.levelsLoaded[1], '/levels/west_coast_usa/main/', 'map load requested')
   assert(h.lastState().reason:find('Loading', 1, true), 'tells you it is loading')
@@ -53,7 +53,7 @@ function T.go_to_drill_on_another_map_loads_it_then_places_the_car()
   h.level = 'west_coast_usa'                 -- the game finishes loading
   M.onClientPostStartMission('/levels/west_coast_usa/main.level.json')
   eq(#h.spawned, 0, 'already in the Student Driver: no respawn')
-  local pos, want = h.vehicle.teleports[#h.vehicle.teleports], spawnOf('A06')
+  local pos, want = h.vehicle.teleports[#h.vehicle.teleports], spawnOf('T01')
   eq(pos.x, want.x, 'placed at the venue spot (x)')
   eq(pos.y, want.y, 'placed at the venue spot (y)')
   local s = h.lastState()
@@ -64,7 +64,7 @@ end
 function T.go_to_drill_on_the_same_map_swaps_the_car_then_waits_before_placing()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B08')                            -- Gravel Rally drill
+  M.select('T02')                            -- Gravel Rally drill
   M.goToDrill()
   eq(#h.levelsLoaded, 0, 'no map load on the same map')
   eq(h.spawned[1].model, 'covet', 'covet spawned')
@@ -75,7 +75,7 @@ function T.go_to_drill_on_the_same_map_swaps_the_car_then_waits_before_placing()
   M.onVehicleSpawned(h.vehicle.id, h.vehicle)  -- the game reports the new car
   tick(M, 0.4)
   eq(#h.vehicle.teleports, 1, 'placed shortly after the spawn event')
-  eq(h.vehicle.teleports[1].y, spawnOf('B08').y, 'at the venue spot')
+  eq(h.vehicle.teleports[1].y, spawnOf('T02').y, 'at the venue spot')
 end
 
 -- Seen in-game on 0.39.4: the spawn hook fires *inside* replaceVehicle; listening only
@@ -85,7 +85,7 @@ function T.go_to_drill_catches_a_spawn_event_fired_inside_replace_vehicle()
   h.level = 'west_coast_usa'
   h.syncSpawnHook = true
   _G.extensions = {rallyAcademy = M}
-  M.select('B08')
+  M.select('T02')
   M.goToDrill()
   tick(M, 0.4)
   _G.extensions = nil
@@ -95,7 +95,7 @@ end
 function T.choosing_another_drill_during_a_car_swap_cancels_it()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B08')
+  M.select('T02')
   M.goToDrill()
   M.select('B05')
   tick(M, 7)
@@ -105,7 +105,7 @@ end
 function T.go_to_drill_ignores_spawn_events_for_other_cars()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B08')
+  M.select('T02')
   M.goToDrill()
   M.onVehicleSpawned(77, {partConfig = 'vehicles/pickup/whatever.pc'})
   tick(M, 0.4)
@@ -115,7 +115,7 @@ end
 function T.go_to_drill_places_the_car_anyway_if_no_spawn_event_comes()
   local h, M = setup()
   h.level = 'west_coast_usa'
-  M.select('B08')
+  M.select('T02')
   M.goToDrill()
   tick(M, 6.5)
   eq(#h.vehicle.teleports, 1, 'placed after the timeout')
@@ -151,16 +151,16 @@ end
 function T.go_to_drill_reports_a_missing_map()
   local h, M = setup()
   _G.core_levels.getList = function() return {} end
-  M.select('A06')
+  M.select('T01')
   M.goToDrill()
   assert(h.lastState().reason:find('Map not installed', 1, true), 'missing map reported')
 end
 
 function T.choosing_another_drill_while_loading_cancels_the_arrival()
   local h, M = setup()
-  M.select('A06')
+  M.select('T01')
   M.goToDrill()
-  M.select('B08')                            -- changed your mind during the load
+  M.select('T02')                            -- changed your mind during the load
   h.level = 'west_coast_usa'
   M.onClientPostStartMission('/levels/west_coast_usa/main.level.json')
   eq(#h.vehicle.teleports, 0, 'no surprise teleport')
@@ -169,7 +169,7 @@ end
 -- Venues are shared data (venues.json); the loader fills each drill's map, name and spawn.
 function T.drills_get_their_venue_filled_in_on_load()
   local h, M = setup()
-  M.select('A06')
+  M.select('T01')
   local env = h.lastState().lesson.environment
   eq(env.venue, 'bmp-gravel-track', 'venue id kept')
   eq(env.levelId, 'west_coast_usa', 'map from the venue')
