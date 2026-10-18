@@ -79,7 +79,8 @@ and draws it; nothing needs marking ([PRODUCT](PRODUCT.md): drills set themselve
   "zone": {"x": 0, "y": 150},                       // a stop zone's centre; its size comes from the stop_zone rule (B01)
   "circle": {"x": -15, "y": 0, "radiusM": 15, "turn": "left", "laps": 2} // a ring to lap (B05): its centre,
                                                      // the line's radius, which way round; the corridor comes
-                                                     // from the circle_corridor rule; endWhen "laps" ends the run
+                                                     // from the circle_corridor rule; endWhen "laps" ends the run.
+                                                     // With gates and endWhen "gates" (B06), laps is unused
 }
 ```
 

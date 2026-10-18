@@ -866,6 +866,52 @@ function E.settled_by_gate(rule, samples, ctx)
   return true, string.format('Settled by the %s (slip %.0f°, steering %.0f°)', name, slip, steer)
 end
 
+-- Understeer (B06) -----------------------------------------------------------------
+
+-- The front pushed wide: between two gates the car runs outside the course circle's line by `minM`
+-- to `maxM` (a mild, safe push, not a trip off the circle).
+-- rule: {type = 'ran_wide', minM = 1, maxM = 5, fromGate = 1, toGate = -1}
+function E.ran_wide(rule, samples, ctx)
+  local course = courseOf(ctx, 'circle')
+  if not course then return false, 'This drill has no circle laid out' end
+  local t0, t1 = gateWindow(ctx, samples, rule.fromGate or 1, rule.toGate or -1)
+  if not t0 then return false, t1 end
+  local wide, minM, maxM = 0, rule.minM or 1, rule.maxM or 5
+  for _, s in ipairs(samples) do
+    if s.x and s.t >= t0 and s.t <= t1 then wide = math.max(wide, Layout.circleOffset(course.circle, s.x, s.y)) end
+  end
+  if wide < minM then
+    return false, string.format('Only %.1f m wide (target %g m+): carry more speed in to make the front push', wide, minM)
+  end
+  if wide > maxM then return false, string.format('Ran %.1f m wide (limit %g m): too fast in, the push got away', wide, maxM) end
+  return true, string.format('Front pushed %.1f m wide (target %g-%g m)', wide, minM, maxM)
+end
+
+-- Back on the course circle's line by a gate: where the car crosses it, it is within `maxM` of the line.
+-- rule: {type = 'back_on_line_by_gate', gate = -1, maxM = 1.5}
+function E.back_on_line_by_gate(rule, samples, ctx)
+  local course = courseOf(ctx, 'circle')
+  if not course then return false, 'This drill has no circle laid out' end
+  local gates, err = gateList(ctx)
+  if not gates then return false, err end
+  local g = rule.gate or -1
+  g = g < 0 and #gates + 1 + g or g
+  local pass = Gates.passes(gates, samples)[g]
+  if not (pass and pass.reached) then return false, string.format('Gate %d not reached', g) end
+  local at
+  for _, s in ipairs(samples) do
+    if s.x and s.t >= pass.t then at = s; break end
+  end
+  if not at then return false, 'No data at the gate' end
+  local off, maxM = Layout.circleOffset(course.circle, at.x, at.y), rule.maxM or 1.5
+  local name = gates[g].label and gates[g].label:lower() or ('gate ' .. g)
+  if math.abs(off) <= maxM then
+    return true, string.format('Back on the line by the %s (%.1f m off, target %g m)', name, math.abs(off), maxM)
+  end
+  return false, string.format('Still %.1f m %s the line at the %s (target %g m): ease off sooner', math.abs(off),
+    off > 0 and 'wide of' or 'inside', name, maxM)
+end
+
 R.evaluators = E
 
 -- Rule types and their required parameters. tools/dev.py validate reads this table and
@@ -906,13 +952,16 @@ R.TYPES = {
   left_foot_brakes = {},
   rear_slide = {},
   settled_by_gate = {},
+  ran_wide = {},
+  back_on_line_by_gate = {},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
 R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked',
-  'brake_off_by_gate', 'rear_slide', 'settled_by_gate'}
+  'brake_off_by_gate', 'rear_slide', 'settled_by_gate', 'ran_wide', 'back_on_line_by_gate'}
 -- Rule types that need an authored course (assessment.course).
-R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box', 'circle_laps', 'circle_corridor'}
+R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box', 'circle_laps', 'circle_corridor', 'ran_wide',
+  'back_on_line_by_gate'}
 -- Medal tiers above a pass (bronze), in order (assessment.tiers).
 R.TIERS = {'silver', 'gold'}
 

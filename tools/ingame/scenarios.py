@@ -387,6 +387,46 @@ def oversteer():
     return p
 
 
+def _push_run(kmh, lift_at, lift_m, then_kmh):
+    """B06: hold `kmh` from the start into a left half of the 15 m ring in 2nd (sequential), lift off for
+    `lift_m` metres at `lift_at` metres from the start, then hold `then_kmh`."""
+    path = ([(0, y) for y in range(0, 25)]
+            + [(-15 + 15 * math.cos(a), 25 + 15 * math.sin(a)) for a in (i * math.pi / 80 for i in range(81))]
+            + [(-30, 25 - y) for y in range(1, 15)])
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        def hold(target):
+            return (max(0.08, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+        if trav < lift_at:
+            return hold(kmh)
+        return (0.0, 0.0) if trav < lift_at + lift_m else hold(then_kmh)
+    return A.course_run("B06", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 15,
+                        max_throttle=1.0, timeout=40, stop_within=0.5)
+
+
+@scenario
+def understeer():
+    """B06 on the BMP dirt circle (Covet Gravel Rally): turning in too fast pushes the front wide and a
+    lift brings it back onto the line for a medal; too slow to push misses, and no lift runs far wide."""
+    p = []
+    A.drill_session("B06")
+    s = _push_run(40, 35, 10, 26)
+    expect(p, "a push corrected by lifting earns a medal", s.get("passed") is True and s.get("tier") in ("silver", "gold"),
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _push_run(30, 1000, 0, 30)
+    expect(p, "no push misses", s.get("passed") is False and "carry more speed" in str(s.get("reason")), s.get("reason"))
+    s = _push_run(46, 1000, 0, 46)
+    expect(p, "no lift runs wide and misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("B06")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

@@ -7,13 +7,14 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Twelve drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Thirteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
 **A08** (late apex and a steady exit, with medals), **B01** (threshold braking into a course stop zone, with medals), **B02** (lockup recovery, with
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
-course circle, with medals) and **B07** (catching an oversteer slide, with medals). Every other drill is still
+course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
+**B07** (catching an oversteer slide, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -75,7 +76,9 @@ Detectors turn raw samples into events with a start time, an end time and a size
 | Puncture | Tyre deflation; F06 needs a damage baseline because it starts punctured | E07, F06 |
 | Recovery use | The game's own recover/reset was used | E08, F01, F04, F05, F08 |
 
-Understeer is the hardest detector. Cone contact matters most because so many
+Understeer is the hardest detector in general. Where the drill lays out the line (B06's course
+circle) it doesn't need a car model: how far the car runs outside the line is the push (`ran_wide`).
+ Cone contact matters most because so many
 drills use it.
 
 ## 4. Measurements, run lifecycle and block statistics
@@ -151,6 +154,8 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `throttle_held` | none (optional `maxGapSeconds` 0.3, `minThrottle` 0.05, `fromKmh` 0) | From the first moment on the throttle at `fromKmh` (pulling away and changing up before then is free) to the end, the throttle never drops under `minThrottle` for longer than `maxGapSeconds` |
 | `rear_slide` | none (optional `minSlipDeg` 8, `turn` 'left', `fromGate` 1, `toGate` −1) | Between the two gates the rear steps out at least `minSlipDeg`: the slip angle with the car pointing further into the `turn` than it travels (`R.signedSlipDeg`). The front pushing wide doesn't count |
 | `settled_by_gate` | none (optional `gate` −1, `maxSlipDeg` 4, `maxSteerDeg` 45) | Where the car crosses the gate, the slide is over (slip within `maxSlipDeg`) and the countersteer unwound (steering wheel within `maxSteerDeg` of straight); the gate's `label` names it in the text |
+| `ran_wide` | none (optional `minM` 1, `maxM` 5, `fromGate` 1, `toGate` −1) | Between the two gates the car runs outside the course circle's line by `minM` to `maxM`: a mild push, not a trip off the circle |
+| `back_on_line_by_gate` | none (optional `gate` −1, `maxM` 1.5) | Where the car crosses the gate it is within `maxM` of the course circle's line |
 | `left_foot_brakes` | none (optional `minCount` 3, `minSeconds` 0.2, `minBrake` 0.05, `minThrottle` 0.05) | At least `minCount` brake applications made with the throttle still on, each held `minSeconds` or longer; braking with the throttle off says "you lifted to brake" |
 | `progressive_downshifts` | `toGear` | After the highest gear reached, the car goes down one gear at a time to `toGear` (3→2, not 4→2); neutral and reverse are skipped, going lower at the stop is fine |
 | `no_over_rev` | `maxRpm` | The engine never spins past `maxRpm` (the Covet Student Driver's limiter is 6500 rpm); names the gear and speed where it did |
@@ -234,6 +239,14 @@ throttle gaps; gold a 3 m corridor, four dabs and both laps in 22 s. Scripted in
 every 25 m: 32 km/h held the line within 0.8 m in 21.6 s (gold); 34 km/h ran 1.6 m off (silver); 38 km/h
 ran 4 m wide. The 15 m ring tops out at about 35 km/h on this dirt.
 
+B06 targets (BMP dirt circle, Covet Gravel Rally): 22 m to a Turn in gate, then a left half of a 15 m ring
+with Apex (90°), Regain (135°) and Exit (180°) gates 12 m wide. Bronze: the front pushes 1–5 m wide of the
+line before the Regain gate and the car is back within 1.5 m of it at the Exit, no spin; silver: back within
+1.5 m by the Regain gate; gold: a 2–4 m push, back within 1 m by the Regain gate. Scripted, holding the
+entry speed into the ring: 30 km/h doesn't push (0.3 m); 40–42 km/h pushes 3–5 m; lifting for 10–12 m from
+35 m (just after turn-in) brings it back by the Regain gate (gold at 40, silver at 42), lifting at 45 m only
+by the Exit (bronze); 46 km/h with no lift runs 12 m wide.
+
 B07 targets (BMP dirt circle, Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
 then a 7 m exit lane 18 m long. Bronze: the rear steps out 8°+ between the Turn in gate and the lane end,
 through both lane gates without spinning, at most three steering corrections in the lane, and at the
@@ -288,7 +301,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | B03 | Stopping-distance estimation | Prediction marker prompt, line offset, contact | Hybrid |
 | B04 | Trail braking | Brake off by apex, lockup, corridor | Automatic |
 | B05 | Left-foot braking | Circle laps and corridor, spin, throttle never off, brake on throttle | Automatic |
-| B06 | Understeer correction | Understeer, path regained by marker, contact | Automatic |
+| B06 | Understeer correction | Push wide of the line, path regained by a gate, spin | Automatic |
 | B07 | Oversteer correction | Rear slide, spin, exit lane, countersteer unwound, corrections | Automatic |
 | B08 | Longitudinal weight transfer | Contact, spin, which-input prompt | Hybrid |
 | C01 | Lift-off oversteer | Slip angle, no handbrake, spin, corridor | Automatic |

@@ -47,6 +47,11 @@
 --      few metres at the turn-in gate, then 0.3 throttle (the pursuit countersteers by itself):
 --      silver = 60 km/h, 6 m of brake (14.3° caught); bronze = 55 km/h, 4 m (11.5°); noslide = 35
 --      km/h, 0.5 brake (no slide); stab = 48 km/h, 2 m with more lock (21.6°, still sliding at the lane).
+-- B06 (course): BMP dirt circle (venue bmp-dirt-arc), Covet Gravel Rally in 2nd (sequential), pure
+--      pursuit along the approach and a left half of the 15 m ring, throttle holding an entry speed, then
+--      a lift, then holding a slower speed: gold = 40 km/h, lift 10 m at 35 m, then 26 (2.9 m push, back
+--      by the regain gate); silver = 42, lift 12 m (4.1 m push); bronze = 40, lift at 45 m (back only by
+--      the exit); nopush = 30 km/h; wide = 46 km/h, no lift (12 m wide).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -328,6 +333,19 @@ function T.b07_oversteer_rules_and_medals_still_agree_with_the_in_game_verdicts(
   has(check(gradeCourse('b07_silver', 'B07'), 'rear_slide').text, 'Rear stepped out 14.3°')
   has(check(gradeCourse('b07_noslide', 'B07'), 'rear_slide').text, 'lift or brake harder')
   has(check(gradeCourse('b07_stab', 'B07'), 'settled_by_gate').text, 'Still sliding at the lane end')
+end
+
+function T.b06_understeer_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {b06_gold = 'gold', b06_silver = 'silver', b06_bronze = 'bronze', b06_nopush = false, b06_wide = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'B06')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('b06_gold', 'B06'), 'ran_wide').text, 'Front pushed 2.9 m wide')
+  has(check(gradeCourse('b06_nopush', 'B06'), 'ran_wide').text, 'carry more speed in')
+  has(check(gradeCourse('b06_wide', 'B06'), 'ran_wide').text, 'the push got away')
 end
 
 local function ruleCheck(name, rule)

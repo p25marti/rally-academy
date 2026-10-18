@@ -1444,8 +1444,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-circle",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). 15-20 m radius around the infield.",
+        "venue": "bmp-dirt-arc",
+        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40): a straight approach into a left-hand half of a 15 m ring.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 50,
@@ -1458,16 +1458,102 @@
           ]
         }
       },
-      "instructions": "Enter too fast to create safe, mild understeer; reduce speed/steering demand to regain front grip.",
-      "resetInstructions": "Stationary 40 m before circle; approach at repeatable 35 km/h.",
-      "props": "Start with large runoff; do not deliberately induce at roadside cliff.",
+      "instructions": "Arrive at the Turn in gate too fast for the 15 m ring, so the front pushes wide of the line. Then ease off the throttle and unwind a little steering until the front grips again, and bring the car back onto the line before the Exit gate.",
+      "resetInstructions": "Go to drill puts you 22 m before the Turn in gate, with the half circle laid out. Move course here re-lays it from where you are.",
+      "props": "None: the line and gates are drawn for you, with plenty of dirt outside the circle to run wide on.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Front regains intended arc before second exit cone; no loss of control or obstacle contact.",
+        "successDefinition": "Turn in fast enough that the front pushes 1-5 m wide of the 15 m line before the Regain gate, then get back within 1.5 m of the line by the Exit gate, through all four gates without spinning. Silver: back within 1.5 m by the Regain gate. Gold: a 2-4 m push, back within 1 m by the Regain gate.",
         "metricToRecord": "Understeer recoveries / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "ran_wide",
+            "minM": 1,
+            "maxM": 5,
+            "fromGate": 1,
+            "toGate": 3
+          },
+          {
+            "type": "back_on_line_by_gate",
+            "gate": -1,
+            "maxM": 1.5
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "circle": {
+            "x": -15,
+            "y": 25,
+            "radiusM": 15,
+            "turn": "left"
+          },
+          "gates": [
+            {
+              "x": 0,
+              "y": 22,
+              "widthM": 8,
+              "label": "Turn in"
+            },
+            {
+              "x": -15.0,
+              "y": 40.0,
+              "widthM": 12,
+              "headingDeg": -90,
+              "label": "Apex"
+            },
+            {
+              "x": -25.61,
+              "y": 35.61,
+              "widthM": 12,
+              "headingDeg": -135,
+              "label": "Regain"
+            },
+            {
+              "x": -30.0,
+              "y": 25.0,
+              "widthM": 12,
+              "headingDeg": -180,
+              "label": "Exit"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "back_on_line_by_gate",
+                "gate": 3,
+                "maxM": 1.5
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "ran_wide",
+                "minM": 2,
+                "maxM": 4,
+                "fromGate": 1,
+                "toGate": 3
+              },
+              {
+                "type": "back_on_line_by_gate",
+                "gate": 3,
+                "maxM": 1
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

@@ -112,6 +112,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **B06 understeer correction is graded automatically, with medals**, on the BMP dirt circle: turn into
+  a drawn half circle too fast so the front pushes wide ("Front pushed 2.9 m wide"), then ease off and
+  bring the car back onto the line ("Back on the line by the regain"). Silver and gold for regaining the
+  line sooner, from a controlled push.
 - **B07 oversteer correction is graded automatically, with medals**, on the BMP dirt circle: brake
   hard or lift as you turn into a left-hander to make the rear step out ("Rear stepped out 14.3°"),
   catch it, and drive down a drawn exit lane with the slide over and the steering unwound ("Steering

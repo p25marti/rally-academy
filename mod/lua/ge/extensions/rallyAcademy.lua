@@ -724,7 +724,7 @@ function liveCourse()
     local c = course.cones[i]
     steps[#steps + 1] = {label = c.label or (#course.cones > 1 and ('Cone ' .. i) or 'Cone'), state = cur.coneResults[i] or 'todo'}
   end
-  for i = 1, course.circle and course.circle.laps or 0 do
+  for i = 1, course.circle and endsOnLaps() and course.circle.laps or 0 do
     local done = cur.swept >= i * 2 * math.pi
     steps[#steps + 1] = {label = 'Lap ' .. i, state = done and 'passed' or 'todo'}
   end

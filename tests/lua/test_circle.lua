@@ -109,6 +109,44 @@ function T.left_foot_brakes_counts_dabs_made_on_the_throttle()
   eq(ok, false, 'no brake'); has(text, 'dab it to tighten the line')
 end
 
+-- B06: ring gates at 0, 90, 135 and 180 degrees round RING (facing the way round), the car running
+-- `wide(a)` metres outside the line at angle a.
+local function ringGate(deg, label)
+  local Gates = require('ge/extensions/rallyAcademy/gates')
+  local a = math.rad(deg - 90)
+  local g = Gates.new({pos = {x = 15 * math.cos(a), y = 15 * math.sin(a), z = 0}, dir = {x = -math.sin(a), y = math.cos(a)}}, 12)
+  g.label = label
+  return g
+end
+local B06 = {course = {circle = RING}, gates = {ringGate(5, 'Turn in'), ringGate(90, 'Apex'), ringGate(135, 'Regain'),
+                                                ringGate(180, 'Exit')}}
+local function pushRun(peak, backBy)
+  -- angle from the start (south, -90 degrees): wide builds to `peak` at 90 degrees, gone by `backBy`
+  return lapSamples({laps = 0.6, off = function(a)
+    local d = math.deg(a) + 90
+    if d < 90 then return peak * d / 90 end
+    return math.max(0, peak * (1 - (d - 90) / (backBy - 90)))
+  end})
+end
+
+function T.ran_wide_wants_a_mild_push_between_the_gates()
+  local ok, text = E.ran_wide({minM = 1, maxM = 5, fromGate = 1, toGate = 3}, pushRun(3, 130), B06)
+  eq(ok, true, '3 m'); eq(text, 'Front pushed 3.0 m wide (target 1-5 m)', 'text')
+  ok, text = E.ran_wide({minM = 1, maxM = 5, fromGate = 1, toGate = 3}, pushRun(0.4, 130), B06)
+  eq(ok, false, 'no push'); has(text, 'carry more speed in')
+  ok, text = E.ran_wide({minM = 1, maxM = 5, fromGate = 1, toGate = 3}, pushRun(7, 130), B06)
+  eq(ok, false, 'too much'); eq(text, 'Ran 7.0 m wide (limit 5 m): too fast in, the push got away', 'text')
+end
+
+function T.back_on_line_by_gate_reads_the_offset_where_the_car_crosses_it()
+  local ok, text = E.back_on_line_by_gate({gate = 3, maxM = 1}, pushRun(3, 130), B06)
+  eq(ok, true, 'back by the regain'); has(text, 'Back on the line by the regain (0.0 m off')
+  ok, text = E.back_on_line_by_gate({gate = 3, maxM = 1}, pushRun(3, 200), B06)
+  eq(ok, false, 'still wide'); has(text, 'wide of the line at the regain (target 1 m): ease off sooner')
+  ok = E.back_on_line_by_gate({gate = -1, maxM = 1.5}, pushRun(3, 200), B06)
+  eq(ok, true, 'back by the exit')
+end
+
 -- B05 through the extension: laid out at its venue, laps counted live, the run ending after the last.
 local function onB05()
   local h, M = H.setup()
@@ -165,6 +203,15 @@ function T.b05_counts_laps_live_and_grades_after_the_second()
   eq(s.phase, 'scored', 'ends after two laps')
   eq(s.successes, 1, 'a pass')
   has(h.logText('rallyAcademy'), 'B05: lap 2 of 2')
+end
+
+function T.a_circle_drill_that_ends_at_gates_has_no_lap_steps()
+  local h, M = H.setup()
+  h.level = 'west_coast_usa'
+  M.select('B06')
+  M.retry()
+  M.onUpdate(0.1, 0.1)
+  eq(h.lastState().course.steps[1].label, 'Turn in', 'gates first, no laps')
 end
 
 function T.b05_without_brake_dabs_is_a_miss()
