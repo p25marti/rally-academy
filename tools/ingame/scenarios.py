@@ -556,6 +556,43 @@ def hairpin():
     return p
 
 
+def _figure8_run(kmh):
+    """C07: up to the crossing, then 10 m circles clockwise round the right cone and anticlockwise round the
+    left one at a steady `kmh` in 2nd (sequential)."""
+    n = 60
+    path = ([(0, y) for y in range(0, 35)]
+            + [(10 + 10 * math.cos(math.pi - i * 2 * math.pi / n), 35 + 10 * math.sin(math.pi - i * 2 * math.pi / n))
+               for i in range(1, n + 1)]
+            + [(-10 + 10 * math.cos(i * 2 * math.pi / n), 35 + 10 * math.sin(i * 2 * math.pi / n)) for i in range(1, n + 1)]
+            + [(0, 35 + y) for y in range(1, 8)])
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, _trav):
+        return (max(0.05, min(1.0, 0.3 + (kmh - v) * 0.08)), 0.0)
+    return A.course_run("C07", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 10,
+                        max_throttle=1.0, timeout=60, stop_within=0.5)
+
+
+@scenario
+def figure8():
+    """C07 on the BMP dirt arena (Covet Gravel Rally): a figure-eight round both cones at 28 km/h earns a
+    medal; 32 km/h runs wide of the right-hand lobe and misses."""
+    p = []
+    A.drill_session("C07")
+    s = _figure8_run(28)
+    expect(p, "a clean figure-eight earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _figure8_run(32)
+    expect(p, "too fast runs wide and misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("C07")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

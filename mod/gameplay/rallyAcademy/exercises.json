@@ -2186,7 +2186,7 @@
       },
       "environment": {
         "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Figure-eight around two cones 20 m apart.",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced: two cones 20 m apart side by side, 35 m ahead, with the crossing between them.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 40,
@@ -2199,16 +2199,101 @@
           ]
         }
       },
-      "instructions": "Steer figure-eight alternating left/right; use lift/brake timing to manage direction change.",
-      "resetInstructions": "Stationary 25 m before first cone, centered on approach.",
-      "props": "Keep marker spacing identical; test one full figure-eight per attempt.",
+      "instructions": "Drive up to the crossing between the cones, go clockwise round the right-hand cone, back through the crossing, anticlockwise round the left-hand cone and back through the crossing. Use lift and brake timing to swing the car from one lobe into the next.",
+      "resetInstructions": "Go to drill puts you 35 m before the crossing, centred on it. Move course here re-lays the figure-eight from where you are.",
+      "props": "None: the cones and gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Complete both lobes cleanly; no cone contact, spin or abrupt stop.",
-        "metricToRecord": "Clean figure-eight sequences / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Through the crossing, round the right-hand cone clockwise, back through the crossing, round the left-hand cone anticlockwise and back through the crossing (five gates in order), without touching a cone or post or spinning, in 30 s. Silver: 23 s. Gold: 21.5 s.",
+        "metricToRecord": "Clean figure-eights / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "max_time",
+            "maxSeconds": 30
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "cones": [
+            {
+              "x": 10,
+              "y": 35,
+              "keep": "right",
+              "label": "Right cone"
+            },
+            {
+              "x": -10,
+              "y": 35,
+              "keep": "left",
+              "label": "Left cone"
+            }
+          ],
+          "gates": [
+            {
+              "x": 0,
+              "y": 35,
+              "widthM": 6,
+              "label": "Crossing"
+            },
+            {
+              "x": 20,
+              "y": 35,
+              "widthM": 8,
+              "headingDeg": 180,
+              "label": "Right lobe"
+            },
+            {
+              "x": 0,
+              "y": 35,
+              "widthM": 6,
+              "label": "Crossing 2"
+            },
+            {
+              "x": -20,
+              "y": 35,
+              "widthM": 8,
+              "headingDeg": 180,
+              "label": "Left lobe"
+            },
+            {
+              "x": 0,
+              "y": 35,
+              "widthM": 6,
+              "label": "Finish"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 23
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 21.5
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

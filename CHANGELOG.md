@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **C07 figure-eights are graded automatically, with medals**, on the BMP dirt arena: round two drawn
+  cones through five gates (crossing, right lobe, crossing, left lobe, crossing) without touching a cone,
+  with time medals (23 s, 21.5 s).
 - **C04 handbrake hairpins are graded automatically, with medals**, on the BMP dirt arena: a drawn
   hairpin round a pivot cone; one firm handbrake pull ("1 handbrake pull") must swing the rear round
   ("Rear stepped out 30.4°") before you drive out through the exit gate. Medals for driving out faster.

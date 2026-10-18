@@ -7,7 +7,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Sixteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Seventeen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
@@ -15,7 +15,7 @@ on a course, with medals), **A07** (racing line and exit speed through a corner,
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
 **B07** (catching an oversteer slide, with medals) **C02** (brake-induced rotation into a corner, with
-medals), **C04** (handbrake hairpin round a cone, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
+medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -263,6 +263,12 @@ rear swinging 20°+ between the gates, cone kept on the left, no post or cone to
 (slides up to 120° allowed for 0.5 s), 15 km/h out of the Exit; silver 25° and 25 km/h; gold 25° and 32 km/h.
 Scripted: a pull at full lock makes the front plough (rear locked, slip −3 to −5°); turning in with a third
 of the lock and pulling from ~45 km/h swings the rear 24–31°; from 38 km/h only 17°.
+
+C07 targets (BMP dirt arena, Covet Gravel Rally): two cones 20 m apart side by side, 35 m ahead; five gates
+pin the route (the crossing, the far side of the right lobe, the crossing, the far side of the left lobe,
+the crossing). Bronze: all five in order, no cone or post touched, no spin, in 30 s; silver 23 s; gold
+21.5 s. Scripted on 10 m circles round the cones: 20 km/h 25.0 s, 25 km/h 21.8 s, 28 km/h 21.3 s; 30–32 km/h
+runs wide of the right lobe gate.
 
 C08 targets: C02's corner with a Flick gate 40 m into the approach. Bronze: between the Flick and Apex gates,
 60° of steering away from the corner then 60° into it within 1.5 s (`flick`), and the rear steps out 8°+;

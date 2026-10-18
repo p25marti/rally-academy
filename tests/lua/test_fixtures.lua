@@ -66,6 +66,9 @@
 --      with a steering override (0.3-0.4 lock) from 45 m, then holding an exit speed: gold = 50 km/h,
 --      brake to 45, 6 m pull at 0.3 lock, exit 30 (30.4°, 36 km/h out); silver = exit 24 (28.2°, 30 km/h);
 --      bronze = brake to 42, 5 m at 0.4 (24.0°); noswing = brake to 38 (17.1°); nohandbrake = no pull.
+-- C07 (course): BMP dirt arena, Covet Gravel Rally in 2nd (sequential), pure pursuit up to the crossing, then
+--      10 m circles round each cone (clockwise right, anticlockwise left) at a steady speed: gold = 28 km/h
+--      (21.3 s); silver = 25 (21.8 s); bronze = 20 (25.0 s); wide = 32 km/h (ran wide of the right lobe gate).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -397,6 +400,17 @@ function T.c04_handbrake_hairpin_rules_and_medals_still_agree_with_the_in_game_v
   has(check(gradeCourse('c04_gold', 'C04'), 'handbrake_pulls').text, '1 handbrake pull')
   has(check(gradeCourse('c04_noswing', 'C04'), 'rear_slide').text, 'pull the handbrake firmly')
   has(check(gradeCourse('c04_nohandbrake', 'C04'), 'handbrake_pulls').text, 'pull it once')
+end
+
+function T.c07_figure_eight_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {c07_gold = 'gold', c07_silver = 'silver', c07_bronze = 'bronze', c07_wide = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'C07')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('c07_wide', 'C07'), 'gates_passed').text, 'gate 2')
 end
 
 local function ruleCheck(name, rule)
