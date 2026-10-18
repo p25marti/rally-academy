@@ -466,6 +466,53 @@ def rotation():
     return p
 
 
+def _flick_run(kmh=62, at=54, away=0.5, away_m=8, into=-0.8, into_m=8, brake=0.8):
+    """C08: hold `kmh`, then from `at` metres lift and steer `away` (right) for `away_m`, then `into` (left)
+    with `brake` for `into_m`, then the pursuit holds 45 km/h."""
+    import lines as L
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def hold(v, target):
+        return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+
+    def pedals(v, trav):
+        if trav < at:
+            return hold(v, kmh)
+        if trav < at + away_m:
+            return (0.0, 0.0)
+        return (0.0, brake) if trav < at + away_m + into_m else hold(v, 45)
+
+    def steer(_v, trav):
+        if at <= trav < at + away_m:
+            return away
+        return into if at + away_m <= trav < at + away_m + into_m else None
+    return A.course_run("C08", L.bmp_left(C02_LINE), gearbox="sequential", on_tick=on_tick, pedals=pedals,
+                        steer=steer, kmh=kmh + 15, max_throttle=1.0, timeout=40, stop_within=0.5)
+
+
+@scenario
+def flick():
+    """C08 on the BMP downhill left (Covet Gravel Rally): a lift-and-flick with a touch of brake swings the
+    rear for a pass (scripted flicks rotate the car only about half the time: up to three tries); turning
+    in without flicking misses."""
+    p = []
+    A.drill_session("C08")
+    for _ in range(3):
+        s = _flick_run()
+        if s.get("passed"):
+            break
+    expect(p, "a flick that swings the rear passes", s.get("passed") is True, f"{s.get('tier')}: {s.get('reason')}")
+    s = _flick_run(away=0.0)
+    expect(p, "no flick misses", s.get("passed") is False and "No flick" in str(s.get("reason")), s.get("reason"))
+    A.end_session("C08")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

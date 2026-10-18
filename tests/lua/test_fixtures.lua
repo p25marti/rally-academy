@@ -57,6 +57,10 @@
 --      gate, then holding an exit speed: gold = 65 km/h, 8 m pulse from 74 m (38.8°); silver = 65, 7 m
 --      from 73 m (12.2°); bronze = same inputs another run (11.5°: physics varies); miss = 55 km/h, 5 m
 --      from 78 m (2.3°).
+-- C08 (course): as C02 plus a Flick gate, with a scripted steering override: hold 62 km/h, from 54 m lift and
+--      steer 0.5 right for 8 m, then 0.8 left with 0.8 brake for 8 m, then the pursuit holds 45 km/h:
+--      bronze = 8.8°; clip = the same inputs (10.7°, then the right post of the Apex gate); norotate =
+--      a 5 m flick at 0.6 with brake throughout (2.7°); noflick = no steering away.
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -362,6 +366,19 @@ function T.c02_brake_rotation_rules_and_medals_still_agree_with_the_in_game_verd
     eq(res.tier or false, tier, name .. ' medal')
   end
   has(check(gradeCourse('c02_miss', 'C02'), 'rear_slide').text, 'lift or brake harder')
+end
+
+function T.c08_flick_rules_still_agree_with_the_in_game_verdicts()
+  local want = {c08_bronze = 'bronze', c08_clip = false, c08_norotate = false, c08_noflick = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'C08')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('c08_bronze', 'C08'), 'flick').text, 'Flicked')
+  has(check(gradeCourse('c08_noflick', 'C08'), 'flick').text, 'No flick')
+  has(check(gradeCourse('c08_norotate', 'C08'), 'rear_slide').text, 'lift or brake harder')
 end
 
 local function ruleCheck(name, rule)

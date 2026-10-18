@@ -65,4 +65,19 @@ function T.settled_by_gate_needs_the_slide_over_and_the_steering_unwound()
   eq(ok, false, 'the slide is still on at the lane gate'); has(text, 'Still sliding at the lane')
 end
 
+function T.flick_needs_steering_away_then_into_the_turn_quickly()
+  -- steer right (negative) from y = 1 to 4, then left from y = 4
+  local flick = function(y) return (y > 1 and y < 4) and -120 or y >= 4 and 150 or 0 end
+  local ok, text = E.flick({fromGate = 1, toGate = 3, awayDeg = 60, intoDeg = 60}, run(nil, flick), CTX)
+  eq(ok, true, 'a flick'); has(text, 'Flicked 120° away, then into the turn 0.')
+  ok, text = E.flick({fromGate = 1, toGate = 3, awayDeg = 60}, run(nil, function(y) return y > 2 and 150 or 0 end), CTX)
+  eq(ok, false, 'straight in'); has(text, 'No flick: steer at least 60° away')
+  local slow = function(y) return (y > 1 and y < 4) and -120 or y >= 25 and 150 or 0 end
+  ok, text = E.flick({fromGate = 1, toGate = 3, awayDeg = 60, maxSeconds = 1.5}, run(nil, slow), CTX)
+  eq(ok, false, 'turned in too late'); has(text, 'make it one movement')
+  local right = function(y) return (y > 1 and y < 4) and 120 or y >= 4 and -150 or 0 end
+  ok = E.flick({fromGate = 1, toGate = 3, turn = 'right', awayDeg = 60}, run(nil, right), CTX)
+  eq(ok, true, 'mirrored for a right-hander')
+end
+
 return T

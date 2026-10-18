@@ -866,6 +866,32 @@ function E.settled_by_gate(rule, samples, ctx)
   return true, string.format('Settled by the %s (slip %.0f°, steering %.0f°)', name, slip, steer)
 end
 
+-- A Scandinavian flick (C08): between two gates the steering wheel goes at least `awayDeg` away from
+-- the `turn`, then at least `intoDeg` into it within `maxSeconds` (`steer` is the wheel angle in
+-- degrees, positive to the left).
+-- rule: {type = 'flick', fromGate = 1, toGate = 2, turn = 'left', awayDeg = 30, intoDeg = 60, maxSeconds = 1.5}
+function E.flick(rule, samples, ctx)
+  local t0, t1 = gateWindow(ctx, samples, rule.fromGate or 1, rule.toGate or 2)
+  if not t0 then return false, t1 end
+  local into = rule.turn == 'right' and -1 or 1
+  local away, need, within = rule.awayDeg or 30, rule.intoDeg or 60, rule.maxSeconds or 1.5
+  local best, bestT, turned = 0, nil, nil
+  for _, s in ipairs(samples) do
+    local v = (s.steer or 0) * into -- positive: into the turn
+    if s.t >= t0 and s.t <= t1 and -v > best then best, bestT, turned = -v, s.t, nil end
+    if bestT and not turned and s.t > bestT and v >= need then turned = s.t end
+  end
+  if best < away then
+    return false, string.format('No flick: steer at least %g° away from the corner first (%.0f° seen)', away, best)
+  end
+  if not turned then return false, string.format('Flicked %.0f° away but never turned in past %g°', best, need) end
+  local dt = turned - bestT
+  if dt > within then
+    return false, string.format('Flicked %.0f° away, turned in %.1f s later (target %g s): make it one movement', best, dt, within)
+  end
+  return true, string.format('Flicked %.0f° away, then into the turn %.1f s later', best, dt)
+end
+
 -- Understeer (B06) -----------------------------------------------------------------
 
 -- The front pushed wide: between two gates the car runs outside the course circle's line by `minM`
@@ -953,12 +979,13 @@ R.TYPES = {
   rear_slide = {},
   settled_by_gate = {},
   ran_wide = {},
+  flick = {},
   back_on_line_by_gate = {},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
 R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked',
-  'brake_off_by_gate', 'rear_slide', 'settled_by_gate', 'ran_wide', 'back_on_line_by_gate'}
+  'brake_off_by_gate', 'rear_slide', 'settled_by_gate', 'ran_wide', 'back_on_line_by_gate', 'flick'}
 -- Rule types that need an authored course (assessment.course).
 R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box', 'circle_laps', 'circle_corridor', 'ran_wide',
   'back_on_line_by_gate'}

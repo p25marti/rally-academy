@@ -1817,6 +1817,12 @@
             "type": "no_spin"
           },
           {
+            "type": "trail_braked",
+            "fromGate": 1,
+            "toGate": 2,
+            "minSeconds": 0.2
+          },
+          {
             "type": "rear_slide",
             "minSlipDeg": 8,
             "fromGate": 1,
@@ -2121,8 +2127,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Wide gravel corner with outside runoff.",
+        "venue": "bmp-gravel-corner",
+        "areaHint": "BMP Gravel Track downhill left (MAPS W1): a Flick gate 40 m into the approach, then the C02 corner gates (Turn in, a road-wide Apex, a 6 m Exit).",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -2143,16 +2149,117 @@
           ]
         }
       },
-      "instructions": "Briefly steer away from the turn, then reverse the steering with a lift to load the front and swing the rear; catch it and pull straight with throttle, no handbrake.",
-      "resetInstructions": "Stationary 100 m before hairpin, same approach lane.",
-      "props": "Start around 35–45 km/h; only increase after 8/10 passes.",
+      "instructions": "Arrive at about 60 km/h. After the Flick gate, lift and steer briefly away from the corner (right), then turn sharply in (left) in one movement, with a touch of brake as you turn in, so the rear swings into the corner. Catch it and pull out through the Exit gate on throttle. No handbrake.",
+      "resetInstructions": "Go to drill puts you 40 m before the Flick gate, with the corner laid out. Move course here re-lays it from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Correct-direction rotation followed by clean exit; no handbrake, spin or road-edge contact.",
-        "metricToRecord": "Successful flicks / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Between the Flick and Apex gates, steer at least 60 degrees away from the corner and then 60 degrees into it within 1.5 s, and the rear steps out at least 8 degrees; through all four gates without touching a post, no handbrake, no spin, out of the Exit at 25 km/h or more. Silver: 12 degrees and 40 km/h. Gold: 15 degrees and 45 km/h.",
+        "metricToRecord": "Clean flicks / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_handbrake"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "flick",
+            "fromGate": 1,
+            "toGate": 3,
+            "awayDeg": 60,
+            "intoDeg": 60,
+            "maxSeconds": 1.5
+          },
+          {
+            "type": "rear_slide",
+            "minSlipDeg": 8,
+            "fromGate": 1,
+            "toGate": 3
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 25,
+            "maxKmh": 150,
+            "gate": 4
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 1.5,
+              "y": 40,
+              "widthM": 10,
+              "label": "Flick"
+            },
+            {
+              "x": -1.41,
+              "y": 67.35,
+              "widthM": 8,
+              "headingDeg": -15.4,
+              "label": "Turn in"
+            },
+            {
+              "x": -34.56,
+              "y": 97.99,
+              "widthM": 10,
+              "headingDeg": -81.2,
+              "label": "Apex"
+            },
+            {
+              "x": -69.31,
+              "y": 92.71,
+              "widthM": 6,
+              "headingDeg": -122.2,
+              "label": "Exit"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 12,
+                "fromGate": 1,
+                "toGate": 3
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 40,
+                "maxKmh": 150,
+                "gate": 4
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 15,
+                "fromGate": 1,
+                "toGate": 3
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 45,
+                "maxKmh": 150,
+                "gate": 4
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",

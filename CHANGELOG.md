@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **C08 Scandinavian flicks are graded automatically, with medals**, on the BMP downhill left: steer
+  away from the corner, then sharply into it in one movement ("Flicked 180° away, then into the turn
+  0.4 s later"), swing the rear and catch it. Turning straight in says "No flick".
 - **C02 brake-induced rotation is graded automatically, with medals**, on the BMP downhill left: turn
   in, pulse the brake to swing the rear into the corner ("Rear stepped out 12.2°"), catch it and drive
   out between the exit posts. Medals for a bigger rotation and more exit speed.

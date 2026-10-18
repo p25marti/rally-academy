@@ -209,14 +209,15 @@ _DRIVE_TICK = ("local v = be:getPlayerVehicle(0) "
 
 
 def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max_steer=0.55, timeout=40, max_throttle=0.6,
-                on_tick=None, pedals=None):
+                on_tick=None, pedals=None, steer=None):
     """Drive the player's car along world points (x, y) with pure pursuit and stop with its
     position on the last point: steady `kmh`, then braking at `decel` m/s2 to arrive slowly,
     and the handbrake for the last few centimetres (arcade reverses on a held brake). Use the
     arcade gearbox. `on_tick(kmh, to_go)` may return vehicle Lua to run in the car that tick (e.g. a
     scripted gear change). `pedals(kmh, travelled_m)` may return (throttle, brake) to override the
-    speed control that tick (e.g. trail braking). Returns the distance from the last point when the
-    car stopped."""
+    speed control that tick (e.g. trail braking). `steer(kmh, travelled_m)` may return a steering input
+    (-1 left .. 1 right) to override the pursuit that tick (e.g. a Scandinavian flick). Returns the distance
+    from the last point when the car stopped."""
     path = _resample(points)
     remaining = [0.0] * len(path)
     for i in range(len(path) - 2, -1, -1):
@@ -265,6 +266,10 @@ def follow_path(points, kmh=16, decel=2.0, stop_within=0.35, wheelbase=2.45, max
             override = pedals(v * 3.6, remaining[0] - remaining[idx])
             if override:
                 t, b = override
+        if steer:
+            forced = steer(v * 3.6, remaining[0] - remaining[idx])
+            if forced is not None:
+                s = forced
         time.sleep(0.02)
     lua(_DRIVE_TICK.format(s=0, t=0, b=0, p=1))
     return stopped_at
