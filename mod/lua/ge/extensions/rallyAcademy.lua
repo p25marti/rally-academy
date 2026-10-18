@@ -260,9 +260,11 @@ local function placeCourse()
   local z0 = startState.pos.z
   for _, g in ipairs(course.gates) do g.pos.z = groundZ(g.pos.x, g.pos.y, z0) + CAR_HEIGHT end
   for _, c in ipairs(course.cones) do c.z = groundZ(c.x, c.y, z0) + CAR_HEIGHT end
-  if course.box then course.box.z = groundZ(course.box.x, course.box.y, z0) + CAR_HEIGHT end
-  if course.zone then course.zone.pos.z = groundZ(course.zone.pos.x, course.zone.pos.y, z0) + CAR_HEIGHT end
-  if course.line then course.line.z = groundZ(course.line.x, course.line.y, z0) + CAR_HEIGHT end
+  for _, key in ipairs({'box', 'zone', 'line'}) do -- the stopping targets (TARGETS below)
+    local item = course[key]
+    local at = item and (item.pos or item)
+    if at then at.z = groundZ(at.x, at.y, z0) + CAR_HEIGHT end
+  end
   gates = course.gates
 end
 
@@ -528,49 +530,78 @@ end
 -- The stop zone the rules grade: a marked one, or the course's.
 local function stopZone() return finishGate or (course and course.zone) end
 
--- A stop zone's medal sizes, largest first: {{name, lengthM, widthM}} (the drill's stop_zone
--- rule, then each tier's).
-local function tierZones()
+-- "1.2 m to go · 0.3 m left of centre": where the car's body is against the box centre.
+local function aidText(fit)
+  local along = fit.along < -0.05 and string.format('%.1f m to go', -fit.along)
+    or fit.along > 0.05 and string.format('%.1f m past the centre', fit.along) or 'level with the centre'
+  local side = math.abs(fit.side) < 0.05 and 'centred'
+    or string.format('%.1f m %s of centre', math.abs(fit.side), fit.side > 0 and 'right' or 'left')
+  return along .. ' · ' .. side
+end
+
+-- Course stopping targets: the box (A01), stop zone (B01, B02) and stop line (A05). Each says which
+-- rule grades it, what a medal size looks like in that rule, how the car stands against it right
+-- now (the medal it would earn and the HUD's aid text) and its checklist label. A new target is
+-- one entry here plus its placement (layout.lua) and drawing (course.lua).
+local TARGETS = {
+  {key = 'box', rule = 'park_in_box', label = 'Box',
+   medal = function(r) return {inset = r.insetM or 0} end,
+   track = function(box, medals, car, x, y, hx, hy)
+     local first, fit = nil, nil
+     for _, m in ipairs(medals) do
+       local f = Layout.boxFit(box, car, x, y, hx, hy, m.inset)
+       first = first or f
+       if f.inside then fit = m.name end
+     end
+     local near = first and math.abs(first.along) < 15 and math.abs(first.side) < 8
+     return fit, near and aidText(first) or nil
+   end},
+  {key = 'zone', rule = 'stop_zone', label = 'Stop zone',
+   medal = function(r) return {lengthM = r.lengthM or 5, widthM = r.widthM or 6} end,
+   track = function(z, medals, _car, x, y)
+     -- the car's position against the zone centre, as stop_zone grades it
+     local dx, dy = x - z.pos.x, y - z.pos.y
+     local along, side = dx * z.dir.x + dy * z.dir.y, dx * z.dir.y - dy * z.dir.x
+     local fit
+     for _, m in ipairs(medals) do
+       if math.abs(along) <= m.lengthM / 2 and math.abs(side) <= m.widthM / 2 then fit = m.name end
+     end
+     return fit, math.abs(along) < 30 and (along < -0.05 and string.format('%.1f m to the zone centre', -along)
+       or along > 0.05 and string.format('%.1f m past the centre', along) or 'on the zone centre') or nil
+   end},
+  {key = 'line', rule = 'stop_before_line', label = 'Line',
+   medal = function(r) return {maxM = r.maxM or 2, minM = r.minM or 0} end,
+   track = function(line, medals, car, x, y, hx, hy)
+     local before = Layout.bumperToLine(line, car, x, y, hx, hy)
+     local fit
+     for _, m in ipairs(medals) do
+       if before >= m.minM and before <= m.maxM then fit = m.name end
+     end
+     return fit, math.abs(before) < 25 and (before >= 0 and string.format('%.1f m to the line', before)
+       or string.format('%.1f m past the line', -before)) or nil
+   end},
+}
+
+-- A target's medal sizes, bronze (the drill's own rule) first, then each tier's: {{name, ...}}.
+local function medalsFor(target)
   local out = {}
   for _, r in ipairs(assessment().rules or {}) do
-    if r.type == 'stop_zone' then out[1] = {name = 'bronze', lengthM = r.lengthM or 5, widthM = r.widthM or 6} end
+    if r.type == target.rule then
+      local m = target.medal(r); m.name = 'bronze'; out[1] = m
+    end
   end
   for _, t in ipairs(assessment().tiers or {}) do
     for _, r in ipairs(t.rules or {}) do
-      if r.type == 'stop_zone' then out[#out + 1] = {name = t.name, lengthM = r.lengthM or 5, widthM = r.widthM or 6} end
+      if r.type == target.rule then
+        local m = target.medal(r); m.name = t.name; out[#out + 1] = m
+      end
     end
   end
   return out
 end
 
--- The parking box and its medal boxes, lowest first: {{name, inset}} (bronze = the drill's
--- own park_in_box rule, then each tier's smaller box).
--- A course line's medal zones, widest first: {{name, maxM}} (metres before the line the front
--- bumper may stop for that medal, from stop_before_line in the rules and the tiers).
-local function tierLines()
-  local out = {}
-  for _, r in ipairs(assessment().rules or {}) do
-    if r.type == 'stop_before_line' then out[1] = {name = 'bronze', maxM = r.maxM or 2, minM = r.minM or 0} end
-  end
-  for _, t in ipairs(assessment().tiers or {}) do
-    for _, r in ipairs(t.rules or {}) do
-      if r.type == 'stop_before_line' then out[#out + 1] = {name = t.name, maxM = r.maxM or 2, minM = r.minM or 0} end
-    end
-  end
-  return out
-end
-
-local function tierBoxes()
-  local out = {{name = 'bronze', inset = 0}}
-  for _, r in ipairs(assessment().rules or {}) do
-    if r.type == 'park_in_box' then out[1].inset = r.insetM or 0 end
-  end
-  for _, t in ipairs(assessment().tiers or {}) do
-    for _, r in ipairs(t.rules or {}) do
-      if r.type == 'park_in_box' then out[#out + 1] = {name = t.name, inset = r.insetM or 0} end
-    end
-  end
-  return out
+local function targetNamed(key)
+  for _, t in ipairs(TARGETS) do if t.key == key then return t end end
 end
 
 -- The car's footprint (layout.lua) from its node positions: getNodePosition gives each node's
@@ -620,22 +651,14 @@ local function drawCourse()
     nextGate = active and cur.gateIdx or nil,
     finish = stopZone(),
     finishKind = usesStopLine() and 'line' or endsOnStop() and 'zone' or 'circle',
-    zoneTiers = course and course.zone and tierZones(),
+    zoneTiers = course and course.zone and medalsFor(targetNamed('zone')),
     zoneLength = zoneLength, zoneWidth = zoneWidth,
     cones = course and course.cones, coneResults = cur.coneResults, nextCone = active and cur.coneIdx or nil,
-    box = course and course.box, boxes = course and course.box and tierBoxes(), fit = cur.fit,
-    line = course and course.line, lineCones = course and course.lineCones, lineZones = course and course.line and tierLines(),
+    box = course and course.box, boxes = course and course.box and medalsFor(targetNamed('box')), fit = cur.fit,
+    line = course and course.line, lineCones = course and course.lineCones,
+    lineZones = course and course.line and medalsFor(targetNamed('line')),
     footprint = footprint,
   })
-end
-
--- "1.2 m to go · 0.3 m left of centre": where the car's body is against the box centre.
-local function aidText(fit)
-  local along = fit.along < -0.05 and string.format('%.1f m to go', -fit.along)
-    or fit.along > 0.05 and string.format('%.1f m past the centre', fit.along) or 'level with the centre'
-  local side = math.abs(fit.side) < 0.05 and 'centred'
-    or string.format('%.1f m %s of centre', math.abs(fit.side), fit.side > 0 and 'right' or 'left')
-  return along .. ' · ' .. side
 end
 
 -- Live course feedback while driving: cones passed on the right side, a marker clipped, and
@@ -668,37 +691,9 @@ local function trackCourse(veh, vpos)
       end
     end
   end
-  if course.zone then
-    -- The car's position against the zone centre, as stop_zone grades it.
-    local z = course.zone
-    local dx, dy = vpos.x - z.pos.x, vpos.y - z.pos.y
-    local along, side = dx * z.dir.x + dy * z.dir.y, dx * z.dir.y - dy * z.dir.x
-    cur.fit = nil
-    for _, t in ipairs(tierZones()) do
-      if math.abs(along) <= t.lengthM / 2 and math.abs(side) <= t.widthM / 2 then cur.fit = t.name end
-    end
-    cur.aid = math.abs(along) < 30 and ((along < -0.05 and string.format('%.1f m to the zone centre', -along)
-      or along > 0.05 and string.format('%.1f m past the centre', along) or 'on the zone centre')) or nil
+  for _, t in ipairs(TARGETS) do
+    if course[t.key] then cur.fit, cur.aid = t.track(course[t.key], medalsFor(t), car, vpos.x, vpos.y, h.x, h.y) end
   end
-  if course.line then
-    local before = Layout.bumperToLine(course.line, car, vpos.x, vpos.y, h.x, h.y)
-    cur.fit = nil
-    for _, z in ipairs(tierLines()) do
-      if before >= z.minM and before <= z.maxM then cur.fit = z.name end
-    end
-    cur.aid = math.abs(before) < 25 and (before >= 0 and string.format('%.1f m to the line', before)
-      or string.format('%.1f m past the line', -before)) or nil
-  end
-  if not course.box then return end
-  local first
-  cur.fit = nil
-  for _, t in ipairs(tierBoxes()) do
-    local f = Layout.boxFit(course.box, car, vpos.x, vpos.y, h.x, h.y, t.inset)
-    first = first or f
-    if f.inside then cur.fit = t.name end
-  end
-  local near = math.abs(first.along) < 15 and math.abs(first.side) < 8
-  cur.aid = near and aidText(first) or nil
 end
 
 -- The HUD's course panel: a checklist (gate, cone, box), the parking aid and the medal box
@@ -714,26 +709,15 @@ function liveCourse()
     local c = course.cones[i]
     steps[#steps + 1] = {label = c.label or (#course.cones > 1 and ('Cone ' .. i) or 'Cone'), state = cur.coneResults[i] or 'todo'}
   end
-  if course.box then
-    local state = 'todo'
-    for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
-      if c.type == 'park_in_box' then state = c.ok and 'passed' or 'missed' end
+  for _, t in ipairs(TARGETS) do
+    local item = course[t.key]
+    if item then
+      local state = 'todo'
+      for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
+        if c.type == t.rule then state = c.ok and 'passed' or 'missed' end
+      end
+      steps[#steps + 1] = {label = item.label or t.label, state = state}
     end
-    steps[#steps + 1] = {label = course.box.label or 'Box', state = state}
-  end
-  if course.zone then
-    local state = 'todo'
-    for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
-      if c.type == 'stop_zone' then state = c.ok and 'passed' or 'missed' end
-    end
-    steps[#steps + 1] = {label = course.zone.label or 'Stop zone', state = state}
-  end
-  if course.line then
-    local state = 'todo'
-    for _, c in ipairs(cur.grade and cur.grade.checks or {}) do
-      if c.type == 'stop_before_line' then state = c.ok and 'passed' or 'missed' end
-    end
-    steps[#steps + 1] = {label = course.line.label or 'Line', state = state}
   end
   if phase == 'ready' or phase == 'running' then
     for _, st in ipairs(steps) do
@@ -754,7 +738,11 @@ local function setupMissing()
   local gateRules = {}
   for _, t in ipairs(Rules.GATE_RULES) do gateRules[t] = true end
   for _, r in ipairs(assessment().rules or {}) do
-    if ZONE_RULES[r.type] and not stopZone() and not (course and course.line) then return true end
+    local provided = false
+    for _, t in ipairs(TARGETS) do
+      if t.rule == r.type and course and course[t.key] then provided = true end
+    end
+    if ZONE_RULES[r.type] and not stopZone() and not provided then return true end
     if gateRules[r.type] and #gates == 0 then return true end
   end
   return false

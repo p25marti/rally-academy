@@ -260,4 +260,32 @@ function T.a02_lays_out_a_labelled_gate_that_ends_the_run()
   eq(s.lesson.assessment.endWhen, 'gates', 'the run ends at the gate')
 end
 
+-- The stopping targets' live feedback through the same code path (TARGETS): a stop zone (B01) and a
+-- stop line (A05), driven towards from their venue starts.
+local function approach(h, M, id, metres)
+  h.level = 'west_coast_usa'
+  M.select(id)
+  local sp = H.drills()[id].environment.spawn
+  M.retry()
+  M.onUpdate(0.1, 0.1)
+  local d = stubs.vec3(sp.dir.x, sp.dir.y, 0):normalized()
+  h.vehicle.dir = d
+  H.drive(h, M, metres / 10, {x = d.x * 10, y = d.y * 10, z = 0})
+  return h.lastState()
+end
+
+function T.a_course_stop_zone_reads_out_the_distance_to_its_centre()
+  local h, M = setup()
+  local s = approach(h, M, 'B01', 130)
+  eq(s.course.steps[1].label, 'Stop zone', 'checklist step')
+  has(s.course.aid, 'm to the zone centre')
+end
+
+function T.a_course_stop_line_reads_out_the_distance_to_it()
+  local h, M = setup()
+  local s = approach(h, M, 'A05', 45)
+  eq(s.course.steps[1].label, 'Stop line', 'checklist step')
+  has(s.course.aid, 'm to the line')
+end
+
 return T
