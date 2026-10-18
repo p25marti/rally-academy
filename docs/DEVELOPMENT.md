@@ -114,6 +114,10 @@ warn about this.
   `feat: auto-grade B01 stopping zone`, `fix: zero velocity on retry`.
 - Solo (the owner's choice for now): when `check --strict` passes, fast-forward `main`
   from the branch (`git push . HEAD:main`), push, delete the branch. CI runs on `main`.
+  `python tools/dev.py ship -m "feat: …"` does all of that from `main` with your changes uncommitted:
+  it runs `check --strict` first and stops at the first failure, names the branch from the message,
+  commits, fast-forwards `main` (refusing if `main` moved on), pushes and deletes the branch
+  (`-F file` for a long message, `--no-push` to stop before pushing).
   With collaborators: open a PR, fill in the template (including **how it was tested
   in-game**), wait for CI, squash-merge.
 - Large or one-way decisions get a short record in [decisions/](decisions/).

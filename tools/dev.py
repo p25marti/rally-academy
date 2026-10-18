@@ -14,6 +14,7 @@ Commands
   unlink    remove that link (or copied folder)
   status    show detected user folder, link state and conflicting installs
   log       show the tail of beamng.log, filtered to Rally Academy + errors
+  ship      check, commit on a branch, fast-forward main, push, delete the branch
 """
 from __future__ import annotations
 
@@ -641,6 +642,55 @@ def cmd_log(args) -> None:
         print(ln)
 
 
+# --------------------------------------------------------------------------- ship
+
+def git(*args: str, capture: bool = False) -> str:
+    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=capture, text=True)
+    if r.returncode != 0:
+        fail(f"git {' '.join(args)} failed" + (f": {r.stderr.strip()}" if capture and r.stderr else ""))
+    return r.stdout if capture else ""
+
+
+def branch_name(subject: str) -> str:
+    """'feat: A07 on a corner course' -> 'feat/a07-on-a-corner-course' (Conventional Commit type first)."""
+    m = re.match(r"(\w+)(?:\([^)]*\))?!?:\s*(.*)", subject)
+    kind, rest = (m.group(1), m.group(2)) if m else ("chore", subject)
+    slug = re.sub(r"[^a-z0-9]+", "-", rest.lower()).strip("-")[:40].strip("-") or "change"
+    return f"{kind}/{slug}"
+
+
+def cmd_ship(args) -> None:
+    """The solo-owner git workflow (AGENTS.md, DEVELOPMENT.md) as one command: refuses at the first
+    failure, so a failing check can never be committed and pushed."""
+    message = Path(args.file).read_text(encoding="utf-8") if args.file else args.message
+    if not message or not message.strip():
+        fail("give a commit message (-m) or a file (-F)")
+    if git("branch", "--show-current", capture=True).strip() != "main":
+        fail("run ship from main with your changes uncommitted (it makes the branch itself)")
+    if not git("status", "--porcelain", capture=True).strip():
+        fail("nothing to ship: no changes")
+    r = subprocess.run([sys.executable, str(Path(__file__).resolve()), "check", "--strict"], cwd=ROOT)
+    if r.returncode != 0:
+        fail("check --strict failed: nothing was committed")
+    branch = args.branch or branch_name(message.strip().splitlines()[0])
+    git("switch", "-c", branch)
+    git("add", "-A")
+    msg_file = ROOT / ".git" / "SHIP_MSG"
+    msg_file.write_text(message, encoding="utf-8")
+    try:
+        git("commit", "-q", "-F", str(msg_file))
+    finally:
+        msg_file.unlink(missing_ok=True)
+    git("push", "-q", ".", "HEAD:main")  # fast-forward only: refuses if main moved on
+    git("switch", "-q", "main")
+    git("branch", "-q", "-d", branch)
+    if args.no_push:
+        ok(f"committed to main via {branch} (not pushed)")
+        return
+    git("push", "-q", "origin", "main")
+    ok(f"shipped: {git('log', '--oneline', '-1', capture=True).strip()}")
+
+
 # --------------------------------------------------------------------------- main
 
 def main(argv: list[str] | None = None) -> int:
@@ -667,6 +717,13 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("bump", help="set the version in VERSION and app.json")
     p.add_argument("version")
     p.set_defaults(func=cmd_bump)
+
+    p = sub.add_parser("ship", help="check --strict, commit on a branch, fast-forward main, push, delete the branch")
+    p.add_argument("-m", "--message", help="commit message (Conventional Commits; the branch is named from it)")
+    p.add_argument("-F", "--file", help="read the commit message from a file")
+    p.add_argument("--branch", help="branch name (default: from the message subject)")
+    p.add_argument("--no-push", action="store_true", help="stop after fast-forwarding main locally")
+    p.set_defaults(func=cmd_ship)
 
     for name, func, helptext in (("link", cmd_link, "live-link mod/ into BeamNG"),
                                  ("unlink", cmd_unlink, "remove the live link"),

@@ -53,6 +53,7 @@ python tools/dev.py ingame smoke pause # with the game running (UI or engine-fac
 python tools/dev.py ingame             # list scenarios
 python tools/dev.py link               # live-link mod/ into the game (junction)
 python tools/dev.py log --ours         # the mod's lines from beamng.log
+python tools/dev.py ship -F msg.txt    # check --strict, then branch, commit, fast-forward main, push
 ```
 
 On Windows, Lua tools run through WSL automatically ([DEVELOPMENT](docs/DEVELOPMENT.md#tooling)).
@@ -153,6 +154,8 @@ straights|corners|hills|crests|open`). Review them with `survey.py report`, prov
 
 - Short-lived branches off `main` (`feat/…`, `fix/…`, `docs/…`, `chore/…`), Conventional
   Commits, one logical change per commit.
+- Use `dev.py ship` rather than chaining git commands: never pipe `check` through `tail` in a
+  `&&` chain, the pipe hides the failure (it once let a lint error reach `main`).
 - While the owner works solo, fast-forward `main` from the branch once `check --strict`
   passes, push, and delete the branch. With collaborators, open a PR using the template.
 - Never push tags or publish releases without the owner asking.
