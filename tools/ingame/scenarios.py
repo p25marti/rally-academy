@@ -806,6 +806,59 @@ def crest():
     return p
 
 
+def _lane_run(drill, n0, n1, a, b, kmh, then_kmh=None, then_at=1e9, throttle_at=None, throttle_max=0.45, ramp=0.005):
+    """A run along gravel lane DR825 (nodes n0 to n1, metres a to b) in 2nd (sequential): hold `kmh` (a gentle launch),
+    then `then_kmh` from `then_at` metres, or a throttle ramp from 0.25 up to `throttle_max` from `throttle_at`."""
+    import lanes
+    line = lanes.line(A.drill(drill)["environment"]["spawn"], n0, n1, a, b)
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        if throttle_at is not None and trav >= throttle_at:
+            return (min(throttle_max, 0.25 + (trav - throttle_at) * ramp), 0.0)
+        target = then_kmh if then_kmh is not None and trav >= then_at else kmh
+        if v > target + 3:
+            return (0.0, min(0.7, 0.2 + (v - target) * 0.06))
+        return (max(0.05, min(0.45 if v < 20 else 1.0, 0.3 + (target - v) * 0.1)), 0.0)
+    return A.course_run(drill, line, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80, max_throttle=1.0,
+                        timeout=60, stop_within=0.5)
+
+
+@scenario
+def tighten():
+    """D03 on gravel lane DR825 (Covet Gravel Rally): easing off as the right-hander tightens earns a medal; 50 km/h
+    in runs wide where it closes."""
+    p = []
+    A.drill_session("D03")
+    s = _lane_run("D03", 2, 13, 2, 118, 45, 30, 50)
+    expect(p, "easing off into the tightening corner earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _lane_run("D03", 2, 13, 2, 118, 50, 36, 50)
+    expect(p, "too fast in runs wide and misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("D03")
+    return p
+
+
+@scenario
+def opening():
+    """D04 on gravel lane DR825 (Covet Gravel Rally): a progressive throttle out of the opening left-hander earns a
+    medal; too much spins the front and runs wide."""
+    p = []
+    A.drill_session("D04")
+    s = _lane_run("D04", 13, 2, 2, 100, 25, throttle_at=32, throttle_max=0.45, ramp=0.005)
+    expect(p, "a progressive throttle earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _lane_run("D04", 13, 2, 2, 100, 25, throttle_at=32, throttle_max=0.6, ramp=0.01)
+    expect(p, "too much throttle misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("D04")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

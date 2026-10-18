@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **D03 tightening and D04 opening corners are graded automatically, with medals**, on a gravel lane west of
+  the town (new venues gravel-lane-tightening, gravel-lane-opening): ease off as a right-hander closes up;
+  feed the throttle in as a left-hander opens without spinning the front wheels. Medals for exit speed.
 - **Three drills on the West Coast USA Off-Road Circuit are graded automatically, with medals.** D05: a
   left hairpin over a blind crest, taken at a steady, conservative speed (medals for a tighter speed band).
   D06: an uphill corner, the crest and a downhill corner from the circuit's start, against the clock. E05:

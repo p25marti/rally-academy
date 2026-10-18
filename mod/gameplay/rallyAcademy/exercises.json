@@ -2728,8 +2728,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "wcusa-quarry",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that tightens toward its exit.",
+        "venue": "gravel-lane-tightening",
+        "areaHint": "Gravel lane DR825 west of the town (MAPS W6): a right-hander whose radius tightens from about 60 m to 18 m over a small crest. Entry, Apex (at the tightest point) and Exit gates.",
         "venueNeeds": {
           "kind": "corner",
           "shape": "decreasing",
@@ -2747,16 +2747,95 @@
           ]
         }
       },
-      "instructions": "Enter conservatively, delay apex, progressively reduce speed as radius tightens.",
-      "resetInstructions": "Stationary 80 m before tightening bend, before sightline changes.",
-      "props": "Choose and screenshot exact corner once; not a preloaded waypoint.",
+      "instructions": "Enter conservatively: the corner keeps tightening. Brake on the way in and keep easing speed off as the radius closes, turn in late and hold the apex at the tightest point, then drive out through the Exit gate. Never so fast that you have to stamp on the brake mid-corner or put two wheels off the gravel.",
+      "resetInstructions": "Go to drill puts you at the start of the lane, 35 m before the bend. Move course here re-lays the gates from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No midcorner emergency stop, barrier contact or two-wheel road departure; clear exit gate.",
-        "metricToRecord": "Clean tightening-corner attempts / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Through the Entry, Apex and Exit gates without touching a post, no more than one wheel off the gravel for 0.5 s, no contact, no spin, out of the Exit at 20 km/h or more. Silver: 28 km/h. Gold: 34 km/h.",
+        "metricToRecord": "Clean tightening corners / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL",
+              "DIRT",
+              "DIRT_DUSTY"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 20,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -13.37,
+              "y": 33.63,
+              "widthM": 7,
+              "label": "Entry",
+              "headingDeg": -31.0
+            },
+            {
+              "x": -6.8,
+              "y": 72.24,
+              "widthM": 7,
+              "label": "Apex",
+              "headingDeg": 62.5
+            },
+            {
+              "x": 10.3,
+              "y": 72.78,
+              "widthM": 7,
+              "label": "Exit",
+              "headingDeg": 109.1
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 28,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 34,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -2774,8 +2853,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "wcusa-quarry",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A haul-road bend that opens on exit.",
+        "venue": "gravel-lane-opening",
+        "areaHint": "Gravel lane DR825 west of the town (MAPS W6), uphill: a 19 m left-hander that opens steadily onto a straight. Apex, Opening and Exit gates.",
         "venueNeeds": {
           "kind": "corner",
           "shape": "increasing",
@@ -2793,16 +2872,108 @@
           ]
         }
       },
-      "instructions": "Enter at a safe speed, then unwind steering and progressively accelerate as radius opens.",
-      "resetInstructions": "Stationary 60 m before opening bend; mark start and exit.",
-      "props": "Use speedometer/replay if observing acceleration pickup.",
+      "instructions": "Enter the left-hander at a safe speed, then from the apex unwind the steering and feed the throttle in progressively as the corner opens, without spinning the front wheels, and drive out through the Exit gate.",
+      "resetInstructions": "Go to drill puts you 15 m before the bend. Move course here re-lays the gates from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Exit in lane; throttle increases after apex without wheelspin, spin or boundary contact.",
-        "metricToRecord": "Progressive-exit runs / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Through the Apex, Opening and Exit gates without touching a post, a third of the throttle or more for 1 s after the apex, no front wheel spinning for more than 0.5 s after the apex, no more than one wheel off the gravel, no contact, no spin, out of the Exit at 25 km/h or more. Silver: 45 km/h. Gold: 52 km/h.",
+        "metricToRecord": "Clean opening-corner exits / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL",
+              "DIRT",
+              "DIRT_DUSTY"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "throttle_on_between",
+            "fromGate": 1,
+            "toGate": 3,
+            "minThrottle": 0.3,
+            "minSeconds": 1.0
+          },
+          {
+            "type": "no_sustained_wheelspin",
+            "maxSeconds": 0.5,
+            "fromGate": 1,
+            "toGate": 3
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 25,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -0.45,
+              "y": 28.83,
+              "widthM": 7,
+              "label": "Apex",
+              "headingDeg": -18.4
+            },
+            {
+              "x": -26.0,
+              "y": 42.08,
+              "widthM": 7,
+              "label": "Opening",
+              "headingDeg": -101.8
+            },
+            {
+              "x": -41.88,
+              "y": 32.23,
+              "widthM": 8,
+              "label": "Exit",
+              "headingDeg": -138.7
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 45,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 52,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

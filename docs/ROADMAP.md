@@ -96,9 +96,11 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       round a cone on the dirt arena), C07 (figure-eight round two cones, dirt arena), C01 (lift-off rotation, the corner venue).
 - [ ] Module D. Done: D01 (six-cone slalom on the dirt arena), D08 (braking across the BMP start line's
       tarmac onto gravel), D05 (blind crest hairpin) and D06 (uphill and downhill corners) on the
-      Off-Road Circuit. D02-D04 and D07 still need venues.
+      Off-Road Circuit; D03 and D04 (tightening and opening corners on gravel lane DR825). D02 and D07
+      still need venues.
 - [ ] Module E. Done: E02 (FWD rotate-then-pull exit, the corner venue), E05 (a planted crest on the Off-Road
-      Circuit). E06 needs a bigger jump than the circuit's (the BMP track has one to survey). E03 and E04 are parked with C03,
+      Circuit). E06 needs a bigger jump than the circuit's: the BMP track's isn't in the road network or
+      a prop, so it needs marking with Save spot. E07 needs a properly rough trail. E03 and E04 are parked with C03,
       C05 and C06 (RWD/AWD).
 
 ## P3 — Machine-readable drills
@@ -132,4 +134,4 @@ live in [IDEAS.md](IDEAS.md) until the owner decides to pick one up.
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
 | Cone contact isn't detected for marked courses | Cones barely damage a car; authored courses (A01, A05) measure contact with their drawn cones instead, but marked drills (B01, D01) can't grade it | authored courses, scene control (GRADING §7) |
 | Owner hasn't driven the auto-graded drills on the rig yet | Scripted runs use the arcade gearbox; a real manual-gearbox stall or missed shift (A02) is only unit-tested; A01's and A02's medal targets are set from scripted runs | TESTING |
-| Pass/Miss is self-assessed (all but A01–A05, A07, A08, B01, B02, B04–B07, C01, C02, C04, C07, C08, D01, D05, D06, D08, E02, E05) | No objective grading | P2/P3 |
+| Pass/Miss is self-assessed (all but A01–A05, A07, A08, B01, B02, B04–B07, C01, C02, C04, C07, C08, D01, D03–D06, D08, E02, E05) | No objective grading | P2/P3 |

@@ -176,8 +176,17 @@ function E.lockup_recovered(rule, samples)
 end
 
 -- A wheel spinning: faster than the car by `ratio` plus `slackKmh`, on throttle.
+-- Optional `fromGate` / `toGate`: only between those gates.
 -- rule: {type = 'no_sustained_wheelspin', maxSeconds = 1.0, ratio = 1.25, slackKmh = 5}
-function E.no_sustained_wheelspin(rule, samples)
+function E.no_sustained_wheelspin(rule, samples, ctx)
+  if rule.fromGate then
+    -- only between two gates (D04: from the apex out), not the launch
+    local t0, t1 = R.gateWindow(ctx, samples, rule.fromGate, rule.toGate or -1)
+    if not t0 then return false, t1 end
+    local within = {}
+    for _, s in ipairs(samples) do if s.t >= t0 and s.t <= t1 then within[#within + 1] = s end end
+    samples = within
+  end
   local ratio, slack = rule.ratio or 1.25, (rule.slackKmh or 5) / KMH
   local worst = longestWheelStreak(samples, function(s, w)
     return (s.thr or 0) > 0.1 and math.abs(w.s or 0) > (s.air or 0) * ratio + slack
@@ -841,6 +850,7 @@ local function gateWindow(ctx, samples, fromGate, toGate)
   if not (passes[from] and passes[from].reached) then return nil, string.format('Gate %d not reached', from) end
   return passes[from].t, passes[to] and passes[to].reached and passes[to].t or math.huge
 end
+R.gateWindow = gateWindow
 
 -- The rear stepped out: between two gates (default the first and the last) the car's slip angle
 -- with the rear out (R.signedSlipDeg, the drill's `turn`) reaches `minSlipDeg`. Normal cornering at

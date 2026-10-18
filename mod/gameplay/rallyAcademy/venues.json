@@ -170,6 +170,54 @@
       "notes": "The dirt circle's south-west edge, facing east along the tangent of a 15 m ring round the centre (265, 40.05): 25 m of straight approach into a left-hand quarter of the ring, then north across the infield (measured 0.39.4)."
     },
     {
+      "id": "gravel-lane-tightening",
+      "mapsId": "W6",
+      "name": "West Coast USA: gravel lane, tightening right",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": -865.4,
+          "y": -65.37,
+          "z": 114.32
+        },
+        "dir": {
+          "x": 0.8781,
+          "y": -0.4785,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The start of gravel lane DR825 off DR687, west of the town (-860, -68), facing east: 35 m to a right-hander whose radius tightens from about 60 m to 18 m over a small crest, then drops away downhill. About 6 m of gravel, trees close on the outside in places (measured 0.39.4)."
+    },
+    {
+      "id": "gravel-lane-opening",
+      "mapsId": "W6",
+      "name": "West Coast USA: gravel lane, opening left",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": -822.85,
+          "y": -122.33,
+          "z": 109.42
+        },
+        "dir": {
+          "x": 0.7551,
+          "y": 0.6556,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The same lane (DR825) at node 13, facing north up the slope: 15 m to a 19 m-radius left-hander that opens steadily onto a straight (radius 20, 25, 37, 69 m). About 6 m of gravel (measured 0.39.4)."
+    },
+    {
       "id": "wcusa-quarry",
       "mapsId": "W4",
       "name": "West Coast USA: Quarry",

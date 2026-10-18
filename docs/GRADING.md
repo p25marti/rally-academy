@@ -7,7 +7,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Twenty-four drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Twenty-six drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
@@ -15,7 +15,7 @@ on a course, with medals), **A07** (racing line and exit speed through a corner,
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
 **B07** (catching an oversteer slide, with medals) **C01** (lift-off rotation into a corner, with medals), **C02** (brake-induced rotation into a corner, with
-medals), **D01** (six-cone slalom, with medals), **D08** (braking across a tarmac-to-gravel change, with medals), **E02** (FWD rotate-then-pull exit, with medals), **D05** (blind crest hairpin, with medals), **D06** (uphill and
+medals), **D01** (six-cone slalom, with medals), **D08** (braking across a tarmac-to-gravel change, with medals), **E02** (FWD rotate-then-pull exit, with medals), **D03** and **D04** (tightening and opening corners, with medals), **D05** (blind crest hairpin, with medals), **D06** (uphill and
 downhill corners, with medals), **E05** (a planted crest, with medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
@@ -132,7 +132,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `no_brake_between_gates` | none (optional `fromGate`, `toGate`) | No brake above 0.1 between the two gates while moving faster than 2 m/s |
 | `stop_before_line` | `minM`, `maxM` (optional `widthM` 8) | The car rests with its front bumper `minM`–`maxM` before the line. With an authored course line (`assessment.course.line`) the distance is measured from the car's own front bumper (its measured footprint); with a marked line, from where the car's centre was when the bumper was parked on it |
 | `lockup_recovered` | `maxSeconds` (optional `minSeconds` 0.2) | The longest lock is at least `minSeconds` (you did provoke one) and at most `maxSeconds` (you released it) |
-| `no_sustained_wheelspin` | `maxSeconds` (optional `ratio` 1.25, `slackKmh` 5) | No wheel turns faster than `ratio` × the car's speed + `slackKmh` on throttle for longer than `maxSeconds` |
+| `no_sustained_wheelspin` | `maxSeconds` (optional `ratio` 1.25, `slackKmh` 5, `fromGate`/`toGate`: only between them) | No wheel turns faster than `ratio` × the car's speed + `slackKmh` on throttle for longer than `maxSeconds` |
 | `no_stall` | none | The engine never stops after running during the run (`eng` flag; RPM reads ~160 while re-idling after a reset) |
 | `gear_reached` | `gear` | The highest gear used reaches `gear` |
 | `clean_shifts` | none (optional `maxNeutralSeconds` 1, `minKmh` 10) | No shift hangs in neutral longer than `maxNeutralSeconds` while moving |
@@ -271,6 +271,17 @@ no spin, 30 km/h out; silver 8° and 55 km/h; gold 10° and 60 km/h. The corner 
 are high: scripted runs with 0.6 throttle from just before the apex came out at 75–77 km/h with 4.6–11.9° of
 rotation; holding 46 km/h instead never passed 28% throttle.
 
+Gravel lane drills (DR825, west of the town; MAPS W6; Covet Gravel Rally). About 6 m of gravel.
+- D03: eastbound, a right-hander whose radius tightens from about 60 m to 18 m over a small crest. Bronze:
+  Entry, Apex and Exit gates, no post touched, at most one wheel off the gravel for 0.5 s, no contact, no
+  spin, 20 km/h out; silver 28 km/h; gold 34 km/h. Scripted: 38–46 km/h in, easing to 24–36 km/h by 45–50 m,
+  came out at 27–38 km/h; 50 km/h in ran wide where it tightens.
+- D04: northbound, a 19 m left-hander opening to a straight. Bronze: the gates, a third of the throttle for
+  1 s after the apex, no front wheel spinning over 0.5 s after the apex (the launch doesn't count), at most one
+  wheel off, no contact, no spin, 25 km/h out; silver 45 km/h; gold 52 km/h. Scripted throttle ramps from 0.25
+  up to 0.34–0.45 gave 51–55 km/h out; up to 0.6 spun the front 0.9 s and ran wide. A bronze is hard to script
+  (any throttle that counts carries the car past 45 km/h).
+
 Off-Road Circuit drills (West Coast USA W5, Covet Gravel Rally). The circuit is a walled, ~10 m wide dusty-dirt
 loop (road nodes `dirttrack_1`–`32`, about 1045 m); its jumps are small for the Covet (the biggest, the kicker
 at `dirttrack_15b`, gives 0.3 s of air at 62 km/h), so E06 isn't built here.
@@ -387,8 +398,8 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | C08 | Scandinavian flicks | Flick steering, rear slide, no handbrake, spin, posts, exit speed | Automatic |
 | D01 | Slaloms and transitions | Cones on the correct side, cone contact, spin, exit speed ≥ 25 km/h, time | Automatic |
 | D02 | Linked-corner sequencing | Corridor, contact, segment time, +8% of best | Automatic |
-| D03 | Decreasing-radius corners | Hard-stop detection, barrier damage, corridor, exit gate | Automatic |
-| D04 | Increasing-radius corners | Exit lane, throttle rising after apex, wheelspin, spin | Automatic |
+| D03 | Decreasing-radius corners | Gates, posts, wheels off the gravel, contact, spin, exit speed | Automatic |
+| D04 | Increasing-radius corners | Gates, throttle after the apex, wheelspin after it, wheels off, contact, spin, exit speed | Automatic |
 | D05 | Blind corners | Approach speed band, gates, posts, wall contact, spin | Automatic |
 | D06 | Uphill and downhill corners | Gates, posts, wall contact, lockup, spin, time | Automatic |
 | D07 | Road camber | Corridor, understeer/oversteer, which-side prompt | Hybrid |

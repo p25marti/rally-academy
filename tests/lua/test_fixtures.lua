@@ -90,6 +90,12 @@
 --      (24.2 s); silver = 45 then 40 (26.0 s); bronze = 38 then 35 (29.6 s); wall = 55 (hit the uphill corner's
 --      wall). E05: gold = 55 then 59 from 50 m (55.7 at the crest, a bumper scrape on landing); silver = 56
 --      target (50.4); bronze = 45 then 50 (46.4); airborne = 75 target (66.4: 0.3 s off the ground, 1508 damage).
+-- D03, D04 (course): gravel lane DR825 (venues gravel-lane-tightening, gravel-lane-opening), Covet Gravel Rally in
+--      2nd (sequential), pure pursuit along the road-network centre line. D03: hold a speed, then a lower one from
+--      a set distance: gold = 46 then 36 from 45 m (38 km/h out); silver = 45 then 30 from 50 m (32); bronze = 38
+--      then 24 (27); wide = 50 then 36 (ran wide where it tightens). D04: 25 km/h to the bend, then a throttle
+--      ramp from 0.25 from 32 m: gold = up to 0.45 (54.5 km/h out); silver = up to 0.34 from 36 m (50.9);
+--      lowthrottle = capped at 0.25 (never a third); spin = up to 0.6 (front wheel spun 0.9 s, ran wide).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -498,6 +504,13 @@ function T.off_road_circuit_drills_still_agree_with_the_in_game_verdicts()
   has(check(gradeCourse('d05_fast', 'D05'), 'speed_at_gates').text, 'too fast')
   has(check(gradeCourse('e05_gold', 'E05'), 'airtime').text, 'All four wheels stayed on the ground')
   has(check(gradeCourse('e05_airborne', 'E05'), 'airtime').text, 'ease off before the crest')
+end
+
+function T.gravel_lane_corner_drills_still_agree_with_the_in_game_verdicts()
+  agree('D03', {d03_gold = 'gold', d03_silver = 'silver', d03_bronze = 'bronze', d03_wide = false})
+  agree('D04', {d04_gold = 'gold', d04_silver = 'silver', d04_lowthrottle = false, d04_spin = false})
+  has(check(gradeCourse('d04_spin', 'D04'), 'no_sustained_wheelspin').text, 'spun for')
+  has(check(gradeCourse('d04_gold', 'D04'), 'no_sustained_wheelspin').text, 'No sustained wheelspin')
 end
 
 local function ruleCheck(name, rule)
