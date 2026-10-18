@@ -79,6 +79,10 @@
 --      zone centre at a set deceleration (follow_path decel): gold = 4 m/s2 (0.5 m past the centre); silver =
 --      5.5 (1.7 m past); bronze = 5.8 (2.7 m past); overshoot = 6 (0.4 m past the zone); lockup = full brake
 --      from 125 m, on the tarmac (locked 1.7 s, 16 m short).
+-- E02 (course): C02's corner and line, Covet Gravel Rally in 2nd (sequential), 63-64 km/h, a 6-7 m brake pulse
+--      after the Turn in gate, 0.12 throttle, then 0.6 throttle from 110 m (just before the apex): gold =
+--      11.3° and 76 km/h out; silver = 8.8°; bronze = 4.6°; nothrottle = holding 46 km/h after the pulse
+--      (peak 28% throttle after the apex).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -457,6 +461,18 @@ function T.d08_surface_change_rules_and_medals_still_agree_with_the_in_game_verd
   end
   has(check(gradeCourse('d08_overshoot', 'D08'), 'stop_zone').text, 'past the zone')
   has(check(gradeCourse('d08_lockup', 'D08'), 'no_sustained_lockup').text, 'locked for')
+end
+
+function T.e02_fwd_technique_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {e02_gold = 'gold', e02_silver = 'silver', e02_bronze = 'bronze', e02_nothrottle = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'E02')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('e02_gold', 'E02'), 'throttle_on_between').text, 'Back on the throttle')
+  has(check(gradeCourse('e02_nothrottle', 'E02'), 'throttle_on_between').text, 'drive the front out')
 end
 
 local function ruleCheck(name, rule)

@@ -911,6 +911,28 @@ function E.flick(rule, samples, ctx)
   return true, string.format('Flicked %.0f° away, then into the turn %.1f s later', best, dt)
 end
 
+-- Back on the throttle (E02): between two gates (default the apex and the exit) the throttle is at
+-- `minThrottle` or more for at least `minSeconds` in total, driving the front out of the corner.
+-- rule: {type = 'throttle_on_between', fromGate = 2, toGate = 3, minThrottle = 0.5, minSeconds = 0.5}
+function E.throttle_on_between(rule, samples, ctx)
+  local t0, t1 = gateWindow(ctx, samples, rule.fromGate or 2, rule.toGate or 3)
+  if not t0 then return false, t1 end
+  local min, need = rule.minThrottle or 0.5, rule.minSeconds or 0.5
+  local on, peak, prev = 0, 0, nil
+  for _, s in ipairs(samples) do
+    if s.t >= t0 and s.t <= t1 then
+      local thr = s.thr or 0
+      peak = math.max(peak, thr)
+      if prev and thr >= min then on = on + (s.t - prev.t) end
+      prev = s
+    end
+  end
+  if on >= need then
+    return true, string.format('Back on the throttle for %.1f s before the exit', on)
+  end
+  return false, string.format('Only %.1f s on the throttle after the apex (peak %.0f%%): drive the front out', on, peak * 100)
+end
+
 -- Understeer (B06) -----------------------------------------------------------------
 
 -- The front pushed wide: between two gates the car runs outside the course circle's line by `minM`
@@ -1000,12 +1022,14 @@ R.TYPES = {
   ran_wide = {},
   flick = {},
   handbrake_pulls = {},
+  throttle_on_between = {},
   back_on_line_by_gate = {},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
 R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked',
-  'brake_off_by_gate', 'rear_slide', 'settled_by_gate', 'ran_wide', 'back_on_line_by_gate', 'flick'}
+  'brake_off_by_gate', 'rear_slide', 'settled_by_gate', 'ran_wide', 'back_on_line_by_gate', 'flick',
+  'throttle_on_between'}
 -- Rule types that need an authored course (assessment.course).
 R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box', 'circle_laps', 'circle_corridor', 'ran_wide',
   'back_on_line_by_gate'}

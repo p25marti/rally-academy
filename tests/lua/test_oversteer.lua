@@ -80,4 +80,18 @@ function T.flick_needs_steering_away_then_into_the_turn_quickly()
   eq(ok, true, 'mirrored for a right-hander')
 end
 
+function T.throttle_on_between_needs_the_throttle_back_after_the_apex()
+  local function withThrottle(thr)
+    local s = run()
+    for _, x in ipairs(s) do x.thr = thr(x.y) end
+    return s
+  end
+  local ok, text = E.throttle_on_between({fromGate = 2, toGate = 3}, withThrottle(function(y) return y > 12 and 0.7 or 0.1 end), CTX)
+  eq(ok, true, 'on from the lane gate'); has(text, 'Back on the throttle for 1.')
+  ok, text = E.throttle_on_between({fromGate = 2, toGate = 3}, withThrottle(function() return 0.3 end), CTX)
+  eq(ok, false, 'part throttle'); eq(text, 'Only 0.0 s on the throttle after the apex (peak 30%): drive the front out', 'text')
+  ok = E.throttle_on_between({fromGate = 2, toGate = 3, minSeconds = 0.5}, withThrottle(function(y) return y > 28 and 0.9 or 0 end), CTX)
+  eq(ok, false, 'too late')
+end
+
 return T

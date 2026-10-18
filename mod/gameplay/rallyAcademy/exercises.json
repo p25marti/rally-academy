@@ -3132,8 +3132,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Moderate gravel corner with runoff.",
+        "venue": "bmp-gravel-corner",
+        "areaHint": "BMP Gravel Track downhill left (MAPS W1), the C02 corner: a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -3153,16 +3153,113 @@
           ]
         }
       },
-      "instructions": "Use a small lift/brake to rotate before apex; reapply throttle to stabilize FWD exit.",
-      "resetInstructions": "Stationary 70 m before turn, lower entry speed due to road tires.",
-      "props": "Keep all car parts/tires stock so lesson is about drivetrain.",
+      "instructions": "Arrive at about 60 km/h. As you turn in, lift or give the brake a short dab to rotate the car a little, then from the apex get back on the throttle (half or more) and let the front wheels pull the car straight out through the Exit gate. No handbrake.",
+      "resetInstructions": "Go to drill puts you 67 m before the Turn in gate, with the corner laid out. Move course here re-lays it from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No power-on plowing past outer boundary and no handbrake; exit aligned.",
-        "metricToRecord": "Clean FWD corners / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "The rear steps out at least 4 degrees between the Turn in and Apex gates, then the throttle is at half or more for 0.5 s between the Apex and the Exit, through all three gates without touching a post, no handbrake, no spin, out of the Exit at 30 km/h or more. Silver: 8 degrees and 55 km/h. Gold: 10 degrees and 60 km/h.",
+        "metricToRecord": "Clean FWD rotate-and-pull exits / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_handbrake"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "rear_slide",
+            "minSlipDeg": 4,
+            "fromGate": 1,
+            "toGate": 2,
+            "hint": "lift or brake a little at turn-in"
+          },
+          {
+            "type": "throttle_on_between",
+            "fromGate": 2,
+            "toGate": 3,
+            "minThrottle": 0.5,
+            "minSeconds": 0.5
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 30,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -1.41,
+              "y": 67.35,
+              "widthM": 8,
+              "headingDeg": -15.4,
+              "label": "Turn in"
+            },
+            {
+              "x": -34.56,
+              "y": 97.99,
+              "widthM": 10,
+              "headingDeg": -81.2,
+              "label": "Apex"
+            },
+            {
+              "x": -69.31,
+              "y": 92.71,
+              "widthM": 6,
+              "headingDeg": -122.2,
+              "label": "Exit"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 8,
+                "fromGate": 1,
+                "toGate": 2,
+                "hint": "lift or brake a little at turn-in"
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 55,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 10,
+                "fromGate": 1,
+                "toGate": 2,
+                "hint": "lift or brake a little at turn-in"
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 60,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

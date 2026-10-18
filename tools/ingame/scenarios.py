@@ -699,6 +699,46 @@ def surface():
     return p
 
 
+def _fwd_exit_run(throttle_at=110, throttle=0.6):
+    """E02: 64 km/h, a 7 m full-brake pulse from 73 m, 0.12 throttle, then `throttle` from `throttle_at` metres
+    (None: hold 46 km/h instead, barely touching the throttle), on C02's line."""
+    import lines as L
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        if trav < 73:
+            return (max(0.0, min(1.0, 0.3 + (64 - v) * 0.1)), 0.0)
+        if trav < 80:
+            return (0.0, 1.0)
+        if throttle_at is None:
+            return (max(0.05, min(1.0, 0.3 + (46 - v) * 0.1)), 0.0)
+        return (0.12, 0.0) if trav < throttle_at else (throttle, 0.0)
+    return A.course_run("E02", L.bmp_left(C02_LINE), gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80,
+                        max_throttle=1.0, timeout=40, stop_within=0.5)
+
+
+@scenario
+def fwdexit():
+    """E02 on the BMP downhill left (Covet Gravel Rally): a brake pulse to rotate, then throttle from the apex
+    pulls the car out for a pass (up to three tries: rotations vary); no throttle after the apex misses."""
+    p = []
+    A.drill_session("E02")
+    for _ in range(3):
+        s = _fwd_exit_run()
+        if s.get("passed"):
+            break
+    expect(p, "rotate, then throttle out, passes", s.get("passed") is True, f"{s.get('tier')}: {s.get('reason')}")
+    s = _fwd_exit_run(throttle_at=None)
+    expect(p, "no throttle after the apex misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("E02")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

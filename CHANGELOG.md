@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **E02 FWD technique is graded automatically, with medals**, on the BMP downhill left: rotate the car a
+  little with a lift or brake dab at turn-in, then get back on the throttle from the apex and let the front
+  pull it out ("Back on the throttle for 1.8 s before the exit"; "drive the front out" otherwise).
 - **D08 mixed-surface transitions are graded automatically, with medals**, on the BMP run-up: brake on
   the start line's tarmac, ease off as the car crosses onto gravel while steering gently left, and stop in
   a drawn zone without locking the wheels. Medals for smaller zones and less lockup.
