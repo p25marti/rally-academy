@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **D01 slaloms are graded automatically, with medals**, on the BMP dirt arena: weave through six
+  drawn cones 15 m apart without touching one ("Went the wrong side of cone 3 (keep it on your right)"
+  otherwise) and through the Finish gate, with time medals (14.8 s, 13.8 s).
 - **C01 lift-off oversteer is graded automatically, with medals**, on the BMP downhill left: lift
   sharply at turn-in, no brake until the apex, and let the rear rotate ("Rear stepped out 11.0°");
   "carry more speed and lift sharply as you turn in" when it doesn't.

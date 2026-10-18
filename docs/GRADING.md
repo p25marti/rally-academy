@@ -7,7 +7,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Eighteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Nineteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
@@ -15,7 +15,7 @@ on a course, with medals), **A07** (racing line and exit speed through a corner,
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
 **B07** (catching an oversteer slide, with medals) **C01** (lift-off rotation into a corner, with medals), **C02** (brake-induced rotation into a corner, with
-medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
+medals), **D01** (six-cone slalom, with medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -249,6 +249,12 @@ entry speed into the ring: 30 km/h doesn't push (0.3 m); 40–42 km/h pushes 3�
 35 m (just after turn-in) brings it back by the Regain gate (gold at 40, silver at 42), lifting at 45 m only
 by the Exit (bronze); 46 km/h with no lift runs 12 m wide.
 
+D01 targets (BMP dirt arena, Covet Gravel Rally): six cones 15 m apart from 25 m ahead (the drill first said
+12 m; 15 m suits the Covet on dirt), first kept on the right, then alternating, and a Finish gate at 115 m.
+Bronze: every cone passed on its side, none touched, no spin, 25 km/h at the Finish, in 18 s; silver 14.8 s;
+gold 13.8 s. Scripted: a ±3 m weave clears the cones at 30 km/h (14.6 s) and hits one from 34 km/h; ±2.4 m
+holds 32 km/h (13.6 s).
+
 C01 targets: C02's corner (a 32 m radius, under the 40 m the drill first asked for; its `venueNeeds` now
 allow 30 m). Bronze: the rear steps out 6°+ between the Turn in and Apex gates with no brake between them,
 no post touched, no handbrake, no spin, 25 km/h out; silver 10° and 40 km/h; gold 14° and 45 km/h. Scripted:
@@ -348,7 +354,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | C06 | Controlled slip angle | Slip angle held through arc, spin, corridor | Automatic |
 | C07 | Lateral weight transfer | Gate sequence, cone contact, spin, abrupt stop | Automatic |
 | C08 | Scandinavian flicks | Flick steering, rear slide, no handbrake, spin, posts, exit speed | Automatic |
-| D01 | Slaloms and transitions | Cone contact, spin, exit speed ≥ 25 km/h | Automatic |
+| D01 | Slaloms and transitions | Cones on the correct side, cone contact, spin, exit speed ≥ 25 km/h, time | Automatic |
 | D02 | Linked-corner sequencing | Corridor, contact, segment time, +8% of best | Automatic |
 | D03 | Decreasing-radius corners | Hard-stop detection, barrier damage, corridor, exit gate | Automatic |
 | D04 | Increasing-radius corners | Exit lane, throttle rising after apex, wheelspin, spin | Automatic |

@@ -640,6 +640,39 @@ def liftoff():
     return p
 
 
+def _slalom_run(kmh, amp):
+    """D01: a cosine weave, `amp` metres either side at each cone (15 m apart), at a steady `kmh` in 2nd."""
+    path = ([(0, y) for y in range(0, 18)]
+            + [(-amp * math.cos(math.pi * (y - 25) / 15), y) for y in (17.5 + 0.5 * i for i in range(1, 196))]
+            + [(0, y) for y in range(118, 135)])
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, _trav):
+        return (max(0.05, min(1.0, 0.3 + (kmh - v) * 0.08)), 0.0)
+    return A.course_run("D01", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 10,
+                        max_throttle=1.0, timeout=40, stop_within=0.5)
+
+
+@scenario
+def slalom():
+    """D01 on the BMP dirt arena (Covet Gravel Rally): a clean weave through six cones earns a medal; too fast
+    clips a cone and misses."""
+    p = []
+    A.drill_session("D01")
+    s = _slalom_run(30, 3)
+    expect(p, "a clean slalom earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _slalom_run(38, 3)
+    expect(p, "too fast clips a cone and misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("D01")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

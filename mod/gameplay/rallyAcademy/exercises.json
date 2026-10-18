@@ -2557,11 +2557,11 @@
       },
       "environment": {
         "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Six-cone slalom, 12 m spacing, on the open dirt.",
+        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced: six cones in a line 15 m apart from 25 m ahead, then a Finish gate.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 20,
-          "lengthM": 100,
+          "lengthM": 120,
           "maxSlopeDeg": 4,
           "surfaces": [
             "GRAVEL",
@@ -2571,16 +2571,102 @@
           ]
         }
       },
-      "instructions": "Weave alternating around all six cones while maintaining smooth steering and continuous motion.",
-      "resetInstructions": "Stationary 30 m before first cone; wheel centered.",
-      "props": "Cones spaced approx. 12 m; record exact positions in screenshot.",
+      "instructions": "Weave through the six cones: the first on your right (pass it on its left), then alternate. Keep the steering smooth and the car moving, and carry speed through the Finish gate.",
+      "resetInstructions": "Go to drill puts you 25 m before the first cone. Move course here re-lays the slalom from where you are.",
+      "props": "None: the cones and gate are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No cone contact, no spin; minimum 25 km/h through final gate.",
-        "metricToRecord": "Clean slaloms / 10, exit speed",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "All six cones passed on the correct side without touching one, no spin, through the Finish gate at 25 km/h or more, in 18 s. Silver: 14.8 s. Gold: 13.8 s.",
+        "metricToRecord": "Clean slaloms / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "cones_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 25,
+            "maxKmh": 150,
+            "gate": 1
+          },
+          {
+            "type": "max_time",
+            "maxSeconds": 18
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "cones": [
+            {
+              "x": 0,
+              "y": 25,
+              "keep": "right"
+            },
+            {
+              "x": 0,
+              "y": 40,
+              "keep": "left"
+            },
+            {
+              "x": 0,
+              "y": 55,
+              "keep": "right"
+            },
+            {
+              "x": 0,
+              "y": 70,
+              "keep": "left"
+            },
+            {
+              "x": 0,
+              "y": 85,
+              "keep": "right"
+            },
+            {
+              "x": 0,
+              "y": 100,
+              "keep": "left"
+            }
+          ],
+          "gates": [
+            {
+              "x": 0,
+              "y": 115,
+              "widthM": 8,
+              "label": "Finish"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 14.8
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 13.8
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
