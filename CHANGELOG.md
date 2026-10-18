@@ -160,6 +160,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
+- A start you saved before a drill got its own course, or moved venue, no longer overrides it: the old
+  start is cleared when you select the drill, and the HUD says why ("Your saved start was cleared
+  because it now lays out its own course").
 - Opening the **Rally Academy** tab in the Esc menu broke the whole menu ("No layout data was
   received from the router", then missing tabs) until the UI was reloaded: its buttons had no
   icons. They do now, and the tab shows a compact drill list with details for its narrow card.

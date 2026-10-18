@@ -218,10 +218,27 @@ end
 
 -- Persist the selected drill's start, finish and gates for the current map. A course's
 -- gates come from the course, so only its start is saved.
+local function venueOf(id) local env = byId[id] and byId[id].environment return env and env.venue or nil end
+
 local function saveSetup()
   local start = startState and {pos = startState.pos, dir = startState.dir, up = startState.up} or nil
-  local marked = not courseDef() and #gates > 0 and gates or nil
-  Store.putSetup(setups, levelId(), selected, {start = start, finish = finishGate, gates = marked})
+  local def = courseDef()
+  local marked = not def and #gates > 0 and gates or nil
+  -- The venue and course it was marked for: if either changes, the setup is stale (loadSetup).
+  Store.putSetup(setups, levelId(), selected, {start = start, finish = finishGate, gates = marked,
+    venue = venueOf(selected), course = def and Layout.fingerprint(def) or nil})
+end
+
+-- Is a saved setup from before the drill's venue or course changed? Course drills need a matching
+-- course fingerprint (a setup without one predates the course); any drill needs the same venue if
+-- the setup recorded one (setups from before venues were recorded are kept for marked drills).
+local function staleSetup(saved)
+  local def = courseDef()
+  if def and saved.course ~= Layout.fingerprint(def) then
+    return saved.course and 'its course changed' or 'it now lays out its own course'
+  end
+  if saved.venue and saved.venue ~= venueOf(selected) then return 'it moved to another venue' end
+  return nil
 end
 
 -- Ground height under (x, y), or `z` when the engine can't tell (be:getSurfaceHeightBelow
@@ -261,6 +278,12 @@ local function loadSetup()
   startState, finishGate, gates, usingVenueStart = nil, nil, {}, false
   local saved = Store.getSetup(setups, levelId(), selected)
   local def = courseDef()
+  local stale = saved and staleSetup(saved)
+  if stale then
+    logf('I', '%s: dropped the saved setup on %s (%s)', tostring(selected), levelId(), stale)
+    Store.putSetup(setups, levelId(), selected, nil)
+    saved = nil
+  end
   if saved and type(saved.gates) == 'table' and not def then gates = saved.gates end
   if saved and saved.start then
     startState, finishGate = saved.start, (not def) and saved.finish or nil
@@ -279,6 +302,7 @@ local function loadSetup()
   else
     lastReason = 'Select a suitable car/map, mark the start, and optionally mark a finish gate.'
   end
+  if stale then lastReason = 'Your saved start was cleared because ' .. stale .. '. ' .. lastReason end
   placeCourse()
 end
 

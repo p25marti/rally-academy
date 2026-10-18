@@ -27,7 +27,9 @@ function S.saveProgress(progress)
   jsonWriteFile(S.PROGRESS_FILE, progress, true)
 end
 
--- setups = {schemaVersion = 1, levels = {[levelId] = {[drillId] = {start, finish, gates}}}}
+-- setups = {schemaVersion = 1, levels = {[levelId] = {[drillId] = {start, finish, gates, venue, course}}}}
+-- (venue = the drill's venue id when saved; course = its course fingerprint: a setup from before a
+-- change of either is dropped when the drill is selected)
 function S.loadSetups()
   return read(S.SETUPS_FILE, function(t) return type(t.levels) == 'table' end, {schemaVersion = 1, levels = {}})
 end

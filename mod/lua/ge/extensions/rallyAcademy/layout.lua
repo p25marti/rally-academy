@@ -88,6 +88,20 @@ function L.place(def, start)
   return out
 end
 
+-- A stable text fingerprint of a course definition (keys sorted, numbers to the millimetre): a
+-- saved start remembers it, so a changed course doesn't get laid out from a stale start.
+function L.fingerprint(v)
+  local t = type(v)
+  if t == 'number' then return string.format('%.3f', v) end
+  if t ~= 'table' then return tostring(v) end
+  local keys = {}
+  for k in pairs(v) do keys[#keys + 1] = k end
+  table.sort(keys, function(a, b) return tostring(a) < tostring(b) end)
+  local parts = {}
+  for _, k in ipairs(keys) do parts[#parts + 1] = tostring(k) .. '=' .. L.fingerprint(v[k]) end
+  return '{' .. table.concat(parts, ',') .. '}'
+end
+
 -- Car footprint ------------------------------------------------------------------
 -- car = {front, rear, left, right}: metres from the car's position (what telemetry and
 -- getPosition report, which isn't the body's centre) to each side of its body.

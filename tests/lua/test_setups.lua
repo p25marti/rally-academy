@@ -1,7 +1,7 @@
 -- Saved starts/finishes per map and drill, and car or map changes mid-run.
 local H = require('ra_helpers')
 local stubs = H.stubs
-local eq = H.eq
+local eq, has = H.eq, H.has
 local setup = H.setup
 local drive = H.drive
 local SETUPS = H.SETUPS
@@ -105,6 +105,63 @@ function T.map_change_swaps_in_that_maps_setup()
   M.onClientEndMission('/levels/west_coast_usa/')
   M.onClientPostStartMission('/levels/driver_training/')
   eq(h.lastState().hasStart, true, 'saved setup back when returning to the map')
+end
+
+-- Stale setups: a saved start belongs to the venue and course it was marked for.
+local function saveRaw(level, id, entry)
+  local data = jsonReadFile(SETUPS) or {schemaVersion = 1, levels = {}}
+  data.levels[level] = data.levels[level] or {}
+  data.levels[level][id] = entry
+  jsonWriteFile(SETUPS, data)
+end
+local START = {pos = {x = 1, y = 2, z = 3}, dir = {x = 0, y = 1, z = 0}, up = {x = 0, y = 0, z = 1}}
+
+function T.a_start_saved_before_a_drill_got_its_course_is_dropped()
+  local h = stubs.install()
+  h.level = 'west_coast_usa'
+  saveRaw('west_coast_usa', 'A01', {start = START})            -- from before A01 had a course
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  M.select('A01')
+  local s = h.lastState()
+  eq(s.usingVenueStart, true, 'laid out at the venue instead')
+  has(s.reason, 'Your saved start was cleared because it now lays out its own course')
+  eq(jsonReadFile(SETUPS).levels.west_coast_usa.A01, nil, 'and forgotten')
+end
+
+function T.a_start_marked_for_the_current_course_survives_a_restart()
+  local h, M = setup()
+  h.level = 'west_coast_usa'
+  M.select('A01')
+  h.vehicle.pos = stubs.vec3(5, 5, 5)
+  M.markStart()
+  M = reloadExtension()
+  M.select('A01')
+  eq(h.lastState().usingVenueStart, false, 'your own start')
+  has(h.lastState().reason, 'Loaded your saved start')
+end
+
+function T.a_changed_course_drops_the_start_marked_for_the_old_one()
+  local h = stubs.install()
+  h.level = 'west_coast_usa'
+  saveRaw('west_coast_usa', 'A01', {start = START, venue = 'bmp-dirt-arena', course = '{old course}'})
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  M.select('A01')
+  has(h.lastState().reason, 'because its course changed')
+end
+
+function T.marked_drills_keep_old_setups_unless_their_venue_changed()
+  local h = stubs.install()
+  saveRaw('driver_training', 'T01', {start = START})            -- recorded no venue: kept
+  saveRaw('driver_training', 'T02', {start = START, venue = 'somewhere-else'})
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  M.select('T01')
+  eq(h.lastState().hasStart, true, 'old setup kept')
+  M.select('T02')
+  eq(h.lastState().hasStart, false, 'dropped')
+  has(h.lastState().reason, 'because it moved to another venue')
 end
 
 return T
