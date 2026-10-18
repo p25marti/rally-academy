@@ -74,6 +74,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `a04` | A04 on its course (BMP run-up, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, 40 m stop area), a PASS and a MISS each |
 | `trail` | B04 on the BMP downhill left: trail braking into the corner earns a medal; braking only before turn-in misses |
+| `oversteer` | B07 on the BMP dirt circle: a hard brake at turn-in steps the rear out and the caught slide earns a medal; no slide misses |
 | `circle` | B05 on the BMP dirt circle: two laps on the throttle with brake dabs earn gold; no dabs, or lifting off to brake, miss |
 | `corners` | A07 and A08 on the BMP downhill left (Covet Gravel Rally, racing line from `lines.py`): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss |
 | `gears` | A03 on its course (BMP run-up, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |

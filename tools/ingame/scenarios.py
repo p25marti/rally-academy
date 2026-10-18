@@ -349,6 +349,44 @@ def circle():
     return p
 
 
+def _arc_run(kmh, brake_m, brake=1.0, max_steer=0.25):
+    """B07: approach at `kmh` in 2nd (sequential), full brake for `brake_m` metres at the turn-in gate,
+    then 0.3 throttle round a left quarter of the 15 m ring and down the exit lane. The pure pursuit
+    countersteers by itself when the rear steps out."""
+    path = ([(0, y) for y in range(0, 25)]
+            + [(-15 + 15 * math.cos(a), 25 + 15 * math.sin(a)) for a in (i * math.pi / 80 for i in range(41))]
+            + [(-15 - x, 40) for x in range(1, 30)])
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        if trav < 24:
+            return (max(0.0, min(0.8, 0.3 + (kmh - v) * 0.08)), 0.0)
+        return (0.0, brake) if trav < 24 + brake_m else (0.3, 0.0)
+    return A.course_run("B07", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 15,
+                        max_throttle=1.0, timeout=40, stop_within=0.5, max_steer=max_steer)
+
+
+@scenario
+def oversteer():
+    """B07 on the BMP dirt circle (Covet Gravel Rally): a hard brake at turn-in steps the rear out, the
+    slide is caught and settled down the exit lane for a medal; a gentle turn-in with no slide misses."""
+    p = []
+    A.drill_session("B07")
+    s = _arc_run(60, 6)
+    expect(p, "a caught slide earns a medal", s.get("passed") is True and s.get("tier") in ("silver", "gold"),
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _arc_run(35, 6, brake=0.5, max_steer=0.55)
+    expect(p, "no slide misses", s.get("passed") is False and "lift or brake harder" in str(s.get("reason")),
+           s.get("reason"))
+    A.end_session("B07")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

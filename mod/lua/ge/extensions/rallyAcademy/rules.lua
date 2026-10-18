@@ -326,6 +326,17 @@ function R.slipDeg(s, minAir)
   return math.deg(math.acos(math.max(-1, math.min(1, c))))
 end
 
+-- Slip angle with a sign: positive when the car points further into a `turn` ('left' | 'right')
+-- than it is travelling (the rear stepping out), negative when it points outside it (the front
+-- pushing wide). nil below `minAir` m/s or without heading and velocity.
+function R.signedSlipDeg(s, minAir, turn)
+  local slip = R.slipDeg(s, minAir)
+  if not slip then return nil end
+  local cross = s.vx * s.hy - s.vy * s.hx -- > 0: heading to the left of travel
+  if turn == 'right' then cross = -cross end
+  return cross >= 0 and slip or -slip
+end
+
 -- Hitting something hard enough to damage the car (barriers, walls, other cars). Cones
 -- barely dent a car, so cone contact needs the cones themselves (scene control, later).
 -- A tyre deflating adds ~1000 damage, one sample after the flat flag (0.39.4), so damage
@@ -799,10 +810,66 @@ function E.left_foot_brakes(rule, samples)
   return false, text .. ': dab it to tighten the line'
 end
 
+-- Oversteer (B07) ------------------------------------------------------------------
+
+-- The window between two gates (negative = from the last), as sample times: t0, t1 or nil, error.
+local function gateWindow(ctx, samples, fromGate, toGate)
+  local gates, err = gateList(ctx)
+  if not gates then return nil, err end
+  local function index(i) return i < 0 and #gates + 1 + i or i end
+  local from, to = index(fromGate), index(toGate)
+  local passes = Gates.passes(gates, samples)
+  if not (passes[from] and passes[from].reached) then return nil, string.format('Gate %d not reached', from) end
+  return passes[from].t, passes[to] and passes[to].reached and passes[to].t or math.huge
+end
+
+-- The rear stepped out: between two gates (default the first and the last) the car's slip angle
+-- with the rear out (R.signedSlipDeg, the drill's `turn`) reaches `minSlipDeg`. Normal cornering at
+-- the limit on dirt reads about 5-7 degrees in the Covet Gravel Rally (0.39.4).
+-- rule: {type = 'rear_slide', minSlipDeg = 8, turn = 'left', fromGate = 1, toGate = -1}
+function E.rear_slide(rule, samples, ctx)
+  local t0, t1 = gateWindow(ctx, samples, rule.fromGate or 1, rule.toGate or -1)
+  if not t0 then return false, t1 end
+  local need, worst = rule.minSlipDeg or 8, 0
+  for _, s in ipairs(samples) do
+    if s.t >= t0 and s.t <= t1 and (s.gear or 0) >= 0 then
+      local slip = R.signedSlipDeg(s, 3, rule.turn or 'left')
+      if slip and slip > worst then worst = slip end
+    end
+  end
+  if worst >= need then return true, string.format('Rear stepped out %.1f° (target %g°+)', worst, need) end
+  return false, string.format('The rear only stepped out %.1f° (target %g°): lift or brake harder as you turn in', worst, need)
+end
+
+-- Settled by a gate (B07: the end of the exit lane): there the slide is over (slip angle within
+-- `maxSlipDeg`) and the countersteer unwound (steering wheel within `maxSteerDeg` of straight).
+-- rule: {type = 'settled_by_gate', gate = -1, maxSlipDeg = 4, maxSteerDeg = 45}
+function E.settled_by_gate(rule, samples, ctx)
+  local gates, err = gateList(ctx)
+  if not gates then return false, err end
+  local g = rule.gate or -1
+  g = g < 0 and #gates + 1 + g or g
+  local pass = Gates.passes(gates, samples)[g]
+  if not (pass and pass.reached) then return false, string.format('Gate %d not reached', g) end
+  local at
+  for _, s in ipairs(samples) do
+    if s.t >= pass.t then at = s; break end
+  end
+  if not at then return false, 'No data at the gate' end
+  local slip, steer = R.slipDeg(at, 1) or 0, math.abs(at.steer or 0)
+  local maxSlip, maxSteer = rule.maxSlipDeg or 4, rule.maxSteerDeg or 45
+  local name = gates[g].label and gates[g].label:lower() or ('gate ' .. g)
+  if slip > maxSlip then return false, string.format('Still sliding at the %s (%.0f°)', name, slip) end
+  if steer > maxSteer then
+    return false, string.format('Steering still %.0f° at the %s: unwind the countersteer sooner', steer, name)
+  end
+  return true, string.format('Settled by the %s (slip %.0f°, steering %.0f°)', name, slip, steer)
+end
+
 R.evaluators = E
 
 -- Rule types and their required parameters. tools/dev.py validate reads this table and
--- R.GATE_RULES from this file, so keep each entry on one line: name = {'param', ...},
+-- the name lists below from this file, so keep each entry here on one line: name = {'param', ...},
 R.TYPES = {
   entry_speed = {'minKmh'},
   stop_zone = {'lengthM', 'widthM'},
@@ -837,10 +904,13 @@ R.TYPES = {
   circle_corridor = {'widthM'},
   throttle_held = {},
   left_foot_brakes = {},
+  rear_slide = {},
+  settled_by_gate = {},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
-R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked', 'brake_off_by_gate'}
+R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked',
+  'brake_off_by_gate', 'rear_slide', 'settled_by_gate'}
 -- Rule types that need an authored course (assessment.course).
 R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box', 'circle_laps', 'circle_corridor'}
 -- Medal tiers above a pass (bronze), in order (assessment.tiers).

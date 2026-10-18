@@ -6,7 +6,7 @@ stages are the game's own Rally mode),
 instant retry to a marked start, run timing, and per-drill progress tracking.
 
 > **Status: alpha.** Retry, timing, progress, Go to drill and telemetry recording
-> run on BeamNG 0.39.4. Eleven drills (A01–A05, A07, A08, B01, B02, B04, B05) are graded
+> run on BeamNG 0.39.4. Twelve drills (A01–A05, A07, A08, B01, B02, B04, B05, B07) are graded
 > automatically from telemetry, A01 with bronze/silver/gold medals; the others use self-assessed Pass/Miss for now. The
 > Academy screen lives in the main menu (More... → Rally Academy) and the pause menu;
 > see the [roadmap](docs/ROADMAP.md).

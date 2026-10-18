@@ -146,6 +146,30 @@
       "notes": "The dirt circle's south edge, 15 m from its centre (265, 40.05) and facing east: the start of an anticlockwise lap of a 15 m ring. Dirt to 23 m or more from the centre all round, the nearest obstacle 30 m out (measured 0.39.4)."
     },
     {
+      "id": "bmp-dirt-arc",
+      "mapsId": "W3",
+      "name": "West Coast USA: BMP dirt circle, arc approach",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 240.0,
+          "y": 25.05,
+          "z": 127.0
+        },
+        "dir": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The dirt circle's south-west edge, facing east along the tangent of a 15 m ring round the centre (265, 40.05): 25 m of straight approach into a left-hand quarter of the ring, then north across the infield (measured 0.39.4)."
+    },
+    {
       "id": "wcusa-quarry",
       "mapsId": "W4",
       "name": "West Coast USA: Quarry",

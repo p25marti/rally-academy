@@ -7,13 +7,13 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Eleven drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Twelve drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
 **A08** (late apex and a steady exit, with medals), **B01** (threshold braking into a course stop zone, with medals), **B02** (lockup recovery, with
-medals), **B04** (trail braking through a corner, with medals) and **B05** (left-foot braking round a
-course circle, with medals). Every other drill is still
+medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
+course circle, with medals) and **B07** (catching an oversteer slide, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -149,6 +149,8 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `circle_laps` | none (optional `laps`, default the circle's) | The car goes round the course circle (`assessment.course.circle`) that many times the way it is meant to be driven; going round the wrong way says so |
 | `circle_corridor` | `widthM` (optional `maxSeconds` 0.3) | The car's position stays within `widthM` / 2 of the circle's line, allowing up to `maxSeconds` outside at a time; says the furthest it ran off |
 | `throttle_held` | none (optional `maxGapSeconds` 0.3, `minThrottle` 0.05, `fromKmh` 0) | From the first moment on the throttle at `fromKmh` (pulling away and changing up before then is free) to the end, the throttle never drops under `minThrottle` for longer than `maxGapSeconds` |
+| `rear_slide` | none (optional `minSlipDeg` 8, `turn` 'left', `fromGate` 1, `toGate` −1) | Between the two gates the rear steps out at least `minSlipDeg`: the slip angle with the car pointing further into the `turn` than it travels (`R.signedSlipDeg`). The front pushing wide doesn't count |
+| `settled_by_gate` | none (optional `gate` −1, `maxSlipDeg` 4, `maxSteerDeg` 45) | Where the car crosses the gate, the slide is over (slip within `maxSlipDeg`) and the countersteer unwound (steering wheel within `maxSteerDeg` of straight); the gate's `label` names it in the text |
 | `left_foot_brakes` | none (optional `minCount` 3, `minSeconds` 0.2, `minBrake` 0.05, `minThrottle` 0.05) | At least `minCount` brake applications made with the throttle still on, each held `minSeconds` or longer; braking with the throttle off says "you lifted to brake" |
 | `progressive_downshifts` | `toGear` | After the highest gear reached, the car goes down one gear at a time to `toGear` (3→2, not 4→2); neutral and reverse are skipped, going lower at the stop is fine |
 | `no_over_rev` | `maxRpm` | The engine never spins past `maxRpm` (the Covet Student Driver's limiter is 6500 rpm); names the gear and speed where it did |
@@ -232,6 +234,16 @@ throttle gaps; gold a 3 m corridor, four dabs and both laps in 22 s. Scripted in
 every 25 m: 32 km/h held the line within 0.8 m in 21.6 s (gold); 34 km/h ran 1.6 m off (silver); 38 km/h
 ran 4 m wide. The 15 m ring tops out at about 35 km/h on this dirt.
 
+B07 targets (BMP dirt circle, Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
+then a 7 m exit lane 18 m long. Bronze: the rear steps out 8°+ between the Turn in gate and the lane end,
+through both lane gates without spinning, at most three steering corrections in the lane, and at the
+lane end the slip is within 4° and the steering within 45° of straight. Silver: a 12° slide; gold: 15°
+with at most two corrections. The Covet Gravel Rally resists oversteer: a 0.5 brake dab at turn-in gave
+no slide (the slip with the rear out stays under 1°, and limit cornering reads about 5–7°); a full brake
+for 4–6 m at the gate from 55–65 km/h gave 11.5–14.8° with the pure pursuit countersteering (bronze to
+silver), and a sharp 2 m stab with more lock gave 21.6° but was still sliding at the lane end. No scripted
+run reached gold; a driver flicking the car in should.
+
 A04 targets (BMP run-up, three gates 25 m apart): bronze 27–33 km/h at every gate with no braking
 between them; silver 28–32; gold 29–31. Gate speeds are shown to a tenth, since the medal bands are
 only 2 km/h wide. A scripted throttle-only hold at 30.5 km/h read 29.3 / 30.0 / 29.1: gold.
@@ -277,7 +289,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | B04 | Trail braking | Brake off by apex, lockup, corridor | Automatic |
 | B05 | Left-foot braking | Circle laps and corridor, spin, throttle never off, brake on throttle | Automatic |
 | B06 | Understeer correction | Understeer, path regained by marker, contact | Automatic |
-| B07 | Oversteer correction | Spin, exit lane, countersteer unwound | Automatic |
+| B07 | Oversteer correction | Rear slide, spin, exit lane, countersteer unwound, corrections | Automatic |
 | B08 | Longitudinal weight transfer | Contact, spin, which-input prompt | Hybrid |
 | C01 | Lift-off oversteer | Slip angle, no handbrake, spin, corridor | Automatic |
 | C02 | Brake-induced rotation | Slip angle, no handbrake, spin, exit gate | Automatic |

@@ -42,6 +42,11 @@
 --      pursuit round the 15 m ring, throttle held (0.15 or more) with 0.25 brake dabs every 25 m:
 --      gold = 32 km/h (0.8 m off the line at most); wide = 38 km/h (runs 4 m wide); nobrake = 34 km/h,
 --      no dabs; lift = 34 km/h, throttle off for each 0.3 brake dab.
+-- B07 (course): BMP dirt circle (venue bmp-dirt-arc), Covet Gravel Rally in 2nd (sequential), pure
+--      pursuit along the approach, a left quarter of the 15 m ring and the exit lane, full brake for a
+--      few metres at the turn-in gate, then 0.3 throttle (the pursuit countersteers by itself):
+--      silver = 60 km/h, 6 m of brake (14.3° caught); bronze = 55 km/h, 4 m (11.5°); noslide = 35
+--      km/h, 0.5 brake (no slide); stab = 48 km/h, 2 m with more lock (21.6°, still sliding at the lane).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -310,6 +315,19 @@ function T.b05_left_foot_braking_rules_and_medals_still_agree_with_the_in_game_v
   has(check(gradeCourse('b05_wide', 'B05'), 'circle_corridor').text, 'wide of the line')
   has(check(gradeCourse('b05_nobrake', 'B05'), 'left_foot_brakes').text, 'dab it to tighten the line')
   has(check(gradeCourse('b05_lift', 'B05'), 'left_foot_brakes').text, 'you lifted to brake')
+end
+
+function T.b07_oversteer_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {b07_silver = 'silver', b07_bronze = 'bronze', b07_noslide = false, b07_stab = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'B07')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('b07_silver', 'B07'), 'rear_slide').text, 'Rear stepped out 14.3°')
+  has(check(gradeCourse('b07_noslide', 'B07'), 'rear_slide').text, 'lift or brake harder')
+  has(check(gradeCourse('b07_stab', 'B07'), 'settled_by_gate').text, 'Still sliding at the lane end')
 end
 
 local function ruleCheck(name, rule)

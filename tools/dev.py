@@ -51,7 +51,7 @@ def rule_types() -> tuple[dict[str, list[str]], set[str]]:
     so the validator and the evaluators can't drift apart."""
     src = RULES_LUA.read_text(encoding="utf-8")
     block = re.search(r"^R\.TYPES = \{\n(.*?)^\}", src, re.S | re.M)
-    gates = re.search(r"^R\.GATE_RULES = \{(.*?)\}", src, re.M)
+    gates = re.search(r"^R\.GATE_RULES = \{(.*?)\}", src, re.M | re.S)
     if not (block and gates):
         fail(f"can't find R.TYPES / R.GATE_RULES in {RULES_LUA}")
     types = {m.group(1): re.findall(r"'(\w+)'", m.group(2))
@@ -60,8 +60,8 @@ def rule_types() -> tuple[dict[str, list[str]], set[str]]:
 
 
 def lua_name_list(name: str) -> list[str]:
-    """A one-line list of names in rules.lua, such as R.COURSE_RULES or R.TIERS."""
-    m = re.search(rf"^R\.{name} = \{{(.*?)\}}", RULES_LUA.read_text(encoding="utf-8"), re.M)
+    """A list of names in rules.lua, such as R.COURSE_RULES or R.TIERS (it may span lines)."""
+    m = re.search(rf"^R\.{name} = \{{(.*?)\}}", RULES_LUA.read_text(encoding="utf-8"), re.M | re.S)
     if not m:
         fail(f"can't find R.{name} in {RULES_LUA}")
     return re.findall(r"'(\w+)'", m.group(1))
