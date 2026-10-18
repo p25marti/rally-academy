@@ -91,12 +91,7 @@ def a01():
     """Authored course at the BMP dirt arena: laid out with no marking; a medal run, the wrong
     side of the cone, a clipped gate post; auto-retry. Needs West Coast USA loaded."""
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    A.choose("A01")
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A01)")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    A.drill_session("A01")
     s = A.debug_state()
     expect(p, "the course is laid out at the venue with no marking", s.get("hasCourse") and s.get("usingVenueStart"), s.get("reason"))
     steps = A.wait_for(lambda: ui(f"var c=document.querySelector('{A.PANEL} .ra-course'); return c ? c.innerText.indexOf('Box') >= 0 : false"), True)
@@ -132,12 +127,7 @@ def b01():
     """B01 on its course (BMP run-up, stop zone 30 m past the start line): threshold braking from 72
     km/h into the zone earns a medal; braking too hard overshoots and misses; full brake locks and misses."""
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    A.choose("B01")
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on B01)")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    A.drill_session("B01")
     line = [(0, 0), (0, 150)]
     s = precise(lambda: A.course_run("B01", line, kmh=72, decel=5.0, max_throttle=1.0, stop_within=0.4))
     expect(p, "threshold stop in the zone earns a medal", s.get("passed") is True and s.get("tier") is not None,
@@ -146,9 +136,7 @@ def b01():
     expect(p, "braking too hard overshoots and misses", s.get("passed") is False, A.grade_lines())
     s = A.braking_run(70, lambda k, t: 1.0, brake_after_m=110)
     expect(p, "full brake misses (lockup)", s.get("passed") is False, A.grade_lines())
-    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
-    A.realistic()
-    A.clear_progress("B01")
+    A.end_session("B01")
     return p
 
 
@@ -157,12 +145,7 @@ def a04():
     """A04 on its course (BMP run-up, three gates 25 m apart): a steady 30 km/h earns a medal; 40 km/h at
     gate 3 misses. Needs West Coast USA."""
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    A.choose("A04")
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A04)")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    A.drill_session("A04")
     expect(p, "three gates laid out at the venue", A.debug_state().get("gateCount") == 3, A.debug_state().get("reason"))
 
     def hold(target_of_d):
@@ -191,9 +174,7 @@ def a04():
            f"{s.get('tier')}: {A.grade_lines()}")
     s = hold(lambda d: 30 if d < 60 else 40)
     expect(p, "too fast at gate 3 misses", s.get("passed") is False, A.grade_lines())
-    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
-    A.realistic()
-    A.clear_progress("A04")
+    A.end_session("A04")
     return p
 
 
@@ -202,12 +183,7 @@ def stops():
     """A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, a
     40 m stop area): one PASS and one MISS each."""
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    A.choose("A05")
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A05)")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    A.drill_session("A05")
     front = 1.81  # Covet: front bumper ahead of the car's position (catalogued footprint)
 
     def line_run(before_m):
@@ -232,12 +208,7 @@ def launch():
     """A02 on its course (BMP start straight, from the venue start): a flat-out launch through the
     40 km/h gate earns a medal (the run ends at the gate); 34 km/h at the gate misses. Needs West Coast USA."""
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    A.choose("A02")
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A02)")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    A.drill_session("A02")
     s = A.debug_state()
     expect(p, "the course is laid out at the venue", s.get("hasCourse") and s.get("usingVenueStart"), s.get("reason"))
     line = [(0, 0), (0, 80)]  # down the straight's centre line; the run ends at the gate (60 m)
@@ -247,9 +218,7 @@ def launch():
     s = A.course_run("A02", line, kmh=34, decel=3.0, max_throttle=0.6)
     expect(p, "34 km/h at the 40 km/h gate misses", s.get("passed") is False and "too slow" in str(s.get("reason")),
            s.get("reason"))
-    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
-    A.realistic()
-    A.clear_progress("A02")
+    A.end_session("A02")
     return p
 
 
@@ -274,12 +243,7 @@ def gears():
     """A03 on its course (BMP run-up): up to 3rd and 60 km/h, then down to 2nd one gear at a time into
     the stop box passes with a medal; 3rd straight to 1st misses. Sequential gearbox, scripted gears."""
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    A.choose("A03")
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A03)")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    A.drill_session("A03")
     line = [(0, 0), (0, 155)]
     kw = dict(gearbox="sequential", kmh=62, decel=2.2, max_throttle=0.9)
     s = A.course_run("A03", line, on_tick=_gear_plan(2), **kw)
@@ -288,9 +252,7 @@ def gears():
     s = A.course_run("A03", line, on_tick=_gear_plan(1), **kw)
     expect(p, "3rd straight to 1st misses", s.get("passed") is False and "Skipped from 3rd to 1st" in str(s.get("reason")),
            s.get("reason"))
-    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
-    A.realistic()
-    A.clear_progress("A03")
+    A.end_session("A03")
     return p
 
 
@@ -301,15 +263,7 @@ def corners():
     Swaps to the drill car with Go to drill (same map)."""
     import lines as L
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on A07)")
-    A.choose("A07")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) "
-        "extensions.rallyAcademy.goToDrill() return 1")
-    A.wait_for(lambda: "rally_gravel" in lua("return tostring(be:getPlayerVehicle(0).partConfig)"), True, timeout=20)
-    time.sleep(2)
+    A.drill_session("A07")
     kw = dict(decel=2.5, max_throttle=0.9, stop_within=0.5)
     s = A.course_run("A07", L.bmp_left(), kmh=50, **kw)
     expect(p, "A07 racing line earns a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
@@ -323,9 +277,7 @@ def corners():
     s = A.course_run("A08", L.bmp_left({"DR1181_13": -0.5, "DR1181_14": -4.2, "DR1181_15": -0.5}), kmh=44, **kw)
     expect(p, "A08 weaving after the exit misses", s.get("passed") is False and "steering correction" in str(s.get("reason")),
            s.get("reason"))
-    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
-    A.realistic()
-    A.clear_progress("A07", "A08")
+    A.end_session("A07", "A08")
     return p
 
 
@@ -335,15 +287,7 @@ def trail():
     turn earns a medal; braking only in a straight line before turning in misses."""
     import lines as L
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on B04)")
-    A.choose("B04")
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) "
-        "extensions.rallyAcademy.goToDrill() return 1")
-    A.wait_for(lambda: "rally_gravel" in lua("return tostring(be:getPlayerVehicle(0).partConfig)"), True, timeout=20)
-    time.sleep(2)
+    A.drill_session("B04")
     apex = 118.7  # metres along lines.bmp_left() to the apex gate
 
     def trail_pedals(_kmh, trav):
@@ -364,9 +308,7 @@ def trail():
     s = A.course_run("B04", L.bmp_left(), pedals=straight_pedals, **kw)
     expect(p, "braking only before turn-in misses", s.get("passed") is False and "into the corner" in str(s.get("reason")),
            s.get("reason"))
-    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
-    A.realistic()
-    A.clear_progress("B04")
+    A.end_session("B04")
     return p
 
 

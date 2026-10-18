@@ -87,7 +87,8 @@ course at the BMP dirt arena; the others mark their start on the BMP start strai
 gearbox and remove the attempts they recorded from your progress. Code: `tools/ingame/`
 (`game.py` talks to the server, `academy.py` holds mod helpers, `scenarios.py` the checks);
 scripts read the mod through `extensions.rallyAcademy.debugState()`, not its internals.
-Their verdicts on the same inputs match the recorded fixtures, but physics varies run to run
+Every graded run in a scenario also checks the HUD panel still fits (its content no taller than
+the 390 × 340 panel); an overflow fails the scenario even if it didn't ask. Their verdicts on the same inputs match the recorded fixtures, but physics varies run to run
 by a few tenths of a metre, so they check verdicts, not exact numbers.
 
 ## Recording a fixture

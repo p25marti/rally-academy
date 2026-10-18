@@ -119,7 +119,21 @@ def eased_brake(kmh):
     return 0.45 if kmh > 35 else (0.30 if kmh > 15 else 0.18)
 
 
+# Problems noticed along the way that no scenario asked about (the HUD panel overflowing after a
+# graded run); run.py reports them with the scenario that was running.
+SIDE_PROBLEMS = []
+
+
+def hud_overflow():
+    """Pixels of HUD panel content below its visible height (0 = it all fits), or None if no panel."""
+    dims = safe(ui, f"var p=document.querySelector('{PANEL}'); return p ? [p.scrollHeight, p.clientHeight] : null")
+    if not isinstance(dims, list):
+        return None
+    return max(0, dims[0] - dims[1] - 1)  # a pixel of rounding
+
+
 def wait_graded(timeout=20):
+    """Wait for the run to be graded; also checks the HUD still fits its panel (390 x 340)."""
     t0 = time.time()
     while time.time() - t0 < timeout:
         time.sleep(0.25)
@@ -127,7 +141,12 @@ def wait_graded(timeout=20):
         if isinstance(s, dict) and s.get("phase") in ("scored", "review"):
             break
     time.sleep(0.8)
-    return debug_state()
+    s = debug_state()
+    over = hud_overflow()
+    if over:
+        SIDE_PROBLEMS.append(f"HUD panel overflows by {over} px after a {s.get('selected')} run ({s.get('reason')})")
+        print(f"  FAIL HUD panel overflows by {over} px after a {s.get('selected')} run", flush=True)
+    return s
 
 
 def braking_run(target_kmh, brake, throttle=1.0, max_s=25, brake_after_m=None):
@@ -270,6 +289,41 @@ def course_run(drill_id, local_points, gearbox="arcade", **kw):
     inp("parkingbrake", 0)
     follow_path(course_points(drill_id, local_points), **kw)
     return wait_graded()
+
+
+def current_config():
+    return lua("local v = be:getPlayerVehicle(0) return tostring(v and v.partConfig)")
+
+
+def drill_session(drill_id, level="west_coast_usa"):
+    """The usual start of a drill scenario: reload the mod (and the car's sampler), select the drill
+    with its course at the venue start, auto-retry off, and the drill's own car (Go to drill swaps it
+    when the car differs, on the same map). Raises if the map isn't loaded. Pair with end_session."""
+    reload_mod(ui_too=False)
+    fresh_sampler()
+    choose(drill_id)
+    if debug_state().get("level") != level:
+        raise RuntimeError(f"load {level} first (e.g. Go to drill on {drill_id})")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    want = drill(drill_id)["vehicle"]["configPath"]
+    if want not in current_config():
+        # The config reads as the new car the moment the swap is asked for; wait until the mod has
+        # placed the finished car ("... in the drill car ..."), or a gearbox switch can land on a
+        # half-built car (seen: a suite's first launch run stayed in 1st).
+        lua("extensions.rallyAcademy.goToDrill() return 1")
+        wait_for(lambda: want in current_config() and "in the drill car" in str(debug_state().get("reason")), True,
+                 timeout=30)
+        time.sleep(1.5)
+        lua("extensions.rallyAcademy.useVenueStart() return 1")
+    return debug_state()
+
+
+def end_session(*drill_ids):
+    """Undo what a drill scenario changed: auto-retry back on, the realistic gearbox, and the attempts
+    it recorded removed from progress."""
+    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
+    realistic()
+    clear_progress(*drill_ids)
 
 
 def save_fixture(name):
