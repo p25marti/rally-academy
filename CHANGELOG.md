@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **C01 lift-off oversteer is graded automatically, with medals**, on the BMP downhill left: lift
+  sharply at turn-in, no brake until the apex, and let the rear rotate ("Rear stepped out 11.0°");
+  "carry more speed and lift sharply as you turn in" when it doesn't.
 - **C07 figure-eights are graded automatically, with medals**, on the BMP dirt arena: round two drawn
   cones through five gates (crossing, right lobe, crossing, left lobe, crossing) without touching a cone,
   with time medals (23 s, 21.5 s).

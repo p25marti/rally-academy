@@ -7,14 +7,14 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Seventeen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Eighteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
 **A08** (late apex and a steady exit, with medals), **B01** (threshold braking into a course stop zone, with medals), **B02** (lockup recovery, with
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
-**B07** (catching an oversteer slide, with medals) **C02** (brake-induced rotation into a corner, with
+**B07** (catching an oversteer slide, with medals) **C01** (lift-off rotation into a corner, with medals), **C02** (brake-induced rotation into a corner, with
 medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
@@ -249,6 +249,12 @@ entry speed into the ring: 30 km/h doesn't push (0.3 m); 40–42 km/h pushes 3�
 35 m (just after turn-in) brings it back by the Regain gate (gold at 40, silver at 42), lifting at 45 m only
 by the Exit (bronze); 46 km/h with no lift runs 12 m wide.
 
+C01 targets: C02's corner (a 32 m radius, under the 40 m the drill first asked for; its `venueNeeds` now
+allow 30 m). Bronze: the rear steps out 6°+ between the Turn in and Apex gates with no brake between them,
+no post touched, no handbrake, no spin, 25 km/h out; silver 10° and 40 km/h; gold 14° and 45 km/h. Scripted:
+lifting at turn-in from 52–58 km/h does nothing; from about 61 km/h the same inputs gave 3.6–11°; from 65
+km/h up to 45° but wide of the apex. No scripted run reached gold.
+
 C02 targets (BMP downhill left, Covet Gravel Rally): a Turn in gate where the straight ends, a 10 m Apex
 gate (the gravel's width) and a 6 m Exit gate at the track-out. Bronze: the rear steps out 8°+ between the
 Turn in and Apex gates (`rear_slide`) with the brake on while steering for 0.2 s (`trail_braked`, so the
@@ -334,7 +340,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | B06 | Understeer correction | Push wide of the line, path regained by a gate, spin | Automatic |
 | B07 | Oversteer correction | Rear slide, spin, exit lane, countersteer unwound, corrections | Automatic |
 | B08 | Longitudinal weight transfer | Contact, spin, which-input prompt | Hybrid |
-| C01 | Lift-off oversteer | Slip angle, no handbrake, spin, corridor | Automatic |
+| C01 | Lift-off oversteer | Rear slide with no brake between gates, no handbrake, spin, posts, exit speed | Automatic |
 | C02 | Brake-induced rotation | Rear slide between gates, no handbrake, spin, posts, exit gate and speed | Automatic |
 | C03 | Throttle-induced oversteer | Slip angle, spin, countersteer under 3 s | Automatic |
 | C04 | Handbrake rotation | Handbrake count = 1, rear slide, stall, spin, cone and gates, exit speed | Automatic |

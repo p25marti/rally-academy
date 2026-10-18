@@ -69,6 +69,9 @@
 -- C07 (course): BMP dirt arena, Covet Gravel Rally in 2nd (sequential), pure pursuit up to the crossing, then
 --      10 m circles round each cone (clockwise right, anticlockwise left) at a steady speed: gold = 28 km/h
 --      (21.3 s); silver = 25 (21.8 s); bronze = 20 (25.0 s); wide = 32 km/h (ran wide of the right lobe gate).
+-- C01 (course): C02's corner, Covet Gravel Rally in 2nd (sequential), lines.bmp_left about 3 m inside at
+--      nodes 7-9, 65 km/h braked to 61 before the Turn in gate, 0.5 throttle, a 15 m lift from 70 m, then
+--      holding 45: the same inputs gave silver (11.0°), bronze (7.7°) and norotate (3.6°).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -411,6 +414,18 @@ function T.c07_figure_eight_rules_and_medals_still_agree_with_the_in_game_verdic
     eq(res.tier or false, tier, name .. ' medal')
   end
   has(check(gradeCourse('c07_wide', 'C07'), 'gates_passed').text, 'gate 2')
+end
+
+function T.c01_lift_off_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {c01_silver = 'silver', c01_bronze = 'bronze', c01_norotate = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'C01')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('c01_silver', 'C01'), 'no_brake_between_gates').text, 'No braking between gates 1 and 2')
+  has(check(gradeCourse('c01_norotate', 'C01'), 'rear_slide').text, 'lift sharply')
 end
 
 local function ruleCheck(name, rule)

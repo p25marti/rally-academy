@@ -593,6 +593,50 @@ def figure8():
     return p
 
 
+def _liftoff_run(entry_kmh=61, lift_at=70):
+    """C01: 65 km/h, braked to `entry_kmh` before the Turn in gate, 0.5 throttle, a 15 m lift from
+    `lift_at` metres, then hold 45 km/h, on a line ~3 m inside through the apex."""
+    import lines as L
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def hold(v, target):
+        return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+
+    def pedals(v, trav):
+        if trav < 52:
+            return hold(v, 65)
+        if trav < 66:
+            return (0.0, 0.6) if v > entry_kmh else (0.5, 0.0)
+        if trav < lift_at:
+            return (0.5, 0.0)
+        return (0.0, 0.0) if trav < lift_at + 15 else hold(v, 45)
+    line = L.bmp_left({"DR1181_6": 1.0, "DR1181_7": 3.2, "DR1181_8": 3.6, "DR1181_9": 3.0})
+    return A.course_run("C01", line, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80, max_throttle=1.0,
+                        timeout=40, stop_within=0.5)
+
+
+@scenario
+def liftoff():
+    """C01 on the BMP downhill left (Covet Gravel Rally): lifting off at turn-in from 61 km/h rotates the car for
+    a pass (scripted lifts pass only a third to half the time, so up to five tries); from 54 km/h it doesn't."""
+    p = []
+    A.drill_session("C01")
+    for _ in range(5):
+        s = _liftoff_run()
+        if s.get("passed"):
+            break
+    expect(p, "a lift at turn-in rotates the car for a pass", s.get("passed") is True, f"{s.get('tier')}: {s.get('reason')}")
+    s = _liftoff_run(entry_kmh=54, lift_at=72)
+    expect(p, "too slow to rotate misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("C01")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

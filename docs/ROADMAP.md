@@ -93,7 +93,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       hybrid prompts: deferred.
 - [ ] Module C (front-wheel drive drills; C03, C05, C06 are parked until a RWD/AWD car is chosen).
       Done: C02 (brake pulse rotation on the corner venue), C08 (Scandinavian flick, same corner), C04 (handbrake hairpin
-      round a cone on the dirt arena), C07 (figure-eight round two cones, dirt arena). Next: C01.
+      round a cone on the dirt arena), C07 (figure-eight round two cones, dirt arena), C01 (lift-off rotation, the corner venue).
 
 ## P3 — Machine-readable drills
 
@@ -126,4 +126,4 @@ live in [IDEAS.md](IDEAS.md) until the owner decides to pick one up.
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
 | Cone contact isn't detected for marked courses | Cones barely damage a car; authored courses (A01, A05) measure contact with their drawn cones instead, but marked drills (B01, D01) can't grade it | authored courses, scene control (GRADING §7) |
 | Owner hasn't driven the auto-graded drills on the rig yet | Scripted runs use the arcade gearbox; a real manual-gearbox stall or missed shift (A02) is only unit-tested; A01's and A02's medal targets are set from scripted runs | TESTING |
-| Pass/Miss is self-assessed (all but A01–A05, A07, A08, B01, B02, B04–B07, C02, C04, C07, C08) | No objective grading | P2/P3 |
+| Pass/Miss is self-assessed (all but A01–A05, A07, A08, B01, B02, B04–B07, C01, C02, C04, C07, C08) | No objective grading | P2/P3 |

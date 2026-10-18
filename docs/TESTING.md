@@ -74,6 +74,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `a04` | A04 on its course (BMP run-up, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, 40 m stop area), a PASS and a MISS each |
 | `trail` | B04 on the BMP downhill left: trail braking into the corner earns a medal; braking only before turn-in misses |
+| `liftoff` | C01 on the BMP downhill left: a lift at turn-in rotates the car for a pass (up to five tries: scripted lifts pass a third to half the time); too slow misses |
 | `figure8` | C07 on the BMP dirt arena: a clean figure-eight earns a medal; too fast runs wide and misses |
 | `hairpin` | C04 on the BMP dirt arena: one handbrake pull round the pivot cone earns a medal; no handbrake misses |
 | `flick` | C08 on the BMP downhill left: a lift-and-flick passes (up to three tries: scripted flicks rotate the car about half the time); no flick misses |

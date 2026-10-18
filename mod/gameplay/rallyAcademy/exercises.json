@@ -1731,12 +1731,12 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Sweeping gravel corner.",
+        "venue": "bmp-gravel-corner",
+        "areaHint": "BMP Gravel Track downhill left (MAPS W1), the C02 corner: a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate. Downhill helps the lift load the front.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
-            40,
+            30,
             120
           ],
           "turnDeg": 45,
@@ -1749,16 +1749,111 @@
           ]
         }
       },
-      "instructions": "Approach under light throttle, lift just before turn-in to rotate, then stabilize smoothly.",
-      "resetInstructions": "Stationary 70 m before sweeper; fixed 40 km/h entry.",
-      "props": "If the chosen FWD setup barely rotates, use slightly higher safe entry speed, then fix it.",
+      "instructions": "Brake on the straight to about 60 km/h, then turn in on light throttle. Lift off sharply just after the Turn in gate to load the front and let the rear rotate, no brake until the apex. Catch it and drive out through the Exit gate on steady throttle.",
+      "resetInstructions": "Go to drill puts you 67 m before the Turn in gate, with the corner laid out. Move course here re-lays it from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Observable small rotation without handbrake; no spin or pavement departure.",
-        "metricToRecord": "Controlled lift-rotation attempts / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "The rear steps out at least 6 degrees between the Turn in and Apex gates with no brake between them (the lift does it), through all three gates without touching a post, no handbrake, no spin, out of the Exit at 25 km/h or more. Silver: 10 degrees and 40 km/h. Gold: 14 degrees and 45 km/h.",
+        "metricToRecord": "Clean lift-off rotations / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_handbrake"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_brake_between_gates",
+            "fromGate": 1,
+            "toGate": 2
+          },
+          {
+            "type": "rear_slide",
+            "minSlipDeg": 6,
+            "fromGate": 1,
+            "toGate": 2,
+            "hint": "carry more speed and lift sharply as you turn in"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 25,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -1.41,
+              "y": 67.35,
+              "widthM": 8,
+              "headingDeg": -15.4,
+              "label": "Turn in"
+            },
+            {
+              "x": -34.56,
+              "y": 97.99,
+              "widthM": 10,
+              "headingDeg": -81.2,
+              "label": "Apex"
+            },
+            {
+              "x": -69.31,
+              "y": 92.71,
+              "widthM": 6,
+              "headingDeg": -122.2,
+              "label": "Exit"
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 10,
+                "fromGate": 1,
+                "toGate": 2,
+                "hint": "carry more speed and lift sharply as you turn in"
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 40,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 14,
+                "fromGate": 1,
+                "toGate": 2,
+                "hint": "carry more speed and lift sharply as you turn in"
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 45,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
