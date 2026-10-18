@@ -218,6 +218,54 @@
       "notes": "Rough dusty-dirt figure-eight with jumps and crests."
     },
     {
+      "id": "offroad-blind-hairpin",
+      "mapsId": "W5",
+      "name": "West Coast USA: Off-Road Circuit, blind crest hairpin",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 803.25,
+          "y": 139.04,
+          "z": 153.2
+        },
+        "dir": {
+          "x": 0.1422,
+          "y": 0.9898,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "On the circuit's north straight (road node dirttrack_16), 85 m before a left hairpin that turns 180 degrees across a crest (159.6 m, nodes dirttrack_19a-19b) and drops away 25 % into its exit: the exit can't be seen from the approach. Walled, about 10 m wide (measured 0.39.4)."
+    },
+    {
+      "id": "offroad-kicker",
+      "mapsId": "W5",
+      "name": "West Coast USA: Off-Road Circuit, kicker crest",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 731.7,
+          "y": 23.4,
+          "z": 151.92
+        },
+        "dir": {
+          "x": 0.6092,
+          "y": -0.7931,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "On the circuit's south-east descent (road node dirttrack_11, about 7 % down), 110 m before a short kicker crest (nodes dirttrack_15a-15b: 24 % up, 18 % down, 2.3 m high) after a left-hander. The Covet Gravel Rally stays down to about 56 km/h and takes off from about 60 km/h (0.3 s at 62); walled, about 10 m wide (measured 0.39.4)."
+    },
+    {
       "id": "utah-ngrc-stages",
       "mapsId": "U1",
       "name": "Utah: NGRC Rally Utah 2026 stages",

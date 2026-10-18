@@ -139,4 +139,20 @@ function T.handbrake_pulls_counts_each_pull_while_moving()
   eq(none.ok, false, 'held at rest only'); has(none.text, 'pull it once to rotate the car')
 end
 
+function T.airtime_measures_the_longest_stretch_with_all_wheels_off_the_ground()
+  local function wheels(f)
+    return {{n = 'FL', s = 15, f = f}, {n = 'FR', s = 15, f = f}, {n = 'RL', s = 15, f = f}, {n = 'RR', s = 15, f = f}}
+  end
+  local function jump(from, to) return run(function(i, s) s.w = wheels((i >= from and i < to) and 0 or 2000) end) end
+  local down = check({type = 'airtime', maxSeconds = 0.15}, jump(0, 0))
+  eq(down.ok, true, 'planted'); eq(down.text, 'All four wheels stayed on the ground', 'text')
+  local hop = check({type = 'airtime', maxSeconds = 0.15}, jump(60, 63))
+  eq(hop.ok, true, 'a 0.07 s hop'); has(hop.text, 's in the air (limit 0.15 s)')
+  local flew = check({type = 'airtime', maxSeconds = 0.15}, jump(60, 70))
+  eq(flew.ok, false, '0.3 s'); has(flew.text, 'Wheels off the ground for 0.30 s (limit 0.15 s)')
+  local short = check({type = 'airtime', minSeconds = 0.3}, jump(60, 63))
+  eq(short.ok, false, 'a jump drill wants air'); has(short.text, 'Only 0.07 s in the air')
+  eq(check({type = 'airtime'}, run(function(_, s) s.w = {} end)).ok, false, 'no wheel data')
+end
+
 return T

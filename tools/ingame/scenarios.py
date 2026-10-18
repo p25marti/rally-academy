@@ -739,6 +739,73 @@ def fwdexit():
     return p
 
 
+def _circuit_run(drill, a, b, kmh, then_kmh=None, then_at=1e9):
+    """A run along the Off-Road Circuit's centre line (tools/ingame/circuit.py: metres a to b from dirttrack_1) in 2nd
+    (sequential), holding `kmh`, then `then_kmh` from `then_at` metres into the run."""
+    import circuit
+    venue = A.drill(drill)["environment"]["spawn"]
+    shifted = []
+
+    def on_tick(_kmh, _to_go):
+        if not shifted:
+            shifted.append(1)
+            return A.shift_to(2)
+
+    def pedals(v, trav):
+        target = then_kmh if then_kmh is not None and trav >= then_at else kmh
+        if v > target + 4:
+            return (0.0, min(0.7, 0.2 + (v - target) * 0.05))
+        return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+    return A.course_run(drill, circuit.line(venue, a, b), gearbox="sequential", on_tick=on_tick, pedals=pedals,
+                        kmh=max(kmh, then_kmh or 0) + 15, max_throttle=1.0, timeout=90, stop_within=0.5)
+
+
+@scenario
+def blind():
+    """D05 on the Off-Road Circuit (Covet Gravel Rally): a steady 37 km/h into the blind crest hairpin earns a medal;
+    55 km/h is too fast for a corner you can't see."""
+    p = []
+    A.drill_session("D05")
+    s = _circuit_run("D05", 420, 600, 37)
+    expect(p, "a conservative approach earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _circuit_run("D05", 420, 600, 55)
+    expect(p, "too fast into the blind corner misses", s.get("passed") is False and "too fast" in str(s.get("reason")),
+           s.get("reason"))
+    A.end_session("D05")
+    return p
+
+
+@scenario
+def hills():
+    """D06 on the Off-Road Circuit (Covet Gravel Rally): the uphill and downhill corners at 45/40 km/h earn a medal;
+    55 km/h hits the uphill corner's wall."""
+    p = []
+    A.drill_session("D06")
+    s = _circuit_run("D06", 0, 320, 45, 40, 240)
+    expect(p, "clean uphill and downhill corners earn a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _circuit_run("D06", 0, 320, 55, 45, 230)
+    expect(p, "too fast hits the wall and misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("D06")
+    return p
+
+
+@scenario
+def crest():
+    """E05 on the Off-Road Circuit (Covet Gravel Rally): about 50 km/h over the kicker keeps the wheels down for a
+    medal; flat out takes off and lands hard."""
+    p = []
+    A.drill_session("E05")
+    s = _circuit_run("E05", 236, 420, 55, 56, 50)
+    expect(p, "a planted crest earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _circuit_run("E05", 236, 420, 55, 75, 50)
+    expect(p, "flat out over the crest misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("E05")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

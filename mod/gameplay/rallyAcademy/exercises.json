@@ -2820,8 +2820,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "wcusa-quarry",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). A bend hidden by a spoil heap or crest.",
+        "venue": "offroad-blind-hairpin",
+        "areaHint": "Off-Road Circuit (MAPS W5), the north straight into a left hairpin that turns 180 degrees across a crest: the exit drops away out of sight. Turn in, Crest and Exit gates.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -2841,16 +2841,85 @@
           ]
         }
       },
-      "instructions": "Drive the turn from the cockpit at a conservative fixed approach speed, using visible cues.",
-      "resetInstructions": "Stationary 100 m before blind turn; avoid using freecam while scoring.",
-      "props": "Treat map familiarity as a limitation; eventually transfer to unseen routes.",
+      "instructions": "Arrive at the Turn in gate at a steady, conservative speed (35-40 km/h is ideal) that would let you stop or tighten the line if the road beyond the crest isn't what you expect. Drive the hairpin from the cockpit, reading the walls and the crest, and out through the Exit gate.",
+      "resetInstructions": "Go to drill puts you 85 m before the Turn in gate. Move course here re-lays the gates from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No roadside contact or wheels beyond road boundary; correct direction chosen before sightline opens.",
-        "metricToRecord": "Clean blind entries / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "30-45 km/h at the Turn in gate, through the Crest and Exit gates without touching a post or the walls, no spin. Silver: 33-42 km/h. Gold: 35-40 km/h.",
+        "metricToRecord": "Clean blind hairpins / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 30,
+            "maxKmh": 45,
+            "gate": 1
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -27.09,
+              "y": 76.43,
+              "widthM": 9,
+              "label": "Turn in",
+              "headingDeg": -27.8
+            },
+            {
+              "x": -43.62,
+              "y": 92.01,
+              "widthM": 9,
+              "label": "Crest",
+              "headingDeg": -83.8
+            },
+            {
+              "x": -61.92,
+              "y": 59.95,
+              "widthM": 9,
+              "label": "Exit",
+              "headingDeg": 173.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 33,
+                "maxKmh": 42,
+                "gate": 1
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 35,
+                "maxKmh": 40,
+                "gate": 1
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
@@ -2868,8 +2937,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "wcusa-quarry",
-        "areaHint": "Quarry (MAPS W4), gravel haul roads ~(729, -823). Spiral Descent: uphill and downhill bends.",
+        "venue": "wcusa-offroad-circuit",
+        "areaHint": "Off-Road Circuit (MAPS W5) from its start: an uphill right-hander (9-14 %), over the crest, then a 7 % descent into a downhill left-hander. Uphill, Downhill and Exit gates.",
         "venueNeeds": {
           "kind": "hill",
           "gradePct": 6,
@@ -2885,16 +2954,83 @@
           ]
         }
       },
-      "instructions": "Alternate five uphill and five downhill turns at comparable entry speeds.",
-      "resetInstructions": "Two starts: 60 m before uphill curve and 60 m before downhill curve.",
-      "props": "Five attempts per direction; keep two saved checkpoints/screenshots.",
+      "instructions": "Drive from the start through the uphill right-hander (carry speed, pick the gear before the slope), over the crest and down the descent. Brake earlier for the downhill left-hander, where the car is lighter and slower to stop, without locking the wheels, and out through the Exit gate.",
+      "resetInstructions": "Go to drill puts you on the circuit's start. Move course here re-lays the gates from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Clean exit and no late brake lock on downhill; correct gear and control uphill.",
-        "metricToRecord": "Clean uphill/downhill turns / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Through the Uphill, Downhill and Exit gates without touching a post or the walls, no wheel locked over 0.5 s, no spin, in 32 s. Silver: 26.5 s. Gold: 24.5 s.",
+        "metricToRecord": "Clean uphill and downhill corner runs / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "no_sustained_lockup",
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "max_time",
+            "maxSeconds": 32
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 19.35,
+              "y": 53.03,
+              "widthM": 9,
+              "label": "Uphill",
+              "headingDeg": 63.9
+            },
+            {
+              "x": 194.12,
+              "y": -23.54,
+              "widthM": 9,
+              "label": "Downhill",
+              "headingDeg": 98.5
+            },
+            {
+              "x": 215.86,
+              "y": -3.21,
+              "widthM": 9,
+              "label": "Exit",
+              "headingDeg": 15.5
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 26.5
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 24.5
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -3369,8 +3505,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "wcusa-offroad-circuit",
-        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Crest on the off-road circuit.",
+        "venue": "offroad-kicker",
+        "areaHint": "Off-Road Circuit (MAPS W5), the south-east descent, a left-hander, then 45 m to a short kicker crest. Crest, Landing and Exit gates.",
         "venueNeeds": {
           "kind": "crest",
           "lengthM": 120,
@@ -3386,16 +3522,98 @@
           ]
         }
       },
-      "instructions": "Approach crest in a straight line with light, stable inputs; avoid sudden steering at unloading.",
-      "resetInstructions": "Stationary 120 m before chosen accessible crest; straight line at summit.",
-      "props": "Choose an actual safe crest and mark 20 m recovery zone.",
+      "instructions": "Come out of the left-hander, accelerate in a straight line and carry as much speed over the crest as you can while keeping all four wheels on the ground: lift or brake a touch before it, keep the steering still as the car goes light, and drive straight on through the Landing and Exit gates.",
+      "resetInstructions": "Go to drill puts you 110 m before the crest. Move course here re-lays the gates from where you are.",
+      "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Car stays aligned after crest; no spin, crash or large landing bounce.",
-        "metricToRecord": "Stable crest crossings / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "40 km/h or more at the Crest gate, all four wheels off the ground for no more than 0.15 s, no more than one steering correction after the crest, through the Landing and Exit gates, no spin, no hard landing or contact (150 damage at most: a bumper scrape is fine). Silver: 50 km/h. Gold: 54 km/h.",
+        "metricToRecord": "Planted, straight crests / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage",
+            "maxDamage": 150
+          },
+          {
+            "type": "airtime",
+            "maxSeconds": 0.15
+          },
+          {
+            "type": "steady_exit",
+            "fromGate": 1,
+            "toGate": 3,
+            "maxCorrections": 1,
+            "minSwingDeg": 15,
+            "after": "the crest"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 40,
+            "maxKmh": 150,
+            "gate": 1
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -71.06,
+              "y": 4.01,
+              "widthM": 9,
+              "label": "Crest",
+              "headingDeg": -132.0
+            },
+            {
+              "x": -92.18,
+              "y": -15.06,
+              "widthM": 7,
+              "label": "Landing",
+              "headingDeg": -132.2
+            },
+            {
+              "x": -112.88,
+              "y": -34.15,
+              "widthM": 9,
+              "label": "Exit",
+              "headingDeg": -134.3
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 50,
+                "maxKmh": 150,
+                "gate": 1
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 54,
+                "maxKmh": 150,
+                "gate": 1
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

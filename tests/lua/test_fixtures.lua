@@ -83,6 +83,13 @@
 --      after the Turn in gate, 0.12 throttle, then 0.6 throttle from 110 m (just before the apex): gold =
 --      11.3° and 76 km/h out; silver = 8.8°; bronze = 4.6°; nothrottle = holding 46 km/h after the pulse
 --      (peak 28% throttle after the apex).
+-- D05, D06, E05 (course): West Coast USA Off-Road Circuit (venues offroad-blind-hairpin, wcusa-offroad-circuit,
+--      offroad-kicker), Covet Gravel Rally in 2nd (sequential), pure pursuit along the circuit's road-network
+--      centre line holding a speed, then a second speed from a set distance. D05: gold = 37 km/h (38.6 at the Turn
+--      in gate); silver = 40.5 (42.0); bronze = 43 (44.5); fast = 55 (55.4). D06: gold = 50 then 45 from 230 m
+--      (24.2 s); silver = 45 then 40 (26.0 s); bronze = 38 then 35 (29.6 s); wall = 55 (hit the uphill corner's
+--      wall). E05: gold = 55 then 59 from 50 m (55.7 at the crest, a bumper scrape on landing); silver = 56
+--      target (50.4); bronze = 45 then 50 (46.4); airborne = 75 target (66.4: 0.3 s off the ground, 1508 damage).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -473,6 +480,24 @@ function T.e02_fwd_technique_rules_and_medals_still_agree_with_the_in_game_verdi
   end
   has(check(gradeCourse('e02_gold', 'E02'), 'throttle_on_between').text, 'Back on the throttle')
   has(check(gradeCourse('e02_nothrottle', 'E02'), 'throttle_on_between').text, 'drive the front out')
+end
+
+local function agree(drill, want)
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, drill)
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+end
+
+function T.off_road_circuit_drills_still_agree_with_the_in_game_verdicts()
+  agree('D05', {d05_gold = 'gold', d05_silver = 'silver', d05_bronze = 'bronze', d05_fast = false})
+  agree('D06', {d06_gold = 'gold', d06_silver = 'silver', d06_bronze = 'bronze', d06_wall = false})
+  agree('E05', {e05_gold = 'gold', e05_silver = 'silver', e05_bronze = 'bronze', e05_airborne = false})
+  has(check(gradeCourse('d05_fast', 'D05'), 'speed_at_gates').text, 'too fast')
+  has(check(gradeCourse('e05_gold', 'E05'), 'airtime').text, 'All four wheels stayed on the ground')
+  has(check(gradeCourse('e05_airborne', 'E05'), 'airtime').text, 'ease off before the crest')
 end
 
 local function ruleCheck(name, rule)

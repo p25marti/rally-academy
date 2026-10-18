@@ -74,6 +74,9 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `a04` | A04 on its course (BMP run-up, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, 40 m stop area), a PASS and a MISS each |
 | `trail` | B04 on the BMP downhill left: trail braking into the corner earns a medal; braking only before turn-in misses |
+| `blind` | D05 on the Off-Road Circuit: a conservative approach to the blind crest hairpin earns a medal; 55 km/h misses |
+| `hills` | D06 on the Off-Road Circuit: clean uphill and downhill corners earn a medal; too fast hits the wall |
+| `crest` | E05 on the Off-Road Circuit: a planted crest earns a medal; flat out takes off and misses |
 | `fwdexit` | E02 on the BMP downhill left: rotate, then throttle out, passes (up to three tries); no throttle after the apex misses |
 | `surface` | D08 on the BMP run-up: a controlled stop across the tarmac-to-gravel change earns a medal; a locked-wheel stop misses |
 | `slalom` | D01 on the BMP dirt arena: a clean weave through six cones earns a medal; too fast clips a cone |

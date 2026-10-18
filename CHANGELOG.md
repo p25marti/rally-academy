@@ -112,6 +112,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **Three drills on the West Coast USA Off-Road Circuit are graded automatically, with medals.** D05: a
+  left hairpin over a blind crest, taken at a steady, conservative speed (medals for a tighter speed band).
+  D06: an uphill corner, the crest and a downhill corner from the circuit's start, against the clock. E05:
+  carry speed over a kicker crest while keeping all four wheels on the ground ("Wheels off the ground for
+  0.30 s: ease off before the crest" otherwise). New venues offroad-blind-hairpin and offroad-kicker.
 - **E02 FWD technique is graded automatically, with medals**, on the BMP downhill left: rotate the car a
   little with a lift or brake dab at turn-in, then get back on the throttle from the apex and let the front
   pull it out ("Back on the throttle for 1.8 s before the exit"; "drive the front out" otherwise).

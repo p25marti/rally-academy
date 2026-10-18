@@ -7,7 +7,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Twenty-one drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Twenty-four drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
@@ -15,7 +15,8 @@ on a course, with medals), **A07** (racing line and exit speed through a corner,
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
 **B07** (catching an oversteer slide, with medals) **C01** (lift-off rotation into a corner, with medals), **C02** (brake-induced rotation into a corner, with
-medals), **D01** (six-cone slalom, with medals), **D08** (braking across a tarmac-to-gravel change, with medals), **E02** (FWD rotate-then-pull exit, with medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
+medals), **D01** (six-cone slalom, with medals), **D08** (braking across a tarmac-to-gravel change, with medals), **E02** (FWD rotate-then-pull exit, with medals), **D05** (blind crest hairpin, with medals), **D06** (uphill and
+downhill corners, with medals), **E05** (a planted crest, with medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -148,7 +149,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `max_time` | `maxSeconds` | The run time is at most `maxSeconds` (medal time targets) |
 | `trail_braked` | none (optional `fromGate` 1, `toGate` 2, `minSeconds` 0.4, `minBrake` 0.1, `minSteerDeg` 20) | Between the two gates (the braking marker and the apex) the car brakes over `minBrake` while the steering wheel is turned past `minSteerDeg` for at least `minSeconds` in total |
 | `brake_off_by_gate` | none (optional `gate` 2, `maxBrake` 0.05) | The brake is at most `maxBrake` from crossing the gate (the apex) to the end of the run while moving; says how long before the gate it came off |
-| `steady_exit` | none (optional `fromGate` −2, `toGate` −1, `maxCorrections` 1, `minSwingDeg` 10) | Between the two gates the steering doesn't swing back and forth: unwinding once is fine, each reversal of more than `minSwingDeg` degrees of steering wheel is a correction (`steer` is the wheel angle in degrees) |
+| `steady_exit` | none (optional `fromGate` −2, `toGate` −1, `maxCorrections` 1, `minSwingDeg` 10, `after`: where the window starts, in the text) | Between the two gates the steering doesn't swing back and forth: unwinding once is fine, each reversal of more than `minSwingDeg` degrees of steering wheel is a correction (`steer` is the wheel angle in degrees) |
 | `circle_laps` | none (optional `laps`, default the circle's) | The car goes round the course circle (`assessment.course.circle`) that many times the way it is meant to be driven; going round the wrong way says so |
 | `circle_corridor` | `widthM` (optional `maxSeconds` 0.3) | The car's position stays within `widthM` / 2 of the circle's line, allowing up to `maxSeconds` outside at a time; says the furthest it ran off |
 | `throttle_held` | none (optional `maxGapSeconds` 0.3, `minThrottle` 0.05, `fromKmh` 0) | From the first moment on the throttle at `fromKmh` (pulling away and changing up before then is free) to the end, the throttle never drops under `minThrottle` for longer than `maxGapSeconds` |
@@ -157,6 +158,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `handbrake_pulls` | none (optional `count` 1, `minKmh` 5) | The handbrake goes on (over 0.5) exactly `count` times while moving |
 | `flick` | none (optional `fromGate` 1, `toGate` 2, `turn` 'left', `awayDeg` 30, `intoDeg` 60, `maxSeconds` 1.5) | Between the two gates the steering wheel goes at least `awayDeg` away from the turn, then at least `intoDeg` into it within `maxSeconds` (a Scandinavian flick) |
 | `throttle_on_between` | none (optional `fromGate` 2, `toGate` 3, `minThrottle` 0.5, `minSeconds` 0.5) | Between the two gates (the apex and the exit) the throttle is at `minThrottle` or more for at least `minSeconds` in total |
+| `airtime` | none (optional `minSeconds` 0, `maxSeconds`, `minForce` 50) | The longest stretch with all four wheels off the ground (each wheel's downforce under `minForce` N) is between `minSeconds` and `maxSeconds` |
 | `ran_wide` | none (optional `minM` 1, `maxM` 5, `fromGate` 1, `toGate` −1) | Between the two gates the car runs outside the course circle's line by `minM` to `maxM`: a mild push, not a trip off the circle |
 | `back_on_line_by_gate` | none (optional `gate` −1, `maxM` 1.5) | Where the car crosses the gate it is within `maxM` of the course circle's line |
 | `left_foot_brakes` | none (optional `minCount` 3, `minSeconds` 0.2, `minBrake` 0.05, `minThrottle` 0.05) | At least `minCount` brake applications made with the throttle still on, each held `minSeconds` or longer; braking with the throttle off says "you lifted to brake" |
@@ -269,6 +271,21 @@ no spin, 30 km/h out; silver 8° and 55 km/h; gold 10° and 60 km/h. The corner 
 are high: scripted runs with 0.6 throttle from just before the apex came out at 75–77 km/h with 4.6–11.9° of
 rotation; holding 46 km/h instead never passed 28% throttle.
 
+Off-Road Circuit drills (West Coast USA W5, Covet Gravel Rally). The circuit is a walled, ~10 m wide dusty-dirt
+loop (road nodes `dirttrack_1`–`32`, about 1045 m); its jumps are small for the Covet (the biggest, the kicker
+at `dirttrack_15b`, gives 0.3 s of air at 62 km/h), so E06 isn't built here.
+- D05: a left hairpin turning 180° across a crest. Bronze: 30–45 km/h at the Turn in gate, the Crest and Exit
+  gates, no post or wall touched, no spin; silver 33–42 km/h; gold 35–40 km/h. Scripted runs at 37–43 km/h
+  made the corner; 55 km/h is graded too fast.
+- D06: from the circuit's start, an uphill right-hander (9–14 %), the crest, a 7 % descent and a downhill
+  left-hander. Bronze: all gates, nothing touched, no lock over 0.5 s, no spin, in 32 s; silver 26.5 s; gold
+  24.5 s. Scripted: 38 km/h 29.6 s, 45 km/h 26.0 s, 50 km/h 24.2 s; 55 km/h hits the uphill corner's wall.
+- E05: out of a left-hander, 45 m to the kicker. Bronze: 40 km/h at the Crest gate, all four wheels off the
+  ground no more than 0.15 s, at most one steering correction after it, the Landing and Exit gates, no spin,
+  no more than 150 damage (from about 52 km/h the car lands nose-first and scrapes its bumper: 27–84);
+  silver 50 km/h; gold 54 km/h. Scripted: 46, 50 and 56 km/h stayed down; 57 km/h bottomed out once (1085);
+  66 km/h flew 0.3 s and landed hard (1508).
+
 C01 targets: C02's corner (a 32 m radius, under the 40 m the drill first asked for; its `venueNeeds` now
 allow 30 m). Bronze: the rear steps out 6°+ between the Turn in and Apex gates with no brake between them,
 no post touched, no handbrake, no spin, 25 km/h out; silver 10° and 40 km/h; gold 14° and 45 km/h. Scripted:
@@ -372,15 +389,15 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | D02 | Linked-corner sequencing | Corridor, contact, segment time, +8% of best | Automatic |
 | D03 | Decreasing-radius corners | Hard-stop detection, barrier damage, corridor, exit gate | Automatic |
 | D04 | Increasing-radius corners | Exit lane, throttle rising after apex, wheelspin, spin | Automatic |
-| D05 | Blind corners | Corridor, contact, steering direction before marker | Automatic |
-| D06 | Uphill and downhill corners | Exit gate, lockup, gear | Automatic |
+| D05 | Blind corners | Approach speed band, gates, posts, wall contact, spin | Automatic |
+| D06 | Uphill and downhill corners | Gates, posts, wall contact, lockup, spin, time | Automatic |
 | D07 | Road camber | Corridor, understeer/oversteer, which-side prompt | Hybrid |
 | D08 | Mixed-surface transitions | Gates, posts, stop zone, lockup, spin | Automatic |
 | E01 | Snow vs gravel vs tarmac | Corridor, contact, per-surface stats, observation prompt | Hybrid |
 | E02 | FWD technique | Rear slide before the apex, throttle after it, no handbrake, spin, posts, exit speed | Automatic |
 | E03 | RWD technique | Spin, corridor, wheelspin | Automatic |
 | E04 | AWD technique | Understeer, corridor, exit speed | Automatic |
-| E05 | Crest management | Airborne/landing, spin, exit heading | Automatic |
+| E05 | Crest management | Crest speed, airtime, steady exit, landing damage, spin | Automatic |
 | E06 | Jump takeoff and landing | Landing on road, rollover, damage | Automatic |
 | E07 | Rough terrain | Puncture, damage, rollover, corridor | Automatic |
 | E08 | Water crossings | Stall, damage, corridor, recovery use | Automatic |

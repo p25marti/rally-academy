@@ -29,7 +29,7 @@ Load ≈ 80 s (biggest map).
 | W2 | **BMP dirt arena** | (337, 96, ~) | DIRT_DUSTY | ≥ 64 × 64 m open, flat (4°), fenced, grandstands; figure-eight tyre marks already there |
 | W3 | **BMP dirt circle** | (265, 40, ~) | DIRT_DUSTY | ≈ 50 m circular infield, dead flat, light towers round the edge: a natural skidpad. Dirt to 23 m or more from the centre all round, the nearest obstacle 30 m out (measured 0.39.4). Venue `bmp-dirt-ring` starts on a 15 m ring round the centre, facing anticlockwise (B05); `bmp-dirt-arc` starts 25 m before the ring's south point, facing east along its tangent (B06, B07) |
 | W4 | Quarry | (729, −823, 158) | GRAVEL | Haul roads, terraces, spoil heaps; Spiral Descent for gradients. Cluttered |
-| W5 | Off-Road Circuit | (567, 27, 148) | DIRT_DUSTY / rocky | Rough dirt figure-eight with jumps |
+| W5 | Off-Road Circuit | (567, 27, 148) | DIRT_DUSTY / rocky | Walled dusty-dirt figure-eight, ~10 m wide, about 1045 m (road nodes `dirttrack_1`–`32`; the crossover bridge is at `dirttrack_23d`). Elevation 148–160 m: an uphill right at `2`–`4` (9–14 %), a 7 % descent at `11`, a kicker crest at `15a`–`15b` (24 % up, 18 % down; 0.3 s of air at 62 km/h in the Covet), and a left hairpin across a blind crest at `19a`–`19c`. Venues `offroad-blind-hairpin` (D05), `offroad-kicker` (E05); the circuit's own start for D06 (measured 0.39.4) |
 | W6? | Asphalt circle pad near BMP | (406, −122, 145) | ASPHALT | Candidate, not yet checked in a drill: found by `survey.py corners` (a 343° loop, radius ≈ 26–31 m, 9 m wide) and seen in the venue report as a large pad with a painted circle. Could suit circle drills on tarmac (B05, C06 variants) |
 
 ### Utah (`utah`): rally stages and desert

@@ -694,7 +694,8 @@ end
 -- A stable exit (A08): between two gates (default the last two) the steering doesn't swing back
 -- and forth. Unwinding the lock once is fine; each reversal of more than `minSwingDeg` degrees of
 -- steering wheel is a correction (`steer` is the wheel angle in degrees, electrics.steering).
--- rule: {type = 'steady_exit', fromGate = -2, toGate = -1, maxCorrections = 1, minSwingDeg = 10}
+-- `after` names where the window starts in the text (default 'the exit gate').
+-- rule: {type = 'steady_exit', fromGate = -2, toGate = -1, maxCorrections = 1, minSwingDeg = 10, after = 'the crest'}
 function E.steady_exit(rule, samples, ctx)
   local gates, err = gateList(ctx)
   if not gates then return false, err end
@@ -719,9 +720,10 @@ function E.steady_exit(rule, samples, ctx)
       end
     end
   end
-  if not ext then return false, 'No steering data after the exit gate' end
+  if not ext then return false, 'No steering data after ' .. (rule.after or 'the exit gate') end
   local text = corrections == 0 and 'Steady exit: no steering corrections'
-    or string.format('%d steering correction%s after the exit gate (limit %d)', corrections, corrections == 1 and '' or 's', max)
+    or string.format('%d steering correction%s after %s (limit %d)', corrections, corrections == 1 and '' or 's',
+      rule.after or 'the exit gate', max)
   return corrections <= max, text
 end
 
@@ -933,6 +935,37 @@ function E.throttle_on_between(rule, samples, ctx)
   return false, string.format('Only %.1f s on the throttle after the apex (peak %.0f%%): drive the front out', on, peak * 100)
 end
 
+-- Airtime (E05, E06): the longest stretch with all four wheels off the ground (each wheel's
+-- downforce under `minForce`, telemetry `w[].f`) is between `minSeconds` and `maxSeconds`.
+-- rule: {type = 'airtime', minSeconds = 0, maxSeconds = 0.15, minForce = 50}
+function E.airtime(rule, samples)
+  local minF, longest, since, seen = rule.minForce or 50, 0, nil, false
+  for _, s in ipairs(samples) do
+    local w = s.w or {}
+    if #w > 0 then
+      seen = true
+      local off = 0
+      for _, wheel in ipairs(w) do if (wheel.f or 0) < minF then off = off + 1 end end
+      if off == #w then
+        since = since or s.t
+        longest = math.max(longest, s.t - since)
+      else
+        since = nil
+      end
+    end
+  end
+  if not seen then return false, 'No wheel data for this run' end
+  local lo, hi = rule.minSeconds or 0, rule.maxSeconds or math.huge
+  if longest < lo then
+    return false, string.format('Only %.2f s in the air (target %g s+)', longest, lo)
+  end
+  if longest > hi then
+    return false, string.format('Wheels off the ground for %.2f s (limit %g s): ease off before the crest', longest, hi)
+  end
+  if longest == 0 then return true, 'All four wheels stayed on the ground' end
+  return true, string.format('%.2f s in the air (limit %g s)', longest, hi)
+end
+
 -- Understeer (B06) -----------------------------------------------------------------
 
 -- The front pushed wide: between two gates the car runs outside the course circle's line by `minM`
@@ -1023,6 +1056,7 @@ R.TYPES = {
   flick = {},
   handbrake_pulls = {},
   throttle_on_between = {},
+  airtime = {},
   back_on_line_by_gate = {},
 }
 
