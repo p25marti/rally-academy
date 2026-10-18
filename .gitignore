@@ -23,3 +23,6 @@ beamng.log
 
 # Venue reports (tools/ingame/survey.py report): local output, can be large
 venue-reports/
+
+# Scenario videos (tools/ingame/record.py): local output, large
+recordings/

@@ -99,6 +99,18 @@ Every graded run in a scenario also checks the HUD panel still fits (its content
 the 390 × 340 panel); an overflow fails the scenario even if it didn't ask. Their verdicts on the same inputs match the recorded fixtures, but physics varies run to run
 by a few tenths of a metre, so they check verdicts, not exact numbers.
 
+## Recording videos
+
+`python tools/ingame/record.py <scenario> ...` (or `--all` for every drill scenario) films scenarios from
+inside the game for previewing changes away from the rig: a recorder built in memory saves a JPG every
+1/20 s of simulation time with `createScreenshot2`, then ffmpeg encodes `recordings/<scenario>.mp4` (H.264,
+about 1.2 Mbit/s, under 30 MB for a three-minute scenario) and the frames go to the Recycle Bin. Each clip
+shows the scenario's pass and miss runs with the HUD.
+
+It needs an ffmpeg with an H.264 encoder (`libx264`, `libopenh264` or `h264_mf`): set `RA_FFMPEG`, or it is
+looked for on PATH and in apps' folders under Program Files and AppData (the owner's machine has one in
+MOZA Pit House). `recordings/` is git-ignored.
+
 ## Recording a fixture
 
 Recorded runs pin the grading rules to real physics (`tests/lua/test_fixtures.lua`):

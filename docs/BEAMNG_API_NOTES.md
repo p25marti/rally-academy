@@ -30,7 +30,9 @@ Target build: **BeamNG.drive 0.39.4** (build 20972). Update when you upgrade, an
 | Hooks `onExtensionLoaded()`, `onUpdate(dtReal, dtSim, dtRaw)` | lifecycle, timing | verified 0.39.4 |
 | Hooks `onClientEndMission(levelPath)` (map unloading) and `onClientPostStartMission(levelPath)` (map + car loaded) | per-map setups | verified 0.39.4 (Driver Training → smallgrid → Driver Training) |
 | Hook `onVehicleSwitched(oldId, newId, player)` | abandon a run on car switch | 0.39.4: switching mid-run returned to `setup`; an `onUpdate` id check is the fallback, so which one fired wasn't isolated |
-| The engine caches hook functions at load; replacing `M.onUpdate` at runtime has no effect | debugging | verified 0.39.4 |
+| The engine caches hook functions at load; replacing `M.onUpdate` at runtime has no effect | debugging | verified 0.39.4 — `extensions.hookUpdate('onUpdate')` rebuilds the cache |
+| An extension can be built in memory: `package.preload['name'] = function() return M end; extensions.load('name')` | the video recorder (`tools/ingame/record.py`) | verified 0.39.4 — survives `extensions.reload('rallyAcademy')` |
+| `createScreenshot2({filename, writeJPG, superSampling, rescaleFactor})` saves a frame (path relative to the user folder, no extension) | the video recorder, dev only (not in `mod/`) | verified 0.39.4 — asynchronous: JPGs at 0.5 scale land about 20 a second, so faster capture queues up and files keep arriving for minutes after; the game window can be in the background |
 | `dtSim` is 0 while physics is paused | pause-safe timer | verified 0.39.4 |
 | `be:getPlayerVehicle(0)` | player vehicle | verified 0.39.4 |
 | `veh:getID()`, `getPosition()`, `getVelocity()`, `getDirectionVector()`, `getDirectionVectorUp()` | snapshot, speed | verified 0.39.4 |

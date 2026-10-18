@@ -54,6 +54,7 @@ python tools/dev.py ingame             # list scenarios
 python tools/dev.py link               # live-link mod/ into the game (junction)
 python tools/dev.py log --ours         # the mod's lines from beamng.log
 python tools/dev.py ship -F msg.txt    # check --strict, then branch, commit, fast-forward main, push
+python tools/ingame/record.py --all    # videos of the drill scenarios in recordings/ (TESTING)
 ```
 
 On Windows, Lua tools run through WSL automatically ([DEVELOPMENT](docs/DEVELOPMENT.md#tooling)).
