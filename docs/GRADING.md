@@ -78,8 +78,7 @@ Detectors turn raw samples into events with a start time, an end time and a size
 
 Understeer is the hardest detector in general. Where the drill lays out the line (B06's course
 circle) it doesn't need a car model: how far the car runs outside the line is the push (`ran_wide`).
- Cone contact matters most because so many
-drills use it.
+Cone contact matters most because so many drills use it.
 
 ## 4. Measurements, run lifecycle and block statistics
 
