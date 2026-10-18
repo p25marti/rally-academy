@@ -75,6 +75,10 @@
 -- D01 (course): BMP dirt arena, Covet Gravel Rally in 2nd (sequential), pure pursuit along a cosine weave
 --      (±amplitude at each cone, 15 m apart) at a steady speed: gold = 32 km/h, ±2.4 m (13.6 s); silver =
 --      30, ±3 m (14.6 s); bronze = 26, ±3 m (16.2 s); clip = 38 km/h, ±3 m (hit cone 4).
+-- D08 (course): BMP run-up, Covet Gravel Rally, arcade gearbox, pure pursuit at 62 km/h braking to stop on the
+--      zone centre at a set deceleration (follow_path decel): gold = 4 m/s2 (0.5 m past the centre); silver =
+--      5.5 (1.7 m past); bronze = 5.8 (2.7 m past); overshoot = 6 (0.4 m past the zone); lockup = full brake
+--      from 125 m, on the tarmac (locked 1.7 s, 16 m short).
 -- A01: BMP dirt arena, the authored course from the venue start, 14 km/h with a pure-pursuit
 --      script (academy.follow_path, the a01 scenario's lines) and the handbrake for the stop;
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
@@ -441,6 +445,18 @@ function T.d01_slalom_rules_and_medals_still_agree_with_the_in_game_verdicts()
   end
   has(check(gradeCourse('d01_gold', 'D01'), 'cones_passed').text, 'All 6 cones passed on the correct side')
   has(check(gradeCourse('d01_clip', 'D01'), 'markers_clear').text, 'Clipped cone 4')
+end
+
+function T.d08_surface_change_rules_and_medals_still_agree_with_the_in_game_verdicts()
+  local want = {d08_gold = 'gold', d08_silver = 'silver', d08_bronze = 'bronze', d08_overshoot = false, d08_lockup = false}
+  for name, tier in pairs(want) do
+    local res, rec = gradeCourse(name, 'D08')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, tier, name .. ' medal')
+  end
+  has(check(gradeCourse('d08_overshoot', 'D08'), 'stop_zone').text, 'past the zone')
+  has(check(gradeCourse('d08_lockup', 'D08'), 'no_sustained_lockup').text, 'locked for')
 end
 
 local function ruleCheck(name, rule)

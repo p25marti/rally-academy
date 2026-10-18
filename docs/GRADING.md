@@ -7,7 +7,7 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Nineteen drills are graded automatically: **A01** (gate, cone and parking box, with medals),
+Twenty drills are graded automatically: **A01** (gate, cone and parking box, with medals),
 **A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
 medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
 on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
@@ -15,7 +15,7 @@ on a course, with medals), **A07** (racing line and exit speed through a corner,
 medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
 course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
 **B07** (catching an oversteer slide, with medals) **C01** (lift-off rotation into a corner, with medals), **C02** (brake-induced rotation into a corner, with
-medals), **D01** (six-cone slalom, with medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
+medals), **D01** (six-cone slalom, with medals), **D08** (braking across a tarmac-to-gravel change, with medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
 `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
@@ -255,6 +255,13 @@ Bronze: every cone passed on its side, none touched, no spin, 25 km/h at the Fin
 gold 13.8 s. Scripted: a ±3 m weave clears the cones at 30 km/h (14.6 s) and hits one from 34 km/h; ±2.4 m
 holds 32 km/h (13.6 s).
 
+D08 targets (BMP run-up, Covet Gravel Rally): the start line's tarmac patch runs from 8 m before the line to 22 m
+past it (surveyed with the car's wheels, 0.39.4); a Tarmac gate at the line, a Gravel gate 2.5 m left 24 m on,
+and a stop zone 40 m past the line (still on the flat). Bronze: from 55 km/h, both gates, the car's centre
+in a 6 x 5 m zone, no lock over 0.5 s, no spin; silver 4 x 3.5 m and 0.3 s; gold 2 x 2.5 m and 0.2 s.
+Scripted from 62 km/h: braking at 4 m/s2 stops 0.5 m past the centre (gold), 5.5 m/s2 1.7 m (silver), 5.8
+m/s2 2.7 m (bronze), 6 m/s2 just past the zone; a full brake from the tarmac locks the wheels for 1.7 s.
+
 C01 targets: C02's corner (a 32 m radius, under the 40 m the drill first asked for; its `venueNeeds` now
 allow 30 m). Bronze: the rear steps out 6°+ between the Turn in and Apex gates with no brake between them,
 no post touched, no handbrake, no spin, 25 km/h out; silver 10° and 40 km/h; gold 14° and 45 km/h. Scripted:
@@ -361,7 +368,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | D05 | Blind corners | Corridor, contact, steering direction before marker | Automatic |
 | D06 | Uphill and downhill corners | Exit gate, lockup, gear | Automatic |
 | D07 | Road camber | Corridor, understeer/oversteer, which-side prompt | Hybrid |
-| D08 | Mixed-surface transitions | Corridor, cone contact, surface tracking | Automatic |
+| D08 | Mixed-surface transitions | Gates, posts, stop zone, lockup, spin | Automatic |
 | E01 | Snow vs gravel vs tarmac | Corridor, contact, per-surface stats, observation prompt | Hybrid |
 | E02 | FWD technique | Understeer, corridor, no handbrake, exit heading | Automatic |
 | E03 | RWD technique | Spin, corridor, wheelspin | Automatic |

@@ -2960,8 +2960,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Tarmac start line onto gravel.",
+        "venue": "bmp-gravel-runup",
+        "areaHint": "BMP gravel run-up and start line (MAPS W1): 110 m of gravel, the tarmac start-line patch (from 8 m before the line to 22 m past it), then gravel again; a Tarmac gate, a Gravel gate 2.5 m to the left and a stop zone 40 m past the line.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 80,
@@ -2978,16 +2978,92 @@
           ]
         }
       },
-      "instructions": "Cross tarmac→gravel while turning gently; adapt braking point and steering to lower grip.",
-      "resetInstructions": "Stationary 80 m before identified pavement/gravel boundary.",
-      "props": "If geometry differs, select a different confirmed paved-to-gravel interface.",
+      "instructions": "Arrive at the Tarmac gate at about 60 km/h and brake on the tarmac. As the car crosses onto the gravel, ease the brake to the grip that's left and steer gently left through the Gravel gate, then stop in the zone without locking the wheels.",
+      "resetInstructions": "Go to drill puts you on the gravel run-up 120 m before the start line. Move course here re-lays the course from where you are.",
+      "props": "None: the gates and stop zone are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No drift beyond marked road edge and no last-second correction that hits cones.",
-        "metricToRecord": "Clean transitions / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "From 55 km/h or more, through the Tarmac and Gravel gates without touching a post, stopped with the car's centre in the 6 x 5 m zone, no wheel locked over 0.5 s, no spin. Silver: a 4 x 3.5 m zone and 0.3 s. Gold: 2 x 2.5 m and 0.2 s.",
+        "metricToRecord": "Clean surface-change stops / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "entry_speed",
+            "minKmh": 55
+          },
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "stop_zone",
+            "lengthM": 6,
+            "widthM": 5
+          },
+          {
+            "type": "no_sustained_lockup",
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          }
+        ],
+        "endWhen": "stopped",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 122,
+              "widthM": 6,
+              "label": "Tarmac"
+            },
+            {
+              "x": -2.5,
+              "y": 146,
+              "widthM": 5,
+              "headingDeg": -6,
+              "label": "Gravel"
+            }
+          ],
+          "zone": {
+            "x": -3,
+            "y": 162,
+            "label": "Stop zone"
+          }
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "stop_zone",
+                "lengthM": 4,
+                "widthM": 3.5
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "stop_zone",
+                "lengthM": 2,
+                "widthM": 2.5
+              },
+              {
+                "type": "no_sustained_lockup",
+                "maxSeconds": 0.2
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

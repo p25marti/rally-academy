@@ -673,6 +673,32 @@ def slalom():
     return p
 
 
+def _surface_stop_run(decel, full_brake_at=None):
+    """D08: 62 km/h up the run-up, across the tarmac patch onto gravel and 2.5-3 m left, stopping on the zone
+    centre at `decel` m/s2 (arcade gearbox); or a full brake from `full_brake_at` metres."""
+    path = ([(0, y) for y in range(0, 123)] + [(-2.5 * (y - 122) / 24, y) for y in range(123, 147)]
+            + [(-2.5 - 0.5 * (y - 146) / 16, y) for y in range(147, 163)])
+
+    def pedals(_v, trav):
+        return (0.0, 1.0) if full_brake_at is not None and trav >= full_brake_at else None
+    return A.course_run("D08", path, pedals=pedals, kmh=62, decel=decel, max_throttle=1.0, timeout=40, stop_within=0.3)
+
+
+@scenario
+def surface():
+    """D08 on the BMP run-up (Covet Gravel Rally): braking from 62 km/h across the tarmac patch onto gravel and
+    stopping in the zone earns a medal; a full brake from the tarmac locks the wheels and misses."""
+    p = []
+    A.drill_session("D08")
+    s = _surface_stop_run(4)
+    expect(p, "a controlled stop across the surface change earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _surface_stop_run(4, full_brake_at=125)
+    expect(p, "a locked-wheel stop misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("D08")
+    return p
+
+
 @scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""

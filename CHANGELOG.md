@@ -112,6 +112,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   late-apex gate on the inside, the exit gate, then a straight run to the finish with no steering
   corrections ("2 steering corrections after the exit gate"). Course gates can now face a corner's
   road (`headingDeg`).
+- **D08 mixed-surface transitions are graded automatically, with medals**, on the BMP run-up: brake on
+  the start line's tarmac, ease off as the car crosses onto gravel while steering gently left, and stop in
+  a drawn zone without locking the wheels. Medals for smaller zones and less lockup.
 - **D01 slaloms are graded automatically, with medals**, on the BMP dirt arena: weave through six
   drawn cones 15 m apart without touching one ("Went the wrong side of cone 3 (keep it on your right)"
   otherwise) and through the Finish gate, with time medals (14.8 s, 13.8 s).
