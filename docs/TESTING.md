@@ -77,8 +77,8 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `liftoff` | C01 on the BMP downhill left: a lift at turn-in rotates the car for a pass (up to five tries: scripted lifts pass a third to half the time); too slow misses |
 | `figure8` | C07 on the BMP dirt arena: a clean figure-eight earns a medal; too fast runs wide and misses |
 | `hairpin` | C04 on the BMP dirt arena: one handbrake pull round the pivot cone earns a medal; no handbrake misses |
-| `flick` | C08 on the BMP downhill left: a lift-and-flick passes (up to three tries: scripted flicks rotate the car about half the time); no flick misses |
-| `rotation` | C02 on the BMP downhill left: a brake pulse after turn-in rotates the car for a medal; no rotation misses |
+| `flick` | C08 on the BMP downhill left: a lift-and-flick passes (up to five tries: scripted flicks pass a third to half the time); no flick misses |
+| `rotation` | C02 on the BMP downhill left: a brake pulse after turn-in rotates the car for a medal (up to three tries); no rotation misses |
 | `understeer` | B06 on the BMP dirt circle: a push corrected by lifting earns a medal; too slow to push, or no lift, misses |
 | `oversteer` | B07 on the BMP dirt circle: a hard brake at turn-in steps the rear out and the caught slide earns a medal; no slide misses |
 | `circle` | B05 on the BMP dirt circle: two laps on the throttle with brake dabs earn gold; no dabs, or lifting off to brake, miss |
