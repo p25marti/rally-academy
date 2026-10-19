@@ -277,6 +277,36 @@ snow) generated from images, linked textures only. Move B01 (braking) and C04 (h
 with one variant per surface, measure every pad with `audit.py`, and compare load time and feel against the
 stock venues before deciding on more.
 
+**Prototype (built 2026-10-19 on 0.40.0, not shipped).** `python tools/mapgen/build.py` writes
+`mod/levels/ra_proving_ground/` from `tools/mapgen/proving_ground.json`: a 1 km² flat terrain (z 110 m) with
+120 x 700 m strips of gravel, asphalt, snow and dirt and a mud pad on grass, using the template's terrain
+materials and sky. The level is generated output: gitignored and left out of the mod zip until the owner
+decides to ship a map. Load it with `freeroam_freeroam.startFreeroam('levels/ra_proving_ground/info.json')`.
+What we learned:
+- *It's cheap.* No World Editor: about 150 lines of Python write every file (terrain, materials, objects). The
+  level loads in about 4 s cold and 1 s on reload; editing the layout and rebuilding is a seconds-long loop,
+  and the game hot-reloads a changed `.ter` even without a reload.
+- *Surfaces are exact.* Wheel telemetry and `surface.py` read 100 % GRAVEL / ASPHALT / SNOW / DIRT / MUD /
+  GRASS on the matching pads. Building it found a `surface.py` bug that also skewed the WCUSA audit (terrain
+  counted by material name, not ground model): the BMP arena is DIRT_DUSTY (grip 0.68), not DIRT.
+- *Gotchas* (in BEAMNG_API_NOTES): unique terrain material names (`ra_*`), a `MissionGroup` root file, and a
+  `.ter.depth.png` for fluids.
+- *Per-surface drills really differ* (scripted, Covet, one run each, so about ±1 m):
+
+  | Pad | B01 at 5 m/s² (Student Driver) | Full brake from 70 km/h | C04 hairpin (Gravel Rally) |
+  | --- | --- | --- | --- |
+  | Asphalt | gold | 23.9 m (effective μ 0.81) | miss: clipped the cone, 38° slide |
+  | Gravel | silver | 26.4 m (0.73) | gold, 31° slide |
+  | Dirt | silver | 26.3 m (0.73) | gold, 33° slide |
+  | Snow | miss: locked 2.3 s, stopped 5.9 m past | 38.2 m (0.50) | gold, 50° slide |
+
+  So variants need per-surface targets (B01's 5 m/s² is impossible on snow; C04's line overshoots on
+  asphalt), probably scaled from each surface's friction.
+- *Still open:* looks (a bare grass plane with a hard terrain edge; no backdrop or props), painted
+  markings, hills and corners (heights are generated flat; the `.ter` takes any heightmap), and where drill
+  venues on it would live (venues.json works as is). The trial script was a scratch file; a real
+  per-surface trial tool would come with variants.
+
 ## Template
 
 ```markdown

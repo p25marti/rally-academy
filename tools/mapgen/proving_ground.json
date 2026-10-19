@@ -1,0 +1,76 @@
+{
+  "_comment": "Rally Academy proving ground (prototype). Generated into mod/levels/<name>/ by tools/mapgen/build.py. World x right (east), y up (north), metres; the terrain is centred on 0, 0. Materials are the stock template level's terrain materials (their textures stay in the game).",
+  "name": "ra_proving_ground",
+  "title": "Rally Academy Proving Ground",
+  "description": "A flat practice ground for the Rally Academy drills: identical strips of gravel, asphalt, snow and dirt.",
+  "size": 1024,
+  "terrain": {
+    "baseZ": 100,
+    "maxHeight": 50,
+    "groundZ": 110
+  },
+  "filler": "Grass",
+  "pads": [
+    {
+      "id": "gravel",
+      "material": "gravel",
+      "x": [
+        -435,
+        -315
+      ],
+      "y": [
+        -350,
+        350
+      ]
+    },
+    {
+      "id": "asphalt",
+      "material": "Asphalt",
+      "x": [
+        -185,
+        -65
+      ],
+      "y": [
+        -350,
+        350
+      ]
+    },
+    {
+      "id": "snow",
+      "material": "snow",
+      "x": [
+        65,
+        185
+      ],
+      "y": [
+        -350,
+        350
+      ]
+    },
+    {
+      "id": "dirt",
+      "material": "Dirt",
+      "x": [
+        315,
+        435
+      ],
+      "y": [
+        -350,
+        350
+      ]
+    },
+    {
+      "id": "mud",
+      "material": "Mud",
+      "x": [
+        -80,
+        80
+      ],
+      "y": [
+        400,
+        480
+      ]
+    }
+  ],
+  "spawn": "gravel"
+}

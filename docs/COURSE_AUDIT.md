@@ -6,32 +6,32 @@ Each graded drill's course, along the line the car drove in its best recorded ru
 
 | Drill | Run | Length | Rise | Grade | Tilt | Surface (grip) | Note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A01 | `a01_gold` | 33 m | 0.4 m | 4.7 % | 6.8° | DIRT 100 % (grip 0.70) | flat, one surface |
+| A01 | `a01_gold` | 33 m | 0.4 m | 4.7 % | 6.8° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
 | A02 | `a02_gold` | 62 m | 0.6 m | 2.6 % | 4.4° | GRAVEL 57 %, ASPHALT 43 % (grip 0.82) | mixed surface |
-| A03 | `a03_clean` | 155 m | 0.8 m | 7.8 % | 9.9° | DIRT 100 % (grip 0.70) | flat, one surface |
+| A03 | `a03_clean` | 155 m | 0.8 m | 7.8 % | 9.9° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
 | A04 | `a04_fast` | 82 m | 1.9 m | 7.2 % | 10.3° | GRAVEL 98 %, GRASS 2 % (grip 0.69) | flat, one surface |
-| A05 | `a05c_gold` | 57 m | 0.8 m | 7.1 % | 7.7° | DIRT 100 % (grip 0.70) | flat, one surface |
+| A05 | `a05c_gold` | 57 m | 0.8 m | 7.1 % | 7.7° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
 | A07 | `a07_gold` | 155 m | 14.2 m | 25.2 % | 22.2° | GRAVEL 99 %, GRASS 1 % (grip 0.69) | steep, tilted |
 | A08 | `a08_gold` | 183 m | 15.1 m | 24.9 % | 22.2° | GRAVEL 98 %, GRASS 2 % (grip 0.69) | steep, tilted |
-| B01 | `b01c_gold` | 150 m | 1.0 m | 9.5 % | 9.9° | DIRT 100 % (grip 0.70) | sloped |
-| B02 | `b02c_gold` | 150 m | 0.8 m | 7.8 % | 9.2° | DIRT 100 % (grip 0.70) | flat, one surface |
-| B04 | `b04_gold` | 155 m | 14.3 m | 24.8 % | 22.8° | GRAVEL 99 %, GRASS 1 %, DIRT 1 % (grip 0.69) | steep, tilted |
-| B05 | `b05_gold` | 195 m | 0.4 m | 3.1 % | 5.7° | DIRT 91 %, GRAVEL 9 % (grip 0.70) | flat, one surface |
-| B06 | `b06_gold` | 77 m | 0.4 m | 3.2 % | 5.1° | DIRT 97 %, GRAVEL 3 % (grip 0.70) | flat, one surface |
-| B07 | `b07_silver` | 71 m | 0.3 m | 2.9 % | 3.6° | DIRT 97 %, GRAVEL 3 % (grip 0.70) | flat, one surface |
-| C01 | `c01_silver` | 158 m | 14.2 m | 28.2 % | 20.9° | GRAVEL 93 %, GRASS 5 %, DIRT 2 % (grip 0.69) | steep, tilted |
+| B01 | `b01c_gold` | 150 m | 1.0 m | 9.5 % | 9.9° | DIRT_DUSTY 100 % (grip 0.68) | sloped |
+| B02 | `b02c_gold` | 150 m | 0.8 m | 7.8 % | 9.2° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| B04 | `b04_gold` | 155 m | 14.3 m | 24.8 % | 22.8° | GRAVEL 99 %, GRASS 1 %, DIRT_DUSTY 1 % (grip 0.69) | steep, tilted |
+| B05 | `b05_gold` | 195 m | 0.4 m | 3.1 % | 5.7° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| B06 | `b06_gold` | 77 m | 0.4 m | 3.2 % | 5.1° | DIRT_DUSTY 99 %, GRASS 1 % (grip 0.68) | flat, one surface |
+| B07 | `b07_silver` | 71 m | 0.3 m | 2.9 % | 3.6° | DIRT_DUSTY 99 %, GRASS 1 % (grip 0.68) | flat, one surface |
+| C01 | `c01_silver` | 158 m | 14.2 m | 28.2 % | 20.9° | GRAVEL 93 %, GRASS 5 %, DIRT_DUSTY 2 % (grip 0.69) | steep, tilted |
 | C02 | `c02_gold` | 159 m | 14.2 m | 34.8 % | 36.5° | GRAVEL 93 %, GRASS 7 % (grip 0.68) | steep, tilted |
-| C04 | `c04_gold` | 79 m | 0.8 m | 7.3 % | 7.7° | DIRT 100 % (grip 0.70) | flat, one surface |
-| C07 | `c07_gold` | 171 m | 0.8 m | 6.6 % | 8.9° | DIRT 100 % (grip 0.70) | flat, one surface |
-| C08 | `c08_bronze` | 159 m | 14.1 m | 32.9 % | 28.6° | GRAVEL 88 %, GRASS 8 %, DIRT 4 % (grip 0.68) | steep, tilted |
-| D01 | `d01_gold` | 120 m | 0.7 m | 6.8 % | 8.1° | DIRT 99 %, GRAVEL 1 % (grip 0.70) | flat, one surface |
-| D03 | `d03_gold` | 102 m | 3.4 m | 10.6 % | 8.9° | GRAVEL 94 %, GRASS 6 %, DIRT 1 % (grip 0.69) | sloped |
+| C04 | `c04_gold` | 79 m | 0.8 m | 7.3 % | 7.7° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| C07 | `c07_gold` | 171 m | 0.8 m | 6.6 % | 8.9° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| C08 | `c08_bronze` | 159 m | 14.1 m | 32.9 % | 28.6° | GRAVEL 88 %, GRASS 8 %, DIRT_DUSTY 4 % (grip 0.68) | steep, tilted |
+| D01 | `d01_gold` | 120 m | 0.7 m | 6.8 % | 8.1° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| D03 | `d03_gold` | 102 m | 3.4 m | 10.6 % | 8.9° | GRAVEL 94 %, GRASS 6 %, DIRT_DUSTY 1 % (grip 0.69) | sloped |
 | D04 | `d04_gold` | 84 m | 6.4 m | 17.1 % | 11.5° | GRAVEL 90 %, GRASS 10 % (grip 0.68) | steep |
-| D05 | `d05_gold` | 149 m | 6.8 m | 21.9 % | 20.4° | DIRT 100 % (grip 0.70) | steep, tilted |
-| D06 | `d06_gold` | 316 m | 6.5 m | 11.0 % | 13.1° | DIRT 100 % (grip 0.70) | sloped, tilted |
+| D05 | `d05_gold` | 149 m | 6.8 m | 21.9 % | 20.4° | DIRT_DUSTY 100 % (grip 0.68) | steep, tilted |
+| D06 | `d06_gold` | 316 m | 6.5 m | 11.0 % | 13.1° | DIRT_DUSTY 100 % (grip 0.68) | sloped, tilted |
 | D08 | `d08_gold` | 162 m | 1.9 m | 6.8 % | 8.1° | GRAVEL 81 %, ASPHALT 19 % (grip 0.74) | mixed surface |
-| E02 | `e02_gold` | 157 m | 14.4 m | 29.9 % | 24.9° | GRAVEL 95 %, GRASS 3 %, DIRT 2 % (grip 0.69) | steep, tilted |
-| E05 | `e05_gold` | 176 m | 3.6 m | 24.6 % | 28.5° | DIRT 100 % (grip 0.70) | steep, tilted |
+| E02 | `e02_gold` | 157 m | 14.4 m | 29.9 % | 24.9° | GRAVEL 95 %, GRASS 3 %, DIRT_DUSTY 2 % (grip 0.69) | steep, tilted |
+| E05 | `e05_gold` | 176 m | 3.6 m | 24.6 % | 28.5° | DIRT_DUSTY 100 % (grip 0.68) | steep, tilted |
 
 ## Surface grip
 

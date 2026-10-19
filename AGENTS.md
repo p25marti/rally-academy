@@ -23,6 +23,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
+| `tools/mapgen/` | Proving-ground prototype: generates a level into `mod/levels/` (gitignored, not shipped; [IDEAS](docs/IDEAS.md)) |
 | `docs/` | Everything else; `docs/decisions/` = ADRs |
 | `reference/` | Historical design input; not shipped, not authoritative |
 

@@ -7,8 +7,9 @@ bridges, buildings), plus each ground model's friction. No car placement.
   core_environment.groundModels[name].cdata                                                         friction etc.
 
 These name the physics ground model (DIRT, GRAVEL, ASPHALT), which isn't always the name wheel telemetry
-reports (the BMP dirt arena and circle read DIRT here and DIRT_DUSTY on the wheels). Aliases (BEACHSAND for SAND,
-DIRT_ROCKY for DIRT_DUSTY, ...) are counted under their own names, so they're folded into their parent. About 0.2 ms a call at a 10 m radius (0.40.0), so it's for checking places, not sampling whole maps.
+reports. Terrain tiles are matched by terrain material name, so each material is counted by name and reported
+under its ground model (the BMP dirt arena's material "dirt" is DIRT_ROCKY, an alias of DIRT_DUSTY, which is
+what the wheels report). Aliases are folded into their parent. About 0.2 ms a call at a 10 m radius (0.40.0), so it's for checking places, not sampling whole maps.
 """
 import json
 
@@ -49,6 +50,17 @@ def counts(points, radius=5.0, statics=True):
         res = lua(f"""local P = {{{pts}}}
 local names = {{}}
 for name, _ in pairs(core_environment.groundModels) do if name ~= '' then names[#names + 1] = name end end  -- aliases count under their own names
+-- Terrain tiles are matched by the terrain material's own name, not its ground model (0.40.0: a material
+-- "ra_gravel" with ground model GRAVEL counts under "ra_gravel" only), so count each material by name and
+-- report it under its ground model.
+local tmats = {{}}
+local tb = core_terrain.getTerrain and core_terrain.getTerrain()
+if tb then
+  for i = 0, tb:getMaterialCount() - 1 do
+    local m = tb:getMaterial(i)
+    tmats[#tmats + 1] = {{tostring(tb:getMaterialName(i)), tostring(m and m:getGroundmodelName() or '')}}
+  end
+end
 local col, r = ColorF(1, 1, 1, 1), {min(60.0, radius)}
 {"Engine.setStaticColDebugEnabled(true)" if statics else ""}
 local ok, err = pcall(function()
@@ -62,11 +74,11 @@ local ok, err = pcall(function()
     local under = be:getSurfaceHeightBelow(vec3(p[1], p[2], z + 1.5))
     local onMesh = under and under > tz + 0.15 and under < z + 1.5
     local t, s = {{}}, {{}}
-    for _, name in ipairs(names) do
-      local a = debugDrawer:renderGroundModelDebug(0, name, col, r, 1, pos, 1, true) or 0
-      if a > 0 then t[#t + 1] = name .. '=' .. a end
-      {"local b = debugDrawer:renderStaticColDebug(0, name, col, r, 1, pos, 1, true) or 0 if b > 0 then s[#s + 1] = name .. '=' .. b end" if statics else ""}
+    for _, tm in ipairs(tmats) do
+      local a = debugDrawer:renderGroundModelDebug(0, tm[1], col, r, 1, pos, 1, true) or 0
+      if a > 0 then t[#t + 1] = (tm[2] ~= '' and tm[2] or tm[1]) .. '=' .. a end
     end
+    {"for _, name in ipairs(names) do local b = debugDrawer:renderStaticColDebug(0, name, col, r, 1, pos, 1, true) or 0 if b > 0 then s[#s + 1] = name .. '=' .. b end end" if statics else ""}
     rows[i] = table.concat(t, ' ') .. '|' .. table.concat(s, ' ') .. '|' .. (onMesh and '1' or '0')
   end
   _G.__raSurface = table.concat(rows, ';')
@@ -76,7 +88,14 @@ if not ok then error(err) end
 return _G.__raSurface""")
         for row in str(res).split(";"):
             terr, stat, on_mesh = (row.split("|") + ["", "0"])[:3]
-            parse = lambda s: {kv.split("=")[0]: int(kv.split("=")[1]) for kv in s.split() if "=" in kv}  # noqa: E731
+
+            def parse(text):
+                d = {}
+                for kv in text.split():
+                    if "=" in kv:
+                        g, n = kv.rsplit("=", 1)
+                        d[g.upper()] = d.get(g.upper(), 0) + int(n)  # two materials can share a ground model
+                return d
             st = parse(stat)
             if on_mesh != "1":  # meshes there are overhead or beside the track, not under the wheels
                 st = {g: n for g, n in st.items() if g in NOT_GROUND}
