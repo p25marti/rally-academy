@@ -65,6 +65,12 @@ junction (Windows) or symlink pointing at this repo's `mod/`. BeamNG loads it
 as an unpacked mod, so saving a file in your editor changes what the game sees,
 with no zip and no copy.
 
+> **After a game update, re-run `python tools/dev.py link`.** The 0.40 update removed
+> `mods/unpacked/` (the junction with it; the repo was untouched) and blocked every mod for the first
+> session. In game, the "enable mods" prompt, or `core_modmanager.enableModsAfterUpdate()` followed by
+> `core_modmanager.initDB()`, turns them back on. Updates can also reset the default HUD layouts; switch
+> back to yours with `Alt+Shift+U` → layout → Use Layout.
+
 > If BeamNG ever fails to follow the junction, use `python tools/dev.py link --copy --force`
 > and re-run it after each change. Note which one worked in BEAMNG_API_NOTES.
 
