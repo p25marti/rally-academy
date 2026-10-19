@@ -162,7 +162,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `ran_wide` | none (optional `minM` 1, `maxM` 5, `fromGate` 1, `toGate` −1) | Between the two gates the car runs outside the course circle's line by `minM` to `maxM`: a mild push, not a trip off the circle |
 | `back_on_line_by_gate` | none (optional `gate` −1, `maxM` 1.5) | Where the car crosses the gate it is within `maxM` of the course circle's line |
 | `left_foot_brakes` | none (optional `minCount` 3, `minSeconds` 0.2, `minBrake` 0.05, `minThrottle` 0.05) | At least `minCount` brake applications made with the throttle still on, each held `minSeconds` or longer; braking with the throttle off says "you lifted to brake" |
-| `progressive_downshifts` | `toGear` | After the highest gear reached, the car goes down one gear at a time to `toGear` (3→2, not 4→2); neutral and reverse are skipped, going lower at the stop is fine |
+| `progressive_downshifts` | `toGear` (optional `minHoldSeconds` 0.3: a gear counts once held that long, so a blip while shifting up isn't a downshift) | After the highest gear reached, the car goes down one gear at a time to `toGear` (3→2, not 4→2); neutral and reverse are skipped, going lower at the stop is fine |
 | `no_over_rev` | `maxRpm` | The engine never spins past `maxRpm` (the Covet Student Driver's limiter is 6500 rpm); names the gear and speed where it did |
 | `time_to_speed` | `kmh`, `maxSeconds` | The car reaches `kmh` within `maxSeconds` of moving off (the run's start mark, about 1 m/s, so the clutch bite before it isn't counted): A02's 0–40 km/h time |
 
@@ -205,7 +205,7 @@ silver 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s; gold 3.5 s, 0.
 Scripted with the arcade gearbox: 2.6 s flat out (gold), 3.4 s at 60% throttle with a 0.6–0.7 s
 shift (bronze). The targets leave room for a real clutch and manual shift; check them on the rig.
 
-A03 targets (Covet Student Driver, BMP run-up): bronze is through the 60 km/h gate at 55–75 km/h in
+A03 targets (Covet Student Driver, BMP dirt arena's long straight, all dirt; moved off the run-up in 0.40, whose braking crossed the start line's tarmac): bronze is through the 60 km/h gate at 55–75 km/h in
 3rd or higher, down one gear at a time to 2nd, under 6700 rpm, shifts under 1 s, no lock over
 0.5 s, stopped in the 12 × 6 m box; silver: under 6300 rpm, shifts under 0.6 s, locks under 0.3 s,
 a box 1 m smaller all round; gold: under 6000 rpm, 0.4 s, 0.15 s, 1.5 m smaller. The Covet tops out

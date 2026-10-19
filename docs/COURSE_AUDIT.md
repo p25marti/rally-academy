@@ -8,7 +8,7 @@ Each graded drill's course, along the line the car drove in its best recorded ru
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A01 | `a01_gold` | 33 m | 0.4 m | 4.7 % | 6.8° | DIRT 100 % (grip 0.70) | flat, one surface |
 | A02 | `a02_gold` | 62 m | 0.6 m | 2.6 % | 4.4° | GRAVEL 57 %, ASPHALT 43 % (grip 0.82) | mixed surface |
-| A03 | `a03_clean` | 155 m | 1.8 m | 6.8 % | 6.8° | GRAVEL 78 %, ASPHALT 21 % (grip 0.75) | mixed surface |
+| A03 | `a03_clean` | 155 m | 0.8 m | 7.8 % | 9.9° | DIRT 100 % (grip 0.70) | flat, one surface |
 | A04 | `a04_fast` | 82 m | 1.9 m | 7.2 % | 10.3° | GRAVEL 98 %, GRASS 2 % (grip 0.69) | flat, one surface |
 | A05 | `a05c_gold` | 57 m | 0.8 m | 7.1 % | 7.7° | DIRT 100 % (grip 0.70) | flat, one surface |
 | A07 | `a07_gold` | 155 m | 14.2 m | 25.2 % | 22.2° | GRAVEL 99 %, GRASS 1 % (grip 0.69) | steep, tilted |

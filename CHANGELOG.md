@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **A03 downshifting also moved to the all-dirt straight**, and a gear now counts only once it's held
+  0.3 s: 0.40's sequential gearbox can blip 3-2-3 while shifting up, which read as a downshift.
 - **B01 threshold braking and B02 lockup recovery moved to a flat, all-dirt straight** (the BMP dirt
   arena's long straight, new venue bmp-dirt-arena-long). On the run-up their braking crossed the start
   line's tarmac patch onto gravel, so grip changed mid-stop; now the whole stop is on one surface.

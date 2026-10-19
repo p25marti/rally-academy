@@ -168,6 +168,16 @@ function T.staying_in_a_high_gear_or_never_climbing_fails()
   eq(low.text, 'Never above 2nd, so nothing to downshift', 'never above 2nd')
 end
 
+-- Found on 0.40.0: the sequential box blipped 3 -> 2 -> 3 in a tenth of a second while shifting up.
+function T.a_gear_blip_while_shifting_up_is_not_a_downshift()
+  local blip = gears({{1, 1}, {2, 1}, {3, 0.1}, {0, 0.03}, {2, 0.03}, {0, 0.03}, {3, 3}})
+  local stay = check({{type = 'progressive_downshifts', toGear = 2}}, blip)
+  eq(stay.ok, false, 'a blip is not a downshift')
+  eq(stay.text, 'Stayed in 3rd: downshift to 2nd as you slow', 'text')
+  local real = gears({{1, 1}, {2, 1}, {3, 0.1}, {0, 0.03}, {2, 0.03}, {0, 0.03}, {3, 2}, {2, 1}})
+  eq(check({{type = 'progressive_downshifts', toGear = 2}}, real).text, 'Downshifted 3→2', 'a held downshift still counts')
+end
+
 function T.over_rev_names_the_gear_and_speed()
   local c = check({{type = 'no_over_rev', maxRpm = 6700}}, gears({{3, 1, 5000}, {2, 0.2, 7300}, {2, 1, 5000}}))
   eq(c.ok, false, 'over-revved')

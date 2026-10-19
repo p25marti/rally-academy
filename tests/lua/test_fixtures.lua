@@ -18,9 +18,10 @@
 -- A02 (course, ends at the 40 km/h gate): BMP start straight from the venue start, pure-pursuit
 --      script along the centre line; gold = full throttle (0-40 in 2.6 s), bronze = 0.4 throttle
 --      (a 0.6 s shift misses silver), slow = 34 km/h cap (too slow at the gate).
--- A03 (course): BMP run-up, sequential gearbox with scripted gears (1st, 2nd at 25 km/h, 3rd at 45,
---      to 61 km/h at the gate, then braking): clean = down to 2nd at 40 km/h (gold); skip = 3rd
---      straight to 1st; stay = 3rd to the stop. No over-rev was recorded: the sequential box seems
+-- A03 (course): BMP dirt arena's long straight (venue bmp-dirt-arena-long; 0.40.0), sequential gearbox with
+--      scripted gears (1st, 2nd at 25 km/h, 3rd at 45, to 61 km/h at the gate, then braking at 2 m/s2):
+--      clean = down to 2nd at 40 km/h (gold); skip = 3rd straight to 1st; stay = 3rd to the stop (the box
+--      blipped 3-2-3 while shifting up, which progressive_downshifts now ignores). No over-rev was recorded: the sequential box seems
 --      to refuse a downshift that would over-rev, so no_over_rev is unit-tested only.
 -- A04 (course): BMP run-up, three gates 25 m apart, arcade gearbox, throttle-only speed hold:
 --      steady = 30.5 km/h target (29.3 / 30.0 / 29.1 at the gates: gold); fast = 40 km/h after 60 m.

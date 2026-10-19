@@ -248,8 +248,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line: the 60 km/h gate 70 m in, the stop box on the flat 35 m past the line.",
+        "venue": "bmp-dirt-arena-long",
+        "areaHint": "BMP dirt arena (MAPS W2), the long straight: the 60 km/h gate 70 m in, the stop box 155 m from the start, all on level dirt.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 200,
@@ -265,7 +265,7 @@
         }
       },
       "instructions": "Accelerate through the gears to 60 km/h at the 60 km/h gate, then brake and downshift one gear at a time to 2nd, and stop in the stop box. No over-revving, no lockup, no stall.",
-      "resetInstructions": "Go to drill puts you on the run-up with the gate and stop box laid out ahead. Move course here re-lays it from where you are.",
+      "resetInstructions": "Go to drill puts you at the start of the arena's long straight with the gate and stop box laid out ahead. Move course here re-lays it from where you are.",
       "props": "None: the gate and stop box are drawn for you. Manual gearbox; watch the rev counter.",
       "assessment": {
         "attempts": 10,

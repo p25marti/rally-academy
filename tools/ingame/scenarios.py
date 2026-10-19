@@ -241,7 +241,7 @@ def _gear_plan(down_to):
 
 @scenario
 def gears():
-    """A03 on its course (BMP run-up): up to 3rd and 60 km/h, then down to 2nd one gear at a time into
+    """A03 on its course (BMP dirt arena's long straight): up to 3rd and 60 km/h, then down to 2nd one gear at a time into
     the stop box passes with a medal; 3rd straight to 1st misses. Sequential gearbox, scripted gears."""
     p = []
     A.drill_session("A03")

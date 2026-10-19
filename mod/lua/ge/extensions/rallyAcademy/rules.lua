@@ -244,20 +244,38 @@ local function gearName(g) return ORDINAL[g] or (tostring(g) .. 'th') end
 
 -- Slowing down through the gears one at a time after the highest gear reached, down to `toGear`
 -- (A03: 3rd -> 2nd, not 4th -> 2nd). Neutral and reverse are skipped; going lower than `toGear`
--- at the stop is fine.
--- rule: {type = 'progressive_downshifts', toGear = 2}
+-- at the stop is fine. A gear counts only once it's held `minHoldSeconds`: the sequential box can
+-- blip 3 -> 2 -> 3 within a tenth of a second while shifting up (seen on 0.40.0), which isn't a downshift.
+-- rule: {type = 'progressive_downshifts', toGear = 2, minHoldSeconds = 0.3}
 function E.progressive_downshifts(rule, samples)
+  local hold = rule.minHoldSeconds or 0.3
+  -- Forward gears as held stretches: {{gear, t0, t1}}, neutral and reverse dropped, then blips dropped.
+  local runs = {}
+  for _, s in ipairs(samples) do
+    local g = s.gear or 0
+    if g > 0 then
+      local r = runs[#runs]
+      if r and r[1] == g then r[3] = s.t else runs[#runs + 1] = {g, s.t, s.t} end
+    end
+  end
+  local held = {}
+  for i, r in ipairs(runs) do
+    local nextStart = runs[i + 1] and runs[i + 1][2] or r[3] + hold
+    if nextStart - r[2] >= hold then
+      if held[#held] and held[#held][1] == r[1] then held[#held][3] = r[3] else held[#held + 1] = {r[1], r[2], r[3]} end
+    end
+  end
   local top, topAt = 0, nil
-  for i, s in ipairs(samples) do
-    if (s.gear or 0) > top then top, topAt = s.gear, i end
+  for i, r in ipairs(held) do
+    if r[1] > top then top, topAt = r[1], i end
   end
   if top <= rule.toGear then
     return false, string.format('Never above %s, so nothing to downshift', gearName(rule.toGear))
   end
   local seq, last = {top}, top
-  for i = topAt + 1, #samples do
-    local g = samples[i].gear or 0
-    if g > 0 and g ~= last then
+  for i = topAt + 1, #held do
+    local g = held[i][1]
+    if g ~= last then
       if g < last - 1 and last > rule.toGear then
         return false, string.format('Skipped from %s to %s: go down one gear at a time', gearName(last), gearName(g))
       end
