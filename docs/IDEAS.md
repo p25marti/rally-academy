@@ -214,6 +214,51 @@ tyres matter), so the material must not overclaim. In-game pages need design wor
 using the real in-game numbers, with plain-language notes (what it feels like, what to change). Then a
 "Learn" section in the Academy screen showing it, and short surface cards linked from the drills that use them.
 
+## A Rally Academy proving ground (our own map)
+
+**The idea.** One custom map built for the drills: dead-flat pads, straights and skidpads, standard corners
+(constant, tightening, opening, hairpin), measured hills and a crest or jump, each laid out exactly as its
+drill needs. The same layouts repeated on several surfaces give per-surface variants: handbrake turns on
+gravel and on snow, threshold braking on asphalt, gravel and ice. Owner's idea (2026-10-19).
+
+**Why.** The course audit ([COURSE_AUDIT](COURSE_AUDIT.md)) shows how much stock venues blur the mechanics:
+the BMP downhill corner (seven drills) drops 14 m at up to 35 %, braking drills crossed tarmac patches, and
+West Coast USA has little flat loose ground (`scan.py`). Our own map would be flat where a drill wants flat,
+one surface where it wants one surface, identical between surfaces, quick to load (stock maps take 40-130 s)
+and free of traffic and props. Medals and fixtures would compare like with like.
+
+**What already helps.**
+- The stock `template` level (`content/levels/template.zip`, 0.40) is BeamNG's starting point for new maps:
+  its terrain comes from a heightmap image and one mask image per terrain material (`art/import/*.png`), and
+  textures can be `.dds.link` files pointing at stock assets, so a map needn't copy them. We already write
+  PNGs from Python (`scan.py`), so heights and surface layouts could be generated from data and kept in git.
+- Surfaces are ground models with real friction (SNOW 0.64 static / 0.40 sliding, ICE 0.40, GRAVEL 0.68, DIRT
+  0.69, ASPHALT 0.98, MUD 0.55 with 0.15 m of loose depth, SAND 0.60): a terrain material just names one.
+- Venues are data ([ADR 0007](decisions/0007-venues-as-data.md)); a variant could be a venue per surface pad.
+  `surface.py` / `audit.py` would verify each pad's surface, flatness and grip after every game update.
+- Mods can ship levels (`levels/<name>/` in the zip; the community maps we use do).
+
+**Hard parts.**
+- Authoring: the terrain import, painting and road objects happen in the World Editor; scripting all of it is
+  possible (heightmap and masks as images, roads and props as `items.level.json` objects) but is real work.
+  A believable-looking map (backdrop, foliage, lighting) is far more work than a functional one.
+- Game updates: levels lean on stock assets and formats, and 0.40 alone cleaned up assets and terrain. We'd
+  re-check the map after each update (the audit helps).
+- Size and load: a 1 km terrain is a few MB; textures linked, not copied. Must stay a small download.
+- Variants touch the drill model: progress and medals per surface, thresholds per surface (scale with
+  friction?), menu choice ([Choose your surface](#choose-your-surface) is the same idea from the menu side).
+- Stock maps still matter for "real road" drills (D02, D05, stages); the map complements them.
+- A large, one-way-ish choice: needs an ADR and the owner's go-ahead before building.
+
+**Feasibility.** Feasible, medium to large. The functional core (flat pads of known surfaces, painted lines
+drawn by the mod) is within reach because the template takes generated images; looks and maintenance are the
+real cost.
+
+**Rough shape.** A prototype: a 1 km² flat map from the template with three surface pads (gravel, asphalt,
+snow) generated from images, linked textures only. Move B01 (braking) and C04 (handbrake hairpin) onto it
+with one variant per surface, measure every pad with `audit.py`, and compare load time and feel against the
+stock venues before deciding on more.
+
 ## Template
 
 ```markdown
