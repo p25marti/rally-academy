@@ -254,6 +254,24 @@ and free of traffic and props. Medals and fixtures would compare like with like.
 drawn by the mod) is within reach because the template takes generated images; looks and maintenance are the
 real cost.
 
+**Lifecycle and tooling (researched on 0.40.0, 2026-10-19).**
+- *Tools:* the in-game World Editor (Terrain Editor: import, sculpt, paint; Decal Road, Mesh Road and Road
+  Architect editors; forest/biome, material and mesh editors; a level validator), plus the Terrain and Road
+  Importer (`editor/terrainAndRoadImporter.lua`: heightmap PNG + roads JSON, conforms the terrain to the roads).
+- *Scriptable from our tools:* the editor is Lua in the same VM the MCP server runs. Checked: live
+  `TerrainBlock:setHeight` + `updateGrid` from MCP (heights are relative to the block's origin z), and the
+  import is one call (`TerrainBlock:importMaps(heightmap, metresPerPixel, heightScale, holeMap, materials,
+  textureMaps, flipY)`); levels save with `editor.saveLevelAs`. No dedicated map-building MCP tools; thin
+  helpers in `tools/ingame/` would do it, as `scan.py` does for surveys.
+- *Files:* a level is plain files: the template's `theTerrain.ter` (3 MB, 1024 x 1024 m at 1 m, 4 materials),
+  `items.level.json` object lists, material JSON, `info.json`. All generatable from code and diffable in git.
+- *Load time:* the template loads in about 8 s (West Coast USA: 24 s warm, 142 s on 0.40's first load).
+- *Testing:* the tools we have (`audit.py`, `scan.py`, `surface.py`, scenarios, `record.py`) work on any map.
+- *Assets:* shared packs in `content/assets/` (467 meshes: architecture, rocks, foliage, props), stock terrain and
+  road materials and the 32 ground models. Mods can't create `.link` files yet (BeamNG says a tool is coming),
+  so a map references stock files by path (they can move between versions) or copies them (bigger download;
+  check BeamNG's terms before shipping copies).
+
 **Rough shape.** A prototype: a 1 km² flat map from the template with three surface pads (gravel, asphalt,
 snow) generated from images, linked textures only. Move B01 (braking) and C04 (handbrake hairpin) onto it
 with one variant per surface, measure every pad with `audit.py`, and compare load time and feel against the
