@@ -89,8 +89,25 @@ def click(label):
                  f"return x.textContent.indexOf({json.dumps(label)})>=0}})[0]; if(!b) return 'NOT FOUND'; b.click(); return b.textContent.trim()")
     time.sleep(0.6)
     if pressed == "NOT FOUND":
+        # The HUD only sends commands; with the panel off screen (a game update can reset the HUD layout),
+        # send the same command from Lua so driving checks don't depend on the layout.
+        if label in LUA_BUTTONS:
+            global _warned_no_panel
+            if not _warned_no_panel:
+                print("  (no HUD panel on screen: sending panel commands from Lua; switch to the Rally Academy HUD layout "
+                      "for the HUD checks)", flush=True)
+                _warned_no_panel = True
+            lua(f"extensions.rallyAcademy.{LUA_BUTTONS[label]} return 1")
+            time.sleep(0.6)
+            return label
         raise RuntimeError(f"no panel button {label!r}")
     return pressed
+
+
+# HUD buttons and the extension commands they send (app.vue), for when the panel isn't on screen.
+LUA_BUTTONS = {"Retry": "retry()", "Pass": "recordAttempt(true)", "Miss": "recordAttempt(false)",
+               "Move course here": "markStart()", "Use venue start": "useVenueStart()"}
+_warned_no_panel = False
 
 
 def place(pos, direction, ahead=0.0, side=0.0, lift=0.3):

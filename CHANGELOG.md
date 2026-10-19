@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **B01 threshold braking and B02 lockup recovery moved to a flat, all-dirt straight** (the BMP dirt
+  arena's long straight, new venue bmp-dirt-arena-long). On the run-up their braking crossed the start
+  line's tarmac patch onto gravel, so grip changed mid-stop; now the whole stop is on one surface.
 - Project infrastructure: `tools/dev.py` (validate, lint, test, reproducible
   build, live-link into BeamNG, log viewer, version bump), LuaJIT unit tests
   with BeamNG stubs, luacheck config, CI and tag-driven GitHub Releases.

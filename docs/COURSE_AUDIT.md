@@ -13,8 +13,8 @@ Each graded drill's course, along the line the car drove in its best recorded ru
 | A05 | `a05c_gold` | 57 m | 0.8 m | 7.1 % | 7.7° | DIRT 100 % (grip 0.70) | flat, one surface |
 | A07 | `a07_gold` | 155 m | 14.2 m | 25.2 % | 22.2° | GRAVEL 99 %, GRASS 1 % (grip 0.69) | steep, tilted |
 | A08 | `a08_gold` | 183 m | 15.1 m | 24.9 % | 22.2° | GRAVEL 98 %, GRASS 2 % (grip 0.69) | steep, tilted |
-| B01 | `b01c_gold` | 150 m | 1.8 m | 6.9 % | 6.8° | GRAVEL 79 %, ASPHALT 21 % (grip 0.75) | mixed surface |
-| B02 | `b02c_gold` | 144 m | 1.9 m | 7.4 % | 20.8° | GRAVEL 89 %, ASPHALT 8 %, GRASS 1 % (grip 0.71) | tilted |
+| B01 | `b01c_gold` | 150 m | 1.0 m | 9.5 % | 9.9° | DIRT 100 % (grip 0.70) | sloped |
+| B02 | `b02c_gold` | 150 m | 0.8 m | 7.8 % | 9.2° | DIRT 100 % (grip 0.70) | flat, one surface |
 | B04 | `b04_gold` | 155 m | 14.3 m | 24.8 % | 22.8° | GRAVEL 99 %, GRASS 1 %, DIRT 1 % (grip 0.69) | steep, tilted |
 | B05 | `b05_gold` | 195 m | 0.4 m | 3.1 % | 5.7° | DIRT 91 %, GRAVEL 9 % (grip 0.70) | flat, one surface |
 | B06 | `b06_gold` | 77 m | 0.4 m | 3.2 % | 5.1° | DIRT 97 %, GRAVEL 3 % (grip 0.70) | flat, one surface |

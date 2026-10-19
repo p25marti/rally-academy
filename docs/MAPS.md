@@ -25,7 +25,9 @@ Load ≈ 80 s (biggest map).
 
 | Id | Venue | Where | Surface (tyres) | Notes |
 | --- | --- | --- | --- | --- |
-| W1 | **BMP Gravel Track** | layouts start at (103, 165, 118); Figure Eight at (53, 127, 119) | GRAVEL track, tarmac start line | Purpose-built rallycross venue: ~14–16 m wide, sand berms, two levels, figure-eight crossover, roundabout, jump, joker. 9 official layouts (Gravel Introduction, Figure Eight Basics, Figure Sixteen, Reverse Loop, Ample Sand, Reverse Figure Eight, Inverted Joker, Tie the Knot, Full Circuit). The start straight is **flat only for ~50 m past the line**: it cambers 2–4° from 60 m and **banks 9–16° from 100 m** (measured 0.39.4), so stops don't belong there. Behind the line, a gravel run-up is flat from 60 m before it (undulating ±3–5° further back): venue `bmp-gravel-runup` starts 120 m back, for drills that stop (B01, B02, B03, A03, A04). The circuit itself runs north-east from the start line (the time-trial layouts' checkpoints), so the run-up is its forward direction. Venue `bmp-gravel-corner`: a 124° downhill left, radius 32 m, 8 m of gravel, with a 67 m straight approach (A07, A08) |
+| W1 | **BMP Gravel Track** | layouts start at (103, 165, 118); Figure Eight at (53, 127, 119) | GRAVEL track, tarmac start line | Purpose-built rallycross venue: ~14–16 m wide, sand berms, two levels, figure-eight crossover, roundabout, jump, joker. 9 official layouts (Gravel Introduction, Figure Eight Basics, Figure Sixteen, Reverse Loop, Ample Sand, Reverse Figure Eight, Inverted Joker, Tie the Knot, Full Circuit). The start straight is **flat only for ~50 m past the line**: it cambers 2–4° from 60 m and **banks 9–16° from 100 m** (measured 0.39.4), so stops don't belong there. Behind the line, a gravel run-up is flat from 60 m before it (undulating ±3–5° further back): venue `bmp-gravel-runup` starts 120 m back, for drills that stop (B03, A03, A04; B01 and B02 moved to the dirt
+arena's long straight in 0.40 because their braking crossed the start line's tarmac patch, 8 m before to 22 m
+past the line). The circuit itself runs north-east from the start line (the time-trial layouts' checkpoints), so the run-up is its forward direction. Venue `bmp-gravel-corner`: a 124° downhill left, radius 32 m, 8 m of gravel, with a 67 m straight approach (A07, A08) |
 | W2 | **BMP dirt arena** | (337, 96, ~) | DIRT_DUSTY | ≥ 64 × 64 m open, flat (4°), fenced, grandstands; figure-eight tyre marks already there |
 | W3 | **BMP dirt circle** | (265, 40, ~) | DIRT_DUSTY | ≈ 50 m circular infield, dead flat, light towers round the edge: a natural skidpad. Dirt to 23 m or more from the centre all round, the nearest obstacle 30 m out (measured 0.39.4). Venue `bmp-dirt-ring` starts on a 15 m ring round the centre, facing anticlockwise (B05); `bmp-dirt-arc` starts 25 m before the ring's south point, facing east along its tangent (B06, B07) |
 | W4 | Quarry | (729, −823, 158) | GRAVEL | Haul roads, terraces, spoil heaps; Spiral Descent for gradients. Cluttered |
@@ -138,8 +140,8 @@ Two maps. A–D and most of E stay at BMP (teleport between venues, no load).
 | A06 vision | W1 layouts | C06 slip angle | W3 circle |
 | A07 lines | W1 corner | C07 lateral transfer | W2 figure-eight |
 | A08 apex/exit | W1 corner | C08 Scandi flick | W1 corner |
-| B01 threshold braking | W1 straight (150 m) | D01 slalom | W2 arena |
-| B02 lockup | W1 straight | D02 linked corners | W1 layouts |
+| B01 threshold braking | W2 arena long straight (180 m of dirt) | D01 slalom | W2 arena |
+| B02 lockup | W2 arena long straight | D02 linked corners | W1 layouts |
 | B03 stopping estimate | W1 straight + W2 | D03/D04 radius changes | W4 quarry / W1 |
 | B04 trail braking | W1 corner | D05 blind corners | W4 quarry |
 | B05 left-foot braking | W3 circle | D06 gradients | W4 quarry (Spiral Descent) |

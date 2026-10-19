@@ -928,8 +928,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line: the stop zone sits on the flat gravel 30 m past the line.",
+        "venue": "bmp-dirt-arena-long",
+        "areaHint": "BMP dirt arena (MAPS W2), the long straight: 180 m of level dirt; the stop zone is 150 m from the start, all on dirt.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,
@@ -945,7 +945,7 @@
         }
       },
       "instructions": "Reach 70 km/h on the run-up, then brake progressively at the grip limit and stop with the car's centre in the stop zone. No long lockups.",
-      "resetInstructions": "Go to drill puts you on the run-up with the stop zone laid out ahead. Move course here re-lays it from where you are.",
+      "resetInstructions": "Go to drill puts you at the start of the arena's long straight with the stop zone laid out ahead. Move course here re-lays it from where you are.",
       "props": "None: the stop zone is drawn for you. Keep any ABS settings unchanged.",
       "assessment": {
         "attempts": 10,
@@ -1027,8 +1027,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line, with a large stop area on the flat 10-50 m past the line.",
+        "venue": "bmp-dirt-arena-long",
+        "areaHint": "BMP dirt arena (MAPS W2), the long straight: 180 m of level dirt; a large stop area 130-170 m from the start, all on dirt.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,
@@ -1044,7 +1044,7 @@
         }
       },
       "instructions": "Reach 55 km/h, brake hard enough to lock the wheels, release quickly to get them rolling again, and stop inside the stop area without spinning.",
-      "resetInstructions": "Go to drill puts you on the run-up with the stop area laid out ahead. Move course here re-lays it from where you are.",
+      "resetInstructions": "Go to drill puts you at the start of the arena's long straight with the stop area laid out ahead. Move course here re-lays it from where you are.",
       "props": "Verify ABS is absent/disabled; if ABS cannot be removed use another non-ABS configuration.",
       "assessment": {
         "attempts": 10,
@@ -1076,8 +1076,10 @@
           {
             "type": "on_surface",
             "surfaces": [
-              "ASPHALT",
-              "GRAVEL"
+              "DIRT",
+              "DIRT_DUSTY",
+              "GRAVEL",
+              "SANDY_ROAD"
             ],
             "maxWheelsOff": 2,
             "maxSeconds": 0.5

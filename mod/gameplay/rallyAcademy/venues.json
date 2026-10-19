@@ -26,6 +26,30 @@
       "notes": "Open, flat, fenced dusty-dirt arena, at least 64 x 64 m."
     },
     {
+      "id": "bmp-dirt-arena-long",
+      "mapsId": "W2",
+      "name": "West Coast USA: BMP dirt arena, long straight",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 386.59,
+          "y": 145.57,
+          "z": 127.05
+        },
+        "dir": {
+          "x": -0.7051,
+          "y": -0.7046,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "70 m behind the dirt arena's usual start, facing the same way: 180 m of dirt in a straight line (100 % DIRT to the physics, level within 0.25 m, 23 m or more of room either side), then a gravel track crosses it. For braking drills that need speed and one surface (B01, B02; measured 0.40.0 with tools/ingame/surface.py)."
+    },
+    {
       "id": "bmp-gravel-track",
       "mapsId": "W1",
       "name": "West Coast USA: BMP Gravel Track",

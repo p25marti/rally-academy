@@ -191,6 +191,29 @@ hotkeys.
 
 ---
 
+## Learning materials (surfaces first)
+
+**The idea.** Supplementary material for drivers who want to understand the *why* behind the drills,
+starting with surfaces: what each one is, how much grip to expect, and how that changes braking distance,
+cornering speed and car control. A graphic first; later the same material inside the game (an "Learn"
+page in the Academy screen, or a card shown before a drill that depends on the surface).
+
+**Why.** The drills teach by doing; a driver who knows that gravel gives about 70 % of tarmac's grip and ice
+about 40 % reads a stop zone or a corner speed better. The owner asked for this (2026-10-19).
+
+**What already helps.** Real in-game numbers: every ground model's static and sliding friction, roughness and
+loose depth from `core_environment.groundModels` (`python tools/ingame/surface.py` prints them; the table is
+in [COURSE_AUDIT](COURSE_AUDIT.md)). Gravel 0.68 / dirt 0.69 / dusty dirt 0.68 / grass 0.61 / sand 0.60 /
+mud 0.55 / snow 0.64 / ice 0.40 static friction against asphalt's 0.98 (0.40.0). Braking distance scales
+roughly with 1/friction, so these turn into "stops in N m from 60 km/h" figures.
+
+**Hard parts.** Friction is only part of the story (loose depth and roughness change how a surface feels,
+tyres matter), so the material must not overclaim. In-game pages need design work to fit the Academy screen.
+
+**Rough shape.** First step (logged for later): one graphic, a surface-by-surface chart of expected traction
+using the real in-game numbers, with plain-language notes (what it feels like, what to change). Then a
+"Learn" section in the Academy screen showing it, and short surface cards linked from the drills that use them.
+
 ## Template
 
 ```markdown

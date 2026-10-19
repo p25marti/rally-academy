@@ -225,12 +225,13 @@ most one correction to the finish, silver 38 km/h and no corrections, gold 45 km
 line (outside, late apex, track-out): A07 52 km/h and A08 47–50 km/h, both gold; the line clips the
 posts above about 55 km/h.
 
-B01 and B02 targets (BMP run-up, Covet Student Driver): B01 from 65+ km/h stops with the car's centre in
-a 5 × 6 m zone 30 m past the start line, no lock over 0.5 s; silver 3 × 4 m and 0.3 s; gold 1.5 × 3 m
+B01 and B02 targets (BMP dirt arena's long straight, venue `bmp-dirt-arena-long`, Covet Student Driver; moved
+off the run-up in 0.40, whose braking crossed the start line's tarmac): B01 from 65+ km/h stops with the car's
+centre in a 5 × 6 m zone 150 m from the start, all on dirt, no lock over 0.5 s; silver 3 × 4 m and 0.3 s; gold 1.5 × 3 m
 and 0.2 s (the zones are drawn nested). B02 from 55+ km/h locks the wheels at least 0.2 s and releases
 within 1 s, then stops in a 40 m stop area on the flat; silver releases within 0.7 s, gold 0.5 s.
-Scripted: B01 braking at 5 m/s² from 72 km/h stopped 0.7 m past the centre (gold); B02 locked 0.4–0.5 s
-(gold).
+Scripted on dirt (0.40.0): B01 braking at 4.6–5.0 m/s² from 72 km/h stopped 0.4–0.6 m past the centre
+(gold, silver); B02 locked 0.5 s (gold).
 
 B04 targets (BMP downhill left, Covet Gravel Rally): brake from the marker 50 m into the approach and keep
 braking while turning in for 0.4 s, fully off by the 4 m apex gate, no lock over 0.3 s; bronze 25 km/h at

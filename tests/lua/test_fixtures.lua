@@ -31,10 +31,10 @@
 --      racing line from tools/ingame/lines.py (outside, late apex, track-out); a07_gold = 50 km/h
 --      cap (52 at the exit); a07_clip = line 1 m left at the exit (left post); a08_gold = 46 km/h;
 --      a08_weave = weaving across the road after the exit gate (2 corrections).
--- B01, B02 (course): BMP run-up, stop zone 30 m past the start line. b01c_gold = pure pursuit to the
---      zone centre from 72 km/h braking at 5 m/s2 (0.7 m past the centre); b01c_past = 6.5 m/s2 (past
---      the 5 m zone). b02c_gold = hold 62 km/h to 115 m, full brake 0.6 s then eased (0.5 s lock);
---      b02c_held = full brake held to the stop.
+-- B01, B02 (course): BMP dirt arena's long straight (venue bmp-dirt-arena-long), stop zone 150 m from the
+--      start, all on dirt; 0.40.0. b01c_gold = pure pursuit to the zone centre from 72 km/h braking at 4.6 m/s2
+--      (0.4 m past the centre); b01c_past = 7.5 m/s2 (8.4 m past the zone). b02c_gold = hold 62 km/h to 115 m,
+--      full brake 0.6 s then eased (0.5 s lock); b02c_held = full brake held to the stop.
 -- B04 (course): BMP downhill left, Covet Gravel Rally, racing line from lines.py at up to 60 km/h with
 --      scripted pedals: gold = brake 0.35 from the marker easing to 0 three metres before the apex;
 --      straight = brake 0.45 only before turn-in; late = brake 0.22 until 12 m past the apex.
@@ -122,8 +122,9 @@ local function drillRules(id)
 end
 
 -- Recordings with a marked zone or line (meta.finish): graded on the drill's rules minus the
--- authored-course ones (A05's old marked-line runs predate its course).
-local COURSE_ONLY = {markers_clear = true, park_in_box = true, cones_passed = true}
+-- authored-course ones (A05's old marked-line runs predate its course) and the venue's surface list
+-- (B02's old runs were on the start straight's asphalt; B02 is now all dirt).
+local COURSE_ONLY = {markers_clear = true, park_in_box = true, cones_passed = true, on_surface = true}
 local function grade(name, drill)
   local rec = fixture(name)
   local rules = {}

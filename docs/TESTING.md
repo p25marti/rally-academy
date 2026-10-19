@@ -107,6 +107,10 @@ Every graded run in a scenario also checks the HUD panel still fits (its content
 the 390 × 340 panel); an overflow fails the scenario even if it didn't ask. Their verdicts on the same inputs match the recorded fixtures, but physics varies run to run
 by a few tenths of a metre, so they check verdicts, not exact numbers.
 
+With the HUD panel off screen (a game update can reset the HUD layout), the driving scenarios send the
+panel's commands (Retry, Pass, Miss, Move course here) from Lua instead and say so once; the HUD checks
+(`smoke`, `mainmenu`) still need the panel.
+
 ## Recording videos
 
 `python tools/ingame/record.py <scenario> ...` (or `--all` for every drill scenario) films scenarios from

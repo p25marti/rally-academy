@@ -125,8 +125,8 @@ def a01():
 
 @scenario
 def b01():
-    """B01 on its course (BMP run-up, stop zone 30 m past the start line): threshold braking from 72
-    km/h into the zone earns a medal; braking too hard overshoots and misses; full brake locks and misses."""
+    """B01 on its course (BMP dirt arena's long straight, stop zone 150 m ahead, all dirt): threshold braking
+    from 72 km/h into the zone earns a medal; braking too hard overshoots and misses; full brake locks and misses."""
     p = []
     A.drill_session("B01")
     line = [(0, 0), (0, 150)]
@@ -181,8 +181,8 @@ def a04():
 
 @scenario
 def stops():
-    """A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, a
-    40 m stop area): one PASS and one MISS each."""
+    """A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (the arena's long
+    straight, a 40 m stop area): one PASS and one MISS each."""
     p = []
     A.drill_session("A05")
     front = 1.81  # Covet: front bumper ahead of the car's position (catalogued footprint)
