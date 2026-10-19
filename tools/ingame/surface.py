@@ -38,7 +38,9 @@ return o""")
 
 def counts(points, radius=5.0, statics=True):
     """For each (x, y[, z]) point, ({ground model: terrain tiles}, {ground model: mesh triangles}) within `radius` m
-    (at most 60, the engine's limit). z defaults to the terrain height there."""
+    (at most 60, the engine's limit). z defaults to the terrain height there. Mesh ground (asphalt on a bridge
+    deck, say) is kept only where a car would be on a mesh there; elsewhere only obstacle meshes are kept,
+    since the engine counts meshes by horizontal distance, overhead gantries included (0.40.0)."""
     out = []
     for k in range(0, len(points), 40):  # bounded calls: 40 points x ~32 ground models x 2
         chunk = points[k:k + 40]
@@ -52,15 +54,20 @@ local col, r = ColorF(1, 1, 1, 1), {min(60.0, radius)}
 local ok, err = pcall(function()
   local rows = {{}}
   for i, p in ipairs(P) do
-    local z = p[3] or core_terrain.getTerrainHeight(vec3(p[1], p[2], 0)) or 0
+    local tz = core_terrain.getTerrainHeight(vec3(p[1], p[2], 0)) or 0
+    local z = p[3] or tz
     local pos = vec3(p[1], p[2], z)
+    -- the mesh counts are by horizontal distance, overhead gantries and bridges included: only count meshes as
+    -- the driving surface where the surface just under a car sits above the terrain (a road or bridge deck)
+    local under = be:getSurfaceHeightBelow(vec3(p[1], p[2], z + 1.5))
+    local onMesh = under and under > tz + 0.15 and under < z + 1.5
     local t, s = {{}}, {{}}
     for _, name in ipairs(names) do
       local a = debugDrawer:renderGroundModelDebug(0, name, col, r, 1, pos, 1, true) or 0
       if a > 0 then t[#t + 1] = name .. '=' .. a end
       {"local b = debugDrawer:renderStaticColDebug(0, name, col, r, 1, pos, 1, true) or 0 if b > 0 then s[#s + 1] = name .. '=' .. b end" if statics else ""}
     end
-    rows[i] = table.concat(t, ' ') .. '|' .. table.concat(s, ' ')
+    rows[i] = table.concat(t, ' ') .. '|' .. table.concat(s, ' ') .. '|' .. (onMesh and '1' or '0')
   end
   _G.__raSurface = table.concat(rows, ';')
 end)
@@ -68,9 +75,12 @@ end)
 if not ok then error(err) end
 return _G.__raSurface""")
         for row in str(res).split(";"):
-            terr, stat = (row.split("|") + [""])[:2]
+            terr, stat, on_mesh = (row.split("|") + ["", "0"])[:3]
             parse = lambda s: {kv.split("=")[0]: int(kv.split("=")[1]) for kv in s.split() if "=" in kv}  # noqa: E731
-            out.append((parse(terr), parse(stat)))
+            st = parse(stat)
+            if on_mesh != "1":  # meshes there are overhead or beside the track, not under the wheels
+                st = {g: n for g, n in st.items() if g in NOT_GROUND}
+            out.append((parse(terr), st))
     return out
 
 
