@@ -110,7 +110,9 @@ how rally schools teach it (E01 already touches this).
 **What already helps.** The [venue catalogue](VENUE_CATALOG.md) lists measured, fit-tested spots
 per surface and kind on each surveyed map (`docs/venue-catalog.json`, from `catalog.py scan`).
 Venues are data ([ADR 0007](decisions/0007-venues-as-data.md)) and drills already declare the kind of
-place they need (`venueNeeds`).
+place they need (`venueNeeds`). Each surface's friction is readable in game (`core_environment.groundModels`, table in
+[COURSE_AUDIT](COURSE_AUDIT.md)), so per-surface thresholds could scale with grip (a stop zone on ice, static
+friction 0.40, against gravel's 0.68) instead of being tuned by hand per surface.
 
 **Hard parts.** Per-surface thresholds (a stop zone on ice is longer), progress per surface, more
 map loads (snow and ice are on Automation Test Track), and authored courses fitting each spot.

@@ -28,6 +28,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 import academy as A  # noqa: E402
 import catalog  # noqa: E402
+import surface  # noqa: E402
 import survey  # noqa: E402
 from game import call, lua, lua_json  # noqa: E402
 
@@ -223,7 +224,7 @@ def analyse(info, mats, hs, nx, ny, step, surfaces, max_slope, max_rough, min_si
     return F, ok, cands, {f: round(c * step * step / 1e4, 1) for f, c in sorted(summary.items(), key=lambda kv: -kv[1])}
 
 
-def check_on_site(c):
+def check_on_site(c, fric=None):
     """What's on top of the terrain over the square (roads, buildings, rocks), and the room around its centre."""
     half = c["squareM"] / 2
     res = lua_json(f"""local cx, cy, h = {c['pos']['x']}, {c['pos']['y']}, {half}
@@ -245,6 +246,14 @@ return {{covered = covered / total, room = room}}""")
     c["coveredPct"] = round(res["covered"] * 100)
     c["room"] = res["room"]
     c["clearM"] = min(res["room"])
+    # What the physics actually drives on there (terrain and meshes), as BeamNG's Groundmodel Debug panel reads it.
+    if fric is not None:
+        half = min(60.0, c["squareM"] / 2)
+        pts = [(c["pos"]["x"], c["pos"]["y"])] if half >= c["squareM"] / 2 else             [(c["pos"]["x"] + a * half, c["pos"]["y"] + b * half) for a in (-0.5, 0.5) for b in (-0.5, 0.5)]
+        phys = surface.summary(surface.counts(pts, radius=half / (1 if len(pts) == 1 else 2)), fric)
+        c["physics"] = phys["shares"]
+        c["grip"] = phys["mu"]
+        c["obstacleTris"] = phys["obstacleTris"]
     return c
 
 
@@ -297,13 +306,16 @@ squares of {minside:g} m or more. Terrain only: check "on top" and the aerial vi
 
 
 def card(k, c, img):
+    physics = "" if "physics" not in c else (
+        '<br><span class="mute">physics: ' + html.escape(surface.describe({"shares": c["physics"], "mu": c.get("grip")}))
+        + (f' · {c["obstacleTris"]} obstacle triangles' if c.get("obstacleTris") else "") + "</span>")
     image = (f'<img src="data:image/jpeg;base64,{base64.b64encode(img.read_bytes()).decode()}" alt="aerial view">'
              if img and img.exists() else "")
     on_top = "" if "coveredPct" not in c else (f" · on top: {c['coveredPct']} % covered · room {c['clearM']} m+"
                                                + ("" if c["clearM"] >= CLEAR_ROOM else " <b>(cluttered: trees or objects close by)</b>"))
     return (f'<div class="card">{image}<div><b>{k}. {c["surface"]}</b>, {c["squareM"]:g} × {c["squareM"]:g} m square '
             f'(patch {c["patchM2"] / 1e4:.2f} ha, {c["loosePct"]} % {c["surface"]})<br><span class="mute">rise {c["riseM"]} m · slope {c["slopePct"]} % · '
-            f'bumps {c["roughM"]} m{on_top}</span><br><code>survey.py fit DRILL --at={c["pos"]["x"]},{c["pos"]["y"]},'
+            f'bumps {c["roughM"]} m{on_top}</span>{physics}<br><code>survey.py fit DRILL --at={c["pos"]["x"]},{c["pos"]["y"]},'
             f'{c["pos"]["z"]},0,1</code></div></div>')
 
 
@@ -347,9 +359,10 @@ def main(argv):
     cands = cands[:a.top]
     out = survey.REPORTS / lvl / ("scan" if surfaces == LOOSE else "scan-" + "-".join(surfaces))
     out.mkdir(parents=True, exist_ok=True)
+    fric = surface.friction()
     for c in cands:
         try:
-            check_on_site(c)
+            check_on_site(c, fric)
         except Exception as e:  # noqa: BLE001 - a bad spot shouldn't stop the scan
             print(f"  couldn't check ({c['pos']['x']:.0f}, {c['pos']['y']:.0f}): {e}")
     # Trees are objects on top of grass terrain, invisible to the terrain scan and between the "covered" probes;
@@ -390,7 +403,8 @@ def main(argv):
         print(f"  {k:2}. {c['surface']:6} {c['squareM']:4.0f} m square at ({c['pos']['x']:.0f}, {c['pos']['y']:.0f}, "
               f"{c['pos']['z']:.0f})  rise {c['riseM']} m, slope {c['slopePct']} %, bumps {c['roughM']} m"
               + (f", {c['coveredPct']} % covered, room {c['clearM']} m" + ("" if c["clearM"] >= CLEAR_ROOM else " CLUTTERED")
-                 if "coveredPct" in c else ""))
+                 if "coveredPct" in c else "")
+              + (f"; physics {surface.describe({'shares': c['physics'], 'mu': c.get('grip')})}" if "physics" in c else ""))
     print(f"report: {out / 'index.html'}")
     return 0
 

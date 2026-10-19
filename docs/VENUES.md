@@ -33,8 +33,12 @@ candidate with its biggest flat square, slope, bumps, room to the nearest object
 no point more than 0.25 m off the mean height within 9 m. Patchwork textures count when 70 % of the
 ground within 5 m is on the surfaces. `--surfaces grass` (or any families) looks for other ground,
 written to `scan-<surfaces>/`; `--aerial 0` leaves the camera alone.
-Limits: it sees terrain only. Roads, decal surfaces (the BMP dirt circle is a decal) and buildings sit on
-top; trees are objects on grass terrain. Each candidate's room (horizontal rays from its centre, under
+Each candidate is then checked against the physics surfaces, the way BeamNG's Groundmodel Debug panel
+reads them (`tools/ingame/surface.py`): what the car would actually drive on there, terrain and meshes
+together, its grip, and how many obstacle triangles (metal, wood) sit on it. A texture that looks like sand
+can be asphalt to the physics.
+Limits of the grid: it reads terrain textures. Roads and buildings sit on top; trees are objects on grass
+terrain. Each candidate's room (horizontal rays from its centre, under
 20 m = "cluttered") and the aerial view catch most of that. Rivers aren't masked (water planes and water
 blocks are). First runs (0.39.4): West Coast USA's best flat loose square is 48 m of dirt in the BMP
 oval's infield; nefr is 98 % grass terrain, with only small dirt patches, but has flat open grass fields.
@@ -154,6 +158,10 @@ something, and rule settings that depend on the place, such as `on_surface` surf
 
 ## 7. Check and record
 
+After moving a drill, or after a game update, `python tools/ingame/audit.py --write` re-measures every
+graded course along its recorded line and regenerates [COURSE_AUDIT](COURSE_AUDIT.md): surfaces and grip,
+rise, steepest grade and tilt, with a note where hills, camber or a mixed surface blur the drill.
+
 ```sh
 python tools/dev.py validate     # venue well formed, every drill's venue found, no leftover copies
 ```
@@ -189,6 +197,8 @@ Use it to find a venue fast, or, later, to offer a drill on the surface a player
 | `survey.py fits <drill> [--measure N]` | Places on this map that meet a drill's venueNeeds |
 | `survey.py straights / corners / hills / crests` | Road sections from the AI road network (`--limit`, `--min-length`, `--max-radius`) |
 | `scan.py [--level NAME] [--surfaces …] [--aerial N]` | Whole-map surface and flatness scan with a report ([above](#1-find-candidates)) |
+| `audit.py [--write]` | Every graded drill's course: physics surfaces and grip along the driven line, rise, grade, tilt ([COURSE_AUDIT](COURSE_AUDIT.md)) |
+| `surface.py` | The ground models' friction table (the module also counts surfaces around any point) |
 | `survey.py open [--step 16]` | Open, flat, loose areas from a terrain scan (slow; `scan.py` supersedes it) |
 | `survey.py report [--quick] [--open]` | The HTML venue report |
 | `survey.py goto <id>` / `goto --at=…` | Put the car on a spot or a pose |
