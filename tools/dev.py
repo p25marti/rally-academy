@@ -201,6 +201,45 @@ def _vec_ok(v) -> bool:
     return isinstance(v, dict) and all(isinstance(v.get(k), (int, float)) for k in ("x", "y", "z"))
 
 
+def expanded(exercises: list) -> list:
+    """Every drill with its surface variants expanded (tools/ingame/variants.py, as the mod does)."""
+    sys.path.insert(0, str(ROOT / "tools" / "ingame"))
+    import variants  # noqa: E402 - stdlib-only module next to the in-game tools
+    return variants.all_drills([e for e in exercises if isinstance(e, dict)])
+
+
+VARIANT_KEYS = {"id", "name", "venue", "areaHint", "vehicle", "rules", "tiers", "successDefinition"}
+
+
+def variant_errors(ex: dict) -> list[str]:
+    """A drill's `variants` (ADR 0009) are well formed: a lowercase id, a name, a venue."""
+    errors: list[str] = []
+    vs = ex.get("variants")
+    if vs is None:
+        return errors
+    if not isinstance(vs, list) or not vs:
+        return ["variants must be a non-empty list"]
+    if not isinstance(ex.get("surface"), str):
+        errors.append("a drill with variants needs `surface`: the name of its own surface (\"Dirt\")")
+    seen = set()
+    for i, v in enumerate(vs):
+        if not isinstance(v, dict):
+            errors.append(f"variants[{i}] must be an object")
+            continue
+        if not re.fullmatch(r"[a-z]+", str(v.get("id", ""))):
+            errors.append(f"variants[{i}]: id must be lowercase letters ('snow')")
+        if v.get("id") in seen:
+            errors.append(f"variants[{i}]: duplicate id {v.get('id')!r}")
+        seen.add(v.get("id"))
+        for k in ("name", "venue"):
+            if not isinstance(v.get(k), str) or not v.get(k):
+                errors.append(f"variants[{i}]: {k} must be a non-empty string")
+        unknown = set(v) - VARIANT_KEYS
+        if unknown:
+            errors.append(f"variants[{i}]: unknown keys {sorted(unknown)}")
+    return errors
+
+
 def validate_venues(venues: dict, exercises: dict) -> list[str]:
     """venues.json is well formed, every drill names a known venue, and no drill still carries
     its own copy of the venue (levelId, mapDisplayName, spawn): one source per venue."""
@@ -219,7 +258,7 @@ def validate_venues(venues: dict, exercises: dict) -> list[str]:
         sp = v.get("spawn") or {}
         if not all(_vec_ok(sp.get(k)) for k in ("pos", "dir", "up")):
             errors.append(f"{where}: spawn needs pos, dir and up as {{x, y, z}}")
-    for ex in exercises.get("exercises") or []:
+    for ex in expanded(exercises.get("exercises") or []):
         env = ex.get("environment") or {}
         if env.get("venue") not in ids:
             errors.append(f"{ex.get('id')}: environment.venue {env.get('venue')!r} isn't in venues.json")
@@ -238,13 +277,18 @@ def validate_exercises(data: dict) -> list[str]:
     if not isinstance(exercises, list) or not exercises:
         return errors + ["exercises.json: 'exercises' must be a non-empty list"]
     seen: set[str] = set()
-    for i, ex in enumerate(exercises):
-        where = f"exercises[{i}] ({ex.get('id', '?')})"
+    for ex in exercises:
+        if isinstance(ex, dict):
+            errors += [f"{ex.get('id', '?')}: {e}" for e in variant_errors(ex)]
+    if errors:
+        return errors
+    for i, ex in enumerate(expanded(exercises)):  # variants are checked as the drills they become
+        where = f"{ex.get('id', '?')}" if ex.get("variantOf") else f"exercises[{i}] ({ex.get('id', '?')})"
         missing = REQUIRED_EXERCISE_KEYS - ex.keys()
         if missing:
             errors.append(f"{where}: missing keys {sorted(missing)}")
             continue
-        if not re.fullmatch(r"[A-Z]\d{2}", ex["id"]):
+        if not re.fullmatch(r"[A-Z]\d{2}(-[a-z]+)?" if ex.get("variantOf") else r"[A-Z]\d{2}", ex["id"]):
             errors.append(f"{where}: id must look like 'A01'")
         if ex["id"] in seen:
             errors.append(f"{where}: duplicate id")
@@ -325,23 +369,19 @@ def bindings_errors(actions: dict, bindings: dict) -> list[str]:
 
 
 def levels_check() -> None:
-    """Generated levels (ADR 0008) must match their layouts: tools/mapgen/<layout>.json -> mod/levels/<name>/.
-    Needs the game's template level, so it's skipped where BeamNG isn't installed (CI)."""
+    """Generated levels (ADR 0008) must match their layouts: tools/mapgen/<layout>.json -> mod/levels/<name>/, by the
+    manifest the last build wrote (layout and generator hashes, a hash per file). No game install needed."""
     import importlib.util
     spec = importlib.util.spec_from_file_location("mapgen_build", ROOT / "tools" / "mapgen" / "build.py")
     mapgen = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mapgen)
     layouts = sorted((ROOT / "tools" / "mapgen").glob("*.json"))
-    game = mapgen.find_game()
-    if not game:
-        ok(f"{len(layouts)} generated level(s) not checked (no BeamNG install found; set BEAMNG_GAME)")
-        return
     for path in layouts:
         layout = json.loads(path.read_text(encoding="utf-8"))
-        diff = mapgen.stale(layout, game)
+        diff = mapgen.stale(layout)
         if diff:
             fail(f"mod/levels/{layout['name']}/ doesn't match {path.relative_to(ROOT).as_posix()} "
-                 f"({', '.join(diff[:4])}{'...' if len(diff) > 4 else ''}): run python tools/mapgen/build.py")
+                 f"({'; '.join(diff[:4])}{'...' if len(diff) > 4 else ''}): run python tools/mapgen/build.py")
     ok(f"{len(layouts)} generated level(s) match their layouts")
 
 
@@ -351,7 +391,7 @@ def cmd_validate(_args=None) -> None:
     for path in json_files:
         try:
             text = path.read_text(encoding="utf-8")
-            if path.name.endswith(".level.json"):  # level object lists: one JSON object per line
+            if path.name.endswith((".level.json", ".forest4.json")):  # level objects, trees: one object per line
                 for line in text.splitlines():
                     if line.strip():
                         json.loads(line)
@@ -370,8 +410,9 @@ def cmd_validate(_args=None) -> None:
     errors = validate_exercises(json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8")))
     if errors:
         fail("drill data invalid:\n    " + "\n    ".join(errors))
-    count = len(json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8"))["exercises"])
-    ok(f"{count} drills valid")
+    drills = json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8"))["exercises"]
+    n_variants = len(expanded(drills)) - len(drills)
+    ok(f"{len(drills)} drills valid" + (f", {n_variants} surface variants" if n_variants else ""))
     venues = json.loads((MOD_DIR / VENUES_JSON).read_text(encoding="utf-8"))
     errors = validate_venues(venues, json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8")))
     if errors:

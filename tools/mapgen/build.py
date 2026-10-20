@@ -10,6 +10,7 @@ The template level is read from the game install (content/levels/template.zip): 
 usual Steam paths.
 """
 import argparse
+import hashlib
 import json
 import os
 import struct
@@ -18,6 +19,9 @@ import uuid
 import zipfile
 import zlib
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nature  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 MOD = ROOT / "mod"
@@ -49,14 +53,27 @@ COLOURS = {"Grass": (74, 110, 52), "gravel": (168, 152, 120), "Asphalt": (60, 60
            "Dirt": (132, 98, 64), "Mud": (86, 66, 46), "BeachSand": (214, 196, 150), "rock": (120, 118, 112)}
 
 
-def preview_png(layer, size, wanted, px=512):
-    """A top-down plan of the material layer, px x px, north up."""
+def preview_png(layer, size, wanted, terrain=None, trees=(), px=512):
+    """A top-down plan of the material layer, px x px, north up: hills shaded, trees as dark dots."""
     step = size // px
+    half = size / 2
     cols = [COLOURS.get(m, (255, 0, 255)) for m in wanted]
+    dots = {(int((t[1] + half) / step), int((t[2] + half) / step)) for t in trees}
     rows = []
     for y in range(px - 1, -1, -1):  # PNG rows run top (north) to bottom
         src = (y * step) * size
-        rows.append(b"\0" + b"".join(bytes(cols[layer[src + x * step]]) for x in range(px)))
+        row = bytearray()
+        for x in range(px):
+            r, g, b = cols[layer[src + x * step]]
+            if terrain is not None and terrain.b:
+                wx, wy = x * step - half, y * step - half
+                shade = (terrain.height(wx + step, wy + step) - terrain.height(wx - step, wy - step)) / (2 * step)
+                k = max(0.55, min(1.35, 1 + shade * 1.5))
+                r, g, b = (min(255, int(c * k)) for c in (r, g, b))
+            if (x, y) in dots:
+                r, g, b = 34, 62, 30
+            row += bytes((r, g, b))
+        rows.append(b"\0" + bytes(row))
 
     def chunk(typ, data):
         return struct.pack(">I", len(data)) + typ + data + struct.pack(">I", zlib.crc32(typ + data))
@@ -115,6 +132,8 @@ def generate(layout, game):
     tmats = json.loads(tpl.read("levels/template/art/terrains/main.materials.json"))
     by_name = {v.get("internalName"): (k, v) for k, v in tmats.items() if v.get("class") == "TerrainMaterial"}
     wanted = [layout["filler"]] + [p["material"] for p in layout["pads"] + layout.get("roads", [])]
+    if layout.get("backdrop"):
+        wanted.append(layout["backdrop"].get("rockMaterial", "rock"))
     wanted = list(dict.fromkeys(wanted))
     missing = [m for m in wanted if m not in by_name]
     if missing:
@@ -137,8 +156,14 @@ def generate(layout, game):
     raw = round((t["groundZ"] - t["baseZ"]) / t["maxHeight"] * 65535)
     if not 0 <= raw <= 65535:
         sys.exit("groundZ must lie between baseZ and baseZ + maxHeight")
+    terrain = nature.Terrain(layout)
+    heights = terrain.raw_heights(t["maxHeight"])
+    if sys.byteorder != "little":
+        heights.byteswap()
     layer = bytearray(size * size)  # 0 = filler
     index = {m: i for i, m in enumerate(wanted)}
+    if layout.get("backdrop"):
+        terrain.paint_rock(layer, index[layout["backdrop"].get("rockMaterial", "rock")])
     for p in layout["pads"]:
         x0, x1 = int(p["x"][0] + half), int(p["x"][1] + half)
         y0, y1 = int(p["y"][0] + half), int(p["y"][1] + half)
@@ -149,8 +174,9 @@ def generate(layout, game):
     for r in layout.get("roads", []):
         paint_road(layer, size, half, r, index[r["material"]])
     names = b"".join(bytes([len(ours[m])]) + ours[m].encode() for m in wanted)
-    ter = (bytes([9]) + struct.pack("<I", size) + struct.pack("<H", raw) * (size * size) + bytes(layer)
+    ter = (bytes([9]) + struct.pack("<I", size) + heights.tobytes() + bytes(layer)
            + struct.pack("<I", len(wanted)) + names)
+    trees = nature.forest(layout, terrain)
 
     files = {
         "info.json": json.dumps({
@@ -172,7 +198,9 @@ def generate(layout, game):
              "__parent": "MissionGroup", "enabled": "1"}]),
         "main/MissionGroup/level_objects/items.level.json": jsonl([
             {"name": "terrain", "class": "SimGroup", "__parent": "level_objects"},
-            {"name": "sky_and_sun", "class": "SimGroup", "persistentId": pid(name, "sky"), "__parent": "level_objects"}]),
+            {"name": "sky_and_sun", "class": "SimGroup", "persistentId": pid(name, "sky"), "__parent": "level_objects"}]
+            + ([{"name": "vegetation", "class": "SimGroup", "persistentId": pid(name, "vegetation"), "__parent": "level_objects"}]
+               if trees else [])),
         "main/MissionGroup/level_objects/terrain/items.level.json": jsonl([
             {"name": "theTerrain", "class": "TerrainBlock", "persistentId": pid(name, "terrain"), "__parent": "terrain",
              "position": [-half, -half, t["baseZ"]], "materialTextureSet": texset, "maxHeight": t["maxHeight"],
@@ -186,9 +214,18 @@ def generate(layout, game):
         {"class": "SpawnSphere", "name": "spawn_default", "persistentId": pid(name, "spawn"), "__parent": "PlayerDropPoints",
          "position": [sx, sy, t["groundZ"] + 1], "dataBlock": "SpawnSphereMarker", "enabled": "1", "radius": 1}])
 
+    if trees:
+        used = {t[0] for t in trees}
+        files["main/MissionGroup/level_objects/vegetation/items.level.json"] = jsonl([
+            {"name": "theForest", "class": "Forest", "persistentId": pid(name, "forest"), "__parent": "vegetation",
+             "lodReflectScalar": 0.15}])
+        files["art/forest/managedItemData.json"] = json.dumps(
+            {k: v for k, v in nature.item_data(name, pid).items() if k in used}, indent=2) + "\n"
+        files["art/shapes/trees/main.materials.json"] = json.dumps(nature.tree_materials(game, name, pid, layout["forest"].get("leafTint")), indent=2) + "\n"
+        files.update(nature.forest_files(trees))
     out = {rel: text.replace("\r\n", "\n").encode("utf-8") for rel, text in files.items()}  # LF, as git keeps them
     out["theTerrain.ter"] = ter
-    out["preview.png"] = preview_png(layer, size, wanted)
+    out["preview.png"] = preview_png(layer, size, wanted, terrain, trees)
     # No fluid depth map (<terrain>.ter.depth.png): the log notes "all fluids will be disabled as ground type",
     # which is what we want for now. An all-zero map (like the template's) made every wheel sink 0.2 m into the
     # gravel and bog the car down to walking pace at full throttle (0.40.0).
@@ -202,21 +239,52 @@ def level_dir(layout):
 def build(layout, game):
     """Write the level into mod/levels/<name>/."""
     out = level_dir(layout)
-    for rel, data in generate(layout, game).items():
+    files = generate(layout, game)
+    if out.is_dir():  # a clean slate: files the layout no longer makes (a tree type dropped) must go
+        for f in sorted(out.rglob("*"), reverse=True):
+            if f.is_file():
+                f.unlink()
+    for rel, data in files.items():
         f = out / rel
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_bytes(data)
+    man = dict(stamp(layout), files={rel: digest(data) for rel, data in sorted(files.items())})
+    (out / MANIFEST).write_text(json.dumps(man, indent=1) + "\n", encoding="utf-8", newline="\n")
     t = layout["terrain"]
     print(f"wrote {out.relative_to(ROOT)}: {layout['size']} x {layout['size']} m terrain at z {t['groundZ']} m, "
           f"{len(layout['pads'])} pads, {len(layout.get('roads', []))} roads")
     return out
 
 
-def stale(layout, game):
-    """Files under mod/levels/<name>/ that differ from what the layout generates, are missing, or are extra."""
-    want, out = generate(layout, game), level_dir(layout)
-    have = {f.relative_to(out).as_posix() for f in out.rglob("*") if f.is_file()} if out.is_dir() else set()
-    return sorted(set(want) ^ have | {rel for rel in want if rel in have and (out / rel).read_bytes() != want[rel]})
+MANIFEST = "build.json"
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def stamp(layout):
+    """What a level is built from: the layout and the generator's own source."""
+    src = b"".join((Path(__file__).with_name(f)).read_bytes() for f in ("build.py", "nature.py"))
+    return {"layout": digest(json.dumps(layout, sort_keys=True).encode()), "generator": digest(src.replace(b"\r\n", b"\n"))}
+
+
+def stale(layout, game=None):
+    """Why mod/levels/<name>/ doesn't match its layout (empty when it does): the manifest written by the last build
+    must name this layout and generator, and every file must match its recorded hash. Fast, and needs no game
+    install (the template level's own files aren't re-read: rebuild after a game update)."""
+    out = level_dir(layout)
+    try:
+        man = json.loads((out / MANIFEST).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return [f"{MANIFEST} missing"]
+    problems = [f"{k} changed since the last build" for k, v in stamp(layout).items() if man.get(k) != v]
+    have = {f.relative_to(out).as_posix() for f in out.rglob("*") if f.is_file()} - {MANIFEST}
+    want = man.get("files", {})
+    problems += [f"{rel} missing" for rel in sorted(set(want) - have)]
+    problems += [f"{rel} not in the build" for rel in sorted(have - set(want))]
+    problems += [f"{rel} edited" for rel in sorted(set(want) & have) if digest((out / rel).read_bytes()) != want[rel]]
+    return problems
 
 
 def main(argv):

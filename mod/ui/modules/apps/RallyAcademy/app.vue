@@ -18,6 +18,17 @@
       search-group-name
       @value-changed="choose" />
 
+    <!-- Surface variants (ADR 0009): the same drill on another strip of the proving ground, each with its own
+         progress. The drop-down shows the base drill; these pick the surface. Hidden while driving: the panel
+         needs the room for the run and its result. -->
+    <div v-if="surfaces.length > 1 && !driving" class="ra-surfaces">
+      <span class="ra-surfaces-label">Surface</span>
+      <button v-for="s in surfaces" :key="s.id" class="ra-chip" :class="{ on: s.id === vm.selected }" @click="pick(s.id)">
+        {{ s.name }}
+        <span v-if="tierOf(s.id)" class="ra-dot" :class="tierOf(s.id)"></span>
+      </button>
+    </div>
+
     <button v-if="lesson && lesson.environment && lesson.environment.levelId && !driving" class="ra-btn ra-goto" @click="cmd('goToDrill')">
       ⤳ Go to drill · {{ lesson.environment.mapDisplayName }}
     </button>
@@ -116,6 +127,15 @@ const drillItems = computed(() => {
   return out
 })
 const assessment = computed(() => (lesson.value && lesson.value.assessment) || {})
+// Lua lists may arrive as {} when empty, so check before iterating.
+const surfaces = computed(() => (lesson.value && Array.isArray(lesson.value.surfaces) ? lesson.value.surfaces : []))
+function tierOf(id) {
+  const p = vm.progress
+  return (p && p[id] && p[id].bestTier) || null
+}
+function pick(id) {
+  if (id !== vm.selected) api.engineLua(`extensions.rallyAcademy.select(${JSON.stringify(id)})`)
+}
 const isAuto = computed(() => assessment.value.mode === "automatic")
 const hasCourse = computed(() => !!assessment.value.course)
 const driving = computed(() => ["running", "review", "scored"].includes(vm.phase))
@@ -184,7 +204,9 @@ function cmd(name, arg) {
 
 function choose() {
   const id = selectedId.value
-  if (id && !String(id).startsWith("module-")) api.engineLua(`extensions.rallyAcademy.select(${JSON.stringify(id)})`)
+  const base = vm.lesson && vm.lesson.variantOf
+  if (!id || String(id).startsWith("module-") || id === vm.selected || id === base) return
+  api.engineLua(`extensions.rallyAcademy.select(${JSON.stringify(id)})`)
 }
 
 function onState(data) {
@@ -192,7 +214,9 @@ function onState(data) {
   // `grade = false` explicitly when there is none, so a merge clears it.
   Object.assign(vm, data)
   if (data.selected) {
-    selectedId.value = data.selected
+    // a surface variant shows as its base drill in the drop-down (the chips show which surface)
+    const l = data.lesson || vm.lesson
+    selectedId.value = (l && l.id === data.selected && l.variantOf) || data.selected
   } else if (data.lessons && data.lessons.length) {
     // Lua has no drill (game start, or the extension was reloaded): select the one shown
     // here, or the first, so the panel and Lua agree.
@@ -240,6 +264,44 @@ onMounted(() => {
 .ra-select {
   width: 100%;
   font-size: 0.95em;
+}
+
+.ra-surfaces {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.3rem;
+  .ra-surfaces-label {
+    color: var(--bng-cool-gray-100);
+    margin-right: 0.15rem;
+  }
+}
+
+.ra-chip {
+  padding: 0.05rem 0.45rem;
+  font-size: 0.9em;
+  color: var(--bng-off-white);
+  background-color: rgb(var(--bng-cool-gray-700-rgb));
+  border: 1px solid rgb(var(--bng-cool-gray-600-rgb));
+  border-radius: var(--bng-corners-1);
+  cursor: pointer;
+  &.on {
+    background-color: var(--bng-orange-500);
+    border-color: var(--bng-orange-500);
+    color: var(--bng-off-black);
+    font-weight: 600;
+  }
+  .ra-dot {
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-left: 0.2rem;
+    border-radius: 50%;
+    &.bronze { background-color: #c8813f; }
+    &.silver { background-color: #c9ccd6; }
+    &.gold { background-color: #f2c014; }
+  }
 }
 
 .ra-instructions {

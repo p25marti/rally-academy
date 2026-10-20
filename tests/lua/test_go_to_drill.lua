@@ -137,10 +137,10 @@ end
 
 function T.go_to_drill_with_a_saved_start_goes_straight_into_a_run()
   local h, M = setup()
-  h.level = 'west_coast_usa'
+  h.level = 'ra_proving_ground'
   M.select('A02')
   h.vehicle.pos = stubs.vec3(5, 6, 7)
-  M.markStart()                               -- saved for A02 on west_coast_usa
+  M.markStart()                               -- saved for A02 on its map
   h.vehicle.pos = stubs.vec3(900, 900, 0)
   M.goToDrill()
   local s = h.lastState()

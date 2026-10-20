@@ -15,14 +15,21 @@ VENUES = ROOT / "mod" / "gameplay" / "rallyAcademy" / "venues.json"
 
 
 def drills():
-    """The drills with each venue filled in (levelId, mapDisplayName, spawn), as the mod loads them."""
+    """The drills with each venue filled in (levelId, mapDisplayName, spawn), as the mod loads them, surface
+    variants included (A01-snow, after their base drill)."""
+    import variants
     venues = {v["id"]: v for v in json.loads(VENUES.read_text(encoding="utf-8"))["venues"]}
-    out = json.loads(EXERCISES.read_text(encoding="utf-8"))["exercises"]
+    out = variants.all_drills(json.loads(EXERCISES.read_text(encoding="utf-8"))["exercises"])
     for d in out:
         v = venues.get(d["environment"].get("venue"))
         if v:
             d["environment"].update(levelId=v["levelId"], mapDisplayName=v["name"], spawn=v["spawn"])
     return out
+
+
+def catalogue():
+    """The drills the HUD and the Academy screen list: base drills only (surface variants are picked on them)."""
+    return [d for d in drills() if not d.get("variantOf")]
 
 
 def drill(drill_id):

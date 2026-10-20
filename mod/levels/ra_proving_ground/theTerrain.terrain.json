@@ -2,17 +2,18 @@
   "binaryFormat": "version(char), size(unsigned int), heightMap(heightMapSize * heightMapItemSize), layerMap(layerMapSize * layerMapItemSize), materialNames",
   "datafile": "/levels/ra_proving_ground/theTerrain.ter",
   "heightMapItemSize": 2,
-  "heightMapSize": 1048576,
+  "heightMapSize": 4194304,
   "layerMapItemSize": 1,
-  "layerMapSize": 1048576,
+  "layerMapSize": 4194304,
   "materials": [
     "ra_Grass",
     "ra_gravel",
     "ra_Asphalt",
     "ra_snow",
     "ra_Dirt",
-    "ra_Mud"
+    "ra_Mud",
+    "ra_rock"
   ],
-  "size": 1024,
+  "size": 2048,
   "version": 9
 }

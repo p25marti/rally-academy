@@ -58,8 +58,8 @@ def smoke():
     expect(p, "one HUD panel after a UI reload", n == 1, n)
     # The drill drop-down must open on a real click (a native <select> never did) and pick.
     call("ui_click", {"selector": f"{A.PANEL} .ra-select"})
-    opts = A.wait_for(lambda: ui("return document.querySelectorAll('.dropdown-option-label').length"), len(A.drills()))
-    expect(p, "drop-down opens on a click and lists every drill", opts == len(A.drills()), opts)
+    opts = A.wait_for(lambda: ui("return document.querySelectorAll('.dropdown-option-label').length"), len(A.catalogue()))
+    expect(p, "drop-down opens on a click and lists every drill", opts == len(A.catalogue()), opts)
     ui("var o=Array.from(document.querySelectorAll('.dropdown-option-label')).find(function(e){return e.textContent.indexOf('B01 ')===0});"
        "if(o) (o.closest('[bng-nav-item]')||o.parentElement).setAttribute('data-ra-pick','1'); return 1")
     call("ui_click", {"selector": "[data-ra-pick]"})
@@ -151,40 +151,42 @@ def b01():
 
 @scenario
 def a04():
-    """A04 on its course (BMP run-up, three gates 25 m apart): a steady 30 km/h earns a medal; 40 km/h at
-    gate 3 misses. Needs West Coast USA."""
+    """A04 on its course (the proving ground's dirt strip, three gates 25 m apart): a steady 30 km/h earns a
+    medal; 40 km/h at gate 3 misses."""
     p = []
     A.drill_session("A04")
     expect(p, "three gates laid out at the venue", A.debug_state().get("gateCount") == 3, A.debug_state().get("reason"))
-
-    def hold(target_of_d):
-        A.click("Retry")
-        time.sleep(1.0)
-        A.arcade()
-        inp("parkingbrake", 0)
-        start, t0 = state()[0], time.time()
-        while time.time() - t0 < 40 and A.debug_state().get("phase") not in ("scored", "review"):
-            pos, spd = state()
-            d = ((pos[0] - start[0]) ** 2 + (pos[1] - start[1]) ** 2) ** 0.5
-            inp("throttle", max(0.0, min(1.0, 0.12 + 0.06 * (target_of_d(d) - spd * 3.6))))
-            time.sleep(0.05)
-        inp("throttle", 0)
-        s = A.wait_graded()
-        t0 = time.time()
-        while state()[1] > 1 and time.time() - t0 < 15:
-            inp("brake", 0.5)
-            time.sleep(0.2)
-        inp("brake", 0)
-        inp("parkingbrake", 1)
-        return s
-
-    s = hold(lambda d: 30)
+    s = _hold_run(lambda d: 30)
     expect(p, "steady 30 km/h passes with a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver", "bronze"),
            f"{s.get('tier')}: {A.grade_lines()}")
-    s = hold(lambda d: 30 if d < 60 else 40)
+    s = _hold_run(lambda d: 30 if d < 60 else 40)
     expect(p, "too fast at gate 3 misses", s.get("passed") is False, A.grade_lines())
     A.end_session("A04")
     return p
+
+
+def _hold_run(target_of_d):
+    """A04-style run of the selected drill: Retry, then hold target_of_d(metres from the start) km/h on the
+    throttle alone (arcade gearbox), then stop."""
+    A.click("Retry")
+    time.sleep(1.0)
+    A.arcade()
+    inp("parkingbrake", 0)
+    start, t0 = state()[0], time.time()
+    while time.time() - t0 < 40 and A.debug_state().get("phase") not in ("scored", "review"):
+        pos, spd = state()
+        d = ((pos[0] - start[0]) ** 2 + (pos[1] - start[1]) ** 2) ** 0.5
+        inp("throttle", max(0.0, min(1.0, 0.12 + 0.06 * (target_of_d(d) - spd * 3.6))))
+        time.sleep(0.05)
+    inp("throttle", 0)
+    s = A.wait_graded()
+    t0 = time.time()
+    while state()[1] > 1 and time.time() - t0 < 15:
+        inp("brake", 0.5)
+        time.sleep(0.2)
+    inp("brake", 0)
+    inp("parkingbrake", 1)
+    return s
 
 
 @scenario
@@ -214,15 +216,15 @@ def stops():
 
 @scenario
 def launch():
-    """A02 on its course (BMP start straight, from the venue start): a flat-out launch through the
-    40 km/h gate earns a medal (the run ends at the gate); 34 km/h at the gate misses. Needs West Coast USA."""
+    """A02 on its course (the proving ground's dirt strip, from the venue start): a flat-out launch through the
+    40 km/h gate earns a medal (the run ends at the gate); 34 km/h at the gate misses."""
     p = []
     A.drill_session("A02")
     s = A.debug_state()
     expect(p, "the course is laid out at the venue", s.get("hasCourse") and s.get("usingVenueStart"), s.get("reason"))
-    line = [(0, 0), (0, 80)]  # down the straight's centre line; the run ends at the gate (60 m)
-    s = A.course_run("A02", line, kmh=48, decel=3.0, max_throttle=1.0)
-    expect(p, "a flat-out launch passes with a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
+    line = [(0, 0), (0, 80)]  # down the strip; the run ends at the gate (60 m)
+    s = _launch_run("A02")
+    expect(p, "a launch that feeds the throttle in passes with a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
            f"{s.get('tier')}: {s.get('reason')} {s.get('nextTier') or ''}")
     s = A.course_run("A02", line, kmh=34, decel=3.0, max_throttle=0.6)
     expect(p, "34 km/h at the 40 km/h gate misses", s.get("passed") is False and "too slow" in str(s.get("reason")),
@@ -897,8 +899,8 @@ def pause():
     expect(p, "Rally Academy tab in the pause menu", click_text(".tab-item", "Rally Academy") == "ok")
     # Found by hand: rail buttons without an icon crashed the whole Vue UI on this click.
     click_text("[class*=rail] button, [class*=rail-button]", "Exercises")  # the menu reopens on the last page
-    page = A.wait_for(lambda: ui("return document.querySelectorAll('.ra-pause-page .ra-card').length"), len(A.drills()))
-    expect(p, "Exercises lists every drill", page == len(A.drills()), page)
+    page = A.wait_for(lambda: ui("return document.querySelectorAll('.ra-pause-page .ra-card').length"), len(A.catalogue()))
+    expect(p, "Exercises lists every drill", page == len(A.catalogue()), page)
     click_text(".ra-pause-page .ra-card", "A04")
     expect(p, "picking a drill shows its details", "Throttle modulation" in str(ui(
         "var d=document.querySelector('.ra-pause-page .ra-details'); return d ? d.innerText : ''")))
@@ -1011,8 +1013,8 @@ def mainmenu():
             time.sleep(3)
         time.sleep(3)
     lua("ui_router.navigate('menu.rallyAcademy') return 1")
-    cards = A.wait_for(lambda: ui("return document.querySelectorAll('.ra-card').length"), len(A.drills()), timeout=20)
-    expect(p, "Academy screen opens from the main menu", cards == len(A.drills()), cards)
+    cards = A.wait_for(lambda: ui("return document.querySelectorAll('.ra-card').length"), len(A.catalogue()), timeout=20)
+    expect(p, "Academy screen opens from the main menu", cards == len(A.catalogue()), cards)
     ui("var c=Array.from(document.querySelectorAll('.ra-card')).find(function(x){return x.innerText.indexOf('A04')===0}); c.click(); return 1")
     time.sleep(1)
     ui("var b=Array.from(document.querySelectorAll('.ra-details button')).find(function(x){return /Start drill/.test(x.textContent)}); b.click(); return 1")
@@ -1041,3 +1043,57 @@ def fit():
     expect(p, "B05's circle fits the dirt arena", r["fits"], r["problems"] or r["notes"])
     return p
 
+
+# Module A's scripted medal technique per drill (drill id -> state), for the surfaces scenario. Surface variants run
+# the same technique: the targets, not the driving, are what change per surface (ADR 0009).
+def _module_a_runs(kmh_scale=1.0):
+    front = 1.81  # Covet: front bumper ahead of the car's position
+
+    def a01(d):
+        best = None
+        for _ in range(3):  # the line jitters by ~0.1 m; gold needs ~0.2 m to spare
+            s = A.course_run(d, A01_GOLD, kmh=14)
+            if s.get("passed") and (best is None or s.get("tier") == "gold"):
+                best = s
+            if s.get("tier") == "gold":
+                break
+        return best or s
+    return {
+        "A01": a01,
+        "A02": lambda d: _launch_run(d, A.drill(d).get("surface", "Dirt")),
+        "A03": lambda d: A.course_run(d, [(0, 0), (0, 155)], on_tick=_gear_plan(2), gearbox="sequential", kmh=62,
+                                      decel=2.2, max_throttle=0.9),
+        "A04": lambda d: _hold_run(lambda m: 30),
+        "A05": lambda d: precise(lambda: A.course_run(d, [(0, 0), (0, 60 - front - 0.5)], kmh=44, decel=3.5,
+                                                      max_throttle=0.7)),
+    }
+
+
+def _launch_run(drill, surface="Dirt"):
+    """A02: the throttle fed in as the car gathers speed (a flat-out start spins the wheels on loose ground and the
+    arcade box then stays in 1st): from 25 % at rest to full at 45 km/h; on snow from 15 % to full at 80 km/h."""
+    start, full = (0.15, 80.0) if surface == "Snow" else (0.25, 45.0)
+
+    def pedals(v, trav):
+        return (min(1.0, start + max(0.0, v) / full * (1 - start)), 0.0) if trav < 75 else None
+    return A.course_run(drill, [(0, 0), (0, 80)], kmh=48, decel=3.0, max_throttle=1.0, pedals=pedals)
+
+
+@scenario
+def surfaces():
+    """Module A on every surface (the proving ground's dirt, gravel, asphalt and snow strips, ADR 0009): the drill's
+    scripted medal technique passes on each surface variant. Prints a table of verdicts and the numbers behind them."""
+    p, table = [], []
+    runs = _module_a_runs()
+    for base in ("A01", "A02", "A03", "A04", "A05"):
+        for sf in A.drill(base).get("surfaces") or [{"id": base, "name": "Standard"}]:
+            d = sf["id"]
+            A.drill_session(d)
+            s = runs[base](d)
+            table.append((d, s.get("tier") or ("pass" if s.get("passed") else "MISS"), A.grade_lines()))
+            expect(p, f"{d} ({sf['name']}): the medal technique passes", s.get("passed") is True,
+                   f"{s.get('tier')}: {s.get('reason')}")
+            A.end_session(d)
+    for d, verdict, lines in table:
+        print(f"  {d:12} {verdict:7} " + " | ".join(str(x) for x in (lines or [])[:6]))
+    return p

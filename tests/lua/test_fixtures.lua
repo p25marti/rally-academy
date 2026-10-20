@@ -109,8 +109,11 @@
 --      25 m; b06 = 40 km/h, a 10 m lift at 35 m, then 26; b07 = 60 km/h, 6 m of full brake (bronze there); c04 =
 --      braked to 45, a 6 m pull at 0.3 lock, exit 30; c07 = 28 km/h circles; d01 = 32 km/h, ±2.4 m. The older runs
 --      above them were recorded on the BMP dirt arena and circle (DIRT_DUSTY); the rules didn't change.
+--      a02 = the launch fed in from 25 % throttle (full at 45 km/h); a04 = the 30 km/h throttle hold (bronze here:
+--      gate 3 at 27.9 km/h, under silver's 28).
 local json = require('json')
 local Rules = require('ge/extensions/rallyAcademy/rules')
+local Variants = require('ge/extensions/rallyAcademy/variants')
 local T = {}
 
 local ROOT = arg and arg[1] or '.'
@@ -242,6 +245,9 @@ local function gradeCourse(name, drill)
   local a
   for _, e in ipairs(read(ROOT .. '/mod/gameplay/rallyAcademy/exercises.json').exercises) do
     if e.id == (drill or 'A01') then a = e.assessment end
+    for _, v in ipairs(Variants.expand(e)) do -- surface variants (A02-snow) grade with their own targets
+      if v.id == drill then a = v.assessment end
+    end
   end
   return Rules.grade(a, rec, {course = rec.meta.course, gates = rec.meta.course.gates, car = rec.meta.car,
                               zone = rec.meta.course.zone,
@@ -262,7 +268,8 @@ end
 -- One medal run per drill re-driven on the proving ground after the move (ADR 0008), next to the older runs
 -- recorded on the BMP arena and circle (the rules are the same; these prove they hold on the new ground too).
 function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
-  local want = {a01_gold_pg = {'A01', 'gold'}, b05_gold_pg = {'B05', 'gold'}, b06_gold_pg = {'B06', 'gold'},
+  local want = {a01_gold_pg = {'A01', 'gold'}, a02_gold_pg = {'A02', 'gold'}, a04_bronze_pg = {'A04', 'bronze'},
+    b05_gold_pg = {'B05', 'gold'}, b06_gold_pg = {'B06', 'gold'},
     b07_bronze_pg = {'B07', 'bronze'}, c04_gold_pg = {'C04', 'gold'}, c07_gold_pg = {'C07', 'gold'}, d01_gold_pg = {'D01', 'gold'}}
   for name, w in pairs(want) do
     local res, rec = gradeCourse(name, w[1])
@@ -271,6 +278,18 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, w[2], name .. ' medal')
   end
+end
+
+-- A surface variant grades with its own targets (ADR 0009): A02 on snow allows 10 s to 40 km/h (7 s silver,
+-- 5.5 s gold) where the dirt base allows 8 (4.5, 3.5). a02-snow_bronze: the launch fed in from 15 % throttle
+-- (full at 80 km/h) on the snow strip, 0-40 in 6.2 s, a 0.7 s shift (bronze: silver wants 0.6 s).
+function T.a_surface_variant_grades_with_its_own_targets()
+  local snow, rec = gradeCourse('a02-snow_bronze', 'A02-snow')
+  eq(rec.meta.drill, 'A02-snow', 'recorded as the variant')
+  assert(snow.passed == rec.grade.passed, 'rules agree with the game: ' .. tostring(snow.passed))
+  eq(snow.tier, 'bronze', 'medal')
+  has(check(snow, 'time_to_speed').text, 'target 10 s')
+  has(check(gradeCourse('a02-snow_bronze', 'A02'), 'time_to_speed').text, 'target 8 s')
 end
 
 function T.a01_recorded_misses_fail_for_the_right_reasons()

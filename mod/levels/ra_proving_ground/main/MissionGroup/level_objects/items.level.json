@@ -1,2 +1,3 @@
 {"name":"terrain","class":"SimGroup","__parent":"level_objects"}
 {"name":"sky_and_sun","class":"SimGroup","persistentId":"ce935882-5b71-5316-9e04-5eb2e6689bcf","__parent":"level_objects"}
+{"name":"vegetation","class":"SimGroup","persistentId":"1929a265-fd3f-52ee-bcad-214a3ef6bad4","__parent":"level_objects"}

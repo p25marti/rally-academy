@@ -251,7 +251,7 @@ end
 -- A02: the same course machinery on a straight: one labelled gate, and the run ends there.
 function T.a02_lays_out_a_labelled_gate_that_ends_the_run()
   local h, M = setup()
-  h.level = 'west_coast_usa'
+  h.level = 'ra_proving_ground'
   M.select('A02')
   local s = h.lastState()
   eq(s.usingVenueStart, true, 'ready at the venue')

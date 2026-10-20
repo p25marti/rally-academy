@@ -37,21 +37,27 @@
       <button v-if="compact" class="ra-back" @click="showDetails = false">← All drills</button>
       <div class="ra-details-title">{{ chosen.id }} · {{ chosen.title }}</div>
       <div class="ra-details-meta">{{ chosen.difficulty }} · {{ moduleName(chosen) }}</div>
+      <div v-if="surfaces.length > 1" class="ra-surfaces">
+        <span class="ra-section-inline">Surface</span>
+        <button v-for="s in surfaces" :key="s.id" class="ra-chip" :class="{ on: s.id === surfaceId }" @click="surfaceId = s.id">
+          {{ s.name }}
+        </button>
+      </div>
       <div v-if="!isAuto(chosen)" class="ra-soon-note">
         <strong>Coming soon.</strong> Automatic grading for this drill isn't built yet. You can
         still practise it and grade yourself with Pass/Miss.
       </div>
       <p>{{ chosen.instructions }}</p>
       <div class="ra-section">Pass when</div>
-      <p>{{ chosen.assessment.successDefinition }}</p>
+      <p>{{ drill.assessment.successDefinition }}</p>
       <div class="ra-section">Car and venue</div>
       <p>
-        {{ chosen.vehicle && chosen.vehicle.displayName }}<br />
-        {{ chosen.environment && chosen.environment.mapDisplayName }}
+        {{ drill.vehicle && drill.vehicle.displayName }}<br />
+        {{ drill.environment && drill.environment.mapDisplayName }}
       </p>
-      <p v-if="chosen.environment && chosen.environment.areaHint" class="ra-hint">{{ chosen.environment.areaHint }}</p>
-      <div class="ra-section">Your progress</div>
-      <p>{{ progressText(chosen) }}</p>
+      <p v-if="drill.environment && drill.environment.areaHint" class="ra-hint">{{ drill.environment.areaHint }}</p>
+      <div class="ra-section">Your progress{{ surfaces.length > 1 ? ` on ${drill.surface}` : "" }}</div>
+      <p>{{ progressText(drill) }}</p>
       <p v-if="chosen.parked" class="ra-parked-note">{{ chosen.parked }}</p>
       <div class="ra-actions">
         <BngButton :accent="isAuto(chosen) ? ACCENTS.main : ACCENTS.secondary" :disabled="starting" @click="start">
@@ -71,6 +77,7 @@ import { academy, groupByModule, isAuto, moduleName, progressOf } from "../acade
 
 const props = defineProps({
   lessons: { type: Array, default: () => [] },
+  variants: { type: Object, default: () => ({}) }, // surface variants by id (ADR 0009)
   progress: { type: Object, default: () => ({}) },
   selected: { type: String, default: null },
   showBack: { type: Boolean, default: true }, // the pause menu has its own back
@@ -95,6 +102,11 @@ const modules = computed(() => groupByModule(props.lessons, props.progress))
 const chosen = computed(
   () => props.lessons.find(l => l.id === chosenId.value) || props.lessons[0] || null,
 )
+// The chosen drill's surfaces (Lua lists may arrive as {}), the one picked, and that drill or variant.
+const surfaces = computed(() => (chosen.value && Array.isArray(chosen.value.surfaces) ? chosen.value.surfaces : []))
+const surfaceId = ref(null)
+watch(chosen, c => { surfaceId.value = c ? c.id : null }, { immediate: true })
+const drill = computed(() => (surfaceId.value && props.variants[surfaceId.value]) || chosen.value)
 
 function statusText(lesson) {
   const p = progressOf(props.progress, lesson)
@@ -125,7 +137,7 @@ async function start() {
   if (!chosen.value || starting.value) return
   starting.value = true
   startError.value = ""
-  const ok = await academy("startDrill", chosen.value.id)
+  const ok = await academy("startDrill", drill.value.id)
   if (!ok) {
     starting.value = false
     startError.value = "Couldn't start that drill. Check beamng.log for rallyAcademy lines."
@@ -148,6 +160,34 @@ async function start() {
   }
   .ra-details {
     flex: 1 1 auto;
+  }
+}
+
+.ra-surfaces {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.4rem 0;
+}
+
+.ra-section-inline {
+  margin-right: 0.3rem;
+  color: var(--bng-cool-gray-100);
+}
+
+.ra-chip {
+  padding: 0.1rem 0.55rem;
+  color: var(--bng-off-white);
+  background-color: rgb(var(--bng-cool-gray-700-rgb));
+  border: 1px solid rgb(var(--bng-cool-gray-600-rgb));
+  border-radius: var(--bng-corners-1);
+  cursor: pointer;
+  &.on {
+    background-color: var(--bng-orange-500);
+    border-color: var(--bng-orange-500);
+    color: var(--bng-off-black);
+    font-weight: 600;
   }
 }
 

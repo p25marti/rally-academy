@@ -44,6 +44,7 @@ export function groupByModule(lessons, progress) {
 export function useAcademyData() {
   const state = {
     lessons: ref([]),
+    variants: ref({}), // surface variants by id ("A01-snow"), ADR 0009
     progress: ref({}),
     selected: ref(null),
     info: ref({}),
@@ -54,6 +55,7 @@ export function useAcademyData() {
     try {
       const data = await academy("getMenuData")
       state.lessons.value = Array.isArray(data && data.lessons) ? data.lessons : []
+      state.variants.value = data && data.variants && !Array.isArray(data.variants) ? data.variants : {}
       // Lua's empty table arrives as [] rather than {}
       state.progress.value = data && data.progress && !Array.isArray(data.progress) ? data.progress : {}
       state.selected.value = (data && data.selected) || (state.lessons.value[0] && state.lessons.value[0].id) || null

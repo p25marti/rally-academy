@@ -71,7 +71,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `a01` | The course is laid out on the proving ground's dirt strip with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
 | `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), and the game's own tabs after reopening |
 | `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
-| `a04` | A04 on its course (BMP run-up, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
+| `a04` | A04 on its course (the proving ground's dirt strip, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (stop line 60 m ahead) and B02 on its course (40 m stop area), both on the proving ground's dirt strip, a PASS and a MISS each |
 | `trail` | B04 on the proving ground's flat corner (the BMP downhill left copied flat): trail braking into the corner earns a medal; braking only before turn-in misses |
 | `tighten` | D03 on gravel lane DR825: easing off into the tightening corner earns a medal; too fast runs wide |
@@ -92,7 +92,8 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `circle` | B05 on the proving ground's dirt ring: two laps on the throttle with brake dabs earn gold; no dabs, or lifting off to brake, miss |
 | `corners` | A07 and A08 on the proving ground's flat corner (Covet Gravel Rally, racing line from `lines.py`): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss |
 | `gears` | A03 on its course (the proving ground's dirt strip, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
-| `launch` | A02 on its course (from the BMP start line; the run ends at the 40 km/h gate): a flat-out launch earns a medal; 34 km/h at the gate misses |
+| `launch` | A02 on its course (the proving ground's dirt strip; the run ends at the 40 km/h gate): feeding the throttle in earns a medal (flat out spins the wheels); 34 km/h at the gate misses |
+| `surfaces` | Module A on every surface (dirt, gravel, asphalt, snow variants, ADR 0009): each drill's medal technique passes on each; prints a table of verdicts. About 20 runs |
 | `events` | On the proving ground's dirt strip: a handbrake spin, a run on the grass beside it and a puncture are detected (and the puncture isn't contact) |
 | `goto` | Go to drill loads Utah in the gravel Covet for E08, then the proving ground for B01 (slow: a stock map load) |
 | `fit` | Venue fit test on West Coast USA: B01 fits the dirt arena's long straight but not facing the barrier; B05's circle fits the dirt arena |

@@ -4,7 +4,7 @@
 local M = {}
 -- Re-read our pure modules whenever the extension (re)loads: extensions.reload re-runs
 -- this file but `require` would keep the old modules (seen on 0.39.4).
-for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots'}) do
+for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots', 'variants'}) do
   package.loaded['ge/extensions/rallyAcademy/' .. name] = nil
 end
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
@@ -14,10 +14,13 @@ local Layout = require('ge/extensions/rallyAcademy/layout')
 local Store = require('ge/extensions/rallyAcademy/store')
 local Course = require('ge/extensions/rallyAcademy/course')
 local Spots = require('ge/extensions/rallyAcademy/spots')
+local Variants = require('ge/extensions/rallyAcademy/variants')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 -- Named venues drills refer to (environment.venue); the loader fills in each drill's map,
 -- display name and spawn from it, so the rest of the mod reads them from the drill.
 local VENUES_FILE = 'gameplay/rallyAcademy/venues.json'
+-- lessons: the catalogue in curriculum order (no variants); byId: every drill, surface variants included
+-- (variants.lua: 'A01-snow'); lessonSummary: what the HUD's drop-down lists.
 local lessons, byId, lessonSummary = {}, {}, {}
 local progress = {schemaVersion = 1, lessons = {}} -- store.lua has the file formats
 local setups = {schemaVersion = 1, levels = {}}
@@ -188,8 +191,7 @@ local function load()
   lessons, byId, lessonSummary = (data and data.exercises) or {}, {}, {}
   local venueById = {}
   for _, v in ipairs((jsonReadFile(VENUES_FILE) or {}).venues or {}) do venueById[v.id] = v end
-  for _, lesson in ipairs(lessons) do
-    byId[lesson.id] = lesson
+  local function resolveVenue(lesson)
     local env = lesson.environment
     local venue = env and venueById[env.venue]
     if venue then
@@ -197,9 +199,21 @@ local function load()
     elseif env and env.venue then
       logf('E', '%s: unknown venue %s (%s)', lesson.id, tostring(env.venue), VENUES_FILE)
     end
-    table.insert(lessonSummary, {id=lesson.id, title=lesson.title, module=lesson.module,
-      parked=lesson.parked ~= nil or nil})
   end
+  local nVariants = 0
+  for _, lesson in ipairs(lessons) do
+    for _, v in ipairs(Variants.expand(lesson)) do -- before the base's venue is filled in
+      resolveVenue(v)
+      byId[v.id] = v
+      nVariants = nVariants + 1
+    end
+    if lesson.variants then lesson.surfaces = Variants.surfaces(lesson) end
+    byId[lesson.id] = lesson
+    resolveVenue(lesson)
+    table.insert(lessonSummary, {id=lesson.id, title=lesson.title, module=lesson.module,
+      parked=lesson.parked ~= nil or nil, surfaces=lesson.surfaces})
+  end
+  if nVariants > 0 then logf('I', '%d surface variants', nVariants) end
   local warn
   progress, warn = Store.loadProgress()
   if warn then logf('W', '%s', warn) end
@@ -403,7 +417,8 @@ end
 local function step(by)
   if #lessons == 0 then return end
   local idx = 0
-  for i, l in ipairs(lessons) do if l.id == selected then idx = i end end
+  local base = selected and byId[selected] and byId[selected].variantOf or selected
+  for i, l in ipairs(lessons) do if l.id == base then idx = i end end
   if idx == 0 then idx = by > 0 and 0 or 1 end
   local lesson = lessons[(idx - 1 + by) % #lessons + 1]
   M.select(lesson.id)
@@ -1023,7 +1038,9 @@ local APP_INFO_FILE = 'ui/modules/apps/RallyAcademy/app.json' -- version kept in
 -- the drill selected in the HUD, and the mod's version and author (About, Credits).
 function M.getMenuData()
   local app = jsonReadFile(APP_INFO_FILE) or {}
-  return {lessons = lessons, progress = progress.lessons, selected = selected,
+  local variants = {} -- surface variants by id (the lessons list holds only base drills)
+  for id, l in pairs(byId) do if l.variantOf then variants[id] = l end end
+  return {lessons = lessons, variants = variants, progress = progress.lessons, selected = selected,
           info = {version = app.version, author = app.author}}
 end
 

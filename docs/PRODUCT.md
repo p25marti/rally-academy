@@ -27,6 +27,7 @@ gearbox. It must also work on a keyboard or gamepad, but the rig is the referenc
 | FWD first | Every active drill pins a FWD Covet; drills that need RWD/AWD are parked and labelled. Same drill on several drivetrains is a later ladder ([VEHICLES](VEHICLES.md)) | 2026-10-14 |
 | Venues: Option A | West Coast USA (BMP) as home base, Utah for longer routes; bespoke per-drill areas may come later ([MAPS](MAPS.md)) | 2026-10-14 |
 | Our own proving ground | A generated map of flat surface pads and road shapes for drills whose mechanic needs flat, single-surface ground; real-road features stay on stock maps. Per-surface variants are next ([ADR 0008](decisions/0008-proving-ground-map.md)) | 2026-10-19 |
+| Surface variants | The same drill on dirt, gravel, asphalt and snow: each surface its own drill (`A01-snow`) with its own progress and medals, picked with a Surface row; targets differ only where the physics demands it. Module A first ([ADR 0009](decisions/0009-surface-variants.md)) | 2026-10-20 |
 | "Implemented" means auto-graded | Drills without automatic grading show **Coming soon** but stay playable with Pass/Miss | 2026-10-15 |
 | Keep the HUD drop-down | Drill selection stays on the in-drive panel too; moving it fully into the menus is an open question | 2026-10-15 |
 | Lua is authoritative | The UI shows Lua's state and sends commands; no logic lives only in the UI ([ARCHITECTURE](ARCHITECTURE.md)) | from the start |

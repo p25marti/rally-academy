@@ -8,7 +8,7 @@
 
       <BngTabs v-else v-model="activeTab" class="ra-tabs">
         <div class="ra-tab" tab-heading="Exercises">
-          <ExercisesPage :lessons="lessons" :progress="progress" :selected="selected" @back="back" />
+          <ExercisesPage :lessons="lessons" :variants="variants" :progress="progress" :selected="selected" @back="back" />
         </div>
         <div class="ra-tab" tab-heading="Analysis">
           <AnalysisPage :lessons="lessons" :progress="progress" />
@@ -36,7 +36,7 @@ import AboutPage from "./pages/AboutPage.vue"
 import CreditsPage from "./pages/CreditsPage.vue"
 
 const activeTab = ref(0)
-const { lessons, progress, selected, info, error } = useAcademyData()
+const { lessons, variants, progress, selected, info, error } = useAcademyData()
 
 // Lua decides where Back goes: the game when in a map (and resumes physics), else the main menu.
 const back = () => academy("closeMenu")

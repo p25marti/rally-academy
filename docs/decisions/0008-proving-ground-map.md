@@ -32,6 +32,7 @@ surface. The owner chose to build it (2026-10-19).
 - One more thing to re-check after game updates: the level leans on the template's materials, sky and the
   `.ter` format (version 9 on 0.40). `audit.py` and `surface.py` verify each venue's surface and flatness.
 - Map loads for drills on it drop from 20-140 s to a few seconds.
-- The zip grows by the terrain file (3 MB raw, but flat and constant, so about 6 kB compressed) and the level appears in
+- The zip grows by the terrain file (a flat 1 km terrain compressed to about 6 kB; with the hills and forests of
+  2026-10-20 the whole zip is about 7 MB) and the level appears in
   the game's map list.
 - Stock maps stay the home of road-feature drills; the "Venues: Option A" decision is narrowed, not reversed.

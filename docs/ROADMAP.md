@@ -67,9 +67,12 @@ all six are built.
 - [x] The straight-line drills (A03, A05, B01, B02) moved to the dirt strip; fixtures re-recorded there.
 - [x] The arena and circle drills (A01, B05-B07, C04, C07, D01) moved to the dirt strip; one medal run each
       re-recorded there (`*_pg` fixtures).
-- [ ] Per-surface variants (same layout on gravel, snow, asphalt): targets and progress per surface; needs
-      its own decision.
-- [ ] Looks: a backdrop past the terrain edge, painted markings, a few props, only where cheap.
+- [x] Surface variants (ADR 0009): module A on dirt, gravel, asphalt and snow, picked on the HUD and the
+      Academy screen; the `surfaces` scenario drives every one.
+- [ ] Variants for more drills (B01 braking and C04 handbrake show the biggest differences per surface), and
+      progress views that sum across surfaces.
+- [x] Looks: hills round the play area (2 km terrain), rock faces, autumn forests from the game's tree library.
+- [ ] More looks: grass cover, painted markings, a few props (tyre walls, a paddock).
 
 ## P2 — First automatically graded drill
 

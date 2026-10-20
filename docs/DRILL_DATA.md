@@ -106,6 +106,27 @@ Names are `silver` then `gold` (`R.TIERS`); a tier's `park_in_box` box must be s
 last. Block targets (`requiredPasses`) still count passes; progress also keeps `bestTier` and
 `tiers` (medal counts).
 
+## Surface variants
+
+A drill can run on several surfaces ([ADR 0009](decisions/0009-surface-variants.md)). It names its own surface and
+lists the others:
+
+```json
+"surface": "Dirt",
+"variants": [
+  {"id": "gravel", "name": "Gravel", "venue": "pg-gravel-strip"},
+  {"id": "snow", "name": "Snow", "venue": "pg-snow-strip",
+   "rules": [{"type": "time_to_speed", "kmh": 40, "maxSeconds": 12}],
+   "tiers": [{"name": "gold", "rules": [{"type": "time_to_speed", "kmh": 40, "maxSeconds": 7}]}]}
+]
+```
+
+Each variant becomes a drill of its own, `A02-snow`, with its own progress and medals. It inherits everything from
+the drill except what it sets: `venue` (required), `areaHint`, `vehicle`, `successDefinition`, and rule overrides.
+An override replaces every rule of the same type (or is added), in `rules` and in the named medal tier, as medal
+tiers do. Set targets per surface only where the measured physics needs it; run the `surfaces` scenario
+(TESTING) after a change. `dev.py validate` checks variants as the drills they become.
+
 ## Venues
 
 Venues live in `mod/gameplay/rallyAcademy/venues.json` and drills refer to one by id

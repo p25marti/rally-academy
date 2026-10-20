@@ -1,1 +1,1 @@
-{"name":"theTerrain","class":"TerrainBlock","persistentId":"2b8076a3-747d-545f-8041-1c48c7613fd5","__parent":"terrain","position":[-512.0,-512.0,100],"materialTextureSet":"templateTerrainMaterialTextureSet","maxHeight":50,"terrainFile":"/levels/ra_proving_ground/theTerrain.ter"}
+{"name":"theTerrain","class":"TerrainBlock","persistentId":"2b8076a3-747d-545f-8041-1c48c7613fd5","__parent":"terrain","position":[-1024.0,-1024.0,100],"materialTextureSet":"templateTerrainMaterialTextureSet","maxHeight":220,"terrainFile":"/levels/ra_proving_ground/theTerrain.ter"}

@@ -1,13 +1,73 @@
 {
-  "_comment": "Rally Academy proving ground. Generated into mod/levels/<name>/ by tools/mapgen/build.py (ADR 0008). World x right (east), y up (north), metres; the terrain is centred on 0, 0. Pads are rectangles; roads are centre lines (smoothed) painted `width` m wide, their points in a course frame from `origin` facing north (x right, y ahead), the frame venues.json spawns use. Materials are the stock template level's terrain materials.",
+  "_comment": "Rally Academy proving ground. Generated into mod/levels/<name>/ by tools/mapgen/build.py (ADR 0008). World x right (east), y up (north), metres; the terrain is centred on 0, 0. Pads are rectangles; roads are centre lines (smoothed) painted `width` m wide, their points in a course frame from `origin` facing north (x right, y ahead), the frame venues.json spawns use. Everything within backdrop.flatMarginM of a pad or road stays dead flat at terrain.groundZ; hills rise beyond it, and trees (forest) keep forest.clearanceM from every pad and road. Materials are the stock template level's terrain materials; trees are the game's shared library.",
   "name": "ra_proving_ground",
   "title": "Rally Academy Proving Ground",
-  "description": "A flat practice ground for the Rally Academy drills: strips of gravel, asphalt, snow and dirt, a mud pad and a gravel corner.",
-  "size": 1024,
+  "description": "A flat practice ground for the Rally Academy drills in a wooded valley: strips of gravel, asphalt, snow and dirt, a mud pad and a gravel corner.",
+  "size": 2048,
   "terrain": {
     "baseZ": 100,
-    "maxHeight": 50,
+    "maxHeight": 220,
     "groundZ": 110
+  },
+  "backdrop": {
+    "seed": 7,
+    "flatMarginM": 90,
+    "rampM": 320,
+    "heightM": 75,
+    "noiseScaleM": 260,
+    "footWobbleM": 70,
+    "edgeRampM": 380,
+    "edgeExtraM": 60,
+    "rockSlope": 0.55,
+    "rockMaterial": "rock"
+  },
+  "forest": {
+    "seed": 11,
+    "cellM": 10,
+    "clearanceM": 35,
+    "maxSlope": 0.7,
+    "woodsScaleM": 200,
+    "woodsThreshold": 0.52,
+    "woodsDensity": 0.8,
+    "hillsideDensity": 0.06,
+    "grassDensity": 0.06,
+    "woods": [
+      "tree_oak_forest_group",
+      "tree_beech_forest_group",
+      "tree_aspen_forest_group",
+      "tree_oak_forest_a",
+      "tree_beech_forest_b",
+      "tree_oak_large_a",
+      "tree_beech_large_b",
+      "tree_aspen_large_a"
+    ],
+    "hillside": [
+      "tree_oak_large_a",
+      "tree_oak_large_b",
+      "tree_oak_large_c",
+      "tree_beech_large_b",
+      "tree_beech_large_c",
+      "tree_aspen_large_b"
+    ],
+    "grass": [
+      "tree_oak_large_b",
+      "tree_beech_large_c",
+      "tree_aspen_large_a",
+      "tree_beech_small_b",
+      "tree_beech_small_c",
+      "tree_aspen_small_a",
+      "tree_aspen_small_c",
+      "tree_oak_sml_a",
+      "tree_oak_bush_a",
+      "tree_oak_bush_c",
+      "tree_beech_bush_c",
+      "tree_aspen_bush_b"
+    ],
+    "leafTint": [
+      2.6,
+      0.75,
+      0.25
+    ]
   },
   "filler": "Grass",
   "pads": [
@@ -72,7 +132,6 @@
       ]
     }
   ],
-  "spawn": "gravel",
   "roads": [
     {
       "id": "corner-left",
@@ -154,5 +213,6 @@
         ]
       ]
     }
-  ]
+  ],
+  "spawn": "gravel"
 }

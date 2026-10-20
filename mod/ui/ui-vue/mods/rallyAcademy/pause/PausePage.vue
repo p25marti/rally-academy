@@ -4,7 +4,7 @@
   <div class="ra-pause-page">
     <div v-if="error" class="ra-error">{{ error }}</div>
     <div v-else-if="!loaded" class="ra-loading">Loading…</div>
-    <ExercisesPage v-else-if="page === 'exercises'" :lessons="lessons" :progress="progress" :selected="selected" :show-back="false" compact />
+    <ExercisesPage v-else-if="page === 'exercises'" :lessons="lessons" :variants="variants" :progress="progress" :selected="selected" :show-back="false" compact />
     <AnalysisPage v-else-if="page === 'analysis'" :lessons="lessons" :progress="progress" />
     <AboutPage v-else-if="page === 'about'" :info="info" />
     <CreditsPage v-else-if="page === 'credits'" :info="info" />
@@ -22,7 +22,7 @@ defineProps({
   page: { type: String, default: "exercises" },
 })
 
-const { lessons, progress, selected, info, error, loaded } = useAcademyData()
+const { lessons, variants, progress, selected, info, error, loaded } = useAcademyData()
 </script>
 
 <style scoped lang="scss">

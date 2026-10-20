@@ -456,6 +456,78 @@
         }
       },
       "notes": "25 m before pg-dirt-ring's start, facing east along the ring's tangent, like bmp-dirt-arc (B06, B07)."
+    },
+    {
+      "id": "pg-gravel-strip",
+      "mapsId": "P2",
+      "name": "Proving ground: gravel strip",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -375.0,
+          "y": -470.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The south end of the proving ground's gravel strip, facing north along it: 390 m of dead-level GRAVEL, 120 m wide, the same shape as pg-dirt-strip, for surface variants (ADR 0009)."
+    },
+    {
+      "id": "pg-asphalt-strip",
+      "mapsId": "P2",
+      "name": "Proving ground: asphalt strip",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -125.0,
+          "y": -470.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The south end of the proving ground's asphalt strip, facing north along it: 390 m of dead-level ASPHALT, 120 m wide, the same shape as pg-dirt-strip, for surface variants (ADR 0009)."
+    },
+    {
+      "id": "pg-snow-strip",
+      "mapsId": "P2",
+      "name": "Proving ground: snow strip",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 125.0,
+          "y": -470.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The south end of the proving ground's snow strip, facing north along it: 390 m of dead-level SNOW, 120 m wide, the same shape as pg-dirt-strip, for surface variants (ADR 0009)."
     }
   ]
 }

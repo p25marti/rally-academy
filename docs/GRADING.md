@@ -199,11 +199,14 @@ A01 runs on the proving ground's dirt strip (venue `pg-dirt-strip`; first set on
 14 s, gold 5.0 × 2.2 m and 10 s. A scripted run at 14 km/h takes about 9.7 s; gold leaves
 about 0.2 m each side, so a slightly crooked stop misses it.
 
-A02 targets (Covet Student Driver, from the BMP start line): bronze is a clean pass (0–40 km/h
-within 8 s, shift under 1 s, wheelspin under 1 s, through the 40 km/h gate; the run ends there);
-silver 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s; gold 3.5 s, 0.4 s, 0.25 s.
-Scripted with the arcade gearbox: 2.6 s flat out (gold), 3.4 s at 60% throttle with a 0.6–0.7 s
-shift (bronze). The targets leave room for a real clutch and manual shift; check them on the rig.
+A02 targets (Covet Student Driver, the proving ground's dirt strip; first set on the BMP start line's tarmac): bronze
+is a clean pass (0–40 km/h within 8 s, shift under 1 s, wheelspin under 1 s, through the 40 km/h gate; the run ends
+there); silver 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s; gold 3.5 s, 0.4 s, 0.25 s. On loose ground a
+flat-out start spins the wheels (2.4 s on dirt) and the arcade box then holds 1st to the gate: the technique is to
+feed the throttle in. Scripted from 25 % throttle at rest to full at 45 km/h: 0–40 in 3.2 s with no sustained
+wheelspin on dirt, gravel and asphalt (gold, silver, gold). **Snow** (variant A02-snow) has its own times: 10 s,
+silver 7 s, gold 5.5 s; fed in from 15 % to full at 80 km/h it took 6.2–6.3 s (bronze: a 0.7 s shift). The targets
+leave room for a real clutch and manual shift; check them on the rig.
 
 A03 targets (Covet Student Driver, the proving ground's dirt strip, venue `pg-dirt-strip`: dead level, all dirt; earlier on the BMP run-up, whose braking crossed the start line's tarmac, then the dirt arena's long straight): bronze is through the 60 km/h gate at 55–75 km/h in
 3rd or higher, down one gear at a time to 2nd, under 6700 rpm, shifts under 1 s, no lock over
@@ -347,9 +350,17 @@ for 4–6 m at the gate from 55–65 km/h gave 11.5–14.8° with the pure pursu
 silver), and a sharp 2 m stab with more lock gave 21.6° but was still sliding at the lane end. No scripted
 run reached gold; a driver flicking the car in should.
 
-A04 targets (BMP run-up, three gates 25 m apart): bronze 27–33 km/h at every gate with no braking
+A04 targets (the proving ground's dirt strip; first set on the BMP run-up; three gates 25 m apart): bronze 27–33 km/h at every gate with no braking
 between them; silver 28–32; gold 29–31. Gate speeds are shown to a tenth, since the medal bands are
-only 2 km/h wide. A scripted throttle-only hold at 30.5 km/h read 29.3 / 30.0 / 29.1: gold.
+only 2 km/h wide. A scripted throttle-only hold at 30.5 km/h read 29.3 / 30.0 / 29.1 on the BMP run-up (gold); a
+30 km/h hold read 29.0 / 29.0 / 27.9–28.7 on the proving ground's four strips (silver, sometimes bronze).
+
+Surface variants of module A ([ADR 0009](decisions/0009-surface-variants.md)): A01–A05 run on dirt (the base),
+gravel, asphalt and snow strips of the proving ground, each with its own progress and medals. Scripted with each
+drill's medal technique (the `surfaces` scenario, 0.40.0) all 20 pass: A01 and A05 gold everywhere (14 km/h
+parking and a 3.5 m/s² stop from 44 km/h are within every surface's grip), A04 silver everywhere, A03 gold except
+snow (bronze: the wheels spin the revs past silver's 6300 rpm in 1st, so shift up early), A02 as above. Only
+A02-snow has its own targets so far.
 
 ## 6. Hybrid grading
 

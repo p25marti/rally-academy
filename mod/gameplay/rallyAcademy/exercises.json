@@ -27,6 +27,27 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2): the course is laid out from the venue's spawn, heading north up the dead-level gravel (about 40 m of room needed ahead)."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2): the course is laid out from the venue's spawn, heading north up the dead-level asphalt (about 40 m of room needed ahead)."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2): the course is laid out from the venue's spawn, heading north up the dead-level snow (about 40 m of room needed ahead)."
+        }
+      ],
       "instructions": "Drive through the gate, keep the cone on your left, and stop with the whole car inside the parking box. One stop, no reversing.",
       "resetInstructions": "Go to drill puts you at the start with the gate, cone and box laid out ahead. Mark start moves the course to where you are; Use venue start puts it back.",
       "props": "None: the gate, cone and parking box are drawn for you.",
@@ -123,8 +144,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1): the course is laid out from the venue's spawn on the tarmac start line, with the 40 km/h gate 60 m down the straight. The run ends at the gate, so nobody has to stop on the straight's banked end.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): the course is laid out from the venue's spawn, the 40 km/h gate 60 m ahead. The run ends at the gate.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 120,
@@ -139,6 +160,57 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2): the course is laid out from the venue's spawn, the 40 km/h gate 60 m ahead. The run ends at the gate."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2): the course is laid out from the venue's spawn, the 40 km/h gate 60 m ahead. The run ends at the gate."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2): the course is laid out from the venue's spawn, the 40 km/h gate 60 m ahead. The run ends at the gate.",
+          "rules": [
+            {
+              "type": "time_to_speed",
+              "kmh": 40,
+              "maxSeconds": 10
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "time_to_speed",
+                  "kmh": 40,
+                  "maxSeconds": 7
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "time_to_speed",
+                  "kmh": 40,
+                  "maxSeconds": 5.5
+                }
+              ]
+            }
+          ],
+          "successDefinition": "Through the 40 km/h gate (60 m) at 40 km/h or more, having shifted 1→2: no stall, no shift hanging in neutral over 1 s, no wheelspin over 1 s, 0–40 km/h within 10 s of moving off. The run ends at the gate. Silver: 0–40 in 7 s, shift under 0.6 s, wheelspin under 0.5 s. Gold: 0–40 in 5.5 s, shift under 0.4 s, wheelspin under 0.25 s."
+        }
+      ],
       "instructions": "Launch, shift 1→2 and be at 40 km/h or more through the 40 km/h gate. The run ends at the gate; then slow down and stop wherever you like. No stall, no long wheelspin.",
       "resetInstructions": "Go to drill puts you on the start line with the gate laid out ahead. Move course here re-lays it from where you are.",
       "props": "None: the gate is drawn for you. Manual gearbox; keep the same clutch assist settings between attempts.",
@@ -264,6 +336,27 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2): the 60 km/h gate 70 m in, the stop box 155 m from the start, all on dead-level gravel."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2): the 60 km/h gate 70 m in, the stop box 155 m from the start, all on dead-level asphalt."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2): the 60 km/h gate 70 m in, the stop box 155 m from the start, all on dead-level snow."
+        }
+      ],
       "instructions": "Accelerate through the gears to 60 km/h at the 60 km/h gate, then brake and downshift one gear at a time to 2nd, and stop in the stop box. No over-revving, no lockup, no stall.",
       "resetInstructions": "Go to drill puts you at the start of the arena's long straight with the gate and stop box laid out ahead. Move course here re-lays it from where you are.",
       "props": "None: the gate and stop box are drawn for you. Manual gearbox; watch the rev counter.",
@@ -396,8 +489,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): the course is laid out from 120 m behind the start line: three gates 25 m apart from 30 m in. The run ends at gate 3, on the flat.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): three gates 25 m apart from 30 m in, on dead-level dirt. The run ends at gate 3.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 110,
@@ -412,6 +505,27 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2): three gates 25 m apart from 30 m in, on dead-level gravel. The run ends at gate 3."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2): three gates 25 m apart from 30 m in, on dead-level asphalt. The run ends at gate 3."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2): three gates 25 m apart from 30 m in, on dead-level snow. The run ends at gate 3."
+        }
+      ],
       "instructions": "Bring the car to 30 km/h, then hold that speed through the three gates 25 m apart, without braking. The run ends at gate 3.",
       "resetInstructions": "Go to drill puts you on the run-up with the three gates laid out ahead. Move course here re-lays them from where you are.",
       "props": "None: the gates are drawn for you. Speedometer only; the build-up to the first gate is not graded.",
@@ -512,6 +626,27 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2): the course is laid out from the venue's spawn: the stop line 60 m ahead, on dead-level gravel."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2): the course is laid out from the venue's spawn: the stop line 60 m ahead, on dead-level asphalt."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2): the course is laid out from the venue's spawn: the stop line 60 m ahead, on dead-level snow."
+        }
+      ],
       "instructions": "Reach 40 km/h, then brake once and stop with the front bumper just before the stop line (0-2 m). No wheel lock.",
       "resetInstructions": "Go to drill puts you in the arena with the stop line and its cones laid out ahead. Move course here re-lays it from where you are.",
       "props": "None: the line and its cones are drawn for you.",
