@@ -59,8 +59,7 @@ PG_SHIFT = (-80.0, -455.0)
 
 
 def line(start, a, b, step=1):
-    """Course-frame points along the centre line from metre a to b; a start far from the original circuit is taken
-    to be on the proving ground's copy."""
-    near = min(abs(start["pos"]["x"] - x) + abs(start["pos"]["y"] - y) for _, x, y in NODES) < 300
-    dx, dy = (0.0, 0.0) if near else PG_SHIFT
+    """Course-frame points along the proving ground's copy of the centre line from metre a to b (every venue is on
+    the proving ground since the stock-map venues went)."""
+    dx, dy = PG_SHIFT
     return [local(start, SAMP[i][0] + dx, SAMP[i][1] + dy) for i in range(a, b, step)]

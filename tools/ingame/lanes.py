@@ -32,7 +32,6 @@ def samples(first, last, shift=(0.0, 0.0)):
 
 
 def line(start, first, last, a, b):
-    """Course-frame points (circuit.local) from metre a to b of the lane between those nodes; a start far from the
-    original lane is taken to be on the proving ground's copy."""
-    near = min(abs(start["pos"]["x"] - x) + abs(start["pos"]["y"] - y) for _, x, y in DR825) < 300
-    return [circuit.local(start, x, y) for x, y in samples(first, last, (0.0, 0.0) if near else PG_SHIFT)[a:b]]
+    """Course-frame points (circuit.local) from metre a to b of the proving ground's copy of the lane between those
+    nodes (every venue is on the proving ground since the stock-map venues went)."""
+    return [circuit.local(start, x, y) for x, y in samples(first, last, PG_SHIFT)[a:b]]

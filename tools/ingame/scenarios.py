@@ -27,6 +27,22 @@ def expect(problems, label, ok, detail=""):
         problems.append(f"{label}: {detail}")
 
 
+def _in_gear(gear):
+    """An `on_tick` for academy.course_run that shifts the sequential box into `gear` once, on the first tick."""
+    done = []
+
+    def on_tick(_kmh, _to_go):
+        if not done:
+            done.append(1)
+            return A.shift_to(gear)
+    return on_tick
+
+
+def _hold(v, target, gain=0.1, floor=0.05, ceiling=1.0):
+    """Pedals (throttle, brake) that hold `target` km/h at speed `v`: throttle only, from `floor` to `ceiling`."""
+    return (max(floor, min(ceiling, 0.3 + (target - v) * gain)), 0.0)
+
+
 def precise(run, tries=2):
     """A precision stop (stop zone, stop line) gets a second try: the script's control loop
     round-trips through the MCP server (~50 ms, ~0.7 m at 45 km/h), so where braking starts
@@ -350,12 +366,7 @@ def trail():
 def _ring_run(kmh, dab_every=25.0, brake=0.25, dab_m=3.0, lift=False):
     """Two-plus laps of the B05 ring in 2nd (sequential), throttle held, brake dabs every `dab_every` m."""
     ring = [(-15 + 15 * math.cos(a), 15 * math.sin(a)) for a in (i * 0.02 for i in range(int(2.3 * 2 * math.pi / 0.02)))]
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         thr = max(0.15, min(0.6, 0.25 + (min(kmh, 12 + trav * 0.8) - v) * 0.05))
@@ -390,16 +401,11 @@ def _arc_run(kmh, brake_m, brake=1.0, max_steer=0.25):
     path = ([(0, y) for y in range(0, 25)]
             + [(-15 + 15 * math.cos(a), 25 + 15 * math.sin(a)) for a in (i * math.pi / 80 for i in range(41))]
             + [(-15 - x, 40) for x in range(1, 30)])
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         if trav < 24:
-            return (max(0.0, min(0.8, 0.3 + (kmh - v) * 0.08)), 0.0)
+            return _hold(v, kmh, gain=0.08, floor=0.0, ceiling=0.8)
         return (0.0, brake) if trav < 24 + brake_m else (0.3, 0.0)
     return A.course_run("B07", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 15,
                         max_throttle=1.0, timeout=40, stop_within=0.5, max_steer=max_steer)
@@ -430,19 +436,12 @@ def _push_run(kmh, lift_at, lift_m, then_kmh):
     path = ([(0, y) for y in range(0, 25)]
             + [(-15 + 15 * math.cos(a), 25 + 15 * math.sin(a)) for a in (i * math.pi / 80 for i in range(81))]
             + [(-30, 25 - y) for y in range(1, 15)])
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
-        def hold(target):
-            return (max(0.08, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
         if trav < lift_at:
-            return hold(kmh)
-        return (0.0, 0.0) if trav < lift_at + lift_m else hold(then_kmh)
+            return _hold(v, kmh, floor=0.08)
+        return (0.0, 0.0) if trav < lift_at + lift_m else _hold(v, then_kmh, floor=0.08)
     return A.course_run("B06", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 15,
                         max_throttle=1.0, timeout=40, stop_within=0.5)
 
@@ -468,19 +467,12 @@ def _corner_pulse_run(drill, kmh, pulse_at, pulse_m, then_kmh, offsets=None):
     """The BMP left (or its flat copy) in 2nd (sequential): hold `kmh`, a full-brake pulse of `pulse_m` metres from
     `pulse_at` metres, then hold `then_kmh`, along lines.bmp_left(offsets)."""
     import lines as L
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
-        def hold(target):
-            return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
         if trav < pulse_at:
-            return hold(kmh)
-        return (0.0, 1.0) if trav < pulse_at + pulse_m else hold(then_kmh)
+            return _hold(v, kmh)
+        return (0.0, 1.0) if trav < pulse_at + pulse_m else _hold(v, then_kmh)
     return A.course_run(drill, L.bmp_left(offsets), gearbox="sequential", on_tick=on_tick, pedals=pedals,
                         kmh=kmh + 15, max_throttle=1.0, timeout=40, stop_within=0.5)
 
@@ -511,22 +503,14 @@ def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0
     """C08: hold `kmh`, then from `at` metres lift and steer `away` (right) for `away_m`, then `into` (left)
     with `brake` for `into_m`, then the pursuit holds 45 km/h."""
     import lines as L
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
-
-    def hold(v, target):
-        return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         if trav < at:
-            return hold(v, kmh)
+            return _hold(v, kmh)
         if trav < at + away_m:
             return (0.0, 0.0)
-        return (0.0, brake) if trav < at + away_m + into_m else hold(v, 45)
+        return (0.0, brake) if trav < at + away_m + into_m else _hold(v, 45)
 
     def steer(_v, trav):
         if at <= trav < at + away_m:
@@ -562,12 +546,7 @@ def _hairpin_run(pull_m=6, entry_kmh=45, lock=-0.3, exit_kmh=30, drill="C04"):
     path = ([(0, y) for y in range(0, 44)]
             + [(-4.5 + 4.5 * math.cos(a), 44 + 4.5 * math.sin(a)) for a in (i * math.pi / 30 for i in range(31))]
             + [(-9, 44 - y) for y in range(1, 30)])
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         if trav < 38:
@@ -608,15 +587,10 @@ def _figure8_run(kmh):
                for i in range(1, n + 1)]
             + [(-10 + 10 * math.cos(i * 2 * math.pi / n), 35 + 10 * math.sin(i * 2 * math.pi / n)) for i in range(1, n + 1)]
             + [(0, 35 + y) for y in range(1, 8)])
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, _trav):
-        return (max(0.05, min(1.0, 0.3 + (kmh - v) * 0.08)), 0.0)
+        return _hold(v, kmh, gain=0.08)
     return A.course_run("C07", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 10,
                         max_throttle=1.0, timeout=60, stop_within=0.5)
 
@@ -640,24 +614,16 @@ def _liftoff_run(entry_kmh=61, lift_at=70, offsets=None, drill="C01", approach_k
     """C01: `approach_kmh`, braked to `entry_kmh` before the Turn in gate, 0.5 throttle, a 15 m lift from
     `lift_at` metres, then hold 45 km/h, on a line ~3 m inside through the apex."""
     import lines as L
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
-
-    def hold(v, target):
-        return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         if trav < 52:
-            return hold(v, approach_kmh)
+            return _hold(v, approach_kmh)
         if trav < 66:
             return (0.0, 0.6) if v > entry_kmh else (0.5, 0.0)
         if trav < lift_at:
             return (0.5, 0.0)
-        return (0.0, 0.0) if trav < lift_at + 15 else hold(v, 45)
+        return (0.0, 0.0) if trav < lift_at + 15 else _hold(v, 45)
     line = L.bmp_left(dict({"DR1181_6": 1.0, "DR1181_7": 3.2, "DR1181_8": 3.6, "DR1181_9": 3.0}, **(offsets or {})))
     return A.course_run(drill, line, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=max(80, approach_kmh + 15),
                         max_throttle=1.0, timeout=40, stop_within=0.5)
@@ -685,15 +651,10 @@ def _slalom_run(kmh, amp):
     path = ([(0, y) for y in range(0, 18)]
             + [(-amp * math.cos(math.pi * (y - 25) / 15), y) for y in (17.5 + 0.5 * i for i in range(1, 196))]
             + [(0, y) for y in range(118, 135)])
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, _trav):
-        return (max(0.05, min(1.0, 0.3 + (kmh - v) * 0.08)), 0.0)
+        return _hold(v, kmh, gain=0.08)
     return A.course_run("D01", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=kmh + 10,
                         max_throttle=1.0, timeout=40, stop_within=0.5)
 
@@ -743,20 +704,15 @@ def _fwd_exit_run(throttle_at=110, throttle=0.6, drill="E02"):
     """E02: 64 km/h, a 7 m full-brake pulse from 73 m, 0.12 throttle, then `throttle` from `throttle_at` metres
     (None: hold 46 km/h instead, barely touching the throttle), on C02's line."""
     import lines as L
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         if trav < 73:
-            return (max(0.0, min(1.0, 0.3 + (64 - v) * 0.1)), 0.0)
+            return _hold(v, 64, floor=0.0)
         if trav < 80:
             return (0.0, 1.0)
         if throttle_at is None:
-            return (max(0.05, min(1.0, 0.3 + (46 - v) * 0.1)), 0.0)
+            return _hold(v, 46)
         return (0.12, 0.0) if trav < throttle_at else (throttle, 0.0)
     return A.course_run(drill, L.bmp_left(C02_LINE), gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80,
                         max_throttle=1.0, timeout=40, stop_within=0.5)
@@ -812,15 +768,21 @@ def corner_surfaces():
     """The graded corner drills (A07, A08, B04, C01, C02, C08, E02) on the gravel corner and its asphalt and snow twins
     (ADR 0009): each drill's scripted medal technique, adapted per surface where a driver would adapt it, passes on
     every variant (up to three tries: rotations vary). Prints a table. RA_SURFACES=A07,C02 limits it to some drills."""
+    return _surface_suite(_corner_runs(), tries=3)
+
+
+def _surface_suite(runs, tries=1):
+    """Each drill of `runs` (base id -> technique(drill id) -> state) on each of its surfaces, up to `tries` runs
+    until one passes; expects a pass on every surface and prints a table of verdicts. RA_SURFACES=A07,C02 limits
+    it to some drills."""
     import os
     p, table = [], []
-    runs = _corner_runs()
     only = os.environ.get("RA_SURFACES")
     for base in [b for b in runs if not only or b in only.split(",")]:
         for sf in A.drill(base).get("surfaces") or [{"id": base, "name": "Standard"}]:
             d = sf["id"]
             A.drill_session(d)
-            for _ in range(3):
+            for _ in range(tries):
                 s = runs[base](d)
                 if s.get("passed"):
                     break
@@ -838,18 +800,13 @@ def _circuit_run(drill, a, b, kmh, then_kmh=None, then_at=1e9):
     (sequential), holding `kmh`, then `then_kmh` from `then_at` metres into the run."""
     import circuit
     venue = A.drill(drill)["environment"]["spawn"]
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         target = then_kmh if then_kmh is not None and trav >= then_at else kmh
         if v > target + 4:
             return (0.0, min(0.7, 0.2 + (v - target) * 0.05))
-        return (max(0.05, min(1.0, 0.3 + (target - v) * 0.1)), 0.0)
+        return _hold(v, target)
     return A.course_run(drill, circuit.line(venue, a, b), gearbox="sequential", on_tick=on_tick, pedals=pedals,
                         kmh=max(kmh, then_kmh or 0) + 15, max_throttle=1.0, timeout=90, stop_within=0.5)
 
@@ -908,12 +865,7 @@ def _lane_run(drill, n0, n1, a, b, kmh, then_kmh=None, then_at=1e9, throttle_at=
     then `then_kmh` from `then_at` metres, or a throttle ramp from 0.25 up to `throttle_max` from `throttle_at`."""
     import lanes
     line = lanes.line(A.drill(drill)["environment"]["spawn"], n0, n1, a, b)
-    shifted = []
-
-    def on_tick(_kmh, _to_go):
-        if not shifted:
-            shifted.append(1)
-            return A.shift_to(2)
+    on_tick = _in_gear(2)
 
     def pedals(v, trav):
         if throttle_at is not None and trav >= throttle_at:
@@ -921,7 +873,7 @@ def _lane_run(drill, n0, n1, a, b, kmh, then_kmh=None, then_at=1e9, throttle_at=
         target = then_kmh if then_kmh is not None and trav >= then_at else kmh
         if v > target + 3:
             return (0.0, min(0.7, 0.2 + (v - target) * 0.06))
-        return (max(0.05, min(0.45 if v < 20 else 1.0, 0.3 + (target - v) * 0.1)), 0.0)
+        return _hold(v, target, ceiling=0.45 if v < 20 else 1.0)
     return A.course_run(drill, line, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80, max_throttle=1.0,
                         timeout=60, stop_within=0.5)
 
@@ -1179,19 +1131,4 @@ def surfaces():
     """A01-A05, B01 and C04 on every surface (the proving ground's dirt, gravel, asphalt and snow strips, ADR 0009):
     the drill's scripted medal technique, adapted per surface where a driver would adapt it, passes on each variant.
     Prints a table of verdicts and the numbers behind them. RA_SURFACES=B01,C04 limits it to some drills."""
-    import os
-    p, table = [], []
-    runs = _module_a_runs()
-    only = os.environ.get("RA_SURFACES")  # e.g. RA_SURFACES=B01,C04 to run some drills only
-    for base in [b for b in ("A01", "A02", "A03", "A04", "A05", "B01", "C04") if not only or b in only.split(",")]:
-        for sf in A.drill(base).get("surfaces") or [{"id": base, "name": "Standard"}]:
-            d = sf["id"]
-            A.drill_session(d)
-            s = runs[base](d)
-            table.append((d, s.get("tier") or ("pass" if s.get("passed") else "MISS"), A.grade_lines()))
-            expect(p, f"{d} ({sf['name']}): the medal technique passes", s.get("passed") is True,
-                   f"{s.get('tier')}: {s.get('reason')}")
-            A.end_session(d)
-    for d, verdict, lines in table:
-        print(f"  {d:12} {verdict:7} " + " | ".join(str(x) for x in (lines or [])[:6]))
-    return p
+    return _surface_suite(_module_a_runs())
