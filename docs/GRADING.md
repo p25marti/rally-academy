@@ -371,6 +371,17 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+The corner drills (A07, A08, B04, B08, C01, C02, C08, E02, like E01) have asphalt and snow variants on the gravel
+corner's twins (same shape, gates and barriers; 2026-10-20). Scripted (the `corner_surfaces` scenario, 0.40.0), the
+targets hold everywhere except one: A07 and A08 earn the same medals at the same speeds on all three surfaces (snow's
+grip, 0.64, is close to gravel's 0.68). B04 on snow runs wide or stalls under the gravel technique; 60 km/h, a little
+throttle under the brake and a gentle exit earn gold. C02 and C08 on asphalt need a harder rotation (72 km/h, a longer
+pulse or a bigger flick: bronze to silver), C01 and C02 on snow a slower entry (54 km/h lift: gold; 58 km/h pulse: silver).
+**C01 on asphalt has its own slide targets** (3° / 4° / 5° for bronze, silver, gold; gravel 4° / 6° / 8°): on tarmac
+a lift at turn-in rotated the FWD Covet 3-4° in most scripted runs that made the gates (one full run reached 7°,
+gold), and a faster entry for more rotation ran it wide of the apex gate. All 21 corner variants passed in one full
+run (A07 silver on all three; B04 gold on all three; the rotation drills bronze to gold).
+
 ## 6. Hybrid grading
 
 Some criteria test what the driver knows, not what the car did. These drills

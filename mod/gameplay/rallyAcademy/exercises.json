@@ -893,7 +893,98 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "ASPHALT"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "SNOW"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "A08",
@@ -1050,7 +1141,98 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "ASPHALT"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "SNOW"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "B01",
@@ -1491,7 +1673,98 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "ASPHALT"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "SNOW"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "B05",
@@ -1897,7 +2170,22 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow."
+        }
+      ]
     },
     {
       "id": "C01",
@@ -2037,7 +2325,57 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt.",
+          "rules": [
+            {
+              "type": "rear_slide",
+              "fromGate": 1,
+              "toGate": 2,
+              "hint": "tarmac grips: carry more speed and lift sharply as you turn in",
+              "minSlipDeg": 3
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "rear_slide",
+                  "fromGate": 1,
+                  "toGate": 2,
+                  "hint": "tarmac grips: carry more speed and lift sharply as you turn in",
+                  "minSlipDeg": 4
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "rear_slide",
+                  "fromGate": 1,
+                  "toGate": 2,
+                  "hint": "tarmac grips: carry more speed and lift sharply as you turn in",
+                  "minSlipDeg": 5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow."
+        }
+      ]
     },
     {
       "id": "C02",
@@ -2175,7 +2513,22 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow."
+        }
+      ]
     },
     {
       "id": "C03",
@@ -2743,7 +3096,22 @@
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow."
+        }
+      ]
     },
     {
       "id": "D01",
@@ -3786,7 +4154,22 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow."
+        }
+      ]
     },
     {
       "id": "E03",

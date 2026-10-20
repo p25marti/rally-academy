@@ -70,6 +70,8 @@ all six are built.
 - [x] Surface variants (ADR 0009): module A on dirt, gravel, asphalt and snow, picked on the HUD and the
       Academy screen; the `surfaces` scenario drives every one.
 - [x] B01 and C04 variants (same targets; the technique adapts per surface).
+- [x] Corner drill variants on the asphalt and snow corners (A07, A08, B04, B08, C01, C02, C08, E02); C01 on asphalt
+      has its own slide targets.
 - [ ] Variants for more drills, and progress views that sum across surfaces.
 - [x] Looks: hills round the play area (2 km terrain), rock faces, autumn forests from the game's tree library.
 - [x] More looks: grass cover, forest floor, a late-afternoon sun, a rally service park and trackside props.

@@ -93,6 +93,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `corners` | A07 and A08 on the proving ground's flat corner (Covet Gravel Rally, racing line from `lines.py`): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss |
 | `gears` | A03 on its course (the proving ground's dirt strip, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
 | `launch` | A02 on its course (the proving ground's dirt strip; the run ends at the 40 km/h gate): feeding the throttle in earns a medal (flat out spins the wheels); 34 km/h at the gate misses |
+| `corner_surfaces` | A07, A08, B04, C01, C02, C08 and E02 on the gravel corner and its asphalt and snow twins: each drill's medal technique, adapted per surface (`CORNER_ADAPT`), passes on each (up to three tries); prints a table. About 21-63 runs, 15-25 min; `RA_SURFACES=A07,C02` runs some drills only |
 | `surfaces` | A01-A05, B01 and C04 on every surface (dirt, gravel, asphalt, snow variants, ADR 0009): each drill's medal technique, adapted per surface, passes on each; prints a table of verdicts. About 30 runs; `RA_SURFACES=B01,C04` runs some drills only |
 | `events` | On the proving ground's dirt strip: a handbrake spin, a run on the grass beside it and a puncture are detected (and the puncture isn't contact) |
 | `goto` | Go to drill loads Utah in the gravel Covet for E08, then the proving ground for B01 (slow: a stock map load) |

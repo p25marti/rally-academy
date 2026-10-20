@@ -267,6 +267,10 @@ def gears():
     return p
 
 
+A08_LATE = {"DR1181_9": 2.2, "DR1181_10": 1.5, "DR1181_13": -3.0, "DR1181_14": -2.0, "DR1181_15": -1.5}
+CORNER_KW = dict(decel=2.5, max_throttle=0.9, stop_within=0.5)
+
+
 @scenario
 def corners():
     """A07 and A08 on the proving ground's flat copy of the BMP left (Covet Gravel Rally, scripted racing
@@ -283,7 +287,7 @@ def corners():
     expect(p, "A07 clipping the exit post misses", s.get("passed") is False and "Clipped" in str(s.get("reason")), s.get("reason"))
     lua("extensions.rallyAcademy.select('A08') extensions.rallyAcademy.useVenueStart() return 1")
     # a later apex than A07's, unwinding from the exit gate to the finish (the road keeps turning past it)
-    late = {"DR1181_9": 2.2, "DR1181_10": 1.5, "DR1181_13": -3.0, "DR1181_14": -2.0, "DR1181_15": -1.5}
+    late = A08_LATE
     for _ in range(3):  # the line passes ~0.1 m from the exit post and one correction comes and goes: silver or bronze
         s = A.course_run("A08", L.bmp_left(late, tail=60), kmh=41, **kw)
         if s.get("tier") in ("gold", "silver"):
@@ -300,6 +304,23 @@ def corners():
     return p
 
 
+def _trail_run(drill, kmh=65, brake=0.2, throttle=0.0, exit_throttle=0.6):
+    """B04: `kmh`, then braking lightly from the marker (`brake`, eased off towards the apex, with `throttle` held
+    under it so the arcade box doesn't drop to 1st and stall the car) and back on the throttle at the apex, through
+    the middle of the exit gate (`exit_throttle` from the apex)."""
+    import lines as L
+    apex = 118.7  # metres along lines.bmp_left() to the apex gate
+
+    def trail_pedals(_kmh, trav):
+        if trav < 50:
+            return None
+        if trav < apex - 3:
+            return (throttle, max(0.0, brake * (1 - (trav - 50) / (apex - 53))))
+        return (exit_throttle, 0.0)
+    return A.course_run(drill, L.bmp_left({"DR1181_12": -1.5, "DR1181_13": -1.5}), pedals=trail_pedals, kmh=kmh,
+                        decel=2.5, max_throttle=1.0, stop_within=0.5)
+
+
 @scenario
 def trail():
     """B04 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): braking lightly from the
@@ -309,14 +330,6 @@ def trail():
     import lines as L
     p = []
     A.drill_session("B04")
-    apex = 118.7  # metres along lines.bmp_left() to the apex gate
-
-    def trail_pedals(_kmh, trav):
-        if trav < 50:
-            return None
-        if trav < apex - 3:
-            return (0.0, max(0.0, 0.2 * (1 - (trav - 50) / (apex - 53))))
-        return (0.6, 0.0)
 
     def straight_pedals(_kmh, trav):
         if trav < 45:
@@ -324,7 +337,7 @@ def trail():
         return (0.0, 0.7) if trav < 58 else (0.1, 0.0)
     kw = dict(kmh=65, decel=2.5, max_throttle=1.0, stop_within=0.5)
     line = L.bmp_left({"DR1181_12": -1.5, "DR1181_13": -1.5})  # through the middle of the 8 m exit gate
-    s = A.course_run("B04", line, pedals=trail_pedals, **kw)
+    s = _trail_run("B04")
     expect(p, "trail braking into the corner earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
     s = A.course_run("B04", line, pedals=straight_pedals, **kw)
@@ -494,7 +507,7 @@ def rotation():
     return p
 
 
-def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0, offsets=None):
+def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0, offsets=None, drill="C08"):
     """C08: hold `kmh`, then from `at` metres lift and steer `away` (right) for `away_m`, then `into` (left)
     with `brake` for `into_m`, then the pursuit holds 45 km/h."""
     import lines as L
@@ -521,7 +534,7 @@ def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0
         return into if at + away_m <= trav < at + away_m + into_m else None
     # the approach nearer the middle than C02's outside line: the flick itself swings the car out
     line = L.bmp_left({**C02_LINE, "DR1181_3": 0.5, **(offsets or {})})
-    return A.course_run("C08", line, gearbox="sequential", on_tick=on_tick, pedals=pedals,
+    return A.course_run(drill, line, gearbox="sequential", on_tick=on_tick, pedals=pedals,
                         steer=steer, kmh=kmh + 15, max_throttle=1.0, timeout=40, stop_within=0.5)
 
 
@@ -623,8 +636,8 @@ def figure8():
     return p
 
 
-def _liftoff_run(entry_kmh=61, lift_at=70, offsets=None):
-    """C01: 65 km/h, braked to `entry_kmh` before the Turn in gate, 0.5 throttle, a 15 m lift from
+def _liftoff_run(entry_kmh=61, lift_at=70, offsets=None, drill="C01", approach_kmh=65):
+    """C01: `approach_kmh`, braked to `entry_kmh` before the Turn in gate, 0.5 throttle, a 15 m lift from
     `lift_at` metres, then hold 45 km/h, on a line ~3 m inside through the apex."""
     import lines as L
     shifted = []
@@ -639,15 +652,15 @@ def _liftoff_run(entry_kmh=61, lift_at=70, offsets=None):
 
     def pedals(v, trav):
         if trav < 52:
-            return hold(v, 65)
+            return hold(v, approach_kmh)
         if trav < 66:
             return (0.0, 0.6) if v > entry_kmh else (0.5, 0.0)
         if trav < lift_at:
             return (0.5, 0.0)
         return (0.0, 0.0) if trav < lift_at + 15 else hold(v, 45)
     line = L.bmp_left(dict({"DR1181_6": 1.0, "DR1181_7": 3.2, "DR1181_8": 3.6, "DR1181_9": 3.0}, **(offsets or {})))
-    return A.course_run("C01", line, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80, max_throttle=1.0,
-                        timeout=40, stop_within=0.5)
+    return A.course_run(drill, line, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=max(80, approach_kmh + 15),
+                        max_throttle=1.0, timeout=40, stop_within=0.5)
 
 
 @scenario
@@ -726,7 +739,7 @@ def surface():
     return p
 
 
-def _fwd_exit_run(throttle_at=110, throttle=0.6):
+def _fwd_exit_run(throttle_at=110, throttle=0.6, drill="E02"):
     """E02: 64 km/h, a 7 m full-brake pulse from 73 m, 0.12 throttle, then `throttle` from `throttle_at` metres
     (None: hold 46 km/h instead, barely touching the throttle), on C02's line."""
     import lines as L
@@ -745,7 +758,7 @@ def _fwd_exit_run(throttle_at=110, throttle=0.6):
         if throttle_at is None:
             return (max(0.05, min(1.0, 0.3 + (46 - v) * 0.1)), 0.0)
         return (0.12, 0.0) if trav < throttle_at else (throttle, 0.0)
-    return A.course_run("E02", L.bmp_left(C02_LINE), gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80,
+    return A.course_run(drill, L.bmp_left(C02_LINE), gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80,
                         max_throttle=1.0, timeout=40, stop_within=0.5)
 
 
@@ -763,6 +776,60 @@ def fwdexit():
     s = _fwd_exit_run(throttle_at=None)
     expect(p, "no throttle after the apex misses", s.get("passed") is False, s.get("reason"))
     A.end_session("E02")
+    return p
+
+
+# The corner drills' scripted medal technique (drill id -> state), for corner_surfaces. `adapt` holds what a driver
+# changes per surface (speeds, mostly), keyed by drill then variant.
+CORNER_ADAPT = {
+    "B04": {"snow": {"kmh": 60, "brake": 0.25, "throttle": 0.15, "exit_throttle": 0.3}},  # gentler exit on snow
+    "C01": {"snow": {"entry_kmh": 54, "lift_at": 72},  # snow rotates from a slower entry
+            "asphalt": {"approach_kmh": 80, "entry_kmh": 76, "lift_at": 68, "offsets": {"DR1181_9": 3.8, "DR1181_10": 2.5}}},
+    "C02": {"snow": {"kmh": 58, "then_kmh": 42}, "asphalt": {"kmh": 72, "pulse_m": 9}},  # tarmac needs a harder pulse
+    "C08": {"asphalt": {"kmh": 72, "away": 0.7, "away_m": 10}},
+}
+
+
+def _corner_runs():
+    import lines as L
+
+    def a(base, d):
+        return CORNER_ADAPT.get(base, {}).get(d.split("-")[1] if "-" in d else "gravel", {})
+    return {
+        "A07": lambda d: A.course_run(d, L.bmp_left(), kmh=a("A07", d).get("kmh", 55), **CORNER_KW),
+        "A08": lambda d: A.course_run(d, L.bmp_left(A08_LATE, tail=60), kmh=a("A08", d).get("kmh", 41), **CORNER_KW),
+        "B04": lambda d: _trail_run(d, **a("B04", d)),
+        "C01": lambda d: _liftoff_run(drill=d, **a("C01", d)),
+        "C02": lambda d: _corner_pulse_run(d, **{**dict(kmh=65, pulse_at=73, pulse_m=7, then_kmh=46, offsets=C02_LINE),
+                                                **a("C02", d)}),
+        "C08": lambda d: _flick_run(drill=d, **a("C08", d)),
+        "E02": lambda d: _fwd_exit_run(drill=d, **a("E02", d)),
+    }
+
+
+@scenario
+def corner_surfaces():
+    """The graded corner drills (A07, A08, B04, C01, C02, C08, E02) on the gravel corner and its asphalt and snow twins
+    (ADR 0009): each drill's scripted medal technique, adapted per surface where a driver would adapt it, passes on
+    every variant (up to three tries: rotations vary). Prints a table. RA_SURFACES=A07,C02 limits it to some drills."""
+    import os
+    p, table = [], []
+    runs = _corner_runs()
+    only = os.environ.get("RA_SURFACES")
+    for base in [b for b in runs if not only or b in only.split(",")]:
+        for sf in A.drill(base).get("surfaces") or [{"id": base, "name": "Standard"}]:
+            d = sf["id"]
+            A.drill_session(d)
+            for _ in range(3):
+                s = runs[base](d)
+                if s.get("passed"):
+                    break
+            table.append((d, s.get("tier") or ("pass" if s.get("passed") else "MISS"), A.grade_lines()))
+            expect(p, f"{d} ({sf['name']}): the medal technique passes", s.get("passed") is True,
+                   f"{s.get('tier')}: {s.get('reason')}")
+            A.end_session(d)
+    for d, verdict, lines in table:
+        print(f"  {d:12} {verdict:7} " + " | ".join(str(x) for x in (lines or [])[:7]))
     return p
 
 

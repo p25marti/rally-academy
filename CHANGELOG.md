@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Asphalt and snow for every corner drill**: A07, A08, B04, B08, C01, C02, C08 and E02 now have a Surface row, like
+  E01, running on the gravel corner's asphalt and snow twins with their own progress and medals. The targets are the
+  same except C01 on asphalt, where tarmac's grip makes lift-off rotation small (3° / 4° / 5° to earn a medal).
 - **Rally corner signs on every drill road**: a direction board before each bend (45°, 90° or hairpin, left or
   right) and a red-and-white chevron on its outside, facing the way the drills drive it, placed automatically from
   the road's shape. The two-way gravel lane has them for both directions.
