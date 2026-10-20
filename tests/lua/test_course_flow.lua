@@ -263,7 +263,7 @@ end
 -- The stopping targets' live feedback through the same code path (TARGETS): a stop zone (B01) and a
 -- stop line (A05), driven towards from their venue starts.
 local function approach(h, M, id, metres)
-  h.level = 'west_coast_usa'
+  h.level = H.drills()[id].environment.levelId
   M.select(id)
   local sp = H.drills()[id].environment.spawn
   M.retry()

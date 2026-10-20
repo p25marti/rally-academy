@@ -248,8 +248,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena-long",
-        "areaHint": "BMP dirt arena (MAPS W2), the long straight: the 60 km/h gate 70 m in, the stop box 155 m from the start, all on level dirt.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): the 60 km/h gate 70 m in, the stop box 155 m from the start, all on dead-level dirt.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 200,
@@ -496,8 +496,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2): the course is laid out from the venue's spawn: the stop line 60 m ahead, on flat dirt.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): the course is laid out from the venue's spawn: the stop line 60 m ahead, on dead-level dirt.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 100,
@@ -928,8 +928,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena-long",
-        "areaHint": "BMP dirt arena (MAPS W2), the long straight: 180 m of level dirt; the stop zone is 150 m from the start, all on dirt.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): 390 m of dead-level dirt; the stop zone is 150 m from the start.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,
@@ -1027,8 +1027,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena-long",
-        "areaHint": "BMP dirt arena (MAPS W2), the long straight: 180 m of level dirt; a large stop area 130-170 m from the start, all on dirt.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): 390 m of dead-level dirt; a large stop area 130-170 m from the start.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 150,

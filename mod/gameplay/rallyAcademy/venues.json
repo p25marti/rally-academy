@@ -384,6 +384,30 @@
         }
       },
       "notes": "The BMP downhill left (bmp-gravel-corner) rebuilt flat on our own map (ADR 0008): the same centre line in the same course frame, 67 m of approach into a 124 degree left of about 32 m radius, 10 m of gravel on grass, dead level. Drills keep their gates; only the 14 m drop is gone."
+    },
+    {
+      "id": "pg-dirt-strip",
+      "mapsId": "P2",
+      "name": "Proving ground: dirt strip",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 375.0,
+          "y": -470.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The south end of the proving ground's dirt strip (ADR 0008), facing north along it: 390 m of dead-level DIRT, 120 m wide (60 m either side of the start line), grass beyond. For straight-line drills (A03, A05, B01, B02)."
     }
   ]
 }

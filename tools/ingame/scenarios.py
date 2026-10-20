@@ -38,10 +38,11 @@ def precise(run, tries=2):
 
 
 def on_straight():
-    """Mark the start at B01's spawn (the BMP run-up); needs West Coast USA loaded."""
+    """Mark the start at B01's spawn (the proving ground's dirt strip); needs B01's map loaded."""
     sp = A.drill("B01")["environment"]["spawn"]
-    if A.debug_state().get("level") != "west_coast_usa":
-        raise RuntimeError("load West Coast USA first (e.g. Go to drill on B01)")
+    level = A.drill("B01")["environment"]["levelId"]
+    if A.debug_state().get("level") != level:
+        raise RuntimeError(f"load {level} first (e.g. Go to drill on B01)")
     A.place(sp["pos"], sp["dir"])
     lua("extensions.rallyAcademy.markStart() return 1")  # the button reads "Move course here" on course drills
     return sp
@@ -125,7 +126,7 @@ def a01():
 
 @scenario
 def b01():
-    """B01 on its course (BMP dirt arena's long straight, stop zone 150 m ahead, all dirt): threshold braking
+    """B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking
     from 72 km/h into the zone earns a medal; braking too hard overshoots and misses; full brake locks and misses."""
     p = []
     A.drill_session("B01")
@@ -181,8 +182,8 @@ def a04():
 
 @scenario
 def stops():
-    """A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (the arena's long
-    straight, a 40 m stop area): one PASS and one MISS each."""
+    """A05 on its course (stop line 60 m ahead) and B02 on its course (a 40 m stop area), both on the proving
+    ground's dirt strip: one PASS and one MISS each."""
     p = []
     A.drill_session("A05")
     front = 1.81  # Covet: front bumper ahead of the car's position (catalogued footprint)
@@ -241,7 +242,7 @@ def _gear_plan(down_to):
 
 @scenario
 def gears():
-    """A03 on its course (BMP dirt arena's long straight): up to 3rd and 60 km/h, then down to 2nd one gear at a time into
+    """A03 on its course (the proving ground's dirt strip): up to 3rd and 60 km/h, then down to 2nd one gear at a time into
     the stop box passes with a medal; 3rd straight to 1st misses. Sequential gearbox, scripted gears."""
     p = []
     A.drill_session("A03")
@@ -912,11 +913,10 @@ def pause():
 
 @scenario
 def events():
-    """Car events on the BMP straight: a handbrake spin, a grass excursion and a puncture are detected."""
+    """Car events on the proving ground's dirt strip: a handbrake spin, a grass excursion and a puncture are detected."""
     p = []
-    A.reload_mod(ui_too=False)
-    A.fresh_sampler()
-    A.choose("B02")  # ends when the car stops; checks spin and staying on the road
+    A.drill_session("B02")
+    # B02 ends when the car stops; checks spin and staying on the road
     on_straight()
 
     def drive(target_kmh, during, max_s=20):
@@ -950,10 +950,10 @@ def events():
     c = A.rule_check({"type": "no_handbrake"})
     expect(p, "handbrake use is seen", not c["ok"], c["text"])
 
-    # Steering off the road depends on the car's path; start the run on the verge instead
-    # (survey.py surfaces: grass 8 m left of the road, 20 m along from B01's spot).
+    # Steering off the road depends on the car's path; start the run on the verge instead: grass 70 m left
+    # of B01's spot, past the west edge of the proving ground's 120 m dirt strip.
     sp = A.drill("B01")["environment"]["spawn"]
-    A.place(sp["pos"], sp["dir"], ahead=20, side=-8)
+    A.place(sp["pos"], sp["dir"], ahead=20, side=-70)
     lua("extensions.rallyAcademy.markStart() return 1")
     drive(20, lambda t: inp("brake", 0.0 if t < 1.0 else 0.5))
     c = A.rule_check({"type": "on_surface", "surfaces": ["ASPHALT", "GRAVEL"], "maxWheelsOff": 2, "maxSeconds": 0.5})
@@ -971,9 +971,8 @@ def events():
     expect(p, "deflated tyre is a puncture", not c["ok"], c["text"])
     c = A.rule_check({"type": "no_damage"})
     expect(p, "a puncture is not contact", c["ok"], c["text"])
-    A.realistic()
     lua("extensions.rallyAcademy.useVenueStart() return 1")  # forget the starts this marked (one on the verge)
-    A.clear_progress("B02")
+    A.end_session("B02")
     return p
 
 

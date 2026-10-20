@@ -13,6 +13,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   technique, not the hill, decides the run. Targets re-measured there: A07's exit speeds rose to 35 / 46 /
   55 km/h and B04's to 30 / 42 / 50 km/h (the flat corner carries more speed), and C01's lift-off rotation
   fell to 4 / 6 / 8 degrees (on the downhill the slope had been doing part of the work).
+- **Straight-line drills moved to the proving ground's dirt strip** (A03 gears, A05 stop line, B01 threshold
+  braking, B02 lockup recovery): dead level and all dirt, where the arena's straight sloped up to 9.5 %.
+  Targets unchanged.
 - **A03 downshifting also moved to the all-dirt straight**, and a gear now counts only once it's held
   0.3 s: 0.40's sequential gearbox can blip 3-2-3 while shifting up, which read as a downshift.
 - **B01 threshold braking and B02 lockup recovery moved to a flat, all-dirt straight** (the BMP dirt

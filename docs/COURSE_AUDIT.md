@@ -8,13 +8,13 @@ Each graded drill's course, along the line the car drove in its best recorded ru
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | A01 | west_coast_usa | `a01_gold` | 33 m | 0.4 m | 4.7 % | 6.8° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
 | A02 | west_coast_usa | `a02_gold` | 62 m | 0.6 m | 2.6 % | 4.4° | GRAVEL 57 %, ASPHALT 43 % (grip 0.82) | mixed surface |
-| A03 | west_coast_usa | `a03_clean` | 155 m | 0.8 m | 7.8 % | 9.9° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| A03 | ra_proving_ground | `a03_gold` | 155 m | 0.0 m | 0.2 % | 0.0° | DIRT 100 % (grip 0.70) | flat, one surface |
 | A04 | west_coast_usa | `a04_fast` | 82 m | 1.9 m | 7.2 % | 10.3° | GRAVEL 98 %, GRASS 2 % (grip 0.69) | flat, one surface |
-| A05 | west_coast_usa | `a05c_gold` | 57 m | 0.8 m | 7.1 % | 7.7° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| A05 | ra_proving_ground | `a05c_gold` | 57 m | 0.0 m | 0.1 % | 0.0° | DIRT 100 % (grip 0.70) | flat, one surface |
 | A07 | ra_proving_ground | `a07_gold` | 160 m | 0.0 m | 0.1 % | 2.6° | GRAVEL 91 %, GRASS 9 % (grip 0.68) | flat, one surface |
 | A08 | ra_proving_ground | `a08_bronze` | 183 m | 0.0 m | 0.2 % | 2.6° | GRAVEL 99 %, GRASS 1 % (grip 0.69) | flat, one surface |
-| B01 | west_coast_usa | `b01c_gold` | 150 m | 1.0 m | 9.5 % | 9.9° | DIRT_DUSTY 100 % (grip 0.68) | sloped |
-| B02 | west_coast_usa | `b02c_gold` | 150 m | 0.8 m | 7.8 % | 9.2° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
+| B01 | ra_proving_ground | `b01c_silver` | 150 m | 0.0 m | 0.1 % | 0.0° | DIRT 100 % (grip 0.70) | flat, one surface |
+| B02 | ra_proving_ground | `b02c_gold` | 148 m | 0.0 m | 0.2 % | 0.0° | DIRT 100 % (grip 0.70) | flat, one surface |
 | B04 | ra_proving_ground | `b04_gold` | 155 m | 0.0 m | 0.1 % | 2.6° | GRAVEL 100 % (grip 0.69) | flat, one surface |
 | B05 | west_coast_usa | `b05_gold` | 195 m | 0.4 m | 3.1 % | 5.7° | DIRT_DUSTY 100 % (grip 0.68) | flat, one surface |
 | B06 | west_coast_usa | `b06_gold` | 77 m | 0.4 m | 3.2 % | 5.1° | DIRT_DUSTY 99 %, GRASS 1 % (grip 0.68) | flat, one surface |

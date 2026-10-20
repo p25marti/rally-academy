@@ -205,7 +205,7 @@ silver 0–40 in 4.5 s, shift under 0.6 s, wheelspin under 0.5 s; gold 3.5 s, 0.
 Scripted with the arcade gearbox: 2.6 s flat out (gold), 3.4 s at 60% throttle with a 0.6–0.7 s
 shift (bronze). The targets leave room for a real clutch and manual shift; check them on the rig.
 
-A03 targets (Covet Student Driver, BMP dirt arena's long straight, all dirt; moved off the run-up in 0.40, whose braking crossed the start line's tarmac): bronze is through the 60 km/h gate at 55–75 km/h in
+A03 targets (Covet Student Driver, the proving ground's dirt strip, venue `pg-dirt-strip`: dead level, all dirt; earlier on the BMP run-up, whose braking crossed the start line's tarmac, then the dirt arena's long straight): bronze is through the 60 km/h gate at 55–75 km/h in
 3rd or higher, down one gear at a time to 2nd, under 6700 rpm, shifts under 1 s, no lock over
 0.5 s, stopped in the 12 × 6 m box; silver: under 6300 rpm, shifts under 0.6 s, locks under 0.3 s,
 a box 1 m smaller all round; gold: under 6000 rpm, 0.4 s, 0.15 s, 1.5 m smaller. The Covet tops out
@@ -213,10 +213,10 @@ a box 1 m smaller all round; gold: under 6000 rpm, 0.4 s, 0.15 s, 1.5 m smaller.
 gear choice is part of the drill. Scripted with the sequential gearbox and scripted gears (the
 arcade box holds 2nd to 61 km/h): gold.
 
-A05 targets (BMP dirt arena, stop line 60 m from the venue start, from 38+ km/h): bronze 0–2 m before
+A05 targets (the proving ground's dirt strip, stop line 60 m from the venue start, from 38+ km/h): bronze 0–2 m before
 the line with no lock over 0.2 s; silver 0–1 m, 0.15 s; gold 0–0.5 m, 0.1 s. The line is drawn with a
 cone at each end and thin gold, silver and bronze lines before it; near it the HUD reads "1.4 m to
-the line". Scripted runs: 0.48 m (gold), 1.25 m (bronze), 0.01 m past (miss).
+the line". Scripted runs (0.40.0, dirt strip): 0.15 m (gold), 1.14 m (bronze), 0.58 m past (miss).
 
 A07 and A08 targets (the proving ground's flat copy of the BMP left, venue `pg-corner-left`: 124°, radius
 32 m, Covet Gravel Rally; the 3 m gates leave about 0.55 m each side of the car): A07 bronze 35 km/h at the
@@ -227,13 +227,13 @@ On the flat (0.40.0) the scripted racing line holds A07's exit gate up to a stea
 apex gate is what limits it: the late line passes it at 41-48 km/h, and the road keeps turning past the exit
 gate, so a car still adding lock there needs a correction before the finish (41 km/h: silver; 44: bronze).
 
-B01 and B02 targets (BMP dirt arena's long straight, venue `bmp-dirt-arena-long`, Covet Student Driver; moved
-off the run-up in 0.40, whose braking crossed the start line's tarmac): B01 from 65+ km/h stops with the car's
-centre in a 5 × 6 m zone 150 m from the start, all on dirt, no lock over 0.5 s; silver 3 × 4 m and 0.3 s; gold 1.5 × 3 m
-and 0.2 s (the zones are drawn nested). B02 from 55+ km/h locks the wheels at least 0.2 s and releases
-within 1 s, then stops in a 40 m stop area on the flat; silver releases within 0.7 s, gold 0.5 s.
-Scripted on dirt (0.40.0): B01 braking at 4.6–5.0 m/s² from 72 km/h stopped 0.4–0.6 m past the centre
-(gold, silver); B02 locked 0.5 s (gold).
+B01 and B02 targets (the proving ground's dirt strip, venue `pg-dirt-strip`, Covet Student Driver; earlier on the
+BMP run-up, whose braking crossed the start line's tarmac, then the dirt arena's long straight, which sloped up to
+9.5 %): B01 from 65+ km/h stops with the car's centre in a 5 × 6 m zone 150 m from the start, all on dirt, no lock
+over 0.5 s; silver 3 × 4 m and 0.3 s; gold 1.5 × 3 m and 0.2 s (the zones are drawn nested). B02 from 55+ km/h locks
+the wheels at least 0.2 s and releases within 1 s, then stops in a 40 m stop area on the flat; silver releases
+within 0.7 s, gold 0.5 s. Scripted on the dirt strip (0.40.0): B01 braking at 4.6–5.0 m/s² from 72 km/h stopped
+0.3–1.3 m past the centre (silver, sometimes gold); B02 locked 0.5 s (gold).
 
 B04 targets (the proving ground's flat corner, Covet Gravel Rally): brake from the marker 50 m into the
 approach and keep braking while turning in for 0.4 s, fully off by the 4 m apex gate, no lock over 0.3 s;

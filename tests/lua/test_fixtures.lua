@@ -18,26 +18,26 @@
 -- A02 (course, ends at the 40 km/h gate): BMP start straight from the venue start, pure-pursuit
 --      script along the centre line; gold = full throttle (0-40 in 2.6 s), bronze = 0.4 throttle
 --      (a 0.6 s shift misses silver), slow = 34 km/h cap (too slow at the gate).
--- A03 (course): BMP dirt arena's long straight (venue bmp-dirt-arena-long; 0.40.0), sequential gearbox with
---      scripted gears (1st, 2nd at 25 km/h, 3rd at 45, to 61 km/h at the gate, then braking at 2 m/s2):
---      clean = down to 2nd at 40 km/h (gold); skip = 3rd straight to 1st; stay = 3rd to the stop (the box
---      blipped 3-2-3 while shifting up, which progressive_downshifts now ignores). No over-rev was recorded: the sequential box seems
---      to refuse a downshift that would over-rev, so no_over_rev is unit-tested only.
+-- A03 (course): the proving ground's dirt strip (venue pg-dirt-strip, 0.40.0), sequential gearbox with scripted gears
+--      (1st, 2nd at 25 km/h, 3rd at 45, to 61 km/h at the gate, then braking at 2.2 m/s2): gold = down to 2nd below
+--      40 km/h; skip = 3rd straight to 1st; stay = 3rd to the stop. (On the stock arena the 0.40 sequential box blipped
+--      3-2-3 while shifting up, which progressive_downshifts now ignores.) No over-rev was recorded: the sequential
+--      box seems to refuse a downshift that would over-rev, so no_over_rev is unit-tested only.
 -- A04 (course): BMP run-up, three gates 25 m apart, arcade gearbox, throttle-only speed hold:
 --      steady = 30.5 km/h target (29.3 / 30.0 / 29.1 at the gates: gold); fast = 40 km/h after 60 m.
--- A05 (course): BMP dirt arena, stop line 60 m from the venue start, pure-pursuit script aimed at a
---      bumper distance before the line, braking at 3.5 m/s2 from 44 km/h: gold = 0.48 m before;
---      bronze = 1.25 m (misses silver's 1 m); just_past = 0.01 m past (a miss); past = 0.78 m past.
+-- A05 (course): the proving ground's dirt strip, stop line 60 m from the venue start, pure-pursuit script aimed at a
+--      bumper distance before the line, braking at 3.5 m/s2 from 44 km/h (0.40.0): gold = 0.15 m before; bronze =
+--      1.14 m (misses silver's 1 m); just_past = 0.58 m past (a miss); past = 1.25 m past.
 -- Corner drills A07, A08, B04, C01, C02, C08, E02 (course): re-recorded 0.40.0 on the proving ground's flat copy of
 --      the BMP downhill left (venue pg-corner-left, ADR 0008), Covet Gravel Rally, lines from tools/ingame/lines.py.
 -- A07, A08: pure pursuit along the racing line (outside, late apex, track-out); a07_gold / silver / bronze =
 --      60 / 50 / 40 km/h (59.9 / 50.0 / 40.0 at the exit); a07_clip = line 1 m left at the exit (left post).
 --      A08 on a later apex with the line unwinding to the finish: a08_bronze = 41 km/h (one correction; the
 --      scenario's run at the same speed got silver), a08_bronze2 = 44; a08_weave = weaving after the exit.
--- B01, B02 (course): BMP dirt arena's long straight (venue bmp-dirt-arena-long), stop zone 150 m from the
---      start, all on dirt; 0.40.0. b01c_gold = pure pursuit to the zone centre from 72 km/h braking at 4.6 m/s2
---      (0.4 m past the centre); b01c_past = 7.5 m/s2 (8.4 m past the zone). b02c_gold = hold 62 km/h to 115 m,
---      full brake 0.6 s then eased (0.5 s lock); b02c_held = full brake held to the stop.
+-- B01, B02 (course): the proving ground's dirt strip, stop zone 150 m from the start, all on dirt (0.40.0).
+--      b01c_silver / silver2 = pure pursuit to the zone centre from 72 km/h braking at 4.6 / 5.0 m/s2 (0.8 / 1.3 m
+--      past the centre); b01c_past = 7.5 m/s2 (7.1 m past the zone). b02c_gold = hold 62 km/h to 115 m, full brake
+--      0.6 s then eased (0.5 s lock); b02c_held = full brake held to the stop.
 -- B04 (course): the flat corner, arcade gearbox, 65 km/h: gold = brake 0.2 from the marker easing to 0 three
 --      metres before the apex (52 km/h out); straight = brake 0.7 from 45 to 58 m only, then 0.1 throttle; late =
 --      as gold, but 0.12 brake with 0.4 throttle from 3 m before to 6 m past the apex. (Lighter braking with the
@@ -284,14 +284,14 @@ function T.a02_recorded_runs_give_the_right_coaching()
 end
 
 function T.a03_downshift_rules_and_medals_still_agree_with_the_in_game_verdicts()
-  local want = {a03_clean = 'gold', a03_skip = false, a03_stay = false}
+  local want = {a03_gold = 'gold', a03_skip = false, a03_stay = false}
   for name, tier in pairs(want) do
     local res, rec = gradeCourse(name, 'A03')
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, tier, name .. ' medal')
   end
-  eq(check(gradeCourse('a03_clean', 'A03'), 'progressive_downshifts').text, 'Downshifted 3→2', 'clean sequence')
+  eq(check(gradeCourse('a03_gold', 'A03'), 'progressive_downshifts').text, 'Downshifted 3→2', 'clean sequence')
   has(check(gradeCourse('a03_skip', 'A03'), 'progressive_downshifts').text, 'Skipped from 3rd to 1st')
   has(check(gradeCourse('a03_stay', 'A03'), 'progressive_downshifts').text, 'Stayed in 3rd')
 end
@@ -314,8 +314,8 @@ function T.a05_course_line_rules_and_medals_still_agree_with_the_in_game_verdict
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, tier, name .. ' medal')
   end
-  has(check(gradeCourse('a05c_just_past', 'A05'), 'stop_before_line').text, 'Stopped 0.01 m past the line')
-  has(check(gradeCourse('a05c_gold', 'A05'), 'stop_before_line').text, 'Stopped 0.48 m before the line')
+  has(check(gradeCourse('a05c_just_past', 'A05'), 'stop_before_line').text, 'Stopped 0.58 m past the line')
+  has(check(gradeCourse('a05c_gold', 'A05'), 'stop_before_line').text, 'Stopped 0.15 m before the line')
 end
 
 function T.a07_a08_corner_rules_and_medals_still_agree_with_the_in_game_verdicts()
@@ -333,7 +333,8 @@ function T.a07_a08_corner_rules_and_medals_still_agree_with_the_in_game_verdicts
 end
 
 function T.b01_b02_course_zone_rules_and_medals_still_agree_with_the_in_game_verdicts()
-  local want = {b01c_gold = {'B01', 'gold'}, b01c_past = {'B01', false}, b02c_gold = {'B02', 'gold'}, b02c_held = {'B02', false}}
+  local want = {b01c_silver = {'B01', 'silver'}, b01c_silver2 = {'B01', 'silver'}, b01c_past = {'B01', false},
+    b02c_gold = {'B02', 'gold'}, b02c_held = {'B02', false}}
   for name, w in pairs(want) do
     local res, rec = gradeCourse(name, w[1])
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
