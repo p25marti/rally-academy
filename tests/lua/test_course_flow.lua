@@ -9,10 +9,10 @@ local T = {}
 H.stubs.install() -- jsonReadFile, to read the drill data
 local SPAWN = H.drills().A01.environment.spawn
 
--- A01 selected on its own map (West Coast USA), so the course starts at the venue spawn.
+-- A01 selected on its own map (the proving ground), so the course starts at the venue spawn.
 local function onA01()
   local h, M = setup()
-  h.level = 'west_coast_usa'
+  h.level = 'ra_proving_ground'
   M.select('A01')
   return h, M
 end
@@ -88,8 +88,8 @@ function T.go_to_drill_lands_ready_at_the_start_of_the_course()
   local h, M = setup()
   M.select('A01')
   M.goToDrill()
-  h.level = 'west_coast_usa'
-  M.onClientPostStartMission('/levels/west_coast_usa/main.level.json')
+  h.level = 'ra_proving_ground'
+  M.onClientPostStartMission('/levels/ra_proving_ground/main.level.json')
   local s = h.lastState()
   eq(s.phase, 'ready', 'straight into a run')
   has(s.reason, 'at the start of the course')
@@ -219,7 +219,7 @@ function T.mark_start_moves_the_course_and_use_venue_start_puts_it_back()
   eq(sawGate, true, 'gate posts drawn 8 m ahead of the new start')
   M.useVenueStart()
   eq(h.lastState().usingVenueStart, true, 'back at the venue')
-  eq(jsonReadFile('settings/rallyAcademySetups.json').levels.west_coast_usa.A01, nil, 'saved start forgotten')
+  eq(jsonReadFile('settings/rallyAcademySetups.json').levels.ra_proving_ground.A01, nil, 'saved start forgotten')
 end
 
 function T.leaving_the_map_clears_the_course()

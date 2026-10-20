@@ -195,7 +195,7 @@ to them (a time target). `rules.grade` returns `tier` and `nextTier` (the first 
 medal failed, shown in the HUD as "gold: Rear-right corner 0.07 m over the right edge of the gold
 box"). Progress keeps the best medal and a count of each ([DRILL_DATA](DRILL_DATA.md#medal-tiers)).
 
-A01 targets (Covet Student Driver, 3.90 × 1.81 m): box 6.0 × 3.2 m, silver 5.4 × 2.6 m and
+A01 runs on the proving ground's dirt strip (venue `pg-dirt-strip`; first set on the BMP dirt arena). A01 targets (Covet Student Driver, 3.90 × 1.81 m): box 6.0 × 3.2 m, silver 5.4 × 2.6 m and
 14 s, gold 5.0 × 2.2 m and 10 s. A scripted run at 14 km/h takes about 9.7 s; gold leaves
 about 0.2 m each side, so a slightly crooked stop misses it.
 
@@ -242,14 +242,14 @@ bronze 30 km/h at the exit, silver 42 km/h with all four wheels on the gravel, g
 (gold). On the flat a light brake with the throttle closed stops the car within the corner (the arcade box drops
 to 1st and the engine brakes hard), so trail braking here is gentle; on the downhill gravity made up for it.
 
-B05 targets (BMP dirt circle, Covet Gravel Rally): two anticlockwise laps of a 15 m ring, its centre on
+B05 targets (the proving ground's dirt ring, venue `pg-dirt-ring`; first set on the BMP dirt circle; Covet Gravel Rally): two anticlockwise laps of a 15 m ring, its centre on
 the circle's centre; bronze inside a 6 m corridor (0.5 s outside allowed), throttle never off for more
 than 0.5 s once at 25 km/h, two brake dabs on the throttle; silver a 4 m corridor, three dabs, 0.3 s
 throttle gaps; gold a 3 m corridor, four dabs and both laps in 22 s. Scripted in 2nd with 0.25 brake dabs
 every 25 m: 32 km/h held the line within 0.8 m in 21.6 s (gold); 34 km/h ran 1.6 m off (silver); 38 km/h
 ran 4 m wide. The 15 m ring tops out at about 35 km/h on this dirt.
 
-B06 targets (BMP dirt circle, Covet Gravel Rally): 22 m to a Turn in gate, then a left half of a 15 m ring
+B06 targets (the proving ground's dirt arc, venue `pg-dirt-arc`; first set on the BMP dirt circle; Covet Gravel Rally): 22 m to a Turn in gate, then a left half of a 15 m ring
 with Apex (90°), Regain (135°) and Exit (180°) gates 12 m wide. Bronze: the front pushes 1–5 m wide of the
 line before the Regain gate and the car is back within 1.5 m of it at the Exit, no spin; silver: back within
 1.5 m by the Regain gate; gold: a 2–4 m push, back within 1 m by the Regain gate. Scripted, holding the
@@ -257,7 +257,7 @@ entry speed into the ring: 30 km/h doesn't push (0.3 m); 40–42 km/h pushes 3�
 35 m (just after turn-in) brings it back by the Regain gate (gold at 40, silver at 42), lifting at 45 m only
 by the Exit (bronze); 46 km/h with no lift runs 12 m wide.
 
-D01 targets (BMP dirt arena, Covet Gravel Rally): six cones 15 m apart from 25 m ahead (the drill first said
+D01 targets (the proving ground's dirt strip, venue `pg-dirt-strip`; first set on the BMP dirt arena; Covet Gravel Rally): six cones 15 m apart from 25 m ahead (the drill first said
 12 m; 15 m suits the Covet on dirt), first kept on the right, then alternating, and a Finish gate at 115 m.
 Bronze: every cone passed on its side, none touched, no spin, 25 km/h at the Finish, in 18 s; silver 14.8 s;
 gold 13.8 s. Scripted: a ±3 m weave clears the cones at 30 km/h (14.6 s) and hits one from 34 km/h; ±2.4 m
@@ -317,14 +317,14 @@ the rotation comes from the pulse), no post touched, no handbrake, no spin, 25 k
 Turn in gate: 12-17° (silver, gold); from 55 km/h a 5 m pulse gave 8-9° and a 4 m pulse 6-7°. The follower needs
 the line ~2 m further inside after a rotation.
 
-C04 targets (BMP dirt arena, Covet Gravel Rally): 34 m to an Entry gate, a Pivot cone to turn left round
+C04 targets (the proving ground's dirt strip; first set on the BMP dirt arena; Covet Gravel Rally): 34 m to an Entry gate, a Pivot cone to turn left round
 (4.5 m from the line) and an Exit gate back the way you came, 9 m to the left. Bronze: one handbrake pull, the
 rear swinging 20°+ between the gates, cone kept on the left, no post or cone touched, no stall, no spin
 (slides up to 120° allowed for 0.5 s), 15 km/h out of the Exit; silver 25° and 25 km/h; gold 25° and 32 km/h.
 Scripted: a pull at full lock makes the front plough (rear locked, slip −3 to −5°); turning in with a third
 of the lock and pulling from ~45 km/h swings the rear 24–31°; from 38 km/h only 17°.
 
-C07 targets (BMP dirt arena, Covet Gravel Rally): two cones 20 m apart side by side, 35 m ahead; five gates
+C07 targets (the proving ground's dirt strip; first set on the BMP dirt arena; Covet Gravel Rally): two cones 20 m apart side by side, 35 m ahead; five gates
 pin the route (the crossing, the far side of the right lobe, the crossing, the far side of the left lobe,
 the crossing). Bronze: all five in order, no cone or post touched, no spin, in 30 s; silver 23 s; gold
 21.5 s. Scripted on 10 m circles round the cones: 20 km/h 25.0 s, 25 km/h 21.8 s, 28 km/h 21.3 s; 30–32 km/h
@@ -337,7 +337,7 @@ from 66 km/h (half lock away, then full lock in with full brake) gave 12.7-14.4�
 and a gentler flick with 0.8 brake 3-7°. The flick swings the car out, so the approach line sits nearer the
 middle than C02's.
 
-B07 targets (BMP dirt circle, Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
+B07 targets (the proving ground's dirt arc; first set on the BMP dirt circle; Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
 then a 7 m exit lane 18 m long. Bronze: the rear steps out 8°+ between the Turn in gate and the lane end,
 through both lane gates without spinning, at most three steering corrections in the lane, and at the
 lane end the slip is within 4° and the steering within 45° of straight. Silver: a 12° slide; gold: 15°

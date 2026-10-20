@@ -95,7 +95,8 @@ function S.install()
     getList = function()
       return {{levelName = 'west_coast_usa', fullfilename = '/levels/west_coast_usa/main/'},
               {levelName = 'utah', fullfilename = '/levels/utah/main/'},
-              {levelName = 'driver_training', fullfilename = '/levels/driver_training/main/'}}
+              {levelName = 'driver_training', fullfilename = '/levels/driver_training/main/'},
+              {levelName = 'ra_proving_ground', fullfilename = '/levels/ra_proving_ground/main/'}}
     end,
     startLevel = function(path) table.insert(h.levelsLoaded, path) end,
   }

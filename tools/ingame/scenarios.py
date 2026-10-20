@@ -2,8 +2,9 @@
 linked (dev.py link). Each scenario drives the real game through its MCP server, prints
 what happened and returns the problems it found (empty = all as expected).
 
-Braking scenarios use the BMP start straight on West Coast USA in the Covet Student
-Driver (B01's venue spot). They record attempts, then remove them from your progress.
+Most drill scenarios run on our own map, the proving ground (ADR 0008), which loads in seconds; road-feature
+drills stay on West Coast USA. drill_session loads the drill's map. They record attempts, then remove them from
+your progress.
 """
 import json
 import math
@@ -68,8 +69,14 @@ def smoke():
     A.choose("A06")
     title = A.wait_for(lambda: ui(f"var p=document.querySelector('{A.PANEL} .ra-instructions'); return p ? 'shown' : 'missing'"), "shown")
     expect(p, "panel renders a drill without grading rules (A06)", title == "shown", title)
-    A.choose("A04")
-    expect(p, "selecting A04 shows the gate button", "Gate" in str(ui(f"return document.querySelector('{A.PANEL}').innerText")))
+    # a course drill with gates on the loaded map (off its map the panel offers Go to drill instead)
+    level = A.debug_state().get("level")
+    gated = next((d["id"] for d in A.drills() if d["environment"].get("levelId") == level
+                  and (d["assessment"].get("course") or {}).get("gates")), None)
+    if gated:
+        A.choose(gated)
+        text = A.wait_for(lambda: "Gate" in str(ui(f"return document.querySelector('{A.PANEL}').innerText")), True)
+        expect(p, f"selecting {gated} shows its gates", text is True)
     if A.debug_state().get("level") != "unknown":
         lua("extensions.rallyAcademy.toggleMenu() return 1")
         time.sleep(4)
@@ -90,8 +97,8 @@ A01_POST = [(0, 0), (0.95, 4), (0.95, 11), (1.8, 16), (1.8, 21), (-1.175, 27.5),
 
 @scenario
 def a01():
-    """Authored course at the BMP dirt arena: laid out with no marking; a medal run, the wrong
-    side of the cone, a clipped gate post; auto-retry. Needs West Coast USA loaded."""
+    """Authored course on the proving ground's dirt strip: laid out with no marking; a medal run, the wrong
+    side of the cone, a clipped gate post; auto-retry."""
     p = []
     A.drill_session("A01")
     s = A.debug_state()
@@ -340,7 +347,7 @@ def _ring_run(kmh, dab_every=25.0, brake=0.25, dab_m=3.0, lift=False):
 
 @scenario
 def circle():
-    """B05 on the BMP dirt circle (Covet Gravel Rally): two laps of the 15 m ring on steady throttle with
+    """B05 on the proving ground's dirt ring (Covet Gravel Rally): two laps of the 15 m ring on steady throttle with
     left-foot brake dabs earn gold; no dabs, or lifting off to brake, miss."""
     p = []
     A.drill_session("B05")
@@ -379,7 +386,7 @@ def _arc_run(kmh, brake_m, brake=1.0, max_steer=0.25):
 
 @scenario
 def oversteer():
-    """B07 on the BMP dirt circle (Covet Gravel Rally): a hard brake at turn-in steps the rear out, the
+    """B07 on the proving ground's dirt arc (Covet Gravel Rally): a hard brake at turn-in steps the rear out, the
     slide is caught and settled down the exit lane for a medal; a gentle turn-in with no slide misses."""
     p = []
     A.drill_session("B07")
@@ -418,7 +425,7 @@ def _push_run(kmh, lift_at, lift_m, then_kmh):
 
 @scenario
 def understeer():
-    """B06 on the BMP dirt circle (Covet Gravel Rally): turning in too fast pushes the front wide and a
+    """B06 on the proving ground's dirt arc (Covet Gravel Rally): turning in too fast pushes the front wide and a
     lift brings it back onto the line for a medal; too slow to push misses, and no lift runs far wide."""
     p = []
     A.drill_session("B06")
@@ -555,7 +562,7 @@ def _hairpin_run(pull_m=6, entry_kmh=45, lock=-0.3, exit_kmh=30):
 
 @scenario
 def hairpin():
-    """C04 on the BMP dirt arena (Covet Gravel Rally): one firm handbrake pull swings the car round the pivot
+    """C04 on the proving ground's dirt strip (Covet Gravel Rally): one firm handbrake pull swings the car round the pivot
     cone for a medal; no handbrake misses."""
     p = []
     A.drill_session("C04")
@@ -592,7 +599,7 @@ def _figure8_run(kmh):
 
 @scenario
 def figure8():
-    """C07 on the BMP dirt arena (Covet Gravel Rally): a figure-eight round both cones at 28 km/h earns a
+    """C07 on the proving ground's dirt strip (Covet Gravel Rally): a figure-eight round both cones at 28 km/h earns a
     medal; 32 km/h runs wide of the right-hand lobe and misses."""
     p = []
     A.drill_session("C07")
@@ -669,7 +676,7 @@ def _slalom_run(kmh, amp):
 
 @scenario
 def slalom():
-    """D01 on the BMP dirt arena (Covet Gravel Rally): a clean weave through six cones earns a medal; too fast
+    """D01 on the proving ground's dirt strip (Covet Gravel Rally): a clean weave through six cones earns a medal; too fast
     clips a cone and misses."""
     p = []
     A.drill_session("D01")
@@ -978,7 +985,7 @@ def events():
 
 @scenario
 def goto():
-    """Go to drill: E08 loads Utah in the gravel Covet; B01 then brings back West Coast USA (slow: 2 map loads)."""
+    """Go to drill: E08 loads Utah in the gravel Covet; B01 then loads the proving ground (slow: a stock map load)."""
     p = []
     A.choose("E08")
     lua("extensions.rallyAcademy.goToDrill() return 1")
@@ -987,7 +994,7 @@ def goto():
     expect(p, "E08 is selected and the car placed", s.get("selected") == "E08", s.get("reason"))
     A.choose("B01")
     lua("extensions.rallyAcademy.goToDrill() return 1")
-    expect(p, "B01 brings back West Coast USA with the Student Driver", A.wait_level("west_coast_usa", "student_driver"))
+    expect(p, "B01 loads the proving ground with the Student Driver", A.wait_level("ra_proving_ground", "student_driver"))
     return p
 
 
@@ -1018,16 +1025,18 @@ def mainmenu():
 
 @scenario
 def fit():
-    """Venue fit test: B01 fits its straight, not facing the barrier; B05 fits the BMP dirt arena."""
+    """Venue fit test on West Coast USA (it needs obstacles): B01 fits the BMP dirt arena's long straight, not
+    facing the barrier; B05 fits the dirt arena. Needs West Coast USA loaded."""
     import fit as F
     p = []
-    sp = A.drill("B01")["environment"]["spawn"]
+    venues = {v["id"]: v for v in json.loads(A.VENUES.read_text(encoding="utf-8"))["venues"]}
+    sp = venues["bmp-dirt-arena-long"]["spawn"]
     r = F.fit("B01", sp["pos"], sp["dir"])
-    expect(p, "B01 fits its own straight", r["fits"], r["problems"] or r["notes"])
+    expect(p, "B01 fits the long straight", r["fits"], r["problems"] or r["notes"])
     sideways = {"x": sp["dir"]["y"], "y": -sp["dir"]["x"]}  # turned to face the barrier ~8 m away
     r = F.fit("B01", sp["pos"], sideways)
     expect(p, "B01 facing the barrier does not fit", not r["fits"], r["problems"])
-    arena = A.drill("A01")["environment"]["spawn"]  # BMP dirt arena
+    arena = venues["bmp-dirt-arena"]["spawn"]
     r = F.fit("B05", arena["pos"], arena["dir"])
     expect(p, "B05's circle fits the dirt arena", r["fits"], r["problems"] or r["notes"])
     return p

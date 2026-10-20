@@ -12,8 +12,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2): the course is laid out from the venue's spawn, heading south-west across the open dirt (about 40 m of room needed ahead).",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): the course is laid out from the venue's spawn, heading north up the dead-level dirt (about 40 m of room needed ahead).",
         "venueNeeds": {
           "kind": "open",
           "areaM": 30,
@@ -1327,8 +1327,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-ring",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40): a 15 m ring round its centre, driven anticlockwise.",
+        "venue": "pg-dirt-ring",
+        "areaHint": "Proving ground dirt strip (MAPS P2), its north end: a 15 m ring round its centre, driven anticlockwise.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 50,
@@ -1446,8 +1446,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arc",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40): a straight approach into a left-hand half of a 15 m ring.",
+        "venue": "pg-dirt-arc",
+        "areaHint": "Proving ground dirt strip (MAPS P2), its north end: a straight approach into a left-hand half of a 15 m ring.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 50,
@@ -1573,8 +1573,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arc",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40): a straight approach into a left-hand quarter of a 15 m ring, then an exit lane north across the infield.",
+        "venue": "pg-dirt-arc",
+        "areaHint": "Proving ground dirt strip (MAPS P2), its north end: a straight approach into a left-hand quarter of a 15 m ring, then an exit lane north.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 50,
@@ -2011,8 +2011,8 @@
         "configPath": null
       },
       "environment": {
-        "venue": "bmp-dirt-circle",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle (parked: needs RWD/AWD).",
+        "venue": "pg-dirt-ring",
+        "areaHint": "Proving ground dirt strip (MAPS P2), its north end. Circle (parked: needs RWD/AWD).",
         "venueNeeds": {
           "kind": "open",
           "areaM": 45,
@@ -2053,8 +2053,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced: a hairpin laid out on the open dirt, turning left round a pivot cone and back out through an exit gate.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2), dead-level open dirt: a hairpin laid out on the open dirt, turning left round a pivot cone and back out through an exit gate.",
         "venueNeeds": {
           "kind": "corner",
           "shape": "hairpin",
@@ -2198,8 +2198,8 @@
         "configPath": null
       },
       "environment": {
-        "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced. Open dirt arc (parked: needs RWD/AWD).",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2), dead-level open dirt. Open dirt arc (parked: needs RWD/AWD).",
         "venueNeeds": {
           "kind": "open",
           "areaM": 50,
@@ -2240,8 +2240,8 @@
         "configPath": null
       },
       "environment": {
-        "venue": "bmp-dirt-circle",
-        "areaHint": "BMP dirt circle (MAPS W3), ~50 m infield ~(265, 40). Circle arc (parked: needs RWD/AWD).",
+        "venue": "pg-dirt-ring",
+        "areaHint": "Proving ground dirt strip (MAPS P2), its north end. Circle arc (parked: needs RWD/AWD).",
         "venueNeeds": {
           "kind": "open",
           "areaM": 50,
@@ -2282,8 +2282,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced: two cones 20 m apart side by side, 35 m ahead, with the crossing between them.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2), dead-level open dirt: two cones 20 m apart side by side, 35 m ahead, with the crossing between them.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 40,
@@ -2558,8 +2558,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-dirt-arena",
-        "areaHint": "BMP dirt arena (MAPS W2), open dirt ~(337, 96), fenced: six cones in a line 15 m apart from 25 m ahead, then a Finish gate.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2), dead-level open dirt: six cones in a line 15 m apart from 25 m ahead, then a Finish gate.",
         "venueNeeds": {
           "kind": "open",
           "areaM": 20,

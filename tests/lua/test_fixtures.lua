@@ -104,6 +104,11 @@
 --      gold = the clean line, centred in the box (9.7 s); wrong_side = left of the cone;
 --      post = 0.95 m right through the gate, clipping its right post. The record carries the
 --      laid-out course and the car's measured footprint (meta.course, meta.car).
+-- *_pg: after A01, B05-B07, C04, C07 and D01 moved to the proving ground's dirt strip (0.40.0), one medal run each
+--      with the scenario's inputs: a01 = the clean line at 14 km/h; b05 = 32 km/h round the ring with 0.25 dabs every
+--      25 m; b06 = 40 km/h, a 10 m lift at 35 m, then 26; b07 = 60 km/h, 6 m of full brake (bronze there); c04 =
+--      braked to 45, a 6 m pull at 0.3 lock, exit 30; c07 = 28 km/h circles; d01 = 32 km/h, ±2.4 m. The older runs
+--      above them were recorded on the BMP dirt arena and circle (DIRT_DUSTY); the rules didn't change.
 local json = require('json')
 local Rules = require('ge/extensions/rallyAcademy/rules')
 local T = {}
@@ -251,6 +256,20 @@ function T.a01_rules_and_medals_still_agree_with_the_in_game_verdicts()
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, tier, name .. ' medal')
     eq(rec.grade.tier or false, tier, name .. ' medal the game showed')
+  end
+end
+
+-- One medal run per drill re-driven on the proving ground after the move (ADR 0008), next to the older runs
+-- recorded on the BMP arena and circle (the rules are the same; these prove they hold on the new ground too).
+function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
+  local want = {a01_gold_pg = {'A01', 'gold'}, b05_gold_pg = {'B05', 'gold'}, b06_gold_pg = {'B06', 'gold'},
+    b07_bronze_pg = {'B07', 'bronze'}, c04_gold_pg = {'C04', 'gold'}, c07_gold_pg = {'C07', 'gold'}, d01_gold_pg = {'D01', 'gold'}}
+  for name, w in pairs(want) do
+    local res, rec = gradeCourse(name, w[1])
+    eq(rec.meta.level, 'ra_proving_ground', name .. ' recorded on the proving ground')
+    assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
+      .. ', the game said ' .. tostring(rec.grade.passed))
+    eq(res.tier or false, w[2], name .. ' medal')
   end
 end
 

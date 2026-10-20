@@ -150,7 +150,7 @@ end
 -- B05 through the extension: laid out at its venue, laps counted live, the run ending after the last.
 local function onB05()
   local h, M = H.setup()
-  h.level = 'west_coast_usa'
+  h.level = 'ra_proving_ground'
   M.select('B05')
   M.retry()
   M.onUpdate(0.1, 0.1)
@@ -207,7 +207,7 @@ end
 
 function T.a_circle_drill_that_ends_at_gates_has_no_lap_steps()
   local h, M = H.setup()
-  h.level = 'west_coast_usa'
+  h.level = 'ra_proving_ground'
   M.select('B06')
   M.retry()
   M.onUpdate(0.1, 0.1)

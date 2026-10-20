@@ -68,11 +68,11 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | Scenario | What it checks |
 | --- | --- |
 | `smoke` | UI reload leaves one HUD panel; the drill drop-down opens on a click and picks; a drill without rules renders; menu opens/closes with physics paused/resumed |
-| `a01` | The course is laid out at the BMP dirt arena with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
+| `a01` | The course is laid out on the proving ground's dirt strip with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
 | `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), and the game's own tabs after reopening |
-| `b01` | B01 on its course (BMP run-up, stop zone 30 m past the line): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
+| `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
 | `a04` | A04 on its course (BMP run-up, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
-| `stops` | A05 on its course (BMP dirt arena, stop line 60 m ahead) and B02 on its course (BMP run-up, 40 m stop area), a PASS and a MISS each |
+| `stops` | A05 on its course (stop line 60 m ahead) and B02 on its course (40 m stop area), both on the proving ground's dirt strip, a PASS and a MISS each |
 | `trail` | B04 on the proving ground's flat corner (the BMP downhill left copied flat): trail braking into the corner earns a medal; braking only before turn-in misses |
 | `tighten` | D03 on gravel lane DR825: easing off into the tightening corner earns a medal; too fast runs wide |
 | `opening` | D04 on gravel lane DR825: a progressive throttle earns a medal; too much spins and misses |
@@ -81,21 +81,21 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `crest` | E05 on the Off-Road Circuit: a planted crest earns a medal; flat out takes off and misses |
 | `fwdexit` | E02 on the proving ground's flat corner: rotate, then throttle out, passes (up to three tries); no throttle after the apex misses |
 | `surface` | D08 on the BMP run-up: a controlled stop across the tarmac-to-gravel change earns a medal; a locked-wheel stop misses |
-| `slalom` | D01 on the BMP dirt arena: a clean weave through six cones earns a medal; too fast clips a cone |
+| `slalom` | D01 on the proving ground's dirt strip: a clean weave through six cones earns a medal; too fast clips a cone |
 | `liftoff` | C01 on the proving ground's flat corner: a lift at turn-in rotates the car for a pass (up to five tries); too slow misses |
-| `figure8` | C07 on the BMP dirt arena: a clean figure-eight earns a medal; too fast runs wide and misses |
-| `hairpin` | C04 on the BMP dirt arena: one handbrake pull round the pivot cone earns a medal; no handbrake misses |
+| `figure8` | C07 on the proving ground's dirt strip: a clean figure-eight earns a medal; too fast runs wide and misses |
+| `hairpin` | C04 on the proving ground's dirt strip: one handbrake pull round the pivot cone earns a medal; no handbrake misses |
 | `flick` | C08 on the proving ground's flat corner: a lift-and-flick passes (up to five tries); no flick misses |
 | `rotation` | C02 on the proving ground's flat corner: a brake pulse after turn-in rotates the car for a medal (up to three tries); no rotation misses |
-| `understeer` | B06 on the BMP dirt circle: a push corrected by lifting earns a medal; too slow to push, or no lift, misses |
-| `oversteer` | B07 on the BMP dirt circle: a hard brake at turn-in steps the rear out and the caught slide earns a medal; no slide misses |
-| `circle` | B05 on the BMP dirt circle: two laps on the throttle with brake dabs earn gold; no dabs, or lifting off to brake, miss |
+| `understeer` | B06 on the proving ground's dirt arc: a push corrected by lifting earns a medal; too slow to push, or no lift, misses |
+| `oversteer` | B07 on the proving ground's dirt arc: a hard brake at turn-in steps the rear out and the caught slide earns a medal; no slide misses |
+| `circle` | B05 on the proving ground's dirt ring: two laps on the throttle with brake dabs earn gold; no dabs, or lifting off to brake, miss |
 | `corners` | A07 and A08 on the proving ground's flat corner (Covet Gravel Rally, racing line from `lines.py`): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss |
-| `gears` | A03 on its course (BMP run-up, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
+| `gears` | A03 on its course (the proving ground's dirt strip, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
 | `launch` | A02 on its course (from the BMP start line; the run ends at the 40 km/h gate): a flat-out launch earns a medal; 34 km/h at the gate misses |
-| `events` | A handbrake spin, a run on the grass verge and a puncture are detected (and the puncture isn't contact) |
-| `goto` | Go to drill loads Utah in the gravel Covet for E08, then West Coast USA again for B01 (slow: two map loads) |
-| `fit` | Venue fit test: B01 fits its straight but not facing the barrier; B05's circle fits the BMP dirt arena |
+| `events` | On the proving ground's dirt strip: a handbrake spin, a run on the grass beside it and a puncture are detected (and the puncture isn't contact) |
+| `goto` | Go to drill loads Utah in the gravel Covet for E08, then the proving ground for B01 (slow: a stock map load) |
+| `fit` | Venue fit test on West Coast USA: B01 fits the dirt arena's long straight but not facing the barrier; B05's circle fits the dirt arena |
 | `mainmenu` | From the main menu: Academy → A04 → Start drill lands in the drill with the HUD up (slow: map load) |
 
 The driving scenarios need West Coast USA loaded (e.g. Go to drill on B01): `a01` drives its

@@ -16,6 +16,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - **Straight-line drills moved to the proving ground's dirt strip** (A03 gears, A05 stop line, B01 threshold
   braking, B02 lockup recovery): dead level and all dirt, where the arena's straight sloped up to 9.5 %.
   Targets unchanged.
+- **The dirt arena and dirt circle drills moved to the proving ground too** (A01, B05, B06, B07, C04, C07, D01):
+  the same courses on dead-level dirt, a few seconds' load away. Targets unchanged; every one passed its
+  scenario there first time. Road-feature drills (A02, A04, D03-D06, D08, E05) stay on West Coast USA.
 - **A03 downshifting also moved to the all-dirt straight**, and a gear now counts only once it's held
   0.3 s: 0.40's sequential gearbox can blip 3-2-3 while shifting up, which read as a downshift.
 - **B01 threshold braking and B02 lockup recovery moved to a flat, all-dirt straight** (the BMP dirt

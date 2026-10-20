@@ -118,15 +118,15 @@ local START = {pos = {x = 1, y = 2, z = 3}, dir = {x = 0, y = 1, z = 0}, up = {x
 
 function T.a_start_saved_before_a_drill_got_its_course_is_dropped()
   local h = stubs.install()
-  h.level = 'west_coast_usa'
-  saveRaw('west_coast_usa', 'A01', {start = START})            -- from before A01 had a course
+  h.level = 'ra_proving_ground'
+  saveRaw('ra_proving_ground', 'A01', {start = START})            -- from before A01 had a course
   local M = stubs.loadExtension('rallyAcademy')
   M.onExtensionLoaded()
   M.select('A01')
   local s = h.lastState()
   eq(s.usingVenueStart, true, 'laid out at the venue instead')
   has(s.reason, 'Your saved start was cleared because it now lays out its own course')
-  eq(jsonReadFile(SETUPS).levels.west_coast_usa.A01, nil, 'and forgotten')
+  eq(jsonReadFile(SETUPS).levels.ra_proving_ground.A01, nil, 'and forgotten')
 end
 
 function T.a_start_marked_for_the_current_course_survives_a_restart()

@@ -31,14 +31,17 @@ RANK = {"gold": 0, "silver": 1, "bronze": 2}
 
 
 def best_fixtures():
-    """{drill: fixture path}: per drill, a gold run if there is one, else silver, bronze, then any."""
+    """{drill: fixture path}: per drill, a run recorded on the drill's current map if there is one, and of those a
+    gold run if there is one, else silver, bronze, then any."""
+    from academy import drills
+    home = {d["id"]: d["environment"].get("levelId") for d in drills()}
     best = {}
     for f in sorted(glob.glob(str(FIXTURES / "*.json"))):
         m = re.match(r"([a-e]\d\d)c?_(\w+)\.json$", os.path.basename(f))
         if not m:
             continue
         drill, tag = m.group(1).upper(), m.group(2)
-        rank = min((r for t, r in RANK.items() if tag.startswith(t)), default=9)
+        rank = (fixture_level(f) != home.get(drill), min((r for t, r in RANK.items() if tag.startswith(t)), default=9))
         if drill not in best or rank < best[drill][0]:
             best[drill] = (rank, f)
     return {d: f for d, (_, f) in best.items()}

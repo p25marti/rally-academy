@@ -408,6 +408,54 @@
         }
       },
       "notes": "The south end of the proving ground's dirt strip (ADR 0008), facing north along it: 390 m of dead-level DIRT, 120 m wide (60 m either side of the start line), grass beyond. For straight-line drills (A03, A05, B01, B02)."
+    },
+    {
+      "id": "pg-dirt-ring",
+      "mapsId": "P2",
+      "name": "Proving ground: dirt ring",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 390.0,
+          "y": -165.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "Near the north end of the dirt strip, facing east: a 15 m ring centred 15 m to the left (390, -150) fits with 25 m or more of dead-level dirt round it (the strip is 120 m wide), like the BMP dirt circle's bmp-dirt-ring (B05; parked C03, C06)."
+    },
+    {
+      "id": "pg-dirt-arc",
+      "mapsId": "P2",
+      "name": "Proving ground: dirt arc",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 365.0,
+          "y": -165.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "25 m before pg-dirt-ring's start, facing east along the ring's tangent, like bmp-dirt-arc (B06, B07)."
     }
   ]
 }
