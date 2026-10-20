@@ -72,7 +72,8 @@ all six are built.
 - [x] B01 and C04 variants (same targets; the technique adapts per surface).
 - [ ] Variants for more drills, and progress views that sum across surfaces.
 - [x] Looks: hills round the play area (2 km terrain), rock faces, autumn forests from the game's tree library.
-- [ ] More looks: grass cover, painted markings, a few props (tyre walls, a paddock).
+- [x] More looks: grass cover, forest floor, a late-afternoon sun, a rally service park and trackside props.
+- [ ] Still to try: painted markings on the asphalt strip, a start truss over each strip, real (physical) cones.
 
 ## P2 — First automatically graded drill
 

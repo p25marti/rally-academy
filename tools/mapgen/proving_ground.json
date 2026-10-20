@@ -9,6 +9,7 @@
     "maxHeight": 220,
     "groundZ": 110
   },
+  "timeOfDay": 0.19,
   "backdrop": {
     "seed": 7,
     "flatMarginM": 90,
@@ -67,8 +68,315 @@
       2.6,
       0.75,
       0.25
-    ]
+    ],
+    "floorMaterial": "Dirt"
   },
+  "groundcover": [
+    {
+      "from": "gridmap_v2",
+      "name": "small_grass_green_close",
+      "on": [
+        "Grass"
+      ]
+    },
+    {
+      "from": "gridmap_v2",
+      "name": "small_grass_green_distant",
+      "on": [
+        "Grass"
+      ]
+    },
+    {
+      "from": "automation_test_track",
+      "name": "grass_dry_1_close",
+      "on": [
+        "Grass"
+      ]
+    },
+    {
+      "from": "automation_test_track",
+      "name": "grass_dry_1",
+      "on": [
+        "Grass"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_signboard_start.dae",
+      "at": [
+        -380,
+        -484
+      ],
+      "yaw": 180,
+      "lift": 0.9
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_start_clock_display.dae",
+      "at": [
+        -370,
+        -484
+      ],
+      "yaw": 180
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_safety_cushion_01.dae",
+      "row": [
+        [
+          -420,
+          -66
+        ],
+        [
+          -330,
+          -66
+        ]
+      ],
+      "count": 10
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_signboard_start.dae",
+      "at": [
+        -130,
+        -484
+      ],
+      "yaw": 180,
+      "lift": 0.9
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_start_clock_display.dae",
+      "at": [
+        -120,
+        -484
+      ],
+      "yaw": 180
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_safety_cushion_01.dae",
+      "row": [
+        [
+          -170,
+          -66
+        ],
+        [
+          -80,
+          -66
+        ]
+      ],
+      "count": 10
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_signboard_start.dae",
+      "at": [
+        120,
+        -484
+      ],
+      "yaw": 180,
+      "lift": 0.9
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_start_clock_display.dae",
+      "at": [
+        130,
+        -484
+      ],
+      "yaw": 180
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_safety_cushion_01.dae",
+      "row": [
+        [
+          80,
+          -66
+        ],
+        [
+          170,
+          -66
+        ]
+      ],
+      "count": 10
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_signboard_start.dae",
+      "at": [
+        370,
+        -484
+      ],
+      "yaw": 180,
+      "lift": 0.9
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_start_clock_display.dae",
+      "at": [
+        380,
+        -484
+      ],
+      "yaw": 180
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_safety_cushion_01.dae",
+      "row": [
+        [
+          330,
+          -66
+        ],
+        [
+          420,
+          -66
+        ]
+      ],
+      "count": 10
+    },
+    {
+      "shape": "/assets/meshes/props/urban/lighting/s_floodlight_1000W_mount_pole.dae",
+      "row": [
+        [
+          -250,
+          -440
+        ],
+        [
+          -250,
+          -120
+        ]
+      ],
+      "count": 5
+    },
+    {
+      "shape": "/assets/meshes/props/urban/lighting/s_floodlight_1000W_mount_pole.dae",
+      "row": [
+        [
+          250,
+          -440
+        ],
+        [
+          250,
+          -120
+        ]
+      ],
+      "count": 5
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_gazebo_mod_frame_3x3.dae",
+      "row": [
+        [
+          -24,
+          -524
+        ],
+        [
+          24,
+          -524
+        ]
+      ],
+      "count": 5
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_gazebo_mod_cover_ngrc_3x3.dae",
+      "row": [
+        [
+          -24,
+          -524
+        ],
+        [
+          24,
+          -524
+        ]
+      ],
+      "count": 5
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_fold_table_01.dae",
+      "row": [
+        [
+          -24,
+          -525
+        ],
+        [
+          24,
+          -525
+        ]
+      ],
+      "count": 5
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_rally_fold_chair_01.dae",
+      "row": [
+        [
+          -23,
+          -523.5
+        ],
+        [
+          25,
+          -523.5
+        ]
+      ],
+      "count": 5,
+      "yaw": 180
+    },
+    {
+      "shape": "/art/shapes/objects/modular_container/modular_01_blue.dae",
+      "row": [
+        [
+          -18,
+          -540
+        ],
+        [
+          18,
+          -540
+        ]
+      ],
+      "count": 4
+    },
+    {
+      "shape": "/art/shapes/objects/modular_container/modular_02.dae",
+      "at": [
+        -30,
+        -540
+      ]
+    },
+    {
+      "shape": "/art/shapes/objects/modular_container/modular_03_blue.dae",
+      "at": [
+        30,
+        -540
+      ]
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_metal_fence_branding_ngrc.dae",
+      "row": [
+        [
+          -36.3,
+          -510
+        ],
+        [
+          36.3,
+          -510
+        ]
+      ],
+      "count": 31,
+      "yaw": 90
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_corner_dir_left.dae",
+      "at": [
+        -271,
+        15
+      ],
+      "yaw": 180
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_spectator_tape_5m.dae",
+      "row": [
+        [
+          -340,
+          100
+        ],
+        [
+          -300,
+          100
+        ]
+      ],
+      "count": 9
+    }
+  ],
   "filler": "Grass",
   "pads": [
     {

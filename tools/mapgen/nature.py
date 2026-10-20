@@ -154,6 +154,32 @@ class Terrain:
                         layer[gy * size + gx] = rock_index
 
 
+def paint_forest_floor(layout, terrain, layer, index):
+    """Bare forest floor (layout forest.floorMaterial, e.g. Dirt) under the dense woods on the hills, where grass
+    cover doesn't grow: the same noise mask the woods use, a little inside it, dithered at the edge. Never in the
+    flat zone."""
+    f = layout.get("forest") or {}
+    mat = f.get("floorMaterial")
+    if not mat or not terrain.b:
+        return
+    woods = Noise(f.get("seed", 1) + 11, f.get("woodsScaleM", 180), 3)
+    rnd = random.Random(f.get("seed", 1) + 5)
+    size, half, mi = terrain.size, terrain.half, index[mat]
+    inset = f.get("floorInsetNoise", 0.04)  # how far inside the woods' noise edge the bare floor starts
+    for gy in range(0, size, COARSE):
+        for gx in range(0, size, COARSE):
+            x, y = gx - half + 2, gy - half + 2
+            d = outside(terrain.zone, x, y)
+            if d <= 20:
+                continue
+            hill = smoothstep(0, terrain.b["rampM"] * 0.5, d)
+            w = woods(x, y) - (f.get("woodsThreshold", 0.5) - 0.12 * hill)  # > 0 inside the woods (as forest())
+            for yy in range(gy, min(size, gy + COARSE)):
+                for xx in range(gx, min(size, gx + COARSE)):
+                    if w + (rnd.random() - 0.5) * 0.06 > inset:
+                        layer[yy * size + xx] = mi
+
+
 # Trees from /assets/meshes/foliage/trees_library/ and their sway settings (BeamNG's own values for these
 # models, from the Driver Training level's managedItemData.json, 0.40.0).
 LIB = "/assets/meshes/foliage/trees_library/"

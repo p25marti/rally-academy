@@ -6,6 +6,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **The proving ground feels lived in**: grass cover on the grass (green and autumn-dry tufts), bare forest
+  floor under the woods, a low late-afternoon sun with long shadows, and the game's own rally kit as scenery: a
+  service park behind the start line (team gazebos with tables and chairs, site cabins, a branded fence), start
+  boards and clocks behind each strip, floodlights between the strips, safety cushions past their far ends, and
+  a direction board and spectator tape at the corner. All of it stays off the drill areas.
 - **Surface variants for module A** (ADR 0009): A01-A05 on dirt, gravel, asphalt and snow, each surface with its own
   progress and medals. Pick the surface on the HUD panel or the Academy screen (a dot shows your best medal on
   each). A02's launch on snow has its own, slower times; everything else plays the same targets on every surface.

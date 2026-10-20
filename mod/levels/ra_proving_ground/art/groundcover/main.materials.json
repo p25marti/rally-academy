@@ -1,0 +1,61 @@
+{
+  "m_grass_green_short_01": {
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/foliage/grass/t_grass_green_short_01/t_grass_green_short_01_ao.data.png",
+        "baseColorMap": "/assets/materials/foliage/grass/t_grass_green_short_02/t_grass_green_short_02_b.color.png",
+        "normalMap": "/assets/materials/foliage/grass/t_grass_green_short_01/t_grass_green_short_01_nm.normal.png",
+        "opacityMap": "/assets/materials/foliage/grass/t_grass_green_short_01/t_grass_green_short_01_o.data.png",
+        "roughnessMap": "/assets/materials/foliage/grass/t_grass_green_short_01/t_grass_green_short_01_r.data.png"
+      },
+      {},
+      {},
+      {}
+    ],
+    "alphaRef": 60,
+    "alphaTest": true,
+    "class": "Material",
+    "doubleSided": true,
+    "dynamicCubemap": true,
+    "mapTo": "m_grass_green_short_01",
+    "name": "m_grass_green_short_01",
+    "subSurface": true,
+    "subSurfaceIntensity": 1,
+    "version": 1.5,
+    "persistentId": "6cd94f97-9831-5edd-b356-5af285612c65"
+  },
+  "m_grass_dry_01": {
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/foliage/grass/t_grass_green_long_01/t_grass_green_long_01_ao.data.png",
+        "baseColorFactor": [
+          0.783508003,
+          0.731675982,
+          0.681734025,
+          1
+        ],
+        "baseColorMap": "/assets/materials/foliage/grass/t_grass_dry_long_01/t_grass_dry_long_01_b.color.png",
+        "normalMap": "/assets/materials/foliage/grass/t_grass_green_long_01/t_grass_green_long_01_nm.normal.png",
+        "opacityMap": "/assets/materials/foliage/grass/t_grass_green_long_01/t_grass_green_long_01_o.data.png",
+        "pixelSpecular": true,
+        "roughnessMap": "/assets/materials/foliage/grass/t_grass_green_long_01/t_grass_green_long_01_r.data.png"
+      },
+      {},
+      {},
+      {}
+    ],
+    "alphaRef": 16,
+    "alphaTest": true,
+    "annotation": "GRASS",
+    "class": "Material",
+    "doubleSided": true,
+    "groundType": "GRASS",
+    "mapTo": "m_grass_dry_01",
+    "name": "m_grass_dry_01",
+    "persistentId": "501ada76-1068-5fea-8324-998679c6e096",
+    "subSurface": true,
+    "subSurfaceIntensity": 1,
+    "translucentZWrite": true,
+    "version": 1.5
+  }
+}

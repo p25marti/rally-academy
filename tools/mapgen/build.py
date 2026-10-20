@@ -21,6 +21,7 @@ import zlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import borrow  # noqa: E402
 import nature  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -134,6 +135,8 @@ def generate(layout, game):
     wanted = [layout["filler"]] + [p["material"] for p in layout["pads"] + layout.get("roads", [])]
     if layout.get("backdrop"):
         wanted.append(layout["backdrop"].get("rockMaterial", "rock"))
+    if (layout.get("forest") or {}).get("floorMaterial"):
+        wanted.append(layout["forest"]["floorMaterial"])
     wanted = list(dict.fromkeys(wanted))
     missing = [m for m in wanted if m not in by_name]
     if missing:
@@ -162,6 +165,7 @@ def generate(layout, game):
         heights.byteswap()
     layer = bytearray(size * size)  # 0 = filler
     index = {m: i for i, m in enumerate(wanted)}
+    nature.paint_forest_floor(layout, terrain, layer, index)
     if layout.get("backdrop"):
         terrain.paint_rock(layer, index[layout["backdrop"].get("rockMaterial", "rock")])
     for p in layout["pads"]:
@@ -200,13 +204,14 @@ def generate(layout, game):
             {"name": "terrain", "class": "SimGroup", "__parent": "level_objects"},
             {"name": "sky_and_sun", "class": "SimGroup", "persistentId": pid(name, "sky"), "__parent": "level_objects"}]
             + ([{"name": "vegetation", "class": "SimGroup", "persistentId": pid(name, "vegetation"), "__parent": "level_objects"}]
-               if trees else [])),
+               if trees or layout.get("groundcover") else [])
+            + ([{"name": "props", "class": "SimGroup", "persistentId": pid(name, "props"), "__parent": "level_objects"}]
+               if layout.get("props") else [])),
         "main/MissionGroup/level_objects/terrain/items.level.json": jsonl([
             {"name": "theTerrain", "class": "TerrainBlock", "persistentId": pid(name, "terrain"), "__parent": "terrain",
              "position": [-half, -half, t["baseZ"]], "materialTextureSet": texset, "maxHeight": t["maxHeight"],
              "terrainFile": f"{lv}/theTerrain.ter"}]),
-        "main/MissionGroup/level_objects/sky_and_sun/items.level.json":
-            tpl.read("levels/template/main/MissionGroup/level_objects/sky_and_sun/items.level.json").decode(),
+        "main/MissionGroup/level_objects/sky_and_sun/items.level.json": sky(layout, tpl),
     }
     spawn = next(p for p in layout["pads"] if p["id"] == layout.get("spawn", layout["pads"][0]["id"]))
     sx, sy = sum(spawn["x"]) / 2, spawn["y"][0] + 20
@@ -214,15 +219,23 @@ def generate(layout, game):
         {"class": "SpawnSphere", "name": "spawn_default", "persistentId": pid(name, "spawn"), "__parent": "PlayerDropPoints",
          "position": [sx, sy, t["groundZ"] + 1], "dataBlock": "SpawnSphereMarker", "enabled": "1", "radius": 1}])
 
+    vegetation = []
     if trees:
         used = {t[0] for t in trees}
-        files["main/MissionGroup/level_objects/vegetation/items.level.json"] = jsonl([
-            {"name": "theForest", "class": "Forest", "persistentId": pid(name, "forest"), "__parent": "vegetation",
-             "lodReflectScalar": 0.15}])
+        vegetation.append({"name": "theForest", "class": "Forest", "persistentId": pid(name, "forest"), "__parent": "vegetation",
+                           "lodReflectScalar": 0.15})
         files["art/forest/managedItemData.json"] = json.dumps(
             {k: v for k, v in nature.item_data(name, pid).items() if k in used}, indent=2) + "\n"
         files["art/shapes/trees/main.materials.json"] = json.dumps(nature.tree_materials(game, name, pid, layout["forest"].get("leafTint")), indent=2) + "\n"
         files.update(nature.forest_files(trees))
+    if layout.get("groundcover"):
+        objs, mats = grass_cover(layout, game, ours, t["groundZ"])
+        vegetation += objs
+        files["art/groundcover/main.materials.json"] = json.dumps(mats, indent=2) + "\n"
+    if vegetation:
+        files["main/MissionGroup/level_objects/vegetation/items.level.json"] = jsonl(vegetation)
+    if layout.get("props"):
+        files["main/MissionGroup/level_objects/props/items.level.json"] = jsonl(props(layout, terrain))
     out = {rel: text.replace("\r\n", "\n").encode("utf-8") for rel, text in files.items()}  # LF, as git keeps them
     out["theTerrain.ter"] = ter
     out["preview.png"] = preview_png(layer, size, wanted, terrain, trees)
@@ -230,6 +243,75 @@ def generate(layout, game):
     # which is what we want for now. An all-zero map (like the template's) made every wheel sink 0.2 m into the
     # gravel and bog the car down to walking pace at full throttle (0.40.0).
     return out
+
+
+def props(layout, terrain):
+    """Static props (layout "props"): each entry places `shape` (a game-wide mesh under /art/shapes/, whose
+    materials the game always loads) at `at`, or `count` of them evenly along `row` [[x0, y0], [x1, y1]], turned
+    `yaw` degrees anticlockwise from facing south (its default), `lift` m above the ground. None may stand on a pad
+    or road (2 m margin): props are scenery, not obstacles in a drill."""
+    import math
+    base = layout["terrain"]["baseZ"]
+    out = []
+    for k, e in enumerate(layout["props"]):
+        if "row" in e:
+            (x0, y0), (x1, y1) = e["row"]
+            n = e["count"]
+            spots = [(x0 + (x1 - x0) * i / max(1, n - 1), y0 + (y1 - y0) * i / max(1, n - 1)) for i in range(n)]
+        else:
+            spots = [tuple(e["at"])]
+        a = math.radians(e.get("yaw", 0))
+        c, sn = round(math.cos(a), 6), round(math.sin(a), 6)
+        for j, (x, y) in enumerate(spots):
+            if not nature._clear_of(layout, x, y, 2.0):
+                raise SystemExit(f"prop {e['shape']} at ({x:.0f}, {y:.0f}) stands on a pad or road")
+            out.append({"class": "TSStatic", "persistentId": pid(layout["name"], f"prop/{k}/{j}"), "__parent": "props",
+                        "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y) + e.get("lift", 0), 3)],
+                        "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [e.get("scale", 1)] * 3,
+                        "shapeName": e["shape"], "useInstanceRenderData": True})
+    return out
+
+
+def sky(layout, tpl):
+    """The template's sky and sun, at the layout's time of day ("timeOfDay": BeamNG's 0..1, 0 = noon; 0.19 is a low,
+    warm late-afternoon sun, 0.24 sunset, 0.29 night; 0.40.0)."""
+    lines = []
+    for line in tpl.read("levels/template/main/MissionGroup/level_objects/sky_and_sun/items.level.json").decode().splitlines():
+        if not line.strip():
+            continue
+        o = json.loads(line)
+        if o.get("class") == "TimeOfDay" and "timeOfDay" in layout:
+            o["time"] = o["startTime"] = layout["timeOfDay"]
+        lines.append(o)
+    return jsonl(lines)
+
+
+def grass_cover(layout, game, ours, ground_z):
+    """GroundCover objects borrowed from stock levels (layout "groundcover": [{from, name, on: [materials]}]), each
+    growing on our terrain materials instead of the source level's, and their materials: (objects, materials)."""
+    stock = borrow.Stock(game)
+    objs, mats = [], {}
+    for k, g in enumerate(layout["groundcover"]):
+        src = stock.objects(g["from"], "GroundCover").get(g["name"])
+        if src is None:
+            raise SystemExit(f"no GroundCover {g['name']} in {g['from']}")
+        on = [ours[m] for m in g["on"]]
+        o = dict(src, name=f"ra_grass_{k}_{g['name']}", persistentId=pid(layout["name"], f"grass/{k}"), __parent="vegetation",
+                 position=[0, 0, ground_z])
+        types, j = [], 0
+        for ty in src.get("Types", []):
+            ty = dict(ty)
+            if ty.get("layer"):
+                ty["layer"] = on[j % len(on)]
+                j += 1
+            types.append(ty)
+        o["Types"] = types
+        for key, v in g.get("set", {}).items():  # overrides (density, radius)
+            o[key] = v
+        objs.append(o)
+        mats[src["material"]] = dict(stock.material(g["from"], src["material"]),
+                                     persistentId=pid(layout["name"], f"grassmat/{src['material']}"))
+    return objs, mats
 
 
 def level_dir(layout):

@@ -1,8 +1,9 @@
 {
- "layout": "e11b8b6ce094e8d98d86a23f7dc1ff09be413c0b238bbf8a9d416c391dd07646",
- "generator": "0ba08f9ae2e83a057a8e775951bb99d4182af61f8f61f7b6478f49924c12acb0",
+ "layout": "75922d632cb5e34815bd12bf6c893296ba2b1c6d8cf279f367d6ccb5367b6890",
+ "generator": "4c4af4dcadec50f0b107da70e1f0ad1300ae0ae4f1a0fa7af21fa8f2d63ecdf6",
  "files": {
   "art/forest/managedItemData.json": "b87771a47974d9db3577f15c84a7c5680d2598a2222803c97418ba59c18b01c4",
+  "art/groundcover/main.materials.json": "776346c3a0a2689728254166034adb9d5b429b023a1cade117fd3ea84f879c9d",
   "art/shapes/trees/main.materials.json": "4af58ecced3e64719a848e970ad2f684819c415904fc14b23fea24f3d05174a9",
   "art/terrains/main.materials.json": "f1db30b9569961efa06a2730a199a391be9bdcfc177c97c35040fb7a91535b5b",
   "forest/tree_aspen_bush_b.forest4.json": "2064df057424b805225ca961d1ef65441f6a849a85fff54846d2eb2f32e2936d",
@@ -29,13 +30,14 @@
   "info.json": "e4173261dfc77d9cfb1dc89e791d077d43fc46e9835d5f9ab9f4bbe96fdcc88f",
   "main/MissionGroup/PlayerDropPoints/items.level.json": "fd49ad0fc81afea810b3d058290beaec2e938ed5dd7bec8a6fca24255220e8ee",
   "main/MissionGroup/items.level.json": "67a36d180cc79901970e7ed088efb8738596831f4f7b6ec4aa003d99744ef9ea",
-  "main/MissionGroup/level_objects/items.level.json": "79089e33395e4fb9740fb077044e149ab0e3651b8948d0ec05118b9887280db9",
-  "main/MissionGroup/level_objects/sky_and_sun/items.level.json": "3f751007dfa72ca4c51a42ae480e619bd0f14cce2d7340997845cb626d37230b",
+  "main/MissionGroup/level_objects/items.level.json": "e15ce6541c298a9132722ba419a14ba70fc0838e06b22af57ec3e8ab272c12e3",
+  "main/MissionGroup/level_objects/props/items.level.json": "a62cab2665f37e305554015f488c95b47a36ec1bce171c2e008908c61fcda7be",
+  "main/MissionGroup/level_objects/sky_and_sun/items.level.json": "23cf70376b991c5ff2aa40dfd7bbae81644c730dcaf3a1f7b1925319bd173b15",
   "main/MissionGroup/level_objects/terrain/items.level.json": "efa760589eae929a440930369dddfb36027b73b1659b47d93f1a932329b09606",
-  "main/MissionGroup/level_objects/vegetation/items.level.json": "b6adc2992f76d661b51b3832d6eacbf946c473ad8923797c7d841b77238861b6",
+  "main/MissionGroup/level_objects/vegetation/items.level.json": "483b177bfd9bba9de1da5ad10b576af34ff12b1fc6ddb2db3ddd1133de2e72cd",
   "main/items.level.json": "4111bf3d89a3130122913bfb3317a2a86ca9773b69463b652e52116950e409cc",
-  "preview.png": "f7fe9a503e1c1c955ef36c91ba7ce8b013a4c44e2a9dcd5e59afe73948e9a962",
-  "theTerrain.ter": "b4b4f38f5672acfe461369c2205016e631be0efdcf51f23523884475c1bdf3c1",
+  "preview.png": "22f7aee8815bb491fa65f2b6596351bc8abb80d5fda6b6d107ee809a03796020",
+  "theTerrain.ter": "40508b1a7dc46ce8c8c8c70fbb47d8b208a1241c201faed7fe80a761fc4fe5d9",
   "theTerrain.terrain.json": "0b0de4fedc7cf5988c80bafd782188f914d798cd68f2ca2d7cb5d6daa27799bf"
  }
 }
