@@ -767,7 +767,7 @@ def fwdexit():
 
 
 def _circuit_run(drill, a, b, kmh, then_kmh=None, then_at=1e9):
-    """A run along the Off-Road Circuit's centre line (tools/ingame/circuit.py: metres a to b from dirttrack_1) in 2nd
+    """A run along the Off-Road Circuit's centre line, or the proving ground's copy (tools/ingame/circuit.py: metres a to b from dirttrack_1) in 2nd
     (sequential), holding `kmh`, then `then_kmh` from `then_at` metres into the run."""
     import circuit
     venue = A.drill(drill)["environment"]["spawn"]
@@ -789,7 +789,7 @@ def _circuit_run(drill, a, b, kmh, then_kmh=None, then_at=1e9):
 
 @scenario
 def blind():
-    """D05 on the Off-Road Circuit (Covet Gravel Rally): a steady 37 km/h into the blind crest hairpin earns a medal;
+    """D05 on the proving ground's copy of the Off-Road Circuit (Covet Gravel Rally): a steady 37 km/h into the blind crest hairpin earns a medal;
     55 km/h is too fast for a corner you can't see."""
     p = []
     A.drill_session("D05")
@@ -797,15 +797,16 @@ def blind():
     expect(p, "a conservative approach earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
     s = _circuit_run("D05", 420, 600, 55)
-    expect(p, "too fast into the blind corner misses", s.get("passed") is False and "too fast" in str(s.get("reason")),
-           s.get("reason"))
+    # on the stock circuit the speed check failed first; on the copy the car may meet the wall at the crest first
+    expect(p, "too fast into the blind corner misses", s.get("passed") is False
+           and ("too fast" in str(s.get("reason")) or "Hit something" in str(s.get("reason"))), s.get("reason"))
     A.end_session("D05")
     return p
 
 
 @scenario
 def hills():
-    """D06 on the Off-Road Circuit (Covet Gravel Rally): the uphill and downhill corners at 45/40 km/h earn a medal;
+    """D06 on the proving ground's copy of the Off-Road Circuit (Covet Gravel Rally): the uphill and downhill corners at 45/40 km/h earn a medal;
     55 km/h hits the uphill corner's wall."""
     p = []
     A.drill_session("D06")
@@ -820,11 +821,13 @@ def hills():
 
 @scenario
 def crest():
-    """E05 on the Off-Road Circuit (Covet Gravel Rally): about 50 km/h over the kicker keeps the wheels down for a
-    medal; flat out takes off and lands hard."""
+    """E05 on the proving ground's copy of the Off-Road Circuit (Covet Gravel Rally): 45 km/h through the banked left
+    after the descent, then about 56 km/h over the kicker keeps the wheels down for a medal; flat out takes off and
+    lands hard. (On the stock circuit 55 km/h through the left was fine: its wall is continuous, the copy's barriers
+    are separate blocks.)"""
     p = []
     A.drill_session("E05")
-    s = _circuit_run("E05", 236, 420, 55, 56, 50)
+    s = _circuit_run("E05", 236, 420, 45, 56, 60)
     expect(p, "a planted crest earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
     s = _circuit_run("E05", 236, 420, 55, 75, 50)

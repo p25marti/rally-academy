@@ -78,8 +78,8 @@ all six are built.
 - [x] More drills moved (2026-10-20): D03 / D04 on a flat copy of the gravel lane, D08 on a surface-change straight,
       E01 on asphalt and snow twins of the corner, B03 (with surface variants) and B08, and a winding test road for
       A06, D02, F07, F06 and the parked E03 / E04.
-- [ ] Terrain features on the proving ground (crests, hills, camber, a jump, rough ground, a water splash) would let
-      D05, D06, E05, E06, D07, E07 and E08 move too; ADR 0008 keeps them on stock maps for now (owner's call).
+- [x] Terrain features (ADR 0010): elevation, banking, camber and bumps along roads. The hill circuit (D05, D06, E05).
+- [ ] The rest of the terrain drills: D07 camber, E06 jump, E07 rough ground, E08 water.
 - [ ] Still to try: reshape the strips into road-width lanes plus handling pads, a start truss, real (physical) cones.
 
 ## P2 — First automatically graded drill

@@ -290,6 +290,8 @@ Gravel lane drills (DR825, west of the town; MAPS W6; Covet Gravel Rally), since
   up to 0.34–0.45 gave 51–55 km/h out; up to 0.6 spun the front 0.9 s and ran wide. A bronze is hard to script
   (any throttle that counts carries the car past 45 km/h).
 
+The Off-Road Circuit drills (D05, D06, E05) run on the proving ground's hill circuit since 2026-10-20: the circuit's first 640 m copied with its measured elevation and banking, concrete barriers where its walls stand. Scripted there: D05 at 37 km/h gold (55 km/h hits the wall at the crest), D06 at 45 / 40 km/h silver, E05 gold taking the banked left at 45 km/h and the kicker at 56 (on the stock circuit 55 km/h through the left was fine: its wall is continuous). Targets unchanged.
+
 Off-Road Circuit drills (West Coast USA W5, Covet Gravel Rally). The circuit is a walled, ~10 m wide dusty-dirt
 loop (road nodes `dirttrack_1`–`32`, about 1045 m); its jumps are small for the Covet (the biggest, the kicker
 at `dirttrack_15b`, gives 0.3 s of air at 62 km/h), so E06 isn't built here.

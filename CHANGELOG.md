@@ -6,6 +6,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Hills, crests and banked corners on the proving ground** (ADR 0010): the map builder now shapes the terrain along
+  a road (elevation, banking, camber, bumps) and blends it back to flat, in areas of their own so the flat drills
+  stay flat (the build refuses anything that reaches them). First use: the Off-Road Circuit's first 640 m copied with
+  its real elevation and berms, walled with concrete barriers like the original. D05 blind crest hairpin, D06 uphill
+  and downhill corners and E05 crest management moved there with their gates.
 - **A winding test road on the proving ground**, about 690 m of gravel bends with tape both sides: a linked S, a fast
   right-left pair and a tightening right. D02 linked corners, A06 vision and F07 setup comparisons moved there, and
   so did F06 puncture adaptation and the parked E03 / E04 drivetrain drills.

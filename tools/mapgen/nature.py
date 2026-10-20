@@ -68,6 +68,105 @@ def outside(zone, x, y):
     return math.hypot(dx, dy)
 
 
+def smooth3(pts, steps=4):
+    """Catmull-Rom through (x, y, ...) points, the same curve tools/mapgen/build.smooth draws through (x, y)."""
+    p = [pts[0]] + list(pts) + [pts[-1]]
+    out = []
+    for i in range(1, len(p) - 2):
+        for k in range(steps):
+            t = k / steps
+            out.append(tuple(0.5 * (2 * p[i][j] + (-p[i - 1][j] + p[i + 1][j]) * t
+                                    + (2 * p[i - 1][j] - 5 * p[i][j] + 4 * p[i + 1][j] - p[i + 2][j]) * t * t
+                                    + (-p[i - 1][j] + 3 * p[i][j] - 3 * p[i + 1][j] + p[i + 2][j]) * t ** 3) for j in range(len(p[0]))))
+    return out + [tuple(pts[-1])]
+
+
+def is_feature(r):
+    return bool(r.get("profile") or r.get("camber") or r.get("bumps") or r.get("bank"))
+
+
+class Features:
+    """Terrain shaped along roads (layout roads with "profile", "camber" or "bumps"): each such road's surface follows
+    its profile (m above the ground level, one value per point), tilted across by its camber ([fromM, toM, slope]:
+    slope = rise per metre towards the road's left) and its bank (the same, one value per point, as measured on a
+    stock road), roughened by its bumps ({amplitude, wavelength, seed}); the
+    terrain keeps that height over the road and a 2 m shoulder, then blends back to the ground over `blendM`
+    (default 30). Stored per 1 m square in two arrays (height, distance to the nearest feature road)."""
+
+    SHOULDER = 2.0
+
+    def __init__(self, layout, ground, size):
+        import array
+        self.size, self.half, self.ground = size, size / 2, ground
+        self.dist = array.array("f", [1e9]) * (size * size)
+        self.h = array.array("f", [0.0]) * (size * size)
+        self.any = False
+        for r in layout.get("roads", []):
+            if is_feature(r):
+                self.any = True
+                self._raster(r)
+
+    def _road_points(self, r):
+        ox, oy = r["origin"]
+        prof = r.get("profile") or [0.0] * len(r["points"])
+        bank = r.get("bank") or [0.0] * len(r["points"])
+        pts = smooth3([(ox + q[0], oy + q[1], z, b) for q, z, b in zip(r["points"], prof, bank)])
+        out, s = [], 0.0
+        for i, (x, y, z, b) in enumerate(pts):
+            if i:
+                s += math.hypot(x - pts[i - 1][0], y - pts[i - 1][1])
+            out.append((x, y, z, s, b))
+        return out
+
+    def _raster(self, r):
+        hw = r["width"] / 2
+        blend = r.get("blendM", 30.0)
+        R = hw + self.SHOULDER + blend
+        camber = r.get("camber") or []
+        bumps = r.get("bumps")
+        if bumps:
+            rnd = random.Random(bumps.get("seed", 1))
+            waves = [(bumps["amplitude"] * rnd.uniform(0.5, 1.0), bumps["wavelength"] * rnd.uniform(0.6, 1.6), rnd.uniform(0, 6.3),
+                      rnd.uniform(-0.25, 0.25)) for _ in range(4)]
+        line = self._road_points(r)
+        size, half = self.size, self.half
+        for (ax, ay, az, sa, ba), (bx, by, bz, sb, bb) in zip(line, line[1:]):
+            vx, vy = bx - ax, by - ay
+            ll = vx * vx + vy * vy
+            if ll < 1e-6:
+                continue
+            seg = math.sqrt(ll)
+            for gy in range(max(0, int(min(ay, by) - R + half)), min(size, int(max(ay, by) + R + half) + 1)):
+                cy = gy - half + 0.5
+                for gx in range(max(0, int(min(ax, bx) - R + half)), min(size, int(max(ax, bx) + R + half) + 1)):
+                    cx = gx - half + 0.5
+                    t = max(0.0, min(1.0, ((cx - ax) * vx + (cy - ay) * vy) / ll))
+                    px, py = ax + vx * t, ay + vy * t
+                    lat = ((cx - ax) * -vy + (cy - ay) * vx) / seg  # + left of travel
+                    d = math.hypot(cx - px, cy - py)
+                    k = gy * size + gx
+                    if d >= R or d >= self.dist[k]:
+                        continue
+                    sm = sa + (sb - sa) * t
+                    hr = az + (bz - az) * t + (ba + (bb - ba) * t) * max(-hw, min(hw, lat))
+                    for c0, c1, slope in camber:
+                        if c0 <= sm <= c1:
+                            hr += slope * max(-hw, min(hw, lat))
+                    if bumps and abs(lat) <= hw + 1:
+                        hr += sum(a * math.sin(sm / wl * 6.2832 + ph + lat * sk) for a, wl, ph, sk in waves)
+                    w = 1.0 if d <= hw + self.SHOULDER else 1.0 - smoothstep(hw + self.SHOULDER, R, d)
+                    self.dist[k] = d
+                    self.h[k] = self.ground + w * hr
+
+    def at(self, x, y):
+        """The shaped height at (x, y), or None where no feature reaches."""
+        gx, gy = int(x + self.half), int(y + self.half)
+        if not (0 <= gx < self.size and 0 <= gy < self.size):
+            return None
+        k = gy * self.size + gx
+        return self.h[k] if self.dist[k] < 1e8 else None
+
+
 class Terrain:
     """Heights (m above the terrain's base) for a size x size terrain centred on 0, 0."""
 
@@ -76,6 +175,7 @@ class Terrain:
         self.size, self.half = layout["size"], layout["size"] / 2
         self.ground = t["groundZ"] - t["baseZ"]
         self.b = b
+        self.features = Features(layout, self.ground, self.size)
         if not b:
             return
         self.zone = flat_zone(layout, b["flatMarginM"])
@@ -92,12 +192,20 @@ class Terrain:
         if d <= 0:
             return self.ground
         d = max(0.0, d + (self.foot(x, y) - 0.5) * b.get("footWobbleM", 60))
-        rise = smoothstep(0, b["rampM"], d) * b["heightM"] * (0.45 + 0.9 * self.hills(x, y))
-        edge = smoothstep(self.half - b.get("edgeRampM", 350), self.half - 40, max(abs(x), abs(y))) * b.get("edgeExtraM", 0)
+        ramp = smoothstep(0, b["rampM"], d)
+        rise = ramp * b["heightM"] * (0.45 + 0.9 * self.hills(x, y))
+        # the extra rise that hides the terrain edge grows with the same ramp, so it never makes a cliff where the
+        # flat zone comes close to the edge
+        edge = ramp * smoothstep(self.half - b.get("edgeRampM", 350), self.half - 40, max(abs(x), abs(y))) * b.get("edgeExtraM", 0)
         return self.ground + rise + edge
 
     def height(self, x, y):
-        """Height above the base at any point (bilinear between coarse samples; exact ground in the flat zone)."""
+        """Height above the base at any point (bilinear between coarse samples; exact ground in the flat zone, except
+        where a feature road shapes it)."""
+        if self.features.any:
+            f = self.features.at(x, y)
+            if f is not None:
+                return f
         if not self.b or outside(self.zone, x, y) <= 0:
             return self.ground
         fx, fy = (x + self.half) / COARSE, (y + self.half) / COARSE
@@ -118,6 +226,7 @@ class Terrain:
         size, half = self.size, self.half
         flat = round(self.ground * scale)
         out = array.array("H", [flat]) * (size * size)
+        f = self.features
         if not self.b:
             return out
         x0, y0, x1, y1 = self.zone
@@ -128,9 +237,28 @@ class Terrain:
             for gx in range(size):
                 x = gx - half
                 if inside_row and x0 <= x <= x1:
+                    if f.any and f.dist[row + gx] < 1e8:
+                        out[row + gx] = min(65535, max(0, round(f.h[row + gx] * scale)))
                     continue
                 out[row + gx] = min(65535, max(0, round(self.height(x, y) * scale)))
         return out
+
+    def check_flat(self, layout):
+        """Raise if a feature road's shaping reaches any flat pad or road (the flat drills must stay flat)."""
+        if not self.features.any:
+            return
+        probes = []
+        for p in layout["pads"]:
+            (ax, bx), (ay, by) = p["x"], p["y"]
+            probes += [(x, y) for x in (ax, (ax + bx) / 2, bx) for y in (ay, (ay + by) / 2, by)]
+        for r in layout.get("roads", []):
+            if not is_feature(r):
+                ox, oy = r["origin"]
+                probes += [(ox + q[0], oy + q[1]) for q in r["points"]]
+        bad = [(round(x), round(y)) for x, y in probes if self.features.at(x, y) is not None
+               and abs(self.features.at(x, y) - self.ground) > 0.01]
+        if bad:
+            raise SystemExit(f"terrain features reach flat pads or roads at {bad[:5]}: move the feature area further away")
 
     def paint_rock(self, layer, rock_index):
         """Rock where the hills are steep (slope from the coarse grid, dithered so the edge isn't blocky)."""

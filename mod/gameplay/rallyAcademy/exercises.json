@@ -3191,8 +3191,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "offroad-blind-hairpin",
-        "areaHint": "Off-Road Circuit (MAPS W5), the north straight into a left hairpin that turns 180 degrees across a crest: the exit drops away out of sight. Turn in, Crest and Exit gates.",
+        "venue": "pg-circuit-hairpin",
+        "areaHint": "Proving ground hill circuit (MAPS P8, West Coast USA's Off-Road Circuit copied with its hills): the north straight into a left hairpin that turns 180 degrees across a crest: the exit drops away out of sight. Turn in, Crest and Exit gates.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -3308,8 +3308,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "wcusa-offroad-circuit",
-        "areaHint": "Off-Road Circuit (MAPS W5) from its start: an uphill right-hander (9-14 %), over the crest, then a 7 % descent into a downhill left-hander. Uphill, Downhill and Exit gates.",
+        "venue": "pg-circuit-start",
+        "areaHint": "Proving ground hill circuit (MAPS P8) from its start: an uphill right-hander (9-14 %), over the crest, then a 7 % descent into a downhill left-hander. Uphill, Downhill and Exit gates.",
         "venueNeeds": {
           "kind": "hill",
           "gradePct": 6,
@@ -3891,8 +3891,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "offroad-kicker",
-        "areaHint": "Off-Road Circuit (MAPS W5), the south-east descent, a left-hander, then 45 m to a short kicker crest. Crest, Landing and Exit gates.",
+        "venue": "pg-circuit-kicker",
+        "areaHint": "Proving ground hill circuit (MAPS P8): the south-east descent, a left-hander, then 45 m to a short kicker crest. Crest, Landing and Exit gates.",
         "venueNeeds": {
           "kind": "crest",
           "lengthM": 120,

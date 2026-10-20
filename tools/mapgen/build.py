@@ -161,6 +161,7 @@ def generate(layout, game):
     if not 0 <= raw <= 65535:
         sys.exit("groundZ must lie between baseZ and baseZ + maxHeight")
     terrain = nature.Terrain(layout)
+    terrain.check_flat(layout)
     heights = terrain.raw_heights(t["maxHeight"])
     if sys.byteorder != "little":
         heights.byteswap()
@@ -275,6 +276,8 @@ def props(layout, terrain):
                 pieces += [(x, y, 0.0, e["posts"], 0) for x, y, _ in joints]
             for j, (x, y, yaw, shape, lift) in enumerate(pieces):
                 if not nature._clear_of(layout, x, y, 2.0):
+                    if e.get("skipClash"):  # winding roads: drop the pieces that come near another stretch
+                        continue
                     raise SystemExit(f"prop {e['shape']} at ({x:.0f}, {y:.0f}) stands on a pad or road")
                 a = math.radians(yaw)
                 c, sn = round(math.cos(a), 6), round(math.sin(a), 6)

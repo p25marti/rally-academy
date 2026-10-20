@@ -672,6 +672,78 @@
         }
       },
       "notes": "The start of a 686 m winding gravel road heading east, 7 m wide, dead level: a linked S (left-right-left, radii 45/38/45 m), a fast right and left (55 and 50 m), then a right that tightens from 60 to 30 m. Tape 6 m beyond each edge."
+    },
+    {
+      "id": "pg-circuit-start",
+      "mapsId": "P8",
+      "name": "Proving ground: hill circuit, start line",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 486.52,
+          "y": -427.8,
+          "z": 110.0
+        },
+        "dir": {
+          "x": -0.0017,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "wcusa-offroad-circuit on the proving ground's copy of the Off-Road Circuit's first 640 m (shifted (-80, -455) m, same heading, measured elevation kept), so its drills keep their gates."
+    },
+    {
+      "id": "pg-circuit-hairpin",
+      "mapsId": "P8",
+      "name": "Proving ground: hill circuit, blind crest hairpin",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 723.25,
+          "y": -315.96,
+          "z": 114.9
+        },
+        "dir": {
+          "x": 0.1422,
+          "y": 0.9898,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "offroad-blind-hairpin on the proving ground's copy of the Off-Road Circuit's first 640 m (shifted (-80, -455) m, same heading, measured elevation kept), so its drills keep their gates."
+    },
+    {
+      "id": "pg-circuit-kicker",
+      "mapsId": "P8",
+      "name": "Proving ground: hill circuit, kicker crest",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 651.7,
+          "y": -431.6,
+          "z": 113.62
+        },
+        "dir": {
+          "x": 0.6092,
+          "y": -0.793,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "offroad-kicker on the proving ground's copy of the Off-Road Circuit's first 640 m (shifted (-80, -455) m, same heading, measured elevation kept), so its drills keep their gates."
     }
   ]
 }
