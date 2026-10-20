@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **A winding test road on the proving ground**, about 690 m of gravel bends with tape both sides: a linked S, a fast
+  right-left pair and a tightening right. D02 linked corners, A06 vision and F07 setup comparisons moved there.
 - **D08 mixed-surface braking moved to the proving ground**: a new straight with the BMP run-up's sequence (gravel,
   a 30 m tarmac patch with a start line, gravel again), dead level, so the grip change is the only thing changing.
 - **E01 snow vs gravel vs tarmac on one bend**: the proving ground's gravel corner now has asphalt and snow twins

@@ -648,6 +648,30 @@
         }
       },
       "notes": "A 12 m straight north from here: 122 m of gravel, 30 m of tarmac (a start line 8 m in), then gravel again, the same sequence as the BMP run-up and start line (bmp-gravel-runup) but dead level. D08's gates and zone fit unchanged."
+    },
+    {
+      "id": "pg-test-road",
+      "mapsId": "P7",
+      "name": "Proving ground: winding test road",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -320.0,
+          "y": 560.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The start of a 686 m winding gravel road heading east, 7 m wide, dead level: a linked S (left-right-left, radii 45/38/45 m), a fast right and left (55 and 50 m), then a right that tightens from 60 to 30 m. Tape 6 m beyond each edge."
     }
   ]
 }

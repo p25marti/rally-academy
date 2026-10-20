@@ -32,6 +32,7 @@ Ships with the mod; loads in about 3 s. The play area is flat (z 110 m) on grass
 | P4 | **Gravel lane** | around (60, 90) | GRAVEL on grass | West Coast USA's lane DR825 (W6) copied flat, shifted (900, 200) m with the same compass heading, 7 m wide, 25 m of run-off at each end. Venues `pg-lane-tightening` (D03) and `pg-lane-opening` (D04); `tools/ingame/lanes.py` knows the shift |
 | P5 | **Asphalt and snow corners** | starts (−120, 230) and (180, 230), facing north | ASPHALT, SNOW on grass | The gravel corner (P1) built again in each surface: same centre line and course frame, the same barriers. Venues `pg-corner-asphalt`, `pg-corner-snow` (E01's variants; ready for corner-drill variants) |
 | P6 | **Surface-change straight** | start (−50, −35), facing north | GRAVEL, ASPHALT, GRAVEL | 12 m wide: 122 m of gravel, 30 m of tarmac with a start line 8 m in, then gravel to 215 m: the BMP run-up's sequence, dead level, guardrail 10 m out. Venue `pg-transition` (D08) |
+| P7 | **Winding test road** | start (−320, 560), facing east | GRAVEL on grass | About 690 m, 7 m wide, dead level: a linked S (left-right-left, radii 45/38/45 m), a fast right and left (55, 50 m), a right tightening from 60 to 30 m; tape 6 m beyond each edge. Venue `pg-test-road` (A06, D02, F07) |
 | P3 | Mud pad | x −50…50, y −480…−380 | MUD | Not yet used |
 
 ### West Coast USA (`west_coast_usa`): loose-surface training complex

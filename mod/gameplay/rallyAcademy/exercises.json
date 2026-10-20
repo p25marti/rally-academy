@@ -734,8 +734,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Figure Eight Basics layout: call the next bend aloud before each apex.",
+        "venue": "pg-test-road",
+        "areaHint": "Proving ground winding test road (MAPS P7): about 650 m of gravel bends. Call the next bend aloud before each apex.",
         "venueNeeds": {
           "kind": "route",
           "lengthM": 300,
@@ -2884,8 +2884,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Two linked bends from one of the layouts.",
+        "venue": "pg-test-road",
+        "areaHint": "Proving ground winding test road (MAPS P7): the linked S (left, right, left) 60 m from the start; set up the first bend for the exit of the second.",
         "venueNeeds": {
           "kind": "route",
           "lengthM": 150,
@@ -4196,8 +4196,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same 40-60 s layout segment for A/B setups.",
+        "venue": "pg-test-road",
+        "areaHint": "Proving ground winding test road (MAPS P7): the whole road, start to end, is a repeatable 40-60 s segment for A/B setups.",
         "venueNeeds": {
           "kind": "route",
           "lengthM": 300,
