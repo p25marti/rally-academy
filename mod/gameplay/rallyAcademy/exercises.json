@@ -1285,8 +1285,8 @@
         "configPath": "vehicles/covet/student_driver.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-runup",
-        "areaHint": "BMP Gravel Track run-up (MAPS W1): start 120 m behind the start line; the straight is flat from 60 m before the line to 50 m past it, then cambers and banks, so stops belong between the line and about 45 m past it.",
+        "venue": "pg-dirt-strip",
+        "areaHint": "Proving ground dirt strip (MAPS P2): 390 m of dead-level dirt from the start. Pick a stopping marker, reach 50 km/h and brake; then the same on the other surfaces.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 120,
@@ -1304,6 +1304,27 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2): 390 m of dead-level gravel from the start. Pick a stopping marker, reach 50 km/h and brake; then the same on the other surfaces."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2): 390 m of dead-level asphalt from the start. Pick a stopping marker, reach 50 km/h and brake; then the same on the other surfaces."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2): 390 m of dead-level snow from the start. Pick a stopping marker, reach 50 km/h and brake; then the same on the other surfaces."
+        }
+      ],
       "instructions": "Before each run, estimate stopping spot, then brake from exactly 50 km/h; six runs per surface.",
       "resetInstructions": "Go to drill puts you 120 m behind the start line. Reach 50 km/h and brake so you stop on the flat, no more than about 45 m past the line.",
       "props": "Record separate pavement/gravel observations; surface runs need two saved positions.",
@@ -1844,8 +1865,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Broad gravel bend.",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): a broad gravel left-hander after a 67 m straight, dead level, so the weight transfer comes only from your inputs.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [

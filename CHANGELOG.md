@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **B03 stopping-distance estimation and B08 weight transfer moved to the proving ground**: B03 on the dirt strip with
+  gravel, asphalt and snow variants (its six stops per surface, now on one map), B08 on the flat gravel corner.
 - **D03 tightening and D04 opening corners moved to the proving ground**: West Coast USA's gravel lane rebuilt flat
   next to the strips, same shape, same gates. Without the crest and the climb both corners carry more speed, so
   their medal speeds rose a little (D03 30 / 36 km/h, D04 48 / 54 km/h).
