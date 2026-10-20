@@ -4,7 +4,7 @@
 local M = {}
 -- Re-read our pure modules whenever the extension (re)loads: extensions.reload re-runs
 -- this file but `require` would keep the old modules (seen on 0.39.4).
-for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots', 'variants'}) do
+for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots', 'variants', 'props'}) do
   package.loaded['ge/extensions/rallyAcademy/' .. name] = nil
 end
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
@@ -15,6 +15,7 @@ local Store = require('ge/extensions/rallyAcademy/store')
 local Course = require('ge/extensions/rallyAcademy/course')
 local Spots = require('ge/extensions/rallyAcademy/spots')
 local Variants = require('ge/extensions/rallyAcademy/variants')
+local Props = require('ge/extensions/rallyAcademy/props')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 -- Named venues drills refer to (environment.venue); the loader fills in each drill's map,
 -- display name and spawn from it, so the rest of the mod reads them from the drill.
@@ -62,13 +63,15 @@ local GRADE_DELAY = 0.3 -- s of sim time
 --   uiAccum            time since the last HUD update
 --   coneIdx, coneResults  next cone, each cone's live result ('passed' | 'wrong')
 --   clipped            the first marker the car touched (live), fit = medal box the car is in now
+--   hits               the physical markers (props.lua) the car touched, in order: {{name, kmh}}
 --   aid                parking aid text near the box; autoRetryIn = countdown after a graded run
 --   swept              radians driven round a course circle (endWhen 'laps'), the right way positive
 local cur
 local function resetRun()
   cur = {elapsed = 0, lastTime = nil, grade = nil, settleT = 0, originPos = nil, stillT = 0,
          gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0,
-         coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil, swept = 0}
+         coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil, swept = 0,
+         hits = {}}
 end
 resetRun()
 local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
@@ -270,9 +273,11 @@ end
 local CAR_HEIGHT = 0.4
 local function placeCourse()
   local def = courseDef()
-  if not (def and startState) then course = nil; return end
+  if not (def and startState) then course = nil; Props.clear(); return end
   course = Layout.place(def, startState)
   local z0 = startState.pos.z
+  -- a real cone or post at each marker (ADR 0011), standing on the ground
+  Props.place(course.markers, function(x, y) return groundZ(x, y, z0) end)
   for _, g in ipairs(course.gates) do g.pos.z = groundZ(g.pos.x, g.pos.y, z0) + CAR_HEIGHT end
   for _, c in ipairs(course.cones) do c.z = groundZ(c.x, c.y, z0) + CAR_HEIGHT end
   for _, key in ipairs({'box', 'zone', 'line', 'circle'}) do -- the targets (TARGETS below)
@@ -284,9 +289,12 @@ local function placeCourse()
 end
 
 function M.onExtensionLoaded()
+  Props.clear() -- a reloaded extension's props: this load lays its own out
   load()
   output(true)
 end
+
+function M.onExtensionUnloaded() Props.clear() end
 
 function M.publish() output(true) end
 
@@ -478,6 +486,7 @@ function M.retry()
   end
   activeVehicleId = veh:getID() -- the run follows whichever car was reset
   if RunRecord.isOpen(run) then endRun('restarted') end
+  Props.reset() -- knocked cones and posts back on their spots
   teleportToStart(veh, startState)
   run = RunRecord.new({drill = selected, level = levelId(), vehicleId = activeVehicleId,
                        start = startState.pos, finish = finishGate, gates = #gates > 0 and gates or nil,
@@ -687,7 +696,7 @@ local function drawCourse()
     line = course and course.line, lineCones = course and course.lineCones,
     lineZones = course and course.line and medalsFor(targetNamed('line')),
     circle = course and course.circle, corridors = course and course.circle and medalsFor(targetNamed('circle')),
-    footprint = footprint,
+    footprint = footprint, physical = Props.active(),
   })
 end
 
@@ -709,10 +718,21 @@ local function trackCourse(veh, vpos)
       cur.uiAccum = 1
     end
   end
+  if Props.active() then
+    for _, name in ipairs(Props.touching(veh:getID())) do
+      local seen = false
+      for _, hit in ipairs(cur.hits) do seen = seen or hit.name == name end
+      if not seen then
+        cur.hits[#cur.hits + 1] = {name = name, kmh = veh:getVelocity():length() * 3.6}
+        if not cur.clipped then cur.clipped, lastReason, cur.uiAccum = name, 'Clipped ' .. name .. '.', 1 end
+        logf('I', '%s: hit %s at %.0f km/h', selected, name, cur.hits[#cur.hits].kmh)
+      end
+    end
+  end
   local car = carSize and carSize.car
   if not car then return end
   local h = veh:getDirectionVector()
-  if not cur.clipped then
+  if not cur.clipped and not Props.active() then
     for _, m in ipairs(course.markers) do
       if Layout.distanceToCar(car, vpos.x, vpos.y, h.x, h.y, m.x, m.y) < Layout.MARKER_RADIUS then
         cur.clipped, lastReason, cur.uiAccum = m.name, 'Clipped ' .. m.name .. '.', 1
@@ -793,7 +813,9 @@ local function finishRun(how, atTime)
     lastReason = (endsOnStop() and 'Stopped.' or 'Finish reached.') .. ' Grade the technique using Pass/Miss.'
     output(); return
   end
-  cur.grade = Rules.grade(a, run, {zone = stopZone(), gates = gates, course = course,
+  local hits = Props.active() and cur.hits or nil -- physical markers: what the car touched decides
+  if run and hits then run.meta.hits = hits end
+  cur.grade = Rules.grade(a, run, {zone = stopZone(), gates = gates, course = course, hits = hits,
                                    car = carSize and carSize.car, time = cur.lastTime})
   if run then run.grade = cur.grade end
   local firstFail
@@ -1188,7 +1210,7 @@ function M.debugState()
           tier = cur.grade and cur.grade.tier, nextTier = cur.grade and cur.grade.nextTier and cur.grade.nextTier.text,
           hasCourse = course ~= nil, usingVenueStart = usingVenueStart, autoRetry = prefs.autoRetry ~= false,
           autoRetryIn = cur.autoRetryIn, clipped = cur.clipped, fit = cur.fit, aid = cur.aid,
-          car = carSize and carSize.car}
+          car = carSize and carSize.car, props = Props.active(), hits = cur.hits}
 end
 
 -- Record the car's telemetry outside any drill (venue fit tests, tools/ingame/fit.py): no
@@ -1239,6 +1261,7 @@ end
 
 -- Map unloading: its start/finish mean nothing on the next map.
 function M.onClientEndMission(_levelPath)
+  Props.clear()
   if not selected then return end
   startState, finishGate, gates, course, usingVenueStart = nil, nil, {}, nil, false
   backToSetup('Map closed.')

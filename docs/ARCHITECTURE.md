@@ -14,6 +14,7 @@ mod/                                            exactly the shipped zip root
 │   ├── layout.lua     authored courses laid out from the start; the car's footprint (pure)
 │   ├── runRecord.lua  per-attempt telemetry record (pure)
 │   ├── store.lua      saved progress and setups (jsonReadFile/jsonWriteFile only)
+│   ├── props.lua      real cones and posts at a course's markers (spawn, reset, touches; ADR 0011)
 │   └── course.lua     world markers: gates, cones, boxes, stop zone/line, finish (debugDrawer only)
 ├── lua/vehicle/extensions/rallyAcademy/telemetry.lua   sampler in the car's Lua VM
 ├── lua/ge/extensions/core/input/actions/
@@ -103,7 +104,7 @@ is unit-tested under plain LuaJIT with stubs ([ADR 0003](decisions/0003-testing-
 
 - **Pure:** `rules.lua`, `gates.lua`, `runRecord.lua`. Tested directly, including against
   recorded in-game runs (`tests/fixtures/`).
-- **Edges:** `store.lua` (files), `course.lua` (drawing), the vehicle `telemetry.lua`, and the
+- **Edges:** `store.lua` (files), `course.lua` (drawing), `props.lua` (spawned props), the vehicle `telemetry.lua`, and the
   engine calls inside `rallyAcademy.lua` (teleport, car swap, map load, UI routing, pause).
   Tested through the BeamNG stubs and the in-game scenarios (`dev.py ingame`).
 - **Entry point:** `rallyAcademy.lua` holds the session state machine (idle → setup → ready →

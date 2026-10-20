@@ -68,6 +68,8 @@ A drill whose layout is fixed describes it in `assessment.course`, in metres fro
 `x` to the right, `y` ahead (the way the car faces at the start). The mod lays it out from the
 venue's spawn when you're on the drill's map, or from your Mark start (**Move course here**),
 and draws it; nothing needs marking ([PRODUCT](PRODUCT.md): drills set themselves up).
+Gate posts and cones (and a stop line's end cones) are real props: a flexible delineator post or a
+traffic cone stands at each, reset on Retry, and touching one is a clip ([ADR 0011](decisions/0011-physical-course-markers.md)).
 
 ```jsonc
 "course": {

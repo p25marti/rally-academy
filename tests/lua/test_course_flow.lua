@@ -288,4 +288,45 @@ function T.a_course_stop_line_reads_out_the_distance_to_it()
   has(s.course.aid, 'm to the line')
 end
 
+
+-- Physical markers (props.lua, ADR 0011): real posts and a cone stand on the course, Retry stands them back up,
+-- and knocking one is what fails the run.
+local function onA01WithProps()
+  local h = stubs.install()
+  stubs.installProps(h)
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  h.level = 'ra_proving_ground'
+  M.select('A01')
+  return h, M
+end
+
+function T.a01_lays_out_real_posts_and_a_cone_and_retry_stands_them_up()
+  local h, M = onA01WithProps()
+  eq(#h.props, 3, 'two gate posts and the cone')
+  eq(h.lastState().course ~= false, true, 'course laid out')
+  M.retry()
+  eq(h.props[3].resets, 1, 'Retry resets the props')
+  eq(M.debugState().props, true, 'debug state says so')
+end
+
+function T.a01_knocking_the_cone_misses_even_on_a_clean_line()
+  local h, M = onA01WithProps()
+  M.setAutoRetry(false)
+  M.retry()
+  h.collisions[h.props[3].id] = true -- the car touches the cone as it passes
+  local s = driveCourse(h, M, cleanLine(parkAt()))
+  eq(s.grade.passed, false, 'a miss')
+  has(s.reason, 'Clipped the cone')
+  has(h.logText('rallyAcademy'), 'hit the cone')
+end
+
+function T.a01_clean_with_props_still_earns_gold()
+  local h, M = onA01WithProps()
+  M.setAutoRetry(false)
+  M.retry()
+  local s = driveCourse(h, M, cleanLine(parkAt()))
+  eq(s.grade.tier, 'gold', 'gold')
+end
+
 return T

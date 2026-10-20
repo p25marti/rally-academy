@@ -194,6 +194,56 @@ end
 
 function S.testDrills() return S.testFixture('test_drills.json').exercises end
 
+-- Prop vehicles for physical course markers (props.lua; verified 0.40.0 as the game's drift mode spawns
+-- its poles): spawned props land in h.props, the player car's collisions are h.collisions[propId] = true,
+-- and h.leftovers are props a previous load of the extension left in the scene (object names).
+function S.installProps(h)
+  h.props, h.collisions, h.leftovers, h.leftoversDeleted = {}, {}, {}, {}
+  local nextId = 1000
+  _G.sanitizeVehicleSpawnOptions = function(_model, opt) return opt end
+  _G.quat = function(x, y, z, w) return {x = x, y = y, z = z, w = w} end
+  _G.RESET_PHYSICS = 1
+  _G.core_vehicles.spawnNewVehicle = function(model, opt)
+    nextId = nextId + 1
+    local v = {id = nextId, model = model, config = opt.config, pos = opt.pos, name = opt.vehicleName,
+               autoEnter = opt.autoEnterVehicle, resets = 0, deleted = false}
+    function v:getID() return self.id end
+    function v:delete() self.deleted = true end
+    function v:requestReset(kind) if kind == RESET_PHYSICS then self.resets = self.resets + 1 end end
+    function v.resetBrokenFlexMesh() end
+    table.insert(h.props, v)
+    return v
+  end
+  local carById = getObjectByID
+  _G.getObjectByID = function(id)
+    for _, v in ipairs(h.props) do if v.id == id and not v.deleted then return v end end
+    return carById(id)
+  end
+  local function live()
+    local out = {}
+    for _, v in ipairs(h.props) do if not v.deleted then out[#out + 1] = v end end
+    return out
+  end
+  _G.scenetree = {
+    findClassObjects = function(class)
+      if class ~= 'BeamNGVehicle' then return {} end
+      local names = {}
+      for _, v in ipairs(live()) do names[#names + 1] = v.name end
+      for _, n in ipairs(h.leftovers) do names[#names + 1] = n end
+      return names
+    end,
+    findObject = function(name)
+      for _, v in ipairs(live()) do if v.name == name then return v end end
+      for i, n in ipairs(h.leftovers) do
+        if n == name then
+          return {delete = function() table.insert(h.leftoversDeleted, n); table.remove(h.leftovers, i) end}
+        end
+      end
+    end,
+  }
+  _G.map.objects = {[h.vehicle.id] = {objectCollisions = h.collisions}}
+end
+
 -- Ids of the shipped drills only (the catalogue the stubs serve also holds T01-T04).
 function S.isTestDrill(id) return tostring(id):match('^T%d%d$') ~= nil end
 

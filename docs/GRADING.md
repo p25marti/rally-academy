@@ -73,7 +73,7 @@ Detectors turn raw samples into events with a start time, an end time and a size
 | Countersteer | Steering opposite the rotation, and time to unwind | B07, C03 (under 3 s), C05 |
 | Understeer | Yaw rate well below what steering and speed predict; needs a simple car model, tuned per car | B06, E02, E04 |
 | Airborne, landing, rollover | Wheel contact, landing impact, car tipping over | E05, E06, E07 |
-| Cone contact | Drawn cones and posts (authored courses): the car's footprint comes within the cone's radius (built: `markers_clear`). Real cones: record each one's spawn position and flag any that moves | about 15 drills |
+| Cone contact | Real cones and posts stand at authored courses' markers (ADR 0011): the car's collisions say which it touched (built: `markers_clear`); without them, the footprint coming within a drawn marker's radius | about 15 drills |
 | Barrier contact, damage | Jump in damage total | D03, F01, F05 |
 | Puncture | Tyre deflation; F06 needs a damage baseline because it starts punctured | E07, F06 |
 | Recovery use | The game's own recover/reset was used | E08, F01, F04, F05, F08 |
@@ -143,7 +143,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `no_handbrake` | none (optional `minKmh` 10) | Handbrake not pulled while moving |
 | `no_puncture` | none | No tyre goes flat during the run |
 | `cones_passed` | none | Every course cone is passed on its `keep` side (the car crosses the line through the cone, square to the course, with the cone on that side) |
-| `markers_clear` | none (optional `clearanceM` 0) | The car's body never comes within 0.15 m (+ `clearanceM`) of a drawn cone or gate post. The body is the footprint measured from the car's nodes when the run starts |
+| `markers_clear` | none (optional `clearanceM` 0) | The car never touches a course's cones or gate posts. With the real props standing (ADR 0011), what the car's collisions touched decides; otherwise (no props, an old recording) its body coming within 0.15 m (+ `clearanceM`) of a marker, the body being the footprint measured from the car's nodes when the run starts |
 | `park_in_box` | none (optional `insetM` 0, `label`) | At rest with all four corners of the body inside the course's box, shrunk by `insetM` on every side |
 | `no_reverse` | none (optional `maxM` 0.3) | The car travels no more than `maxM` backwards (against the way it points) |
 | `max_time` | `maxSeconds` | The run time is at most `maxSeconds` (medal time targets) |

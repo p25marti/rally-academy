@@ -41,7 +41,8 @@ end
 
 -- Lay a course definition out from a start pose. Returns
 -- {gates = {...} (gates.lua format), cones = {{x, y, dir, keep}}, box = {x, y, dir, lengthM, widthM},
---  markers = {{x, y, name}}, zone, line, circle = {x, y, radiusM, turn, laps}} with world x, y;
+--  markers = {{x, y, name, kind = 'post' | 'cone'}} (each a physical prop, props.lua), zone, line,
+--  circle = {x, y, radiusM, turn, laps}} with world x, y;
 -- heights are left to the caller.
 function L.place(def, start)
   local f = L.frame(start)
@@ -55,13 +56,13 @@ function L.place(def, start)
     out.gates[i] = gate
     local half, rx, ry = gate.width / 2, gate.dir.y, -gate.dir.x
     local label = #(def.gates) > 1 and (' of gate ' .. i) or ' of the gate'
-    out.markers[#out.markers + 1] = {x = x - rx * half, y = y - ry * half, name = 'the left post' .. label}
-    out.markers[#out.markers + 1] = {x = x + rx * half, y = y + ry * half, name = 'the right post' .. label}
+    out.markers[#out.markers + 1] = {x = x - rx * half, y = y - ry * half, name = 'the left post' .. label, kind = 'post'}
+    out.markers[#out.markers + 1] = {x = x + rx * half, y = y + ry * half, name = 'the right post' .. label, kind = 'post'}
   end
   for i, c in ipairs(def.cones or {}) do
     local x, y = L.toWorld(f, c.x or 0, c.y)
     out.cones[i] = {x = x, y = y, z = start.pos.z, dir = dir, keep = c.keep or 'left', label = c.label}
-    out.markers[#out.markers + 1] = {x = x, y = y, name = #(def.cones) > 1 and ('cone ' .. i) or 'the cone'}
+    out.markers[#out.markers + 1] = {x = x, y = y, name = #(def.cones) > 1 and ('cone ' .. i) or 'the cone', kind = 'cone'}
   end
   if def.box then
     local x, y = L.toWorld(f, def.box.x or 0, def.box.y)
@@ -83,7 +84,8 @@ function L.place(def, start)
     for i, side in ipairs({-1, 1}) do
       local cx, cy = x + f.rx * half * side, y + f.ry * half * side
       out.lineCones[i] = {x = cx, y = cy, z = start.pos.z, dir = dir}
-      out.markers[#out.markers + 1] = {x = cx, y = cy, name = side < 0 and 'the left cone of the line' or 'the right cone of the line'}
+      out.markers[#out.markers + 1] = {x = cx, y = cy, kind = 'cone',
+                                       name = side < 0 and 'the left cone of the line' or 'the right cone of the line'}
     end
   end
   if def.circle then

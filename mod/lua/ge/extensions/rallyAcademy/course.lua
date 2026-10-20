@@ -1,7 +1,7 @@
 -- Course markers drawn in the world every frame: gates, stop zone or stop line, finish
 -- circle, and authored courses' cones and parking box (with its medal boxes). Uses
--- debugDrawer, a debug overlay rather than scene objects, so there is nothing
--- to clean up and nothing to hit. The only module that draws.
+-- debugDrawer, a debug overlay rather than scene objects. Where real cones and posts stand
+-- (props.lua, ADR 0011) it draws only their state over them. The only module that draws.
 local C = {}
 
 local COLOURS = {
@@ -12,10 +12,12 @@ local COLOURS = {
 }
 local function colour(name) local c = COLOURS[name]; return ColorF(c[1], c[2], c[3], c[4]) end
 
-local function drawGate(g, state)
+-- With physical posts (props.lua) only the coloured tops above them and the bar are drawn.
+local POST_TOP = 1.2 -- m above the car's height: a delineator post's top is a little below
+local function drawGate(g, state, physical)
   local c = colour(state)
   local rx, ry, half = g.dir.y, -g.dir.x, g.width / 2 -- right of the gate, facing dir
-  local z0, z1 = g.pos.z - 0.6, g.pos.z + 1.4
+  local z0, z1 = physical and g.pos.z + POST_TOP or g.pos.z - 0.6, g.pos.z + 1.4
   local left = {x = g.pos.x - rx * half, y = g.pos.y - ry * half}
   local right = {x = g.pos.x + rx * half, y = g.pos.y + ry * half}
   debugDrawer:drawCylinder(vec3(left.x, left.y, z0), vec3(left.x, left.y, z1), 0.12, c)
@@ -47,10 +49,21 @@ end
 -- Course objects (layout.lua) sit at a car's height (~0.4 m) above the ground.
 local GROUND = 0.4
 
--- A traffic cone: three stacked cylinders, narrower towards the top.
-local function drawCone(c, state)
+-- A traffic cone: three stacked cylinders, narrower towards the top. Over a physical cone (props.lua) only its
+-- result, as a ring on the ground round it.
+local function drawCone(c, state, physical)
   local col = colour(state == 'passed' and 'passed' or state == 'missed' and 'missed' or 'cone')
   local z = c.z - GROUND
+  if physical then
+    if state then
+      for i = 0, 15 do
+        local a, b = i / 16 * 2 * math.pi, (i + 1) / 16 * 2 * math.pi
+        debugDrawer:drawCylinder(vec3(c.x + math.cos(a) * 0.5, c.y + math.sin(a) * 0.5, z + 0.03),
+          vec3(c.x + math.cos(b) * 0.5, c.y + math.sin(b) * 0.5, z + 0.03), 0.03, col)
+      end
+    end
+    return
+  end
   for _, seg in ipairs({{0.15, 0, 0.25}, {0.11, 0.25, 0.5}, {0.06, 0.5, 0.7}}) do -- radius, bottom, top
     debugDrawer:drawCylinder(vec3(c.x, c.y, z + seg[2]), vec3(c.x, c.y, z + seg[3]), seg[1], col)
   end
@@ -141,19 +154,20 @@ end
 --   line = {x, y, z, dir, widthM}, lineCones = {{x, y, z}}, lineZones = {{name, maxM}}: a stop line
 --   zoneTiers = {{name, lengthM, widthM}}: a course stop zone's medal sizes (drawn nested)
 --   circle = {x, y, z, radiusM}, corridors = {{name, widthM}}: a circle to lap and its medal corridors
+--   physical = real cones and posts stand at the markers (props.lua): don't draw over them
 -- }
 function C.draw(course)
   if not (debugDrawer and ColorF) then return end
   for i, g in ipairs(course.gates or {}) do
-    drawGate(g, course.gateResults[i] or (i == course.nextGate and 'next') or 'upcoming')
+    drawGate(g, course.gateResults[i] or (i == course.nextGate and 'next') or 'upcoming', course.physical)
   end
   for i, c in ipairs(course.cones or {}) do
-    drawCone(c, course.coneResults and course.coneResults[i])
+    drawCone(c, course.coneResults and course.coneResults[i], course.physical)
     if i == course.nextCone then drawPassHint(c) end
   end
   if course.line then
     drawCourseLine(course.line, course.lineZones, course.fit)
-    for _, c in ipairs(course.lineCones or {}) do drawCone(c, nil) end
+    for _, c in ipairs(course.lineCones or {}) do drawCone(c, nil, course.physical) end
   end
   if course.circle then drawCircle(course.circle, course.corridors, course.fit) end
   if course.box then

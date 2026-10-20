@@ -79,6 +79,19 @@ function T.markers_clear_catches_clipping_a_post_or_the_cone()
   has(clean.text, 'Cleared every marker (closest:')
 end
 
+function T.with_physical_markers_what_the_car_touched_decides()
+  local function withHits(hits) local c = ctx(); c.hits = hits; return c end
+  -- the post clipped by the measure (0.9 m right of centre) but the real post untouched: clear
+  local post = drive({{0, 0}, {0.9, 5}, {0.9, 11}, {1.8, 17}, {1.8, 23}, parkAt()})
+  local untouched = check({type = 'markers_clear'}, post, withHits({}))
+  eq(untouched.ok, true, untouched.text)
+  has(untouched.text, 'Cleared every marker (closest: the right post of the gate')
+  -- the clean line, but the car knocked the cone
+  local hit = check({type = 'markers_clear'}, drive(cleanLine(parkAt())), withHits({{name = 'the cone', kmh = 18.4}}))
+  eq(hit.ok, false, 'a touch fails')
+  has(hit.text, 'Clipped the cone at 18 km/h')
+end
+
 function T.park_in_box_wants_the_whole_body_inside()
   eq(check({type = 'park_in_box'}, drive(cleanLine(parkAt()))).ok, true, 'centred')
   local over = check({type = 'park_in_box'}, drive(cleanLine(parkAt(0.845, 0))))

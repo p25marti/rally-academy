@@ -6,6 +6,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Real cones and posts**: every course's gate posts are flexible delineator posts and its cones are soft-body
+  traffic cones, standing on the ground; hitting one is physical and is what fails the run ("Clipped the cone at
+  18 km/h"), and Retry stands them back up. The drawn overlay keeps the gate colours and cone results
+  (ADR 0011).
 - **Asphalt and snow for every corner drill**: A07, A08, B04, B08, C01, C02, C08 and E02 now have a Surface row, like
   E01, running on the gravel corner's asphalt and snow twins with their own progress and medals. The targets are the
   same except C01 on asphalt, where tarmac's grip makes lift-off rotation small (3° / 4° / 5° to earn a medal).

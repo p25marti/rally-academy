@@ -600,9 +600,15 @@ end
 -- The car's body never touches a drawn cone or gate post (they can't be hit, so this is the
 -- contact check for drawn courses).
 -- rule: {type = 'markers_clear', clearanceM = 0}; ctx.course.markers = {{x, y, name}}
+-- With physical markers (props.lua) ctx.hits lists what the car actually touched, {{name, kmh}} in order, and
+-- decides; the measured distance only says how close the car came. Without them (or in an old recording) a car
+-- closer than a drawn marker's radius clipped it.
 function E.markers_clear(rule, samples, ctx)
   local course = courseOf(ctx, 'markers')
   if not course then return false, 'This drill has no course laid out' end
+  if ctx.hits and ctx.hits[1] then
+    return false, string.format('Clipped %s at %.0f km/h', ctx.hits[1].name, ctx.hits[1].kmh or 0)
+  end
   local car, need = carOf(ctx), Layout.MARKER_RADIUS + (rule.clearanceM or 0)
   local closest, closestName, hit = math.huge, nil, nil
   for _, s in ipairs(samples) do
@@ -615,7 +621,7 @@ function E.markers_clear(rule, samples, ctx)
       end
     end
   end
-  if hit then return false, string.format('Clipped %s at %.0f km/h', hit.name, hit.air * KMH) end
+  if hit and not ctx.hits then return false, string.format('Clipped %s at %.0f km/h', hit.name, hit.air * KMH) end
   if not closestName then return true, 'Cleared every marker' end
   return true, string.format('Cleared every marker (closest: %s, %.1f m)', closestName,
     math.max(0, closest - Layout.MARKER_RADIUS))
