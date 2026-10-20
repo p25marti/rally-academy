@@ -467,7 +467,7 @@
         "to": 68
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": false
+      "turn": 0
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -481,7 +481,7 @@
         "to": 70
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": true
+      "turn": 180
     },
     {
       "shape": "/art/shapes/race/rally/rally_assets/s_spectator_tape_5m.dae",
@@ -512,7 +512,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": true
+      "turn": 180
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -532,7 +532,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": false
+      "turn": 0
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -552,7 +552,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": true
+      "turn": 180
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -572,7 +572,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": false
+      "turn": 0
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -592,7 +592,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": true
+      "turn": 180
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -612,7 +612,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": false
+      "turn": 0
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -632,7 +632,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": true
+      "turn": 180
     },
     {
       "shape": "/art/shapes/objects/guardrail1.dae",
@@ -652,7 +652,7 @@
         ]
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
-      "flip": false
+      "turn": 0
     }
   ],
   "decals": [

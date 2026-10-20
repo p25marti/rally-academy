@@ -252,6 +252,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
+- **Barriers follow the corner properly**: the concrete wall and guardrails were twisted off the curve (a rotation
+  read the wrong way round); they now run joined up along it, guardrail beams towards the road, posts behind.
 - A start you saved before a drill got its own course, or moved venue, no longer overrides it: the old
   start is cleared when you select the drill, and the HUD says why ("Your saved start was cleared
   because it now lays out its own course").

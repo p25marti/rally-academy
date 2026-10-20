@@ -271,7 +271,7 @@ def props(layout, terrain):
         if "along" in e:  # barriers: pieces end to end along a path (and posts at the joints)
             pieces = [(x, y, yaw, e["shape"], e.get("lift", 0)) for x, y, yaw in along(layout, e)]
             if e.get("posts"):
-                joints = along(layout, dict(e, axis="-y", flip=False))  # piece starts
+                joints = along(layout, dict(e, axis="-y", turn=0.0))  # piece starts
                 pieces += [(x, y, 0.0, e["posts"], 0) for x, y, _ in joints]
             for j, (x, y, yaw, shape, lift) in enumerate(pieces):
                 if not nature._clear_of(layout, x, y, 2.0):
@@ -308,9 +308,9 @@ def along(layout, e):
     """Positions and yaws (degrees) for pieces `length` m long laid end to end along a path: e["along"] is
     {"road": id, "offset": m to the left of its centre, "from": m, "to": m along it} or {"points": [[x, y], ...]}.
     `axis` is the mesh axis its length runs along ("x", "y", or "-y" for tapes that start at their origin and run
-    down -y); centred pieces sit at the middle of their stretch, "-y" ones at its start. `flip` turns each piece
-    round (a guardrail's face looks to the left of travel: flip the ones on the left of a path). `posts` adds that
-    mesh at every joint."""
+    down -y); centred pieces sit at the middle of their stretch, "-y" ones at its start. `turn` adds degrees to each
+    piece (180 turns it round: guardrail1's beam sits on its +y side, left of its length axis, so rails on the
+    left of a path turn 180 to put the beam towards the road and the posts behind it). `posts` adds that mesh at every joint."""
     import math
     path = e["along"]
     if "road" in path:
@@ -329,7 +329,9 @@ def along(layout, e):
         while seg > 0 and target + length <= d + seg + 1e-6 and target + length <= stop:
             t0 = (target - d) / seg
             t = t0 if axis.startswith("-") else (target + length / 2 - d) / seg
-            out.append((ax + (bx - ax) * t, ay + (by - ay) * t, phi - theta + (180.0 if e.get("flip") else 0.0)))
+            # the engine reads each row of rotationMatrix as a local axis: a mesh axis at angle phi ends up at
+            # phi + yaw, so yaw = theta - phi lays the piece's length along the path (0.40.0)
+            out.append((ax + (bx - ax) * t, ay + (by - ay) * t, theta - phi + e.get("turn", 0.0)))
             target += length + e.get("gap", 0.0)
         d += seg
     return out
