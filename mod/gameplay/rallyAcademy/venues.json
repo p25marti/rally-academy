@@ -576,6 +576,54 @@
         }
       },
       "notes": "gravel-lane-opening on the proving ground's flat copy of gravel lane DR825 (shifted (900, 200) m, same heading), so its drill keeps its gates; 7 m of gravel on grass, dead level."
+    },
+    {
+      "id": "pg-corner-asphalt",
+      "mapsId": "P5",
+      "name": "Proving ground: asphalt corner (left)",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -120.0,
+          "y": 230.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The gravel corner (pg-corner-left) built again in asphalt: same centre line, same course frame from this start, 10 m wide, dead level, the same barriers."
+    },
+    {
+      "id": "pg-corner-snow",
+      "mapsId": "P5",
+      "name": "Proving ground: snow corner (left)",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 180.0,
+          "y": 230.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The gravel corner (pg-corner-left) built again in snow: same centre line, same course frame from this start, 10 m wide, dead level, the same barriers."
     }
   ]
 }

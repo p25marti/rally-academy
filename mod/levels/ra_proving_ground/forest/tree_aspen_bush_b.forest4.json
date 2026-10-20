@@ -10,7 +10,8 @@
 {"ctxid":0,"pos":[-184.16,150.7,109.75],"rotationMatrix":[0.77055,0.63738,0,-0.63738,0.77055,0,0,0,1],"scale":1.076,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[-458.35,162.94,109.75],"rotationMatrix":[-0.96873,-0.24811,0,0.24811,-0.96873,0,0,0,1],"scale":1.091,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[-449.01,170.74,109.75],"rotationMatrix":[0.45451,0.89074,0,-0.89074,0.45451,0,0,0,1],"scale":0.958,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[-324.8,185.37,109.75],"rotationMatrix":[-0.52912,0.84855,0,-0.84855,-0.52912,0,0,0,1],"scale":0.831,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[-254.92,178.85,109.75],"rotationMatrix":[0.91888,-0.39453,0,0.39453,0.91888,0,0,0,1],"scale":1.041,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[148.97,215.92,109.75],"rotationMatrix":[0.99191,0.12691,0,-0.12691,0.99191,0,0,0,1],"scale":0.84,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[514.55,206.41,109.75],"rotationMatrix":[-0.68711,0.72655,0,-0.72655,-0.68711,0,0,0,1],"scale":1.235,"type":"tree_aspen_bush_b"}
+{"ctxid":0,"pos":[-314.8,185.37,109.75],"rotationMatrix":[-0.52912,0.84855,0,-0.84855,-0.52912,0,0,0,1],"scale":0.831,"type":"tree_aspen_bush_b"}
+{"ctxid":0,"pos":[220.72,288.6,109.75],"rotationMatrix":[-0.51774,-0.85554,0,0.85554,-0.51774,0,0,0,1],"scale":1.062,"type":"tree_aspen_bush_b"}
+{"ctxid":0,"pos":[-15.07,331.83,109.75],"rotationMatrix":[0.98468,-0.17439,0,0.17439,0.98468,0,0,0,1],"scale":1.14,"type":"tree_aspen_bush_b"}
+{"ctxid":0,"pos":[336.29,382.11,109.75],"rotationMatrix":[-0.6999,0.71425,0,-0.71425,-0.6999,0,0,0,1],"scale":1.224,"type":"tree_aspen_bush_b"}
+{"ctxid":0,"pos":[-502.95,388.54,109.75],"rotationMatrix":[-0.02171,0.99976,0,-0.99976,-0.02171,0,0,0,1],"scale":1.244,"type":"tree_aspen_bush_b"}

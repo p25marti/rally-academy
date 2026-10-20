@@ -16,5 +16,7 @@
 {"ctxid":0,"pos":[-478.42,93.03,109.75],"rotationMatrix":[-0.41609,-0.90932,0,0.90932,-0.41609,0,0,0,1],"scale":0.853,"type":"tree_beech_small_b"}
 {"ctxid":0,"pos":[-251.34,93.41,109.75],"rotationMatrix":[0.95466,-0.29771,0,0.29771,0.95466,0,0,0,1],"scale":1.09,"type":"tree_beech_small_b"}
 {"ctxid":0,"pos":[-192.45,87.31,109.75],"rotationMatrix":[-0.99685,0.07937,0,-0.07937,-0.99685,0,0,0,1],"scale":1.078,"type":"tree_beech_small_b"}
-{"ctxid":0,"pos":[-357.84,207.77,109.75],"rotationMatrix":[-0.26872,-0.96322,0,0.96322,-0.26872,0,0,0,1],"scale":1.165,"type":"tree_beech_small_b"}
-{"ctxid":0,"pos":[488.66,227.67,109.75],"rotationMatrix":[-0.96153,-0.2747,0,0.2747,-0.96153,0,0,0,1],"scale":1.148,"type":"tree_beech_small_b"}
+{"ctxid":0,"pos":[-297.84,207.77,109.75],"rotationMatrix":[-0.26872,-0.96322,0,0.96322,-0.26872,0,0,0,1],"scale":1.165,"type":"tree_beech_small_b"}
+{"ctxid":0,"pos":[-443.36,279.34,109.75],"rotationMatrix":[-0.4011,-0.91604,0,0.91604,-0.4011,0,0,0,1],"scale":0.936,"type":"tree_beech_small_b"}
+{"ctxid":0,"pos":[-256.78,322.07,109.75],"rotationMatrix":[-0.76335,-0.64599,0,0.64599,-0.76335,0,0,0,1],"scale":1.078,"type":"tree_beech_small_b"}
+{"ctxid":0,"pos":[-483.47,391.23,109.75],"rotationMatrix":[-0.92019,-0.39146,0,0.39146,-0.92019,0,0,0,1],"scale":0.855,"type":"tree_beech_small_b"}

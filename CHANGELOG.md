@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E01 snow vs gravel vs tarmac on one bend**: the proving ground's gravel corner now has asphalt and snow twins
+  (same shape, same barriers, a lined tarmac road and a rutted snow road), and E01 picks between them with its
+  Surface row, so the comparison is the same corner three ways.
 - **B03 stopping-distance estimation and B08 weight transfer moved to the proving ground**: B03 on the dirt strip with
   gravel, asphalt and snow variants (its six stops per surface, now on one map), B08 on the flat gravel corner.
 - **D03 tightening and D04 opening corners moved to the proving ground**: West Coast USA's gravel lane rebuilt flat

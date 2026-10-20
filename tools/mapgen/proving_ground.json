@@ -653,6 +653,106 @@
       },
       "posts": "/art/shapes/objects/guardrailpost.dae",
       "turn": 0
+    },
+    {
+      "shape": "/art/shapes/race/s_concrete_race_barrier.dae",
+      "axis": "x",
+      "length": 3.08,
+      "along": {
+        "road": "corner-asphalt",
+        "offset": -15,
+        "from": 70,
+        "to": 215
+      }
+    },
+    {
+      "shape": "/art/shapes/race/s_concrete_race_barrier.dae",
+      "axis": "x",
+      "length": 3.08,
+      "along": {
+        "road": "corner-snow",
+        "offset": -15,
+        "from": 70,
+        "to": 215
+      }
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "road": "corner-asphalt",
+        "offset": -15,
+        "from": 0,
+        "to": 68
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "turn": 0
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "road": "corner-snow",
+        "offset": -15,
+        "from": 0,
+        "to": 68
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "turn": 0
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "road": "corner-asphalt",
+        "offset": 15,
+        "from": 0,
+        "to": 70
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "turn": 180
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "road": "corner-snow",
+        "offset": 15,
+        "from": 0,
+        "to": 70
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "turn": 180
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_spectator_tape_5m.dae",
+      "axis": "-y",
+      "length": 5.0,
+      "along": {
+        "road": "corner-asphalt",
+        "offset": 12,
+        "from": 92,
+        "to": 200
+      }
+    },
+    {
+      "shape": "/art/shapes/race/rally/rally_assets/s_spectator_tape_5m.dae",
+      "axis": "-y",
+      "length": 5.0,
+      "along": {
+        "road": "corner-snow",
+        "offset": 12,
+        "from": 92,
+        "to": 200
+      }
     }
   ],
   "decals": [
@@ -1181,6 +1281,66 @@
         5,
         5
       ]
+    },
+    {
+      "kind": "road_edges",
+      "road": "corner-asphalt",
+      "material": "m_asphalt_road_dirt_grass_edge",
+      "width": 3.5,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "road_track",
+      "road": "corner-asphalt",
+      "offset": 4.4,
+      "material": "line_white",
+      "width": 0.22,
+      "textureLength": 8,
+      "priority": 5
+    },
+    {
+      "kind": "road_track",
+      "road": "corner-asphalt",
+      "offset": -4.4,
+      "material": "line_white",
+      "width": 0.22,
+      "textureLength": 8,
+      "priority": 5
+    },
+    {
+      "kind": "road_track",
+      "road": "corner-asphalt",
+      "offset": 0.6,
+      "material": "tread_marks_worn",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        5,
+        5
+      ]
+    },
+    {
+      "kind": "road_edges",
+      "road": "corner-snow",
+      "material": "ECA_road_edge_dirt",
+      "width": 3.5,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "road_track",
+      "road": "corner-snow",
+      "offset": 0.6,
+      "material": "m_treadmarks_wet",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        5,
+        5
+      ]
     }
   ],
   "decalMaterials": {
@@ -1422,6 +1582,166 @@
         [
           -816.78,
           -187.32
+        ]
+      ]
+    },
+    {
+      "id": "corner-asphalt",
+      "_comment": "The gravel corner's shape in asphalt (same centre line and course frame), for surface comparisons (E01).",
+      "material": "Asphalt",
+      "width": 10,
+      "origin": [
+        -120,
+        230
+      ],
+      "points": [
+        [
+          0,
+          -20
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          -1.41,
+          67.35
+        ],
+        [
+          -10.54,
+          83.74
+        ],
+        [
+          -16.99,
+          90.62
+        ],
+        [
+          -25.32,
+          95.41
+        ],
+        [
+          -34.56,
+          97.99
+        ],
+        [
+          -44.19,
+          98.34
+        ],
+        [
+          -52.15,
+          97.01
+        ],
+        [
+          -60.0,
+          94.31
+        ],
+        [
+          -67.96,
+          90.47
+        ],
+        [
+          -75.4,
+          84.49
+        ],
+        [
+          -80.25,
+          77.85
+        ],
+        [
+          -84.64,
+          69.28
+        ],
+        [
+          -96.04,
+          47.03
+        ],
+        [
+          -110,
+          19.7
+        ],
+        [
+          -135,
+          -29
+        ]
+      ]
+    },
+    {
+      "id": "corner-snow",
+      "_comment": "The gravel corner's shape in snow (same centre line and course frame), for surface comparisons (E01).",
+      "material": "snow",
+      "width": 10,
+      "origin": [
+        180,
+        230
+      ],
+      "points": [
+        [
+          0,
+          -20
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          -1.41,
+          67.35
+        ],
+        [
+          -10.54,
+          83.74
+        ],
+        [
+          -16.99,
+          90.62
+        ],
+        [
+          -25.32,
+          95.41
+        ],
+        [
+          -34.56,
+          97.99
+        ],
+        [
+          -44.19,
+          98.34
+        ],
+        [
+          -52.15,
+          97.01
+        ],
+        [
+          -60.0,
+          94.31
+        ],
+        [
+          -67.96,
+          90.47
+        ],
+        [
+          -75.4,
+          84.49
+        ],
+        [
+          -80.25,
+          77.85
+        ],
+        [
+          -84.64,
+          69.28
+        ],
+        [
+          -96.04,
+          47.03
+        ],
+        [
+          -110,
+          19.7
+        ],
+        [
+          -135,
+          -29
         ]
       ]
     }

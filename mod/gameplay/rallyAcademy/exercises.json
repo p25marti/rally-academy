@@ -3588,8 +3588,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Gravel circuit vs. the tarmac start area (snow: Automation Test Track, optional).",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -3612,6 +3612,21 @@
           ]
         }
       },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-corner-asphalt",
+          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-corner-snow",
+          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level."
+        }
+      ],
       "instructions": "Perform 4 controlled corners on snow, 4 on tarmac, 4 on gravel; record safe approach speed and braking behavior.",
       "resetInstructions": "Three saved starts, one on each surface (not identical geometry).",
       "props": "OPTIONAL Winter West Coast 0.39.1 mod; check compatibility and actual traction. Fall back to 2-surface comparison if unavailable.",
