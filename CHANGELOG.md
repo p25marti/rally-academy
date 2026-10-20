@@ -6,6 +6,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Barriers line the exercise paths**, set back with run-off (the owner's choice): red-and-white concrete race
+  barriers 10 m outside the corner's bend, guardrail with posts along its approach and down both sides of every
+  strip, spectator tape on the inside of the bend. A small mistake runs onto the grass; only a big one reaches a
+  barrier, and hitting one counts as contact.
 - **Natural autumn woods**: each tree species and leaf turns its own colour (copper beeches, crimson oaks, oaks still
   turning yellow-green, golden birches), so the mixed forests come out in a scatter of fall colours instead of one
   orange.

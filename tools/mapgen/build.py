@@ -268,6 +268,21 @@ def props(layout, terrain):
     base = layout["terrain"]["baseZ"]
     out = []
     for k, e in enumerate(layout["props"]):
+        if "along" in e:  # barriers: pieces end to end along a path (and posts at the joints)
+            pieces = [(x, y, yaw, e["shape"], e.get("lift", 0)) for x, y, yaw in along(layout, e)]
+            if e.get("posts"):
+                joints = along(layout, dict(e, axis="-y", flip=False))  # piece starts
+                pieces += [(x, y, 0.0, e["posts"], 0) for x, y, _ in joints]
+            for j, (x, y, yaw, shape, lift) in enumerate(pieces):
+                if not nature._clear_of(layout, x, y, 2.0):
+                    raise SystemExit(f"prop {e['shape']} at ({x:.0f}, {y:.0f}) stands on a pad or road")
+                a = math.radians(yaw)
+                c, sn = round(math.cos(a), 6), round(math.sin(a), 6)
+                out.append({"class": "TSStatic", "persistentId": pid(layout["name"], f"prop/{k}/{j}"), "__parent": "props",
+                            "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y) + lift, 3)],
+                            "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [1, 1, 1],
+                            "shapeName": shape, "useInstanceRenderData": True})
+            continue
         if "row" in e:
             (x0, y0), (x1, y1) = e["row"]
             n = e["count"]
@@ -283,6 +298,40 @@ def props(layout, terrain):
                         "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y) + e.get("lift", 0), 3)],
                         "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [e.get("scale", 1)] * 3,
                         "shapeName": e["shape"], "useInstanceRenderData": True})
+    return out
+
+
+AXIS_ANGLE = {"x": 0.0, "y": 90.0, "-y": -90.0, "-x": 180.0}
+
+
+def along(layout, e):
+    """Positions and yaws (degrees) for pieces `length` m long laid end to end along a path: e["along"] is
+    {"road": id, "offset": m to the left of its centre, "from": m, "to": m along it} or {"points": [[x, y], ...]}.
+    `axis` is the mesh axis its length runs along ("x", "y", or "-y" for tapes that start at their origin and run
+    down -y); centred pieces sit at the middle of their stretch, "-y" ones at its start. `flip` turns each piece
+    round (a guardrail's face looks to the left of travel: flip the ones on the left of a path). `posts` adds that
+    mesh at every joint."""
+    import math
+    path = e["along"]
+    if "road" in path:
+        r = next(r for r in layout["roads"] if r["id"] == path["road"])
+        line = decals.offset_line(road_line(r), path.get("offset", 0.0))
+    else:
+        line = [tuple(q) for q in path["points"]]
+    length, axis = e["length"], e.get("axis", "x")
+    start, stop = path.get("from", 0.0), path.get("to", 1e9)
+    phi = AXIS_ANGLE[axis]
+    out, d = [], 0.0
+    target = start
+    for (ax, ay), (bx, by) in zip(line, line[1:]):
+        seg = math.hypot(bx - ax, by - ay)
+        theta = math.degrees(math.atan2(by - ay, bx - ax))
+        while seg > 0 and target + length <= d + seg + 1e-6 and target + length <= stop:
+            t0 = (target - d) / seg
+            t = t0 if axis.startswith("-") else (target + length / 2 - d) / seg
+            out.append((ax + (bx - ax) * t, ay + (by - ay) * t, phi - theta + (180.0 if e.get("flip") else 0.0)))
+            target += length + e.get("gap", 0.0)
+        d += seg
     return out
 
 

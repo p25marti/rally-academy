@@ -74,6 +74,7 @@ all six are built.
 - [x] Looks: hills round the play area (2 km terrain), rock faces, autumn forests from the game's tree library.
 - [x] More looks: grass cover, forest floor, a late-afternoon sun, a rally service park and trackside props.
 - [x] Roads that look driven on: edge blends, wear (ruts, gravel flows, skid and handbrake marks), asphalt markings.
+- [x] Barriers along the exercise paths, set back 10 m with run-off.
 - [ ] Still to try: reshape the strips into road-width lanes plus handling pads, a start truss, real (physical) cones.
 
 ## P2 — First automatically graded drill

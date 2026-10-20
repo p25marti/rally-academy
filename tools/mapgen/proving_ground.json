@@ -445,18 +445,214 @@
       "yaw": 180
     },
     {
+      "shape": "/art/shapes/race/s_concrete_race_barrier.dae",
+      "axis": "x",
+      "length": 3.08,
+      "along": {
+        "road": "corner-left",
+        "offset": -15,
+        "from": 70,
+        "to": 215
+      }
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "road": "corner-left",
+        "offset": -15,
+        "from": 0,
+        "to": 68
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": false
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "road": "corner-left",
+        "offset": 15,
+        "from": 0,
+        "to": 70
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": true
+    },
+    {
       "shape": "/art/shapes/race/rally/rally_assets/s_spectator_tape_5m.dae",
-      "row": [
-        [
-          -340,
-          100
-        ],
-        [
-          -300,
-          100
+      "axis": "-y",
+      "length": 5.0,
+      "along": {
+        "road": "corner-left",
+        "offset": 12,
+        "from": 92,
+        "to": 200
+      }
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            -445,
+            -480
+          ],
+          [
+            -445,
+            -80
+          ]
         ]
-      ],
-      "count": 9
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": true
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            -305,
+            -480
+          ],
+          [
+            -305,
+            -80
+          ]
+        ]
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": false
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            -195,
+            -480
+          ],
+          [
+            -195,
+            -80
+          ]
+        ]
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": true
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            -55,
+            -480
+          ],
+          [
+            -55,
+            -80
+          ]
+        ]
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": false
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            55,
+            -480
+          ],
+          [
+            55,
+            -80
+          ]
+        ]
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": true
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            195,
+            -480
+          ],
+          [
+            195,
+            -80
+          ]
+        ]
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": false
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            305,
+            -480
+          ],
+          [
+            305,
+            -80
+          ]
+        ]
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": true
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "along": {
+        "points": [
+          [
+            445,
+            -480
+          ],
+          [
+            445,
+            -80
+          ]
+        ]
+      },
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "flip": false
     }
   ],
   "decals": [
