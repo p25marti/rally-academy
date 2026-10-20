@@ -3799,8 +3799,8 @@
         "configPath": null
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Open gravel sweeper (parked: RWD drill).",
+        "venue": "pg-test-road",
+        "areaHint": "Proving ground winding test road (MAPS P7): its fast right-left pair (55 and 50 m radii) after the S is the open sweeper (parked: RWD drill).",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -3845,8 +3845,8 @@
         "configPath": null
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Same sweeper (parked: AWD drill).",
+        "venue": "pg-test-road",
+        "areaHint": "Proving ground winding test road (MAPS P7): the same sweepers as E03 (parked: AWD drill).",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -4152,8 +4152,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "utah-ngrc-stages",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). Straight and moderate corners of a stage.",
+        "venue": "pg-test-road",
+        "areaHint": "Proving ground winding test road (MAPS P7): about 690 m of straights and moderate gravel bends to nurse the car home on a deflated tyre.",
         "venueNeeds": {
           "kind": "route",
           "lengthM": 250,
