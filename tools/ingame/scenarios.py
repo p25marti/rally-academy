@@ -698,7 +698,7 @@ def slalom():
 
 
 def _surface_stop_run(decel, full_brake_at=None):
-    """D08: 62 km/h up the run-up, across the tarmac patch onto gravel and 2.5-3 m left, stopping on the zone
+    """D08: 62 km/h up the straight, across the tarmac patch onto gravel and 2.5-3 m left, stopping on the zone
     centre at `decel` m/s2 (arcade gearbox); or a full brake from `full_brake_at` metres."""
     path = ([(0, y) for y in range(0, 123)] + [(-2.5 * (y - 122) / 24, y) for y in range(123, 147)]
             + [(-2.5 - 0.5 * (y - 146) / 16, y) for y in range(147, 163)])
@@ -710,8 +710,8 @@ def _surface_stop_run(decel, full_brake_at=None):
 
 @scenario
 def surface():
-    """D08 on the BMP run-up (Covet Gravel Rally): braking from 62 km/h across the tarmac patch onto gravel and
-    stopping in the zone earns a medal; a full brake from the tarmac locks the wheels and misses."""
+    """D08 on the proving ground's surface-change straight (Covet Gravel Rally): braking from 62 km/h across the tarmac
+    patch onto gravel and stopping in the zone earns a medal; a full brake from the tarmac locks the wheels and misses."""
     p = []
     A.drill_session("D08")
     s = _surface_stop_run(4)

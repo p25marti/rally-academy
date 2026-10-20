@@ -80,7 +80,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `hills` | D06 on the Off-Road Circuit: clean uphill and downhill corners earn a medal; too fast hits the wall |
 | `crest` | E05 on the Off-Road Circuit: a planted crest earns a medal; flat out takes off and misses |
 | `fwdexit` | E02 on the proving ground's flat corner: rotate, then throttle out, passes (up to three tries); no throttle after the apex misses |
-| `surface` | D08 on the BMP run-up: a controlled stop across the tarmac-to-gravel change earns a medal; a locked-wheel stop misses |
+| `surface` | D08 on the proving ground's surface-change straight: a controlled stop across the tarmac-to-gravel change earns a medal; a locked-wheel stop misses |
 | `slalom` | D01 on the proving ground's dirt strip: a clean weave through six cones earns a medal; too fast clips a cone |
 | `liftoff` | C01 on the proving ground's flat corner: a lift at turn-in rotates the car for a pass (up to five tries); too slow misses |
 | `figure8` | C07 on the proving ground's dirt strip: a clean figure-eight earns a medal; too fast runs wide and misses |

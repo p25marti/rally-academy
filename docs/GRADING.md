@@ -266,7 +266,7 @@ Bronze: every cone passed on its side, none touched, no spin, 25 km/h at the Fin
 gold 13.8 s. Scripted: a ±3 m weave clears the cones at 30 km/h (14.6 s) and hits one from 34 km/h; ±2.4 m
 holds 32 km/h (13.6 s).
 
-D08 targets (BMP run-up, Covet Gravel Rally): the start line's tarmac patch runs from 8 m before the line to 22 m
+D08 runs on the proving ground's surface-change straight (venue `pg-transition`, since 2026-10-20): the same gravel, tarmac, gravel sequence and gates, dead level; scripted braking at 4 m/s² from 62 km/h stopped in the zone (gold), and a full brake from the tarmac stopped short of the Gravel gate (miss). D08 targets (BMP run-up, Covet Gravel Rally): the start line's tarmac patch runs from 8 m before the line to 22 m
 past it (surveyed with the car's wheels, 0.39.4); a Tarmac gate at the line, a Gravel gate 2.5 m left 24 m on,
 and a stop zone 40 m past the line (still on the flat). Bronze: from 55 km/h, both gates, the car's centre
 in a 6 x 5 m zone, no lock over 0.5 s, no spin; silver 4 x 3.5 m and 0.3 s; gold 2 x 2.5 m and 0.2 s.

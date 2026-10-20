@@ -753,6 +753,48 @@
         "from": 92,
         "to": 200
       }
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "turn": 180,
+      "along": {
+        "points": [
+          [
+            -66,
+            -40
+          ],
+          [
+            -66,
+            180
+          ]
+        ]
+      },
+      "_for": "transition"
+    },
+    {
+      "shape": "/art/shapes/objects/guardrail1.dae",
+      "axis": "x",
+      "length": 2.3,
+      "lift": 0.85,
+      "posts": "/art/shapes/objects/guardrailpost.dae",
+      "turn": 0,
+      "along": {
+        "points": [
+          [
+            -34,
+            -40
+          ],
+          [
+            -34,
+            180
+          ]
+        ]
+      },
+      "_for": "transition"
     }
   ],
   "decals": [
@@ -1341,6 +1383,139 @@
         5,
         5
       ]
+    },
+    {
+      "kind": "pad_edges",
+      "pads": [
+        "transition-gravel-a",
+        "transition-gravel-b"
+      ],
+      "material": "italy_road_edge_damage_wide",
+      "width": 3,
+      "textureLength": 8,
+      "priority": 20,
+      "_for": "transition"
+    },
+    {
+      "kind": "pad_edges",
+      "pads": [
+        "transition-tarmac"
+      ],
+      "material": "m_asphalt_road_dirt_grass_edge",
+      "width": 3,
+      "textureLength": 8,
+      "priority": 19,
+      "_for": "transition"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -50,
+          -38
+        ],
+        [
+          -50,
+          86
+        ]
+      ],
+      "material": "dirt_tiretracks",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        10,
+        4
+      ],
+      "_for": "transition"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -50,
+          118
+        ],
+        [
+          -52.5,
+          140
+        ],
+        [
+          -53,
+          175
+        ]
+      ],
+      "material": "dirt_tiretracks",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        4,
+        10
+      ],
+      "_for": "transition"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -55.5,
+          95
+        ],
+        [
+          -44.5,
+          95
+        ]
+      ],
+      "material": "line_white",
+      "width": 0.5,
+      "textureLength": 8,
+      "priority": 5,
+      "_for": "transition"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -50.8,
+          104
+        ],
+        [
+          -50.8,
+          116
+        ]
+      ],
+      "material": "skidmarks_01",
+      "width": 0.45,
+      "textureLength": 6,
+      "priority": 8,
+      "fade": [
+        2,
+        1
+      ],
+      "_for": "transition"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -49.2,
+          104
+        ],
+        [
+          -49.2,
+          116
+        ]
+      ],
+      "material": "skidmarks_01",
+      "width": 0.45,
+      "textureLength": 6,
+      "priority": 8,
+      "fade": [
+        2,
+        1
+      ],
+      "_for": "transition"
     }
   ],
   "decalMaterials": {
@@ -1417,6 +1592,42 @@
       "y": [
         -480,
         -380
+      ]
+    },
+    {
+      "id": "transition-gravel-a",
+      "material": "gravel",
+      "x": [
+        -56,
+        -44
+      ],
+      "y": [
+        -40,
+        87
+      ]
+    },
+    {
+      "id": "transition-tarmac",
+      "material": "Asphalt",
+      "x": [
+        -56,
+        -44
+      ],
+      "y": [
+        87,
+        117
+      ]
+    },
+    {
+      "id": "transition-gravel-b",
+      "material": "gravel",
+      "x": [
+        -56,
+        -44
+      ],
+      "y": [
+        117,
+        180
       ]
     }
   ],

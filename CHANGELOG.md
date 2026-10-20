@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **D08 mixed-surface braking moved to the proving ground**: a new straight with the BMP run-up's sequence (gravel,
+  a 30 m tarmac patch with a start line, gravel again), dead level, so the grip change is the only thing changing.
 - **E01 snow vs gravel vs tarmac on one bend**: the proving ground's gravel corner now has asphalt and snow twins
   (same shape, same barriers, a lined tarmac road and a rutted snow road), and E01 picks between them with its
   Surface row, so the comparison is the same corner three ways.

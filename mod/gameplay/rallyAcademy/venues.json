@@ -624,6 +624,30 @@
         }
       },
       "notes": "The gravel corner (pg-corner-left) built again in snow: same centre line, same course frame from this start, 10 m wide, dead level, the same barriers."
+    },
+    {
+      "id": "pg-transition",
+      "mapsId": "P6",
+      "name": "Proving ground: surface-change straight",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -50.0,
+          "y": -35.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "A 12 m straight north from here: 122 m of gravel, 30 m of tarmac (a start line 8 m in), then gravel again, the same sequence as the BMP run-up and start line (bmp-gravel-runup) but dead level. D08's gates and zone fit unchanged."
     }
   ]
 }

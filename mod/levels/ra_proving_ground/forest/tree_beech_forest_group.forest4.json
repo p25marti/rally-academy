@@ -916,6 +916,7 @@
 {"ctxid":0,"pos":[952.34,113.07,232.0],"rotationMatrix":[-0.78065,-0.62497,0,0.62497,-0.78065,0,0,0,1],"scale":1.123,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[-704.93,118.47,157.88],"rotationMatrix":[0.77048,0.63746,0,-0.63746,0.77048,0,0,0,1],"scale":0.932,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[-696.59,123.91,154.33],"rotationMatrix":[0.99873,-0.0503,0,0.0503,0.99873,0,0,0,1],"scale":0.859,"type":"tree_beech_forest_group"}
+{"ctxid":0,"pos":[575.46,123.38,112.01],"rotationMatrix":[0.97695,0.21345,0,-0.21345,0.97695,0,0,0,1],"scale":1.111,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[636.78,120.0,126.64],"rotationMatrix":[-0.84258,-0.53857,0,0.53857,-0.84258,0,0,0,1],"scale":0.824,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[788.42,118.5,205.83],"rotationMatrix":[0.7503,0.6611,0,-0.6611,0.7503,0,0,0,1],"scale":1.107,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[817.47,118.96,217.59],"rotationMatrix":[-0.44457,0.89575,0,-0.89575,-0.44457,0,0,0,1],"scale":1.018,"type":"tree_beech_forest_group"}
@@ -949,7 +950,7 @@
 {"ctxid":0,"pos":[874.16,175.04,231.7],"rotationMatrix":[0.88429,0.46694,0,-0.46694,0.88429,0,0,0,1],"scale":1.128,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[-990.27,180.39,243.83],"rotationMatrix":[0.84273,-0.53833,0,0.53833,0.84273,0,0,0,1],"scale":0.82,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[-614.77,177.2,123.87],"rotationMatrix":[0.96256,-0.27106,0,0.27106,0.96256,0,0,0,1],"scale":0.846,"type":"tree_beech_forest_group"}
-{"ctxid":0,"pos":[664.33,184.08,136.17],"rotationMatrix":[0.00648,0.99998,0,-0.99998,0.00648,0,0,0,1],"scale":0.804,"type":"tree_beech_forest_group"}
+{"ctxid":0,"pos":[674.33,184.08,141.24],"rotationMatrix":[0.00648,0.99998,0,-0.99998,0.00648,0,0,0,1],"scale":0.804,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[743.38,177.31,185.27],"rotationMatrix":[-0.96368,-0.26708,0,0.26708,-0.96368,0,0,0,1],"scale":0.944,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[996.32,177.47,243.84],"rotationMatrix":[-0.92191,-0.3874,0,0.3874,-0.92191,0,0,0,1],"scale":1.098,"type":"tree_beech_forest_group"}
 {"ctxid":0,"pos":[-637.47,187.17,129.97],"rotationMatrix":[0.9901,0.14037,0,-0.14037,0.9901,0,0,0,1],"scale":0.982,"type":"tree_beech_forest_group"}

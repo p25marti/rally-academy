@@ -3467,8 +3467,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-runup",
-        "areaHint": "BMP gravel run-up and start line (MAPS W1): 110 m of gravel, the tarmac start-line patch (from 8 m before the line to 22 m past it), then gravel again; a Tarmac gate, a Gravel gate 2.5 m to the left and a stop zone 40 m past the line.",
+        "venue": "pg-transition",
+        "areaHint": "Proving ground surface-change straight (MAPS P6): 122 m of gravel, a 30 m tarmac patch with a start line, then gravel again, dead level; a Tarmac gate, a Gravel gate 2.5 m to the left and a stop zone 40 m past the line.",
         "venueNeeds": {
           "kind": "straight",
           "lengthM": 80,
