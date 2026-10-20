@@ -75,6 +75,11 @@ all six are built.
 - [x] More looks: grass cover, forest floor, a late-afternoon sun, a rally service park and trackside props.
 - [x] Roads that look driven on: edge blends, wear (ruts, gravel flows, skid and handbrake marks), asphalt markings.
 - [x] Barriers along the exercise paths, set back 10 m with run-off.
+- [x] More drills moved (2026-10-20): D03 / D04 on a flat copy of the gravel lane, D08 on a surface-change straight,
+      E01 on asphalt and snow twins of the corner, B03 (with surface variants) and B08, and a winding test road for
+      A06, D02, F07, F06 and the parked E03 / E04.
+- [ ] Terrain features on the proving ground (crests, hills, camber, a jump, rough ground, a water splash) would let
+      D05, D06, E05, E06, D07, E07 and E08 move too; ADR 0008 keeps them on stock maps for now (owner's call).
 - [ ] Still to try: reshape the strips into road-width lanes plus handling pads, a start truss, real (physical) cones.
 
 ## P2 — First automatically graded drill
