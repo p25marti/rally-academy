@@ -295,7 +295,7 @@ def corners():
     expect(p, "A08 late apex and steady exit earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
     for _ in range(3):  # sometimes the weave clips the exit post first
-        s = A.course_run("A08", L.bmp_left(dict(late, DR1181_13=-0.5, DR1181_14=-4.2, DR1181_15=-0.5), tail=60), kmh=41, **kw)
+        s = A.course_run("A08", L.bmp_left(dict(late, DR1181_13=-1.5, DR1181_14=-4.2, DR1181_15=-0.5), tail=60), kmh=41, **kw)
         if "steering correction" in str(s.get("reason")):
             break
     expect(p, "A08 weaving after the exit misses", s.get("passed") is False and "steering correction" in str(s.get("reason")),
