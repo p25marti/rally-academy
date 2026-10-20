@@ -437,14 +437,6 @@
       "yaw": 90
     },
     {
-      "shape": "/art/shapes/race/rally/rally_assets/s_corner_dir_left.dae",
-      "at": [
-        -271,
-        15
-      ],
-      "yaw": 180
-    },
-    {
       "shape": "/art/shapes/race/s_concrete_race_barrier.dae",
       "axis": "x",
       "length": 3.08,
@@ -935,6 +927,51 @@
         "from": 6,
         "to": 178.0
       }
+    }
+  ],
+  "turnMarkers": [
+    {
+      "road": "corner-left",
+      "directions": [
+        "forward"
+      ]
+    },
+    {
+      "road": "corner-asphalt",
+      "directions": [
+        "forward"
+      ]
+    },
+    {
+      "road": "corner-snow",
+      "directions": [
+        "forward"
+      ]
+    },
+    {
+      "road": "gravel-lane",
+      "directions": [
+        "forward",
+        "reverse"
+      ]
+    },
+    {
+      "road": "test-road",
+      "directions": [
+        "forward"
+      ]
+    },
+    {
+      "road": "circuit-hills",
+      "directions": [
+        "forward"
+      ]
+    },
+    {
+      "road": "camber-road",
+      "directions": [
+        "forward"
+      ]
     }
   ],
   "decals": [

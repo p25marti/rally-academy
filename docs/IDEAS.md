@@ -310,6 +310,23 @@ What we learned:
   venues on it would live (venues.json works as is). The trial script was a scratch file; a real
   per-surface trial tool would come with variants.
 
+## Corner signs for the open-ground courses
+
+**The idea.** The proving ground's roads have rally corner boards and chevrons before every bend; the drills laid out
+on open ground (C04's hairpin, C07's figure eight, B05's ring, D01's slalom) have none. Show a board or chevron where
+those courses turn.
+
+**Why.** The same immersion on every drill, not just the road ones.
+
+**What already helps.** The courses are authored data drawn by `course.lua`; the boards are stock meshes
+(`tools/mapgen/markers.py` names them).
+
+**Hard parts.** Several drills share a pad with different courses, so the signs can't be map props: they would be
+drawn or spawned per drill, and PRODUCT says markers are drawn, not spawned, for now.
+
+**Rough shape.** A `sign` marker type in course data, drawn as a flat arrow like the cones, then real meshes if the
+owner agrees to spawned props.
+
 ## Template
 
 ```markdown

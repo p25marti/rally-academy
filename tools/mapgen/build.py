@@ -23,6 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import borrow  # noqa: E402
 import decals  # noqa: E402
+import markers  # noqa: E402
 import nature  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -331,6 +332,37 @@ def props(layout, terrain):
                         "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y) + e.get("lift", 0), 3)],
                         "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [e.get("scale", 1)] * 3,
                         "shapeName": e["shape"], "useInstanceRenderData": True})
+    return out + turn_boards(layout, terrain)
+
+
+# Faces of the corner signs, as the heading their readable side points at yaw 0 (0.40.0): the rally kit's arrow
+# flags show down their -x, the chevron signs down their -y. A sign turned to (travel heading + 180 - face) faces the
+# driver. The arrow flags are small (1.3 m tall, a 0.5 m arrow) and read only from close by at their own size.
+SIGNS = {"board": {"face": 180.0, "scale": 2.5}, "chevron": {"face": -90.0, "scale": 1.5}}
+
+
+def turn_boards(layout, terrain):
+    """Corner signs (layout "turnMarkers": [{"road": id, "directions": ["forward", "reverse"]}]) for each bend of those
+    roads, facing the way the drills drive it (tools/mapgen/markers.py): a rally direction board before the bend and a
+    chevron sign on its outside. A sign that would stand on another pad or road is left out."""
+    import math
+    base = layout["terrain"]["baseZ"]
+    out = []
+    for e in layout.get("turnMarkers", []):
+        r = next(r for r in layout["roads"] if r["id"] == e["road"])
+        for way in e.get("directions", ["forward"]):
+            line = road_line(r)
+            line = line if way == "forward" else line[::-1]
+            for kind, spots in (("board", markers.placements(line, r["width"])), ("chevron", markers.chevrons(line, r["width"]))):
+                for j, (x, y, heading, shape, _) in enumerate(spots):
+                    if not nature._clear_of(layout, x, y, 1.5):
+                        continue
+                    a = math.radians(heading + 180.0 - SIGNS[kind]["face"])
+                    c, sn = round(math.cos(a), 6), round(math.sin(a), 6)
+                    out.append({"class": "TSStatic", "persistentId": pid(layout["name"], f"{kind}/{r['id']}/{way}/{j}"),
+                                "__parent": "props", "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y), 3)],
+                                "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [SIGNS[kind]["scale"]] * 3,
+                                "shapeName": shape, "useInstanceRenderData": True})
     return out
 
 

@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Rally corner signs on every drill road**: a direction board before each bend (45°, 90° or hairpin, left or
+  right) and a red-and-white chevron on its outside, facing the way the drills drive it, placed automatically from
+  the road's shape. The two-way gravel lane has them for both directions.
 - **E08 water crossing moved to the proving ground**: a dirt road dipping through a creek with real water, 0.4 m
   deep across a 12 m bed. The water drags the car down hard, so it teaches a steady, modest approach.
 - **E07 rough terrain moved to the proving ground**: a dirt track with 80 m of smooth approach, then 200 m of uneven
