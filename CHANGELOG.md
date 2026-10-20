@@ -262,6 +262,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   (`tools/ingame/survey.py`).
 
 ### Removed
+- **Stock-map venues**: every drill is on the proving ground, so the West Coast USA and Utah venues are gone from
+  the venue list (the owner's call). Go to drill no longer loads a stock map.
 - Six stage drills (F01 pacenotes, F02 consistency, F03 regularity, F04 unfamiliar stages, F05
   long stage, F08 full stage): the game's own Rally mode does these properly, and the Academy
   now points to it. F06 (punctures) and F07 (setup comparisons) stay, with the same IDs.

@@ -156,6 +156,9 @@ function S.install()
       -- Test-only drills (T01-T04) go after the shipped ones, so engine tests don't depend on how
       -- any shipped drill is graded (tests/fixtures/test_drills.json).
       for _, e in ipairs(S.testDrills()) do table.insert(data.exercises, e) end
+    elseif path == S.VENUES then
+      -- ... and they stand on a test-only venue on another map (tests/fixtures/test_venues.json).
+      for _, v in ipairs(S.testFixture('test_venues.json').venues) do table.insert(data.venues, v) end
     end
     return data
   end
@@ -181,12 +184,15 @@ function S.install()
 end
 
 S.EXERCISES = 'gameplay/rallyAcademy/exercises.json'
+S.VENUES = 'gameplay/rallyAcademy/venues.json'
 
-function S.testDrills()
-  local f = assert(io.open(ROOT .. '/tests/fixtures/test_drills.json', 'r'))
+function S.testFixture(name)
+  local f = assert(io.open(ROOT .. '/tests/fixtures/' .. name, 'r'))
   local text = f:read('*a'); f:close()
-  return json.decode(text).exercises
+  return json.decode(text)
 end
+
+function S.testDrills() return S.testFixture('test_drills.json').exercises end
 
 -- Ids of the shipped drills only (the catalogue the stubs serve also holds T01-T04).
 function S.isTestDrill(id) return tostring(id):match('^T%d%d$') ~= nil end

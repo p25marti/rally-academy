@@ -10,15 +10,16 @@ and most drills on gravel or dirt.
 Nothing here has been *driven* as a drill yet.
 
 **Decision (2026-10-15): Option A**, West Coast USA as the home base with Utah for
-stages. Revisit later for bespoke areas per drill (e.g. Italy's hillclimbs for
-advanced cornering, Johnson Valley for rough terrain) if that gives a better result.
+stages. **Superseded 2026-10-20** ([ADR 0010](decisions/0010-every-drill-on-the-proving-ground.md)): every drill
+runs on our own proving ground, and the stock-map venues were removed from `venues.json`. The stock-map rows
+below stay as survey notes and as the sources the proving ground's roads were copied from.
 
 ## Venues
 
-Venues the drills use are data in `mod/gameplay/rallyAcademy/venues.json` (ids such as
-`bmp-gravel-track` = W1, `bmp-dirt-arena` = W2, `bmp-dirt-circle` = W3, `wcusa-quarry` = W4,
-`wcusa-offroad-circuit` = W5, `utah-ngrc-stages` = U1). This page keeps the survey notes;
-to find, test and add venues, follow [VENUES.md](VENUES.md).
+Venues the drills use are data in `mod/gameplay/rallyAcademy/venues.json`, all on the proving ground (ids
+`pg-*`, rows P1–P12). The stock-map venues (`bmp-gravel-track` = W1, `bmp-dirt-arena` = W2, `bmp-dirt-circle` = W3,
+`wcusa-quarry` = W4, `wcusa-offroad-circuit` = W5, `utah-ngrc-stages` = U1) were removed on 2026-10-20; this page
+keeps their survey notes. To find, test and add venues, follow [VENUES.md](VENUES.md).
 
 ### Rally Academy proving ground (`ra_proving_ground`): our own map
 

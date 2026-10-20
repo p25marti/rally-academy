@@ -1,10 +1,6 @@
 """Scripted driving lines for course drills, in course coordinates (x right, y ahead of the venue
 start), for academy.course_run. Measured on West Coast USA, 0.39.4."""
-import json
 import math
-from pathlib import Path
-
-VENUES = Path(__file__).resolve().parents[2] / "mod" / "gameplay" / "rallyAcademy" / "venues.json"
 
 # The BMP downhill left (venue bmp-gravel-corner, road network DR1181): centre-line nodes.
 BMP_LEFT = [["DR1181_3", 150.93, 301.35], ["DR1181_5", 147.01, 283.01], ["DR1181_6", 147.34, 273.58], ["DR1181_7", 150.45, 264.49], ["DR1181_8", 155.71, 256.47], ["DR1181_9", 162.73, 249.86], ["DR1181_10", 169.6, 245.62], ["DR1181_11", 177.29, 242.49], ["DR1181_12", 185.81, 240.14], ["DR1181_13", 195.34, 239.74], ["DR1181_14", 203.37, 241.55], ["DR1181_15", 212.31, 245.11]]
@@ -18,9 +14,13 @@ BMP_LEFT_RACING = {"DR1181_3": -2.5, "DR1181_5": -2.0, "DR1181_6": -1.0, "DR1181
                    "DR1181_14": -3.2, "DR1181_15": -3.2}
 
 
-def _frame(venue_id):
-    v = next(x for x in json.loads(VENUES.read_text(encoding="utf-8"))["venues"] if x["id"] == venue_id)
-    p, d = v["spawn"]["pos"], v["spawn"]["dir"]
+# The course frame these nodes are measured in: the start of the stock corner (its old venue bmp-gravel-corner),
+# which pg-corner-left reproduces on the proving ground.
+BMP_LEFT_START = {"pos": {"x": 194.2, "y": 352.98}, "dir": {"x": -0.6583, "y": -0.7528}}
+
+
+def _frame(start):
+    p, d = start["pos"], start["dir"]
     n = math.hypot(d["x"], d["y"])
     fx, fy = d["x"] / n, d["y"] / n
     return p["x"], p["y"], fx, fy, fy, -fx
@@ -30,7 +30,7 @@ def bmp_left(offsets=None, tail=25):
     """Racing line through the BMP left (stock, downhill) or its flat copy on the proving ground (venue
     pg-corner-left, same course frame); `offsets` overrides BMP_LEFT_RACING per node, `tail` is how far the
     line runs on past the last node (the follower brakes to a stop over the end of it)."""
-    sx, sy, fx, fy, rx, ry = _frame("bmp-gravel-corner")
+    sx, sy, fx, fy, rx, ry = _frame(BMP_LEFT_START)
     left = dict(BMP_LEFT_RACING, **(offsets or {}))
     names = [n for n, _, _ in BMP_LEFT]
     pts = {n: (x, y) for n, x, y in BMP_LEFT}

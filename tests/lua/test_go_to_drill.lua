@@ -20,7 +20,7 @@ function T.every_active_drill_pins_a_fwd_covet_and_a_map()
   stubs.install()
   for id, e in pairs(drills()) do
     local lvl = e.environment.levelId
-    assert(lvl == 'west_coast_usa' or lvl == 'utah' or lvl == 'ra_proving_ground', id .. ' map')
+    if stubs.isTestDrill(id) then eq(lvl, 'west_coast_usa', id .. ' map') else eq(lvl, 'ra_proving_ground', id .. ' map') end
     if not e.parked and not stubs.isTestDrill(id) then
       eq(e.vehicle.modelId, 'covet', id .. ' model')
       assert(e.vehicle.configPath == 'vehicles/covet/student_driver.pc' or e.vehicle.configPath == 'vehicles/covet/rally_gravel.pc',

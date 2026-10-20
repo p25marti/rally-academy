@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "_comment": "Test-only venues, added to venues.json by the stubs (tests/lua/beamng_stubs.lua) and accepted for test drills by dev.py validate. The shipped drills are all on the proving ground; engine tests need a drill on another map.",
+  "venues": [
+    {
+      "id": "bmp-gravel-track",
+      "mapsId": "W1",
+      "name": "West Coast USA: BMP Gravel Track",
+      "levelId": "west_coast_usa",
+      "spawn": {
+        "pos": {
+          "x": 110.11,
+          "y": 170.17,
+          "z": 118.3
+        },
+        "dir": {
+          "x": -0.8155,
+          "y": -0.5787,
+          "z": -0.0063
+        },
+        "up": {
+          "x": -0.001,
+          "y": -0.0095,
+          "z": 1.0
+        }
+      },
+      "notes": "Purpose-built rallycross venue: gravel track 14-16 m wide with a tarmac start line, berms, a jump and 9 layouts. The spawn faces down the start straight, which is flat only for its first ~50 m: it cambers from 60 m and banks 9-16 degrees from 100 m (measured 0.39.4). Drills that stop go on the run-up venue (below) or stop within ~45 m of the line."
+    }
+  ]
+}

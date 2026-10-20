@@ -1044,14 +1044,14 @@ def fit():
     facing the barrier; B05 fits the dirt arena. Needs West Coast USA loaded."""
     import fit as F
     p = []
-    venues = {v["id"]: v for v in json.loads(A.VENUES.read_text(encoding="utf-8"))["venues"]}
-    sp = venues["bmp-dirt-arena-long"]["spawn"]
+    # the BMP dirt arena's long straight and its centre (the old venues bmp-dirt-arena-long, bmp-dirt-arena)
+    sp = {"pos": {"x": 386.59, "y": 145.57, "z": 127.05}, "dir": {"x": -0.7051, "y": -0.7046, "z": 0.0}}
     r = F.fit("B01", sp["pos"], sp["dir"])
     expect(p, "B01 fits the long straight", r["fits"], r["problems"] or r["notes"])
     sideways = {"x": sp["dir"]["y"], "y": -sp["dir"]["x"]}  # turned to face the barrier ~8 m away
     r = F.fit("B01", sp["pos"], sideways)
     expect(p, "B01 facing the barrier does not fit", not r["fits"], r["problems"])
-    arena = venues["bmp-dirt-arena"]["spawn"]
+    arena = {"pos": {"x": 337.07, "y": 96.09, "z": 127.26}, "dir": {"x": -0.7051, "y": -0.7046, "z": 0.0793}}
     r = F.fit("B05", arena["pos"], arena["dir"])
     expect(p, "B05's circle fits the dirt arena", r["fits"], r["problems"] or r["notes"])
     return p

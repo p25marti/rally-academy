@@ -3,6 +3,10 @@
 How to find a good place for a drill, prove it works, and make the drill use it. Every
 step runs against the live game; the tools are in `tools/ingame/`.
 
+Since 2026-10-20 every shipped venue is on the proving ground ([ADR 0010](decisions/0010-every-drill-on-the-proving-ground.md)):
+a new place is usually built in `tools/mapgen/proving_ground.json` and then proved here. The survey tools still
+work on stock maps, which is how a real road's shape is found and copied.
+
 ```
  find candidates  ──▶  review them  ──▶  prove the best  ──▶  add it to venues.json
  (drive + bookmark,     (venue report:    (fit test: drive     (drills refer to it,

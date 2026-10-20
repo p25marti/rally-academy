@@ -421,7 +421,9 @@ def cmd_validate(_args=None) -> None:
 
     test_drills = json.loads((ROOT / "tests" / "fixtures" / "test_drills.json").read_text(encoding="utf-8"))
     errors = validate_exercises(test_drills)
-    venue_ids = {v["id"] for v in venues["venues"]}
+    test_venues = json.loads((ROOT / "tests" / "fixtures" / "test_venues.json").read_text(encoding="utf-8"))
+    errors += validate_venues(test_venues, {"exercises": []})
+    venue_ids = {v["id"] for v in venues["venues"] + test_venues["venues"]}
     errors += [f"{e['id']}: unknown venue {e['environment'].get('venue')}" for e in test_drills["exercises"]
                if e["environment"].get("venue") not in venue_ids]
     if errors:
