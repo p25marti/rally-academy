@@ -89,7 +89,8 @@ class Features:
     """Terrain shaped along roads (layout roads with "profile", "camber" or "bumps"): each such road's surface follows
     its profile (m above the ground level, one value per point), tilted across by its camber ([fromM, toM, slope]:
     slope = rise per metre towards the road's left) and its bank (the same, one value per point, as measured on a
-    stock road), roughened by its bumps ({amplitude, wavelength, seed}); the
+    stock road), roughened by its bumps ({amplitude, wavelength, seed, optional from / to in metres along the road,
+    faded in and out over 5 m}); the
     terrain keeps that height over the road and a 2 m shoulder, then blends back to the ground over `blendM`
     (default 30). Stored per 1 m square in two arrays (height, distance to the nearest feature road)."""
 
@@ -128,6 +129,7 @@ class Features:
             rnd = random.Random(bumps.get("seed", 1))
             waves = [(bumps["amplitude"] * rnd.uniform(0.5, 1.0), bumps["wavelength"] * rnd.uniform(0.6, 1.6), rnd.uniform(0, 6.3),
                       rnd.uniform(-0.25, 0.25)) for _ in range(4)]
+            b0, b1 = bumps.get("from", -1e9), bumps.get("to", 1e9)
         line = self._road_points(r)
         size, half = self.size, self.half
         for (ax, ay, az, sa, ba), (bx, by, bz, sb, bb) in zip(line, line[1:]):
@@ -153,7 +155,8 @@ class Features:
                         if c0 <= sm <= c1:
                             hr += slope * max(-hw, min(hw, lat))
                     if bumps and abs(lat) <= hw + 1:
-                        hr += sum(a * math.sin(sm / wl * 6.2832 + ph + lat * sk) for a, wl, ph, sk in waves)
+                        fade = smoothstep(b0, b0 + 5, sm) * (1.0 - smoothstep(b1 - 5, b1, sm))
+                        hr += fade * sum(a * math.sin(sm / wl * 6.2832 + ph + lat * sk) for a, wl, ph, sk in waves)
                     w = 1.0 if d <= hw + self.SHOULDER else 1.0 - smoothstep(hw + self.SHOULDER, R, d)
                     self.dist[k] = d
                     self.h[k] = self.ground + w * hr

@@ -81,7 +81,8 @@ all six are built.
 - [x] Terrain features (ADR 0010): elevation, banking, camber and bumps along roads. The hill circuit (D05, D06, E05).
 - [x] D07 camber on its own road: banked and off-camber corners of the same radius.
 - [x] E06 jump: a kicker with a falling landing on a straight dirt road.
-- [ ] The rest of the terrain drills: E07 rough ground, E08 water.
+- [x] E07 rough ground: 200 m of bumps through a gentle S.
+- [ ] The last terrain drill: E08 water.
 - [ ] Still to try: reshape the strips into road-width lanes plus handling pads, a start truss, real (physical) cones.
 
 ## P2 — First automatically graded drill

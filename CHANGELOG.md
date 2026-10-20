@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E07 rough terrain moved to the proving ground**: a dirt track with 80 m of smooth approach, then 200 m of uneven
+  ground through a gentle S. Too much speed bounces the car off the ground and breaks things.
 - **E06 jump moved to the proving ground**: a straight dirt road with 150 m of run-up to a kicker, a landing that
   falls away and a long run-out. It rewards a controlled approach: about 55 km/h flies cleanly, 75 km/h overshoots
   the landing and breaks the car.

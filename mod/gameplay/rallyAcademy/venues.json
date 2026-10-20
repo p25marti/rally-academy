@@ -792,6 +792,30 @@
         }
       },
       "notes": "A straight 280 m dirt road heading north from here; the kicker's foot is 150 m ahead (it rises 1.6 m over 10 m), the landing falls away beyond its crown, levels out 59 m past the foot, then 71 m of level run-out. Tape 6 m beyond each edge."
+    },
+    {
+      "id": "pg-rough",
+      "mapsId": "P11",
+      "name": "Proving ground: rough track",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 780.0,
+          "y": -150.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "A 320 m dirt track heading north from here, 6 m wide: smooth for 80 m, then 200 m of uneven ground through a gentle S, then smooth to the end. Tape 6 m beyond each edge."
     }
   ]
 }

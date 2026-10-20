@@ -13,7 +13,8 @@ flat.
 ## Decision
 
 - The generator shapes terrain along roads: a road can carry an elevation `profile` (m above the ground level, one
-  value per point), `camber` (banking per stretch) and `bumps` (rough ground); the terrain follows the road over its
+  value per point), `camber` (banking per stretch) and `bumps` (rough ground, the whole road or a
+  `from` / `to` stretch); the terrain follows the road over its
   width and a 2 m shoulder and blends back to the ground over `blendM` (30 m by default). Water sits in a road's dip.
 - Feature roads live in their own areas (east of the strips first). The build refuses a layout whose shaping
   reaches any flat pad or flat road, so the flat drills can't be disturbed by accident.
