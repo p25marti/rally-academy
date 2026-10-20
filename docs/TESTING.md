@@ -96,9 +96,9 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `corner_surfaces` | A07, A08, B04, C01, C02, C08 and E02 on the gravel corner and its asphalt and snow twins: each drill's medal technique, adapted per surface (`CORNER_ADAPT`), passes on each (up to three tries); prints a table. About 21-63 runs, 15-25 min; `RA_SURFACES=A07,C02` runs some drills only |
 | `surfaces` | A01-A05, B01 and C04 on every surface (dirt, gravel, asphalt, snow variants, ADR 0009): each drill's medal technique, adapted per surface, passes on each; prints a table of verdicts. About 30 runs; `RA_SURFACES=B01,C04` runs some drills only |
 | `events` | On the proving ground's dirt strip: a handbrake spin, a run on the grass beside it and a puncture are detected (and the puncture isn't contact) |
-| `goto` | Go to drill loads Utah in the gravel Covet for E08, then the proving ground for B01 (slow: a stock map load) |
+| `goto` | From West Coast USA (loaded first: slow), Go to drill loads the proving ground in the gravel Covet for E08, then swaps in the Student Driver for B01 without a reload |
 | `fit` | Venue fit test on West Coast USA: B01 fits the dirt arena's long straight but not facing the barrier; B05's circle fits the dirt arena |
-| `mainmenu` | From the main menu: Academy → A04 → Start drill lands in the drill with the HUD up (slow: map load) |
+| `mainmenu` | From the main menu: Academy → A04 → Start drill loads the proving ground and lands in the drill with the HUD up |
 
 The driving scenarios need West Coast USA loaded (e.g. Go to drill on B01): `a01` drives its
 course at the BMP dirt arena; the others mark their start on the BMP start straight, drive with the arcade gearbox, then restore the realistic

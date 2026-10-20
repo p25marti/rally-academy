@@ -821,9 +821,9 @@ def blind():
     expect(p, "a conservative approach earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
     s = _circuit_run("D05", 420, 600, 55)
-    # on the stock circuit the speed check failed first; on the copy the car may meet the wall at the crest first
+    # whichever check fails first: the speed check, the wall at the crest, or running wide of the gate after it
     expect(p, "too fast into the blind corner misses", s.get("passed") is False
-           and ("too fast" in str(s.get("reason")) or "Hit something" in str(s.get("reason"))), s.get("reason"))
+           and any(k in str(s.get("reason")) for k in ("too fast", "Hit something", "Missed gate")), s.get("reason"))
     A.end_session("D05")
     return p
 
@@ -837,7 +837,10 @@ def hills():
     s = _circuit_run("D06", 0, 320, 45, 40, 240)
     expect(p, "clean uphill and downhill corners earn a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
-    s = _circuit_run("D06", 0, 320, 55, 45, 230)
+    for _ in range(2):  # the car can jam against the wall and never finish the run: retry, as a driver would
+        s = _circuit_run("D06", 0, 320, 55, 45, 230)
+        if s.get("passed") is not None:
+            break
     expect(p, "too fast hits the wall and misses", s.get("passed") is False, s.get("reason"))
     A.end_session("D06")
     return p
@@ -1019,23 +1022,30 @@ def events():
 
 @scenario
 def goto():
-    """Go to drill: E08 loads Utah in the gravel Covet; B01 then loads the proving ground (slow: a stock map load)."""
+    """Go to drill: from another map (West Coast USA, loaded first: slow), E08 loads the proving ground in the gravel
+    Covet; B01 on the same map then swaps the car for the Student Driver without a reload."""
     p = []
+    if A.debug_state().get("level") != "west_coast_usa":
+        lua("freeroam_freeroam.startFreeroam('levels/west_coast_usa/info.json') return 1")
+        A.wait_level("west_coast_usa")
+    A.reload_mod(ui_too=False)
     A.choose("E08")
     lua("extensions.rallyAcademy.goToDrill() return 1")
-    expect(p, "E08 loads Utah with the Covet Gravel Rally", A.wait_level("utah", "rally_gravel"))
+    expect(p, "E08 loads the proving ground with the Covet Gravel Rally", A.wait_level("ra_proving_ground", "rally_gravel"))
     s = A.debug_state()
-    expect(p, "E08 is selected and the car placed", s.get("selected") == "E08", s.get("reason"))
+    expect(p, "E08 is selected", s.get("selected") == "E08", s.get("reason"))
     A.choose("B01")
     lua("extensions.rallyAcademy.goToDrill() return 1")
-    expect(p, "B01 loads the proving ground with the Student Driver", A.wait_level("ra_proving_ground", "student_driver"))
+    swapped = A.wait_for(lambda: "student_driver" in A.current_config() and "in the drill car" in str(A.debug_state().get("reason")),
+                         True, timeout=30)
+    expect(p, "B01 swaps in the Student Driver on the same map", swapped, A.debug_state().get("reason"))
     return p
 
 
 @scenario
 def mainmenu():
-    """From the main menu: More... > Rally Academy > A04 > Start drill lands in the drill (slow: map load).
-    Leaves West Coast USA loaded, so the driving scenarios can follow."""
+    """From the main menu: More... > Rally Academy > A04 > Start drill lands in the drill (a map load).
+    Leaves the proving ground loaded, so the driving scenarios can follow."""
     p = []
     if A.debug_state().get("level") != "unknown":
         lua("returnToMainMenu() return 1")
@@ -1050,7 +1060,7 @@ def mainmenu():
     ui("var c=Array.from(document.querySelectorAll('.ra-card')).find(function(x){return x.innerText.indexOf('A04')===0}); c.click(); return 1")
     time.sleep(1)
     ui("var b=Array.from(document.querySelectorAll('.ra-details button')).find(function(x){return /Start drill/.test(x.textContent)}); b.click(); return 1")
-    expect(p, "Start drill loads West Coast USA in the drill car", A.wait_level("west_coast_usa", "student_driver"))
+    expect(p, "Start drill loads the proving ground in the drill car", A.wait_level("ra_proving_ground", "student_driver"))
     route = A.wait_for(lambda: ui("return location.hash"), "#/play")
     expect(p, "the menu gets out of the way (game view)", route == "#/play", route)
     expect(p, "the HUD panel is up", A.wait_panel())
