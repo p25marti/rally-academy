@@ -3946,6 +3946,226 @@
       }
     },
     {
+      "id": "D09",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Uphill hairpins",
+      "difficulty": "Core",
+      "surface": "Gravel",
+      "vehicle": {
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
+      },
+      "environment": {
+        "venue": "pg-hairpins",
+        "areaHint": "Proving ground mountain face (MAPS P13): a switchback climbing through three tight hairpins, left, right, left, steepest round each apex. Gravel, asphalt and snow, side by side.",
+        "venueNeeds": {
+          "kind": "hill",
+          "gradePct": 10,
+          "widthM": 7,
+          "surfaces": [
+            "GRAVEL",
+            "ASPHALT",
+            "SNOW"
+          ],
+          "features": [
+            "uphill hairpins"
+          ]
+        }
+      },
+      "instructions": "Climb the switchback. Brake and pick the gear (usually 1st or 2nd) before each hairpin while the road is still gentle, turn in late from the outside, and keep the car rolling up the steep apex with a steady throttle: too much spins the front wheels, too little and the climb stalls you. Don't cut the inside post. Through every Hairpin and Exit gate to the Top.",
+      "resetInstructions": "Go to drill puts you at the foot of the climb. Retry stands the posts back up.",
+      "props": "Gate posts stand at each hairpin's apex and exit; corner boards and guardrails line the road.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Through all seven gates to the Top without touching a post, on the road, no spin, no reversing, in 75 s. Silver: 41.5 s. Gold: 38.5 s (asphalt 37.5 / 34.5 s, snow 50 / 47.5 s).",
+        "metricToRecord": "Clean climbs / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_reverse"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "max_time",
+            "maxSeconds": 75
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 70.63,
+              "y": 95.87,
+              "widthM": 6,
+              "label": "Hairpin 1",
+              "headingDeg": 0.0
+            },
+            {
+              "x": 50.04,
+              "y": 112.48,
+              "widthM": 6,
+              "label": "Exit 1",
+              "headingDeg": -65.0
+            },
+            {
+              "x": 8.08,
+              "y": 139.05,
+              "widthM": 6,
+              "label": "Hairpin 2",
+              "headingDeg": 0.0
+            },
+            {
+              "x": 28.68,
+              "y": 155.66,
+              "widthM": 6,
+              "label": "Exit 2",
+              "headingDeg": 65.0
+            },
+            {
+              "x": 70.63,
+              "y": 182.24,
+              "widthM": 6,
+              "label": "Hairpin 3",
+              "headingDeg": 0.0
+            },
+            {
+              "x": 51.2,
+              "y": 198.31,
+              "widthM": 6,
+              "label": "Exit 3",
+              "headingDeg": -65.1
+            },
+            {
+              "x": 19.94,
+              "y": 250.81,
+              "widthM": 6,
+              "label": "Top",
+              "headingDeg": 0.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 41.5
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 38.5
+              }
+            ]
+          }
+        ]
+      },
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-hairpins-asphalt",
+          "areaHint": "Proving ground mountain face, the asphalt switchback: the same three hairpins on tarmac.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "ASPHALT"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "max_time",
+                  "maxSeconds": 37.5
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "max_time",
+                  "maxSeconds": 34.5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-hairpins-snow",
+          "areaHint": "Proving ground mountain face, the snow switchback: the same three hairpins on packed snow.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "SNOW"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "max_time",
+                  "maxSeconds": 50.0
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "max_time",
+                  "maxSeconds": 47.5
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
       "id": "E01",
       "module": "05  TERRAIN & DRIVETRAINS",
       "title": "Snow vs gravel vs tarmac",

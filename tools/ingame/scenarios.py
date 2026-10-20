@@ -863,6 +863,51 @@ def crest():
     return p
 
 
+# D09's switchbacks: where each hairpin and the two gentler bends (bottom and top) are, in metres along the road.
+D09_HAIRPINS = [(123, 148), (203, 228), (283, 308)]
+D09_BENDS = [(40, 68), (341, 369)]
+# Per surface: leg, hairpin and bend speeds (km/h) and how early to slow for a hairpin (m): what a driver adapts.
+D09_TECHNIQUE = {"gravel": (55, 28, 35, 15), "asphalt": (65, 32, 35, 15), "snow": (50, 24, 28, 22)}
+
+
+def _hairpin_climb(drill, leg=None, hairpin=None, bend=None, early=None):
+    """D09: up the switchback's centre line in arcade, `leg` km/h on the legs, slowing to `hairpin` from `early` m
+    before each hairpin and to `bend` for the bottom and top bends (defaults: the surface's D09_TECHNIQUE)."""
+    sf = drill.split("-")[1] if "-" in drill else "gravel"
+    d_leg, d_hp, d_bend, d_early = D09_TECHNIQUE[sf]
+    leg, hairpin, bend, early = leg or d_leg, hairpin or d_hp, bend or d_bend, early or d_early
+    road = next(r for r in json.loads((A.ROOT / "tools" / "mapgen" / "proving_ground.json").read_text(encoding="utf-8"))["roads"]
+                if r["id"] == "hairpins-" + sf)
+    line = [tuple(q) for q in road["points"]]  # the venue faces north from the road's start: course x = east, y = north
+
+    def pedals(v, trav):
+        target = hairpin if any(a - early <= trav <= b for a, b in D09_HAIRPINS) else leg
+        if any(a - 10 <= trav <= b for a, b in D09_BENDS):
+            target = min(target, bend)
+        if v > target + 2:
+            return (0.0, min(0.8, 0.25 + (v - target) * 0.05))
+        return _hold(v, target, floor=0.1, ceiling=1.0)
+    return A.course_run(drill, line, kmh=leg + 10, pedals=pedals, max_throttle=1.0, decel=3.0, timeout=90, stop_within=0.5)
+
+
+@scenario
+def hairpins():
+    """D09 up the mountain face's switchbacks (Covet Gravel Rally, arcade): each surface's technique (brake before
+    the hairpins, steady up the apex) earns a medal on gravel, asphalt and snow; the asphalt pace on gravel runs off
+    the road."""
+    p = []
+    for d in ("D09", "D09-asphalt", "D09-snow"):
+        A.drill_session(d)
+        s = _hairpin_climb(d)
+        expect(p, f"{d}: the surface's technique earns a medal", s.get("passed") is True and s.get("tier") is not None,
+               f"{s.get('tier')}: {s.get('reason')}")
+        if d == "D09":
+            s = _hairpin_climb(d, 65, 32)
+            expect(p, "D09: the asphalt pace on gravel runs off and misses", s.get("passed") is False, s.get("reason"))
+        A.end_session(d)
+    return p
+
+
 def _lane_run(drill, n0, n1, a, b, kmh, then_kmh=None, then_at=1e9, throttle_at=None, throttle_max=0.45, ramp=0.005):
     """A run along gravel lane DR825 or its proving-ground copy (nodes n0 to n1, metres a to b) in 2nd (sequential): hold `kmh` (a gentle launch),
     then `then_kmh` from `then_at` metres, or a throttle ramp from 0.25 up to `throttle_max` from `throttle_at`."""

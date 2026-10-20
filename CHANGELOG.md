@@ -6,6 +6,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **D09 uphill hairpins**, a new drill: a switchback up a mountain face on the proving ground, three tight hairpins
+  steepening to 16 % round their apex, with gate posts at each apex and exit, guardrails on the drop side and
+  corner signs. Gravel, asphalt and snow side by side (Surface row), medals for the time to the top, with times set
+  per surface. The map builder gained hillsides (`slopes`) for it.
 - **Real cones and posts**: every course's gate posts are flexible delineator posts and its cones are soft-body
   traffic cones, standing on the ground; hitting one is physical and is what fails the run ("Clipped the cone at
   18 km/h"), and Retry stands them back up. The drawn overlay keeps the gate colours and cone results

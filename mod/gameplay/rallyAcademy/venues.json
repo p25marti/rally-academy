@@ -480,6 +480,78 @@
         }
       },
       "notes": "A straight 182 m dirt road heading north from here, 6 m wide: 80 m of approach, then it dips 1 m into a creek, a 12 m level bed under -0.4 m of water (about 24 m of water along the road), and climbs out to 60 m of exit. Tape 6 m beyond each edge, broken by the creek."
+    },
+    {
+      "id": "pg-hairpins",
+      "mapsId": "P13",
+      "name": "Proving ground: uphill hairpins (gravel)",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 330.0,
+          "y": 230.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The foot of a gravel switchback heading north: 40 m to the mountain face, then legs climbing about 7 % and three hairpins (left, right, left) of 11 m radius steepening to 16 % round their apex, 400 m and 32 m of climb to the plateau."
+    },
+    {
+      "id": "pg-hairpins-asphalt",
+      "mapsId": "P13",
+      "name": "Proving ground: uphill hairpins (asphalt)",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 440.0,
+          "y": 230.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The foot of a asphalt switchback heading north: 40 m to the mountain face, then legs climbing about 7 % and three hairpins (left, right, left) of 11 m radius steepening to 16 % round their apex, 400 m and 32 m of climb to the plateau."
+    },
+    {
+      "id": "pg-hairpins-snow",
+      "mapsId": "P13",
+      "name": "Proving ground: uphill hairpins (snow)",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 550.0,
+          "y": 230.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The foot of a snow switchback heading north: 40 m to the mountain face, then legs climbing about 7 % and three hairpins (left, right, left) of 11 m radius steepening to 16 % round their apex, 400 m and 32 m of climb to the plateau."
     }
   ]
 }

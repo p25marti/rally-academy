@@ -15,7 +15,8 @@ flat.
 - The generator shapes terrain along roads: a road can carry an elevation `profile` (m above the ground level, one
   value per point), `camber` (banking per stretch) and `bumps` (rough ground, the whole road or a
   `from` / `to` stretch); the terrain follows the road over its
-  width and a 2 m shoulder and blends back to the ground over `blendM` (30 m by default). Water sits in a road's dip (layout `water`: a WaterBlock).
+  width and a 2 m shoulder and blends back to the ground over `blendM` (30 m by default). Water sits in a road's dip (layout `water`: a WaterBlock). A hillside (layout `slopes`) gives roads a
+  mountain face to climb: they blend back to it instead of the flat ground, so switchback legs have real hill between them.
 - Feature roads live in their own areas (east of the strips first). The build refuses a layout whose shaping
   reaches any flat pad or flat road, so the flat drills can't be disturbed by accident.
 - A drill tied to a real stock road keeps its course data by copying that road's centre line **and its measured

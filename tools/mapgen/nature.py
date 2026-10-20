@@ -57,6 +57,10 @@ def flat_zone(layout, margin):
         ox, oy = r["origin"]
         xs += [ox + q[0] for q in r["points"]]
         ys += [oy + q[1] for q in r["points"]]
+    for sl in layout.get("slopes", []):  # a hillside is shaped like a feature road: it lives inside the zone
+        x0, y0, x1, y1 = slope_bounds(sl)
+        xs += [x0 + margin, x1 - margin]
+        ys += [y0 + margin, y1 - margin]
     return min(xs) - margin, min(ys) - margin, max(xs) + margin, max(ys) + margin
 
 
@@ -81,6 +85,36 @@ def smooth3(pts, steps=4):
     return out + [tuple(pts[-1])]
 
 
+def slope_height(sl, x, y):
+    """A hillside (layout "slopes": {origin [x, y] = middle of its foot, heading = uphill in degrees, length,
+    width, rise, plateau, blendM}): it climbs evenly from 0 at its foot to `rise` over `length` m uphill, stays at
+    `rise` for `plateau` m, and outside that rectangle falls back to the ground over `blendM` m. Metres above the
+    ground at (x, y)."""
+    a = math.radians(sl["heading"])
+    ux, uy = math.cos(a), math.sin(a)
+    dx, dy = x - sl["origin"][0], y - sl["origin"][1]
+    u, v = dx * ux + dy * uy, -dx * uy + dy * ux  # uphill from the foot, across (+ left)
+    top = sl["length"] + sl.get("plateau", 0.0)
+    cu = max(0.0, min(top, u))
+    h = sl["rise"] * min(1.0, cu / sl["length"])
+    out = math.hypot(u - cu, max(0.0, abs(v) - sl["width"] / 2))
+    return h * (1.0 - smoothstep(0.0, sl.get("blendM", 40.0), out)) if out > 0 else h
+
+
+def slope_bounds(sl):
+    """(x0, y0, x1, y1) around everything a hillside shapes."""
+    a = math.radians(sl["heading"])
+    ux, uy = math.cos(a), math.sin(a)
+    b, top, half = sl.get("blendM", 40.0), sl["length"] + sl.get("plateau", 0.0), sl["width"] / 2
+    ox, oy = sl["origin"]
+    xs, ys = [], []
+    for u in (-b, top + b):
+        for v in (-half - b, half + b):
+            xs.append(ox + u * ux - v * uy)
+            ys.append(oy + u * uy + v * ux)
+    return min(xs), min(ys), max(xs), max(ys)
+
+
 def is_feature(r):
     return bool(r.get("profile") or r.get("camber") or r.get("bumps") or r.get("bank"))
 
@@ -91,17 +125,23 @@ class Features:
     slope = rise per metre towards the road's left) and its bank (the same, one value per point, as measured on a
     stock road), roughened by its bumps ({amplitude, wavelength, seed, optional from / to in metres along the road,
     faded in and out over 5 m}); the
-    terrain keeps that height over the road and a 2 m shoulder, then blends back to the ground over `blendM`
-    (default 30). Stored per 1 m square in two arrays (height, distance to the nearest feature road)."""
+    terrain keeps that height over the road and a 2 m shoulder, then blends back over `blendM` (default 30) to the
+    ground, or to a hillside (layout "slopes", see `slope_height`) where there is one, so roads can climb a mountain
+    face with real hill between their legs. Stored per 1 m square in two arrays (height, distance to the nearest
+    feature road; SLOPE_ONLY where only a hillside shapes the square)."""
 
     SHOULDER = 2.0
+    SLOPE_ONLY = 1e7
 
     def __init__(self, layout, ground, size):
         import array
         self.size, self.half, self.ground = size, size / 2, ground
         self.dist = array.array("f", [1e9]) * (size * size)
         self.h = array.array("f", [0.0]) * (size * size)
-        self.any = False
+        self.slopes = layout.get("slopes", [])
+        self.any = bool(self.slopes)
+        for sl in self.slopes:
+            self._raster_slope(sl)
         for r in layout.get("roads", []):
             if is_feature(r):
                 self.any = True
@@ -158,8 +198,24 @@ class Features:
                         fade = smoothstep(b0, b0 + 5, sm) * (1.0 - smoothstep(b1 - 5, b1, sm))
                         hr += fade * sum(a * math.sin(sm / wl * 6.2832 + ph + lat * sk) for a, wl, ph, sk in waves)
                     w = 1.0 if d <= hw + self.SHOULDER else 1.0 - smoothstep(hw + self.SHOULDER, R, d)
+                    base = self.base(cx, cy)
                     self.dist[k] = d
-                    self.h[k] = self.ground + w * hr
+                    self.h[k] = base + w * (self.ground + hr - base)
+
+    def base(self, x, y):
+        """The height a road blends back to: the ground, raised by any hillside here."""
+        return self.ground + sum(slope_height(sl, x, y) for sl in self.slopes) if self.slopes else self.ground
+
+    def _raster_slope(self, sl):
+        size, half = self.size, self.half
+        x0, y0, x1, y1 = slope_bounds(sl)
+        for gy in range(max(0, int(y0 + half)), min(size, int(y1 + half) + 1)):
+            for gx in range(max(0, int(x0 + half)), min(size, int(x1 + half) + 1)):
+                k = gy * size + gx
+                hgt = slope_height(sl, gx - half + 0.5, gy - half + 0.5)
+                if hgt > 0.001:
+                    self.dist[k] = min(self.dist[k], self.SLOPE_ONLY)
+                    self.h[k] = self.base(gx - half + 0.5, gy - half + 0.5)
 
     def at(self, x, y):
         """The shaped height at (x, y), or None where no feature reaches."""

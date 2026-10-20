@@ -93,6 +93,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `corners` | A07 and A08 on the proving ground's flat corner (Covet Gravel Rally, racing line from `lines.py`): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss |
 | `gears` | A03 on its course (the proving ground's dirt strip, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
 | `launch` | A02 on its course (the proving ground's dirt strip; the run ends at the 40 km/h gate): feeding the throttle in earns a medal (flat out spins the wheels); 34 km/h at the gate misses |
+| `hairpins` | D09 up the mountain face's switchbacks: each surface's technique (gravel 55 / 28 km/h, asphalt 65 / 32, snow 50 / 24, slowing for the bottom and top bends) earns a medal; the asphalt pace on gravel runs off the road |
 | `corner_surfaces` | A07, A08, B04, C01, C02, C08 and E02 on the gravel corner and its asphalt and snow twins: each drill's medal technique, adapted per surface (`CORNER_ADAPT`), passes on each (up to three tries); prints a table. About 21-63 runs, 15-25 min; `RA_SURFACES=A07,C02` runs some drills only |
 | `surfaces` | A01-A05, B01 and C04 on every surface (dirt, gravel, asphalt, snow variants, ADR 0009): each drill's medal technique, adapted per surface, passes on each; prints a table of verdicts. About 30 runs; `RA_SURFACES=B01,C04` runs some drills only |
 | `events` | On the proving ground's dirt strip: a handbrake spin, a run on the grass beside it and a puncture are detected (and the puncture isn't contact) |
@@ -175,7 +176,7 @@ BeamNG version and result in the PR.
     straight and press **+ Gate** at each. Coloured posts appear across the track. Then
     **Retry** and hold about 30 km/h: each gate shows its speed as you pass it, and
     the run ends at gate 3 with PASS or MISS.
-14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 42 drills
+14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 43 drills
     show in order with your progress; only auto-graded drills (A01, A02, A04, A05, B01, B02) lack the
     **Coming soon** tag. Pick one, then **Start drill**: its map loads, the
     menu closes, the HUD appears and you're in the drill car at its start or venue.
