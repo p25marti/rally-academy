@@ -78,6 +78,18 @@ def board(deg):
     return BOARDS[(side, sev)]
 
 
+def _outside(pts, s, bend, off_m):
+    """The point `off_m` m beyond the centre line on the outside of `bend`, `s` m along the resampled line, and the
+    travel heading there in degrees."""
+    i = max(0, min(len(pts) - 2, int(s)))
+    (ax, ay, _), (bx, by, _) = pts[i], pts[i + 1]
+    hx, hy = bx - ax, by - ay
+    n = math.hypot(hx, hy) or 1.0
+    hx, hy = hx / n, hy / n
+    off = (-1.0 if bend["deg"] > 0 else 1.0) * off_m  # the outside of a left bend is the right (-left)
+    return ax - hy * off, ay + hx * off, math.degrees(math.atan2(hy, hx))
+
+
 def placements(line, width, lead=25.0, gap=3.0, **kw):
     """[(x, y, travel heading in degrees, mesh, bend)] for each bend of `line` driven from its start: a board `lead` m
     before the bend begins (at least 5 m into the road), `gap` m outside the road's edge on the bend's outside."""
@@ -86,34 +98,20 @@ def placements(line, width, lead=25.0, gap=3.0, **kw):
     for b in bends(line, **kw):
         s = max(5.0, prev_end + 3.0, b["from"] - lead)  # never inside the bend before
         prev_end = b["to"]
-        i = min(len(pts) - 2, int(s))
-        (ax, ay, _), (bx, by, _) = pts[i], pts[i + 1]
-        hx, hy = bx - ax, by - ay
-        n = math.hypot(hx, hy) or 1.0
-        hx, hy = hx / n, hy / n
-        side = -1.0 if b["deg"] > 0 else 1.0  # outside of a left bend is the right (-left)
-        off = side * (width / 2 + gap)
-        out.append((ax - hy * off, ay + hx * off, math.degrees(math.atan2(hy, hx)), board(b["deg"]), b))
+        x, y, heading = _outside(pts, s, b, width / 2 + gap)
+        out.append((x, y, heading, board(b["deg"]), b))
     return out
 
 
 def chevrons(line, width, into=12.0, gap=7.0, **kw):
     """[(x, y, approach heading in degrees, mesh, bend)]: a chevron sign on the outside of each bend, `into` m past
     where it begins (or a third of the way round a short bend), `gap` m beyond the road's edge (behind the run-off
-    barriers, so it stands clear above them), facing the way the car
-    comes in (the heading 10 m before the bend), so it stands ahead of the driver as the road turns away."""
+    barriers, so it stands clear above them), facing the way the car comes in (the heading 10 m before the bend), so
+    it stands ahead of the driver as the road turns away."""
     pts = resample(line)
     out = []
     for b in bends(line, **kw):
-        s = b["from"] + min(into, (b["to"] - b["from"]) / 3)
-        i = min(len(pts) - 2, int(s))
-        j = max(0, min(len(pts) - 2, int(b["from"] - 10)))
-        (ax, ay, _), (bx, by, _) = pts[i], pts[i + 1]
-        hx, hy = bx - ax, by - ay
-        n = math.hypot(hx, hy) or 1.0
-        hx, hy = hx / n, hy / n
-        side = -1.0 if b["deg"] > 0 else 1.0
-        off = side * (width / 2 + gap)
-        approach = math.degrees(math.atan2(pts[j + 1][1] - pts[j][1], pts[j + 1][0] - pts[j][0]))
-        out.append((ax - hy * off, ay + hx * off, approach, CHEVRONS["left" if b["deg"] > 0 else "right"], b))
+        x, y, _ = _outside(pts, b["from"] + min(into, (b["to"] - b["from"]) / 3), b, width / 2 + gap)
+        _, _, approach = _outside(pts, b["from"] - 10, b, 0.0)
+        out.append((x, y, approach, CHEVRONS["left" if b["deg"] > 0 else "right"], b))
     return out

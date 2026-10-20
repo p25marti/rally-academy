@@ -296,8 +296,6 @@ def props(layout, terrain):
     materials the game always loads) at `at`, or `count` of them evenly along `row` [[x0, y0], [x1, y1]], turned
     `yaw` degrees anticlockwise from facing south (its default), `lift` m above the ground. None may stand on a pad
     or road (2 m margin): props are scenery, not obstacles in a drill."""
-    import math
-    base = layout["terrain"]["baseZ"]
     out = []
     for k, e in enumerate(layout["props"]):
         if "along" in e:  # barriers: pieces end to end along a path (and posts at the joints)
@@ -310,12 +308,7 @@ def props(layout, terrain):
                     if e.get("skipClash"):  # winding roads: drop the pieces that come near another stretch
                         continue
                     raise SystemExit(f"prop {e['shape']} at ({x:.0f}, {y:.0f}) stands on a pad or road")
-                a = math.radians(yaw)
-                c, sn = round(math.cos(a), 6), round(math.sin(a), 6)
-                out.append({"class": "TSStatic", "persistentId": pid(layout["name"], f"prop/{k}/{j}"), "__parent": "props",
-                            "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y) + lift, 3)],
-                            "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [1, 1, 1],
-                            "shapeName": shape, "useInstanceRenderData": True})
+                out.append(static(layout, terrain, f"prop/{k}/{j}", x, y, yaw, shape, lift=lift))
             continue
         if "row" in e:
             (x0, y0), (x1, y1) = e["row"]
@@ -323,16 +316,23 @@ def props(layout, terrain):
             spots = [(x0 + (x1 - x0) * i / max(1, n - 1), y0 + (y1 - y0) * i / max(1, n - 1)) for i in range(n)]
         else:
             spots = [tuple(e["at"])]
-        a = math.radians(e.get("yaw", 0))
-        c, sn = round(math.cos(a), 6), round(math.sin(a), 6)
         for j, (x, y) in enumerate(spots):
             if not nature._clear_of(layout, x, y, 2.0):
                 raise SystemExit(f"prop {e['shape']} at ({x:.0f}, {y:.0f}) stands on a pad or road")
-            out.append({"class": "TSStatic", "persistentId": pid(layout["name"], f"prop/{k}/{j}"), "__parent": "props",
-                        "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y) + e.get("lift", 0), 3)],
-                        "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [e.get("scale", 1)] * 3,
-                        "shapeName": e["shape"], "useInstanceRenderData": True})
+            out.append(static(layout, terrain, f"prop/{k}/{j}", x, y, e.get("yaw", 0), e["shape"], e.get("scale", 1),
+                              e.get("lift", 0)))
     return out + turn_boards(layout, terrain)
+
+
+def static(layout, terrain, key, x, y, yaw, shape, scale=1, lift=0):
+    """A TSStatic in the props group: `shape` on the ground at (x, y) (`lift` m above it), turned `yaw` degrees."""
+    import math
+    a = math.radians(yaw)
+    c, sn = round(math.cos(a), 6), round(math.sin(a), 6)
+    return {"class": "TSStatic", "persistentId": pid(layout["name"], key), "__parent": "props",
+            "position": [round(x, 2), round(y, 2), round(layout["terrain"]["baseZ"] + terrain.height(x, y) + lift, 3)],
+            "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [scale] * 3,
+            "shapeName": shape, "useInstanceRenderData": True}
 
 
 # Faces of the corner signs, as the heading their readable side points at yaw 0 (0.40.0): the rally kit's arrow
@@ -345,8 +345,6 @@ def turn_boards(layout, terrain):
     """Corner signs (layout "turnMarkers": [{"road": id, "directions": ["forward", "reverse"]}]) for each bend of those
     roads, facing the way the drills drive it (tools/mapgen/markers.py): a rally direction board before the bend and a
     chevron sign on its outside. A sign that would stand on another pad or road is left out."""
-    import math
-    base = layout["terrain"]["baseZ"]
     out = []
     for e in layout.get("turnMarkers", []):
         r = next(r for r in layout["roads"] if r["id"] == e["road"])
@@ -357,12 +355,8 @@ def turn_boards(layout, terrain):
                 for j, (x, y, heading, shape, _) in enumerate(spots):
                     if not nature._clear_of(layout, x, y, 1.5):
                         continue
-                    a = math.radians(heading + 180.0 - SIGNS[kind]["face"])
-                    c, sn = round(math.cos(a), 6), round(math.sin(a), 6)
-                    out.append({"class": "TSStatic", "persistentId": pid(layout["name"], f"{kind}/{r['id']}/{way}/{j}"),
-                                "__parent": "props", "position": [round(x, 2), round(y, 2), round(base + terrain.height(x, y), 3)],
-                                "rotationMatrix": [c, sn, 0, -sn, c, 0, 0, 0, 1], "scale": [SIGNS[kind]["scale"]] * 3,
-                                "shapeName": shape, "useInstanceRenderData": True})
+                    out.append(static(layout, terrain, f"{kind}/{r['id']}/{way}/{j}", x, y,
+                                      heading + 180.0 - SIGNS[kind]["face"], shape, SIGNS[kind]["scale"]))
     return out
 
 

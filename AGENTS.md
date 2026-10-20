@@ -23,7 +23,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
-| `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match |
+| `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match. `shapes.py` builds road centre lines from straights and arcs; `markers.py` places the corner signs |
 | `docs/` | Everything else; `docs/decisions/` = ADRs |
 | `reference/` | Historical design input; not shipped, not authoritative |
 

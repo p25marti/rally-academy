@@ -1,5 +1,4 @@
 """Unit tests for the rally corner boards' bend finder (tools/mapgen/markers.py)."""
-import math
 import sys
 import unittest
 from pathlib import Path
@@ -7,26 +6,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "mapgen"))
 import markers  # noqa: E402
+import shapes  # noqa: E402
 
 
-def road(*segments, step=2.0):
-    """A centre line from ('S', m) straights and ('L' / 'R', radius, degrees) arcs, heading +x from the origin."""
-    x, y, h = 0.0, 0.0, 0.0
-    pts = [(x, y)]
-    for seg in segments:
-        if seg[0] == "S":
-            n = max(1, round(seg[1] / step))
-            moves = [(seg[1] / n, 0.0)] * n
-        else:
-            total = math.radians(seg[2])
-            n = max(2, round(seg[1] * total / step))
-            moves = [(2 * seg[1] * math.sin(total / n / 2), (1 if seg[0] == "L" else -1) * total / n)] * n
-        for c, dh in moves:
-            x += math.cos(h + dh / 2) * c
-            y += math.sin(h + dh / 2) * c
-            h += dh
-            pts.append((x, y))
-    return pts
+def road(*segments):
+    """A centre line heading +x from the origin (tools/mapgen/shapes.py), a point every 2 m."""
+    return shapes.road(segments, step=2.0)[0]
 
 
 class BendsTest(unittest.TestCase):
