@@ -210,7 +210,9 @@ def generate(layout, game):
             + ([{"name": "props", "class": "SimGroup", "persistentId": pid(name, "props"), "__parent": "level_objects"}]
                if layout.get("props") else [])
             + ([{"name": "decals", "class": "SimGroup", "persistentId": pid(name, "decals"), "__parent": "level_objects"}]
-               if layout.get("decals") else [])),
+               if layout.get("decals") else [])
+            + ([{"name": "water", "class": "SimGroup", "persistentId": pid(name, "water"), "__parent": "level_objects"}]
+               if layout.get("water") else [])),
         "main/MissionGroup/level_objects/terrain/items.level.json": jsonl([
             {"name": "theTerrain", "class": "TerrainBlock", "persistentId": pid(name, "terrain"), "__parent": "terrain",
              "position": [-half, -half, t["baseZ"]], "materialTextureSet": texset, "maxHeight": t["maxHeight"],
@@ -240,6 +242,8 @@ def generate(layout, game):
         files["main/MissionGroup/level_objects/vegetation/items.level.json"] = jsonl(vegetation)
     if layout.get("props"):
         files["main/MissionGroup/level_objects/props/items.level.json"] = jsonl(props(layout, terrain))
+    if layout.get("water"):
+        files["main/MissionGroup/level_objects/water/items.level.json"] = jsonl(water(layout))
     if layout.get("decals"):
         files["main/MissionGroup/level_objects/decals/items.level.json"] = jsonl(decals.decal_roads(layout, terrain, road_line, pid))
         stock = borrow.Stock(game)
@@ -255,8 +259,34 @@ def generate(layout, game):
     out["theTerrain.ter"] = ter
     out["preview.png"] = preview_png(layer, size, wanted, terrain, trees)
     # No fluid depth map (<terrain>.ter.depth.png): the log notes "all fluids will be disabled as ground type",
-    # which is what we want for now. An all-zero map (like the template's) made every wheel sink 0.2 m into the
-    # gravel and bog the car down to walking pace at full throttle (0.40.0).
+    # which is what we want for now: WaterBlocks still wet the car without it. An all-zero map made every wheel sink
+    # 0.2 m into the gravel and bog the car down to walking pace at full throttle (0.40.0); the template's is mostly 255.
+    return out
+
+
+def water(layout):
+    """Water bodies (layout "water"): a WaterBlock over `center` [x, y] covering `size` [w, h] m, its surface `surface` m
+    above the ground level (negative: in a dip shaped by a feature road), `depth` m deep. The box must reach past where
+    the dip climbs back above the surface, or its square edge shows. Textures from core/art."""
+    out = []
+    ground = layout["terrain"]["groundZ"]
+    for k, w in enumerate(layout["water"]):
+        depth = w.get("depth", 2.0)
+        out.append({"name": f"water_{w['id']}", "class": "WaterBlock", "persistentId": pid(layout["name"], f"water/{w['id']}"),
+                    "__parent": "water",
+                    # drawn at its position and wet from there down `depth` (its world box is centred on it, 0.40.0)
+                    "position": [w["center"][0], w["center"][1], round(ground + w["surface"], 3)],
+                    "scale": [w["size"][0], w["size"][1], depth],
+                    "baseColor": w.get("colour", [92, 74, 46, 255]),
+                    "depthGradientTex": "core/art/water/depthcolor_ramp.png", "foamTex": "core/art/water/foam.dds",
+                    "rippleTex": "core/art/water/ripple.dds", "fullReflect": False, "reflectivity": 0.3,
+                    "overallRippleMagnitude": 0.3, "overallWaveMagnitude": 0, "foamMaxDepth": 0.4, "overallFoamOpacity": 0.6,
+                    "waterFogDensity": w.get("fog", 1.2), "waterFogDensityOffset": 0.2, "wetDarkening": 0.5, "wetDepth": 0.5,
+                    "specularPower": 200,
+                    "Ripples (texture animation)": [
+                        {"rippleDir": [0, 1], "rippleSpeed": 0.02, "rippleTexScale": [7, 7]},
+                        {"rippleDir": [0.707, 0.707], "rippleSpeed": 0.012, "rippleTexScale": [6, 12]},
+                        {"rippleDir": [0.5, 0.86], "rippleSpeed": 0.004, "rippleTexScale": [30, 30]}]})
     return out
 
 

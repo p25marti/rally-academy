@@ -4107,8 +4107,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "utah-ngrc-stages",
-        "areaHint": "NGRC stages (MAPS U1): SS1 Deer Creek ~(-411, -635), SS2 Buckaroo ~(632, 843), SS3 ~(455, 397), SS4 ~(90, -109). SS1 Deer Creek river crossings.",
+        "venue": "pg-ford",
+        "areaHint": "Proving ground ford (MAPS P12): a dirt road dipping through a creek, 80 m of approach and about 24 m of shallow water.",
         "venueNeeds": {
           "kind": "route",
           "lengthM": 120,

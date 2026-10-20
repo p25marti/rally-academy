@@ -816,6 +816,30 @@
         }
       },
       "notes": "A 320 m dirt track heading north from here, 6 m wide: smooth for 80 m, then 200 m of uneven ground through a gentle S, then smooth to the end. Tape 6 m beyond each edge."
+    },
+    {
+      "id": "pg-ford",
+      "mapsId": "P12",
+      "name": "Proving ground: ford",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 260.0,
+          "y": -30.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "A straight 182 m dirt road heading north from here, 6 m wide: 80 m of approach, then it dips 1 m into a creek, a 12 m level bed under -0.4 m of water (about 24 m of water along the road), and climbs out to 60 m of exit. Tape 6 m beyond each edge, broken by the creek."
     }
   ]
 }

@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E08 water crossing moved to the proving ground**: a dirt road dipping through a creek with real water, 0.4 m
+  deep across a 12 m bed. The water drags the car down hard, so it teaches a steady, modest approach.
 - **E07 rough terrain moved to the proving ground**: a dirt track with 80 m of smooth approach, then 200 m of uneven
   ground through a gentle S. Too much speed bounces the car off the ground and breaks things.
 - **E06 jump moved to the proving ground**: a straight dirt road with 150 m of run-up to a kicker, a landing that

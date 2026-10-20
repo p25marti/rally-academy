@@ -22,9 +22,8 @@
 {"ctxid":0,"pos":[96.86,-40.39,109.75],"rotationMatrix":[0.8672,0.49795,0,-0.49795,0.8672,0,0,0,1],"scale":0.933,"type":"tree_aspen_small_a"}
 {"ctxid":0,"pos":[364.77,-8.38,109.75],"rotationMatrix":[0.89941,-0.4371,0,0.4371,0.89941,0,0,0,1],"scale":0.828,"type":"tree_aspen_small_a"}
 {"ctxid":0,"pos":[537.75,26.78,109.75],"rotationMatrix":[-0.23855,0.97113,0,-0.97113,-0.23855,0,0,0,1],"scale":1.165,"type":"tree_aspen_small_a"}
-{"ctxid":0,"pos":[272.5,46.65,109.75],"rotationMatrix":[0.14797,0.98899,0,-0.98899,0.14797,0,0,0,1],"scale":1.028,"type":"tree_aspen_small_a"}
-{"ctxid":0,"pos":[-165.64,59.29,109.75],"rotationMatrix":[0.97926,-0.20262,0,0.20262,0.97926,0,0,0,1],"scale":0.871,"type":"tree_aspen_small_a"}
-{"ctxid":0,"pos":[-165.6,112.2,109.75],"rotationMatrix":[0.93367,-0.35813,0,0.35813,0.93367,0,0,0,1],"scale":0.994,"type":"tree_aspen_small_a"}
+{"ctxid":0,"pos":[-145.64,59.29,109.75],"rotationMatrix":[0.97926,-0.20262,0,0.20262,0.97926,0,0,0,1],"scale":0.871,"type":"tree_aspen_small_a"}
+{"ctxid":0,"pos":[-145.6,112.2,109.75],"rotationMatrix":[0.93367,-0.35813,0,0.35813,0.93367,0,0,0,1],"scale":0.994,"type":"tree_aspen_small_a"}
 {"ctxid":0,"pos":[-359.53,122.54,109.75],"rotationMatrix":[-0.85833,-0.51309,0,0.51309,-0.85833,0,0,0,1],"scale":0.985,"type":"tree_aspen_small_a"}
 {"ctxid":0,"pos":[-188.6,147.6,109.75],"rotationMatrix":[-0.66374,0.74797,0,-0.74797,-0.66374,0,0,0,1],"scale":1.011,"type":"tree_aspen_small_a"}
 {"ctxid":0,"pos":[-360.57,181.39,109.75],"rotationMatrix":[-0.88885,-0.4582,0,0.4582,-0.88885,0,0,0,1],"scale":0.922,"type":"tree_aspen_small_a"}

@@ -122,15 +122,16 @@ function T.go_to_drill_places_the_car_anyway_if_no_spawn_event_comes()
   eq(#h.vehicle.teleports, 1, 'placed after the timeout')
 end
 
--- Seen in-game: core_levels.getList() names the map 'Utah', getCurrentLevelIdentifier() says 'utah'.
+-- Seen in-game: core_levels.getList() names the map 'Utah', getCurrentLevelIdentifier() says 'utah'. Same idea here
+-- with the test drills' West Coast USA, named in another case.
 function T.go_to_drill_matches_map_names_case_insensitively()
   local h, M = setup()
-  _G.core_levels.getList = function() return {{levelName = 'Utah', fullfilename = '/levels/utah/main/'}} end
-  M.select('E08')
+  _G.core_levels.getList = function() return {{levelName = 'West_Coast_USA', fullfilename = '/levels/west_coast_usa/main/'}} end
+  M.select('T02')
   M.goToDrill()
-  eq(h.levelsLoaded[1], '/levels/utah/main/', 'Utah found')
-  h.level = 'Utah'
-  M.select('E08')
+  eq(h.levelsLoaded[1], '/levels/west_coast_usa/main/', 'West Coast USA found')
+  h.level = 'West_Coast_USA'
+  M.select('T02')
   M.goToDrill()
   eq(#h.levelsLoaded, 1, 'already there: no second load, whatever the case')
 end

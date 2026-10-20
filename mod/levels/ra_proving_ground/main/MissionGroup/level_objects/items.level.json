@@ -3,3 +3,4 @@
 {"name":"vegetation","class":"SimGroup","persistentId":"1929a265-fd3f-52ee-bcad-214a3ef6bad4","__parent":"level_objects"}
 {"name":"props","class":"SimGroup","persistentId":"aa4cd403-9219-5caf-aa51-43def35c0285","__parent":"level_objects"}
 {"name":"decals","class":"SimGroup","persistentId":"6f206c74-de86-577d-adba-40f8af069d9d","__parent":"level_objects"}
+{"name":"water","class":"SimGroup","persistentId":"8c9410ac-3e68-5d8d-b508-a6c47acb6745","__parent":"level_objects"}
