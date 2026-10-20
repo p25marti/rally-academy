@@ -96,6 +96,9 @@ Learned the hard way (0.39.4):
   - Pause-menu mod buttons need a valid `icon`, or the whole Vue UI breaks until a reload.
 - **Map loads** take 40–70 s and the MCP server stops answering meanwhile; poll with
   timeouts. From the main menu, start maps through `freeroam_freeroam.startFreeroam`.
+- **Rebuilt proving ground:** edited level files hot-reload, but new water only wets the car after a full load, and
+  `startFreeroam` on the map already loaded does nothing: `endActiveGameMode()`, then start it, then
+  `ui_router.navigate('play')`.
 - **Scripted driving:**
   - Retry restores the player's realistic gearbox; switch to arcade after each Retry.
   - Arcade turns a held brake at standstill into reverse; release the brake below 4 km/h.
