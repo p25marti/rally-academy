@@ -247,10 +247,14 @@ def is_leaf(material):
     return any(w in material.lower() for w in ("leaves", "foliage", "blocker"))
 
 
-def autumn(found, tint):
-    """Autumn colours (the owner's choice, 2026-10-20): the game's own autumn birch textures, and every leaf
-    material's base colour multiplied by `tint` (the leaf textures are green, so red goes well above 1)."""
+def autumn(found, colours):
+    """Autumn colours (the owner's choice, 2026-10-20): the game's own autumn birch textures, and each leaf material's
+    base colour multiplied by its colour in `colours` ({material: [r, g, b]}, "default" for the rest; the leaf
+    textures are green, so red goes well above 1). A list instead of a map tints every leaf material alike. Species
+    and leaf textures differ between tree types, so mixed woods come out in a scatter of colours."""
     import json
+    if isinstance(colours, list):
+        colours = {"default": colours}
     for k, v in found.items():
         if not is_leaf(k):
             continue
@@ -258,11 +262,10 @@ def autumn(found, tint):
                                      "t_birch_leaves_autumn_distant/t_birch_leaves_autumn_distant_b.color")
         text = text.replace("t_birch_leaves/t_birch_leaves_b.color", "t_birch_leaves_autumn/t_birch_leaves_autumn_b.color")
         v = json.loads(text)
-        birch = "birch_leaves_autumn" in text
+        t = colours.get(k, colours.get("default", [1.0, 1.0, 1.0]))
         for st in v.get("Stages", [])[:1]:
             if "baseColorMap" in st:
                 base = st.get("baseColorFactor", [1, 1, 1, 1])
-                t = [1.0, 1.0, 1.0] if birch else tint
                 st["baseColorFactor"] = [round(base[i] * t[i], 3) for i in range(3)] + [base[3]]
         found[k] = v
 

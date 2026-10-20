@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Natural autumn woods**: each tree species and leaf turns its own colour (copper beeches, crimson oaks, oaks still
+  turning yellow-green, golden birches), so the mixed forests come out in a scatter of fall colours instead of one
+  orange.
 - **The proving ground's roads look driven on**: the gravel corner is a real dirt road now, with wheel ruts on the
   line, loose gravel pushed wide and ragged grassy edges; every strip has a natural edge into the grass and worn
   tracks down the middle; the asphalt strip has edge lines, a dashed 12 m test lane and a start line, with skid

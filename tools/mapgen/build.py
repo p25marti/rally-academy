@@ -229,7 +229,7 @@ def generate(layout, game):
                            "lodReflectScalar": 0.15})
         files["art/forest/managedItemData.json"] = json.dumps(
             {k: v for k, v in nature.item_data(name, pid).items() if k in used}, indent=2) + "\n"
-        files["art/shapes/trees/main.materials.json"] = json.dumps(nature.tree_materials(game, name, pid, layout["forest"].get("leafTint")), indent=2) + "\n"
+        files["art/shapes/trees/main.materials.json"] = json.dumps(nature.tree_materials(game, name, pid, layout["forest"].get("leafColours") or layout["forest"].get("leafTint")), indent=2) + "\n"
         files.update(nature.forest_files(trees))
     if layout.get("groundcover"):
         objs, mats = grass_cover(layout, game, ours, t["groundZ"])
