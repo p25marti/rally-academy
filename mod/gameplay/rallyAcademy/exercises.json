@@ -4017,8 +4017,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "wcusa-offroad-circuit",
-        "areaHint": "Off-Road Circuit (MAPS W5), rough dirt with jumps ~(567, 27). Jump on the off-road circuit (or the BMP joker jump).",
+        "venue": "pg-jump",
+        "areaHint": "Proving ground jump (MAPS P10): a straight dirt road, the kicker 150 m from the start, a landing that falls away and a long level run-out.",
         "venueNeeds": {
           "kind": "crest",
           "lengthM": 150,

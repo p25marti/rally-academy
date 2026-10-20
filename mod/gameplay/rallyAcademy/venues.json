@@ -768,6 +768,30 @@
         }
       },
       "notes": "A 440 m gravel road heading north from here: a banked left (16 %), an off-camber right (10 %), a banked right, an off-camber left, all 90 degrees at 35 m radius, 8 m wide, tape 6 m beyond each edge."
+    },
+    {
+      "id": "pg-jump",
+      "mapsId": "P10",
+      "name": "Proving ground: jump",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 640.0,
+          "y": -150.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "A straight 280 m dirt road heading north from here; the kicker's foot is 150 m ahead (it rises 1.6 m over 10 m), the landing falls away beyond its crown, levels out 59 m past the foot, then 71 m of level run-out. Tape 6 m beyond each edge."
     }
   ]
 }

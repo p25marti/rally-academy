@@ -3,14 +3,12 @@
 {"ctxid":0,"pos":[-467.85,-493.22,109.75],"rotationMatrix":[-0.96003,-0.27991,0,0.27991,-0.96003,0,0,0,1],"scale":1.125,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[-480.0,-410.73,109.75],"rotationMatrix":[0.95207,-0.30588,0,0.30588,0.95207,0,0,0,1],"scale":1.026,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[528.73,-261.28,109.75],"rotationMatrix":[-0.68321,0.73022,0,-0.73022,-0.68321,0,0,0,1],"scale":0.955,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[665.8,-177.13,109.75],"rotationMatrix":[-0.9671,-0.2544,0,0.2544,-0.9671,0,0,0,1],"scale":1.054,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[-4.67,-103.73,109.75],"rotationMatrix":[-0.0399,0.9992,0,-0.9992,-0.0399,0,0,0,1],"scale":1.155,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[486.5,-97.33,109.75],"rotationMatrix":[0.4134,-0.91055,0,0.91055,0.4134,0,0,0,1],"scale":0.935,"type":"tree_aspen_bush_b"}
+{"ctxid":0,"pos":[25.33,-103.73,109.75],"rotationMatrix":[-0.0399,0.9992,0,-0.9992,-0.0399,0,0,0,1],"scale":1.155,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[768.02,-69.6,109.75],"rotationMatrix":[0.92783,0.37301,0,-0.37301,0.92783,0,0,0,1],"scale":1.12,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[181.67,-42.74,109.75],"rotationMatrix":[0.95943,0.28194,0,-0.28194,0.95943,0,0,0,1],"scale":1.2,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[199.5,20.39,109.75],"rotationMatrix":[0.96046,-0.27843,0,0.27843,0.96046,0,0,0,1],"scale":1.228,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[19.26,27.76,109.75],"rotationMatrix":[0.57637,-0.81719,0,0.81719,0.57637,0,0,0,1],"scale":1.129,"type":"tree_aspen_bush_b"}
-{"ctxid":0,"pos":[627.73,165.51,109.75],"rotationMatrix":[-0.98769,0.15644,0,-0.15644,-0.98769,0,0,0,1],"scale":1.248,"type":"tree_aspen_bush_b"}
+{"ctxid":0,"pos":[667.73,165.51,109.75],"rotationMatrix":[-0.98769,0.15644,0,-0.15644,-0.98769,0,0,0,1],"scale":1.248,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[428.92,195.41,109.75],"rotationMatrix":[0.70403,-0.71017,0,0.71017,0.70403,0,0,0,1],"scale":1.15,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[434.41,201.29,109.75],"rotationMatrix":[0.93126,0.36434,0,-0.36434,0.93126,0,0,0,1],"scale":1.21,"type":"tree_aspen_bush_b"}
 {"ctxid":0,"pos":[-314.94,211.02,109.75],"rotationMatrix":[-0.92467,0.38077,0,-0.38077,-0.92467,0,0,0,1],"scale":0.82,"type":"tree_aspen_bush_b"}

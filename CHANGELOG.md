@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E06 jump moved to the proving ground**: a straight dirt road with 150 m of run-up to a kicker, a landing that
+  falls away and a long run-out. It rewards a controlled approach: about 55 km/h flies cleanly, 75 km/h overshoots
+  the landing and breaks the car.
 - **D07 road camber moved to the proving ground**: a gravel road of four identical 35 m corners, two banked toward the
   inside (16 %) and two off-camber (10 %), one of each per direction, so camber is the only thing that changes.
 - **Hills, crests and banked corners on the proving ground** (ADR 0010): the map builder now shapes the terrain along
