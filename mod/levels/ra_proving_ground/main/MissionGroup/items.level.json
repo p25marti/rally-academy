@@ -1,0 +1,2 @@
+{"name":"level_objects","class":"SimGroup","__parent":"MissionGroup"}
+{"name":"PlayerDropPoints","class":"SimGroup","persistentId":"a3f2963d-3a5a-5f91-8177-7144cbcc8ecd","__parent":"MissionGroup","enabled":"1"}

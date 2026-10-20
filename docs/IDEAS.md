@@ -216,6 +216,9 @@ using the real in-game numbers, with plain-language notes (what it feels like, w
 
 ## A Rally Academy proving ground (our own map)
 
+**Status: accepted** (2026-10-19, [ADR 0008](decisions/0008-proving-ground-map.md)); it's on the
+[ROADMAP](ROADMAP.md) now. The notes below are the research and prototype that led there.
+
 **The idea.** One custom map built for the drills: dead-flat pads, straights and skidpads, standard corners
 (constant, tightening, opening, hairpin), measured hills and a crest or jump, each laid out exactly as its
 drill needs. The same layouts repeated on several surfaces give per-surface variants: handbrake turns on
@@ -280,8 +283,7 @@ stock venues before deciding on more.
 **Prototype (built 2026-10-19 on 0.40.0, not shipped).** `python tools/mapgen/build.py` writes
 `mod/levels/ra_proving_ground/` from `tools/mapgen/proving_ground.json`: a 1 km² flat terrain (z 110 m) with
 120 x 700 m strips of gravel, asphalt, snow and dirt and a mud pad on grass, using the template's terrain
-materials and sky. The level is generated output: gitignored and left out of the mod zip until the owner
-decides to ship a map. Load it with `freeroam_freeroam.startFreeroam('levels/ra_proving_ground/info.json')`.
+materials and sky. (It was kept out of git and the zip until the owner chose to ship it.) Load it with `freeroam_freeroam.startFreeroam('levels/ra_proving_ground/info.json')`.
 What we learned:
 - *It's cheap.* No World Editor: about 150 lines of Python write every file (terrain, materials, objects). The
   level loads in about 4 s cold and 1 s on reload; editing the layout and rebuilding is a seconds-long loop,
@@ -289,8 +291,9 @@ What we learned:
 - *Surfaces are exact.* Wheel telemetry and `surface.py` read 100 % GRAVEL / ASPHALT / SNOW / DIRT / MUD /
   GRASS on the matching pads. Building it found a `surface.py` bug that also skewed the WCUSA audit (terrain
   counted by material name, not ground model): the BMP arena is DIRT_DUSTY (grip 0.68), not DIRT.
-- *Gotchas* (in BEAMNG_API_NOTES): unique terrain material names (`ra_*`), a `MissionGroup` root file, and a
-  `.ter.depth.png` for fluids.
+- *Gotchas* (in BEAMNG_API_NOTES): unique terrain material names (`ra_*`) and a `MissionGroup` root file.
+  A fluid depth map (`.ter.depth.png`) looked needed (the log warns without one), but an all-zero one made
+  the wheels sink 0.2 m and the car crawl; the level ships without.
 - *Per-surface drills really differ* (scripted, Covet, one run each, so about ±1 m):
 
   | Pad | B01 at 5 m/s² (Student Driver) | Full brake from 70 km/h | C04 hairpin (Gravel Rally) |

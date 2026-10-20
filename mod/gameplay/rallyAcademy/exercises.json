@@ -643,8 +643,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-corner",
-        "areaHint": "BMP Gravel Track downhill left (MAPS W1): 67 m approach into a 124° left, radius 32 m; the exit gate sits at the track-out.",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): 67 m approach into a 124° left, radius 32 m; the exit gate sits at the track-out.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -671,7 +671,7 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Through the 3 m exit gate at 30 km/h or more without touching its posts, no more than one wheel off the gravel (for over 0.5 s), no spin, no contact. Silver: 40 km/h at the exit and all four wheels on the gravel. Gold: 48 km/h.",
+        "successDefinition": "Through the 3 m exit gate at 35 km/h or more without touching its posts, no more than one wheel off the gravel (for over 0.5 s), no spin, no contact. Silver: 46 km/h at the exit and all four wheels on the gravel. Gold: 55 km/h.",
         "metricToRecord": "Clean exits and exit speed at the gate",
         "mode": "automatic",
         "endWhen": "gates",
@@ -709,7 +709,7 @@
           },
           {
             "type": "speed_at_gates",
-            "minKmh": 30,
+            "minKmh": 35,
             "maxKmh": 150,
             "gate": -1
           }
@@ -720,7 +720,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 40,
+                "minKmh": 46,
                 "maxKmh": 150,
                 "gate": -1
               },
@@ -739,7 +739,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 48,
+                "minKmh": 55,
                 "maxKmh": 150,
                 "gate": -1
               },
@@ -771,8 +771,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-corner",
-        "areaHint": "BMP Gravel Track downhill left (MAPS W1): the same corner as A07, with a late-apex gate on the inside, the exit gate and a finish 27 m on.",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): the same corner as A07, with a late-apex gate on the inside, the exit gate and a finish 27 m on.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -1175,8 +1175,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-corner",
-        "areaHint": "BMP Gravel Track downhill left (MAPS W1): brake marker on the approach, the apex gate on the inside at the geometric apex, the exit gate across the road.",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): brake marker on the approach, the apex gate on the inside at the geometric apex, the exit gate across the road.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -1203,7 +1203,7 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Brake from the marker and carry it into the turn-in for at least 0.4 s while steering, fully off by the 4 m apex gate, through the exit at 25 km/h or more, no wheel locked over 0.3 s, no more than one wheel off the gravel, no spin. Silver: 35 km/h at the exit, all four wheels on the gravel. Gold: 42 km/h.",
+        "successDefinition": "Brake from the marker and carry it into the turn-in for at least 0.4 s while steering, fully off by the 4 m apex gate, through the exit at 30 km/h or more, no wheel locked over 0.3 s, no more than one wheel off the gravel, no spin. Silver: 42 km/h at the exit, all four wheels on the gravel. Gold: 50 km/h.",
         "metricToRecord": "Clean trail-braked entries / 10",
         "mode": "automatic",
         "endWhen": "gates",
@@ -1265,7 +1265,7 @@
           },
           {
             "type": "speed_at_gates",
-            "minKmh": 25,
+            "minKmh": 30,
             "maxKmh": 150,
             "gate": 3
           }
@@ -1276,7 +1276,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 35,
+                "minKmh": 42,
                 "maxKmh": 150,
                 "gate": 3
               },
@@ -1295,7 +1295,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 42,
+                "minKmh": 50,
                 "maxKmh": 150,
                 "gate": 3
               },
@@ -1733,8 +1733,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-corner",
-        "areaHint": "BMP Gravel Track downhill left (MAPS W1), the C02 corner: a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate. Downhill helps the lift load the front.",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat), the C02 corner: a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate. No slope helps here: the lift alone has to load the front.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -1757,7 +1757,7 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "The rear steps out at least 6 degrees between the Turn in and Apex gates with no brake between them (the lift does it), through all three gates without touching a post, no handbrake, no spin, out of the Exit at 25 km/h or more. Silver: 10 degrees and 40 km/h. Gold: 14 degrees and 45 km/h.",
+        "successDefinition": "The rear steps out at least 4 degrees between the Turn in and Apex gates with no brake between them (the lift does it), through all three gates without touching a post, no handbrake, no spin, out of the Exit at 25 km/h or more. Silver: 6 degrees and 40 km/h. Gold: 8 degrees and 45 km/h.",
         "metricToRecord": "Clean lift-off rotations / 10",
         "mode": "automatic",
         "rules": [
@@ -1780,7 +1780,7 @@
           },
           {
             "type": "rear_slide",
-            "minSlipDeg": 6,
+            "minSlipDeg": 4,
             "fromGate": 1,
             "toGate": 2,
             "hint": "carry more speed and lift sharply as you turn in"
@@ -1824,7 +1824,7 @@
             "rules": [
               {
                 "type": "rear_slide",
-                "minSlipDeg": 10,
+                "minSlipDeg": 6,
                 "fromGate": 1,
                 "toGate": 2,
                 "hint": "carry more speed and lift sharply as you turn in"
@@ -1842,7 +1842,7 @@
             "rules": [
               {
                 "type": "rear_slide",
-                "minSlipDeg": 14,
+                "minSlipDeg": 8,
                 "fromGate": 1,
                 "toGate": 2,
                 "hint": "carry more speed and lift sharply as you turn in"
@@ -1873,8 +1873,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-corner",
-        "areaHint": "BMP Gravel Track downhill left (MAPS W1): a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate between two posts at the track-out.",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate between two posts at the track-out.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -2408,8 +2408,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-corner",
-        "areaHint": "BMP Gravel Track downhill left (MAPS W1): a Flick gate 40 m into the approach, then the C02 corner gates (Turn in, a road-wide Apex, a 6 m Exit).",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): a Flick gate 40 m into the approach, then the C02 corner gates (Turn in, a road-wide Apex, a 6 m Exit).",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
@@ -3441,8 +3441,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-corner",
-        "areaHint": "BMP Gravel Track downhill left (MAPS W1), the C02 corner: a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate.",
+        "venue": "pg-corner-left",
+        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat), the C02 corner: a Turn in gate where the straight ends, a road-wide Apex gate and a 6 m Exit gate.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [

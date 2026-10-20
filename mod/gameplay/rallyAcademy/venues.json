@@ -360,6 +360,30 @@
         }
       },
       "notes": "The four NGRC 2026 gravel stages; the spawn is at SS1 Deer Creek (river crossings)."
+    },
+    {
+      "id": "pg-corner-left",
+      "mapsId": "P1",
+      "name": "Proving ground: gravel corner (left)",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -280.0,
+          "y": -20.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The BMP downhill left (bmp-gravel-corner) rebuilt flat on our own map (ADR 0008): the same centre line in the same course frame, 67 m of approach into a 124 degree left of about 32 m radius, 10 m of gravel on grass, dead level. Drills keep their gates; only the 14 m drop is gone."
     }
   ]
 }

@@ -218,12 +218,14 @@ the line with no lock over 0.2 s; silver 0–1 m, 0.15 s; gold 0–0.5 m, 0.1 s.
 cone at each end and thin gold, silver and bronze lines before it; near it the HUD reads "1.4 m to
 the line". Scripted runs: 0.48 m (gold), 1.25 m (bronze), 0.01 m past (miss).
 
-A07 and A08 targets (BMP downhill left: 124°, radius 32 m, Covet Gravel Rally; the 3 m gates leave
-about 0.55 m each side of the car): A07 bronze 30 km/h at the exit gate, one wheel off the gravel
-allowed, silver 40 km/h and all four wheels on, gold 48 km/h; A08 bronze 25 km/h at the exit, at
-most one correction to the finish, silver 38 km/h and no corrections, gold 45 km/h. Scripted racing
-line (outside, late apex, track-out): A07 52 km/h and A08 47–50 km/h, both gold; the line clips the
-posts above about 55 km/h.
+A07 and A08 targets (the proving ground's flat copy of the BMP left, venue `pg-corner-left`: 124°, radius
+32 m, Covet Gravel Rally; the 3 m gates leave about 0.55 m each side of the car): A07 bronze 35 km/h at the
+exit gate, one wheel off the gravel allowed, silver 46 km/h and all four wheels on, gold 55 km/h; A08 bronze
+25 km/h at the exit, at most one correction to the finish, silver 38 km/h and no corrections, gold 45 km/h.
+On the flat (0.40.0) the scripted racing line holds A07's exit gate up to a steady 60 km/h and runs wide at
+63; on the stock downhill it clipped the posts above about 55, so A07's speeds rose from 30 / 40 / 48. A08's
+apex gate is what limits it: the late line passes it at 41-48 km/h, and the road keeps turning past the exit
+gate, so a car still adding lock there needs a correction before the finish (41 km/h: silver; 44: bronze).
 
 B01 and B02 targets (BMP dirt arena's long straight, venue `bmp-dirt-arena-long`, Covet Student Driver; moved
 off the run-up in 0.40, whose braking crossed the start line's tarmac): B01 from 65+ km/h stops with the car's
@@ -233,10 +235,12 @@ within 1 s, then stops in a 40 m stop area on the flat; silver releases within 0
 Scripted on dirt (0.40.0): B01 braking at 4.6–5.0 m/s² from 72 km/h stopped 0.4–0.6 m past the centre
 (gold, silver); B02 locked 0.5 s (gold).
 
-B04 targets (BMP downhill left, Covet Gravel Rally): brake from the marker 50 m into the approach and keep
-braking while turning in for 0.4 s, fully off by the 4 m apex gate, no lock over 0.3 s; bronze 25 km/h at
-the exit, silver 35 km/h with all four wheels on the gravel, gold 42 km/h. Scripted: brake 0.35 easing to
-zero before the apex, gold.
+B04 targets (the proving ground's flat corner, Covet Gravel Rally): brake from the marker 50 m into the
+approach and keep braking while turning in for 0.4 s, fully off by the 4 m apex gate, no lock over 0.3 s;
+bronze 30 km/h at the exit, silver 42 km/h with all four wheels on the gravel, gold 50 km/h (raised from 25 /
+35 / 42 on the stock downhill). Scripted from 65 km/h: brake 0.2 easing to zero before the apex, 52 km/h out
+(gold). On the flat a light brake with the throttle closed stops the car within the corner (the arcade box drops
+to 1st and the engine brakes hard), so trail braking here is gentle; on the downhill gravity made up for it.
 
 B05 targets (BMP dirt circle, Covet Gravel Rally): two anticlockwise laps of a 15 m ring, its centre on
 the circle's centre; bronze inside a 6 m corridor (0.5 s outside allowed), throttle never off for more
@@ -266,11 +270,11 @@ in a 6 x 5 m zone, no lock over 0.5 s, no spin; silver 4 x 3.5 m and 0.3 s; gold
 Scripted from 62 km/h: braking at 4 m/s2 stops 0.5 m past the centre (gold), 5.5 m/s2 1.7 m (silver), 5.8
 m/s2 2.7 m (bronze), 6 m/s2 just past the zone; a full brake from the tarmac locks the wheels for 1.7 s.
 
-E02 targets: C02's corner. Bronze: the rear steps out 4°+ between the Turn in and Apex gates, then half
-throttle or more for 0.5 s between the Apex and Exit (`throttle_on_between`), no post touched, no handbrake,
-no spin, 30 km/h out; silver 8° and 55 km/h; gold 10° and 60 km/h. The corner runs downhill, so exit speeds
-are high: scripted runs with 0.6 throttle from just before the apex came out at 75–77 km/h with 4.6–11.9° of
-rotation; holding 46 km/h instead never passed 28% throttle.
+E02 targets: C02's corner, on the proving ground's flat copy. Bronze: the rear steps out 4°+ between the Turn
+in and Apex gates, then half throttle or more for 0.5 s between the Apex and Exit (`throttle_on_between`), no
+post touched, no handbrake, no spin, 30 km/h out; silver 8° and 55 km/h; gold 10° and 60 km/h. Scripted runs
+with a brake pulse and 0.6 throttle from just before the apex came out at 68-69 km/h with 13° of rotation
+(gold); 0.45 throttle never reached the half-throttle mark; holding 46 km/h instead never passed 16%.
 
 Gravel lane drills (DR825, west of the town; MAPS W6; Covet Gravel Rally). About 6 m of gravel.
 - D03: eastbound, a right-hander whose radius tightens from about 60 m to 18 m over a small crest. Bronze:
@@ -298,19 +302,20 @@ at `dirttrack_15b`, gives 0.3 s of air at 62 km/h), so E06 isn't built here.
   silver 50 km/h; gold 54 km/h. Scripted: 46, 50 and 56 km/h stayed down; 57 km/h bottomed out once (1085);
   66 km/h flew 0.3 s and landed hard (1508).
 
-C01 targets: C02's corner (a 32 m radius, under the 40 m the drill first asked for; its `venueNeeds` now
-allow 30 m). Bronze: the rear steps out 6°+ between the Turn in and Apex gates with no brake between them,
-no post touched, no handbrake, no spin, 25 km/h out; silver 10° and 40 km/h; gold 14° and 45 km/h. Scripted:
-lifting at turn-in from 52–58 km/h does nothing; from about 61 km/h the same inputs gave 3.6–11°; from 65
-km/h up to 45° but wide of the apex. No scripted run reached gold.
+C01 targets: C02's corner, on the proving ground's flat copy (a 32 m radius, under the 40 m the drill first
+asked for; its `venueNeeds` allow 30 m). Bronze: the rear steps out 4°+ between the Turn in and Apex gates with
+no brake between them, no post touched, no handbrake, no spin, 25 km/h out; silver 6° and 40 km/h; gold 8° and
+45 km/h. On the flat a lift rotates the Covet much less than on the stock downhill (where the slope unloaded
+the rear and the targets were 6 / 10 / 14°): scripted lifts at turn-in from 61 km/h gave 4.4-4.8°, from 54 km/h
+0.6-0.8°; from 65 km/h the car can't make the apex gate. No scripted run reached silver.
 
-C02 targets (BMP downhill left, Covet Gravel Rally): a Turn in gate where the straight ends, a 10 m Apex
-gate (the gravel's width) and a 6 m Exit gate at the track-out. Bronze: the rear steps out 8°+ between the
-Turn in and Apex gates (`rear_slide`) with the brake on while steering for 0.2 s (`trail_braked`, so the
-rotation comes from the pulse), no post touched, no handbrake, no spin, 25 km/h at the Exit; silver
-12° and 40 km/h; gold 15° and 45 km/h. Scripted from 62–66 km/h with a full-brake pulse of 7–8 m just after
-the Turn in gate: 8–39° of rotation, very sensitive to the pulse (the same inputs gave 11.5° and 12.2°); a
-5 m pulse from 55 km/h gave 2°. The follower needs the line ~2 m further inside after a rotation.
+C02 targets (the proving ground's flat corner, Covet Gravel Rally): a Turn in gate where the straight ends,
+a 10 m Apex gate (the gravel's width) and a 6 m Exit gate at the track-out. Bronze: the rear steps out 8°+
+between the Turn in and Apex gates (`rear_slide`) with the brake on while steering for 0.2 s (`trail_braked`, so
+the rotation comes from the pulse), no post touched, no handbrake, no spin, 25 km/h at the Exit; silver 12° and
+40 km/h; gold 15° and 45 km/h. Scripted (0.40.0) from 65 km/h with a full-brake pulse of 7-8 m just after the
+Turn in gate: 12-17° (silver, gold); from 55 km/h a 5 m pulse gave 8-9° and a 4 m pulse 6-7°. The follower needs
+the line ~2 m further inside after a rotation.
 
 C04 targets (BMP dirt arena, Covet Gravel Rally): 34 m to an Entry gate, a Pivot cone to turn left round
 (4.5 m from the line) and an Exit gate back the way you came, 9 m to the left. Bronze: one handbrake pull, the
@@ -327,10 +332,10 @@ runs wide of the right lobe gate.
 
 C08 targets: C02's corner with a Flick gate 40 m into the approach. Bronze: between the Flick and Apex gates,
 60° of steering away from the corner then 60° into it within 1.5 s (`flick`), and the rear steps out 8°+;
-otherwise as C02 (silver 12° and 40 km/h, gold 15° and 45 km/h). The Covet Gravel Rally barely answers a
-flick: a scripted lift-and-flick alone gave 3–7° (full lock with the brake on makes the front plough, slip
-−4 to −9°); adding 0.8 brake only on the snap back gave 8–11°, about half the time. No scripted run reached
-silver; a driver timing the weight transfer should.
+otherwise as C02 (silver 12° and 40 km/h, gold 15° and 45 km/h). On the flat corner a scripted lift-and-flick
+from 66 km/h (half lock away, then full lock in with full brake) gave 12.7-14.4° (silver); at 56 km/h 4.2°,
+and a gentler flick with 0.8 brake 3-7°. The flick swings the car out, so the approach line sits nearer the
+middle than C02's.
 
 B07 targets (BMP dirt circle, Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
 then a 7 m exit lane 18 m long. Bronze: the rear steps out 8°+ between the Turn in gate and the lane end,

@@ -1,0 +1,20 @@
+{
+  "title": "Rally Academy Proving Ground",
+  "description": "A flat practice ground for the Rally Academy drills: strips of gravel, asphalt, snow and dirt, a mud pad and a gravel corner.",
+  "size": [
+    1024,
+    1024
+  ],
+  "previews": [
+    "preview.png"
+  ],
+  "authors": "Rally Academy",
+  "isAuxiliary": false,
+  "supportsTraffic": false,
+  "supportsTimeOfDay": true,
+  "defaultDate": {
+    "year": 2026,
+    "month": 7,
+    "day": 29
+  }
+}

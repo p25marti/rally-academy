@@ -14,7 +14,7 @@ BMP_LEFT = [["DR1181_3", 150.93, 301.35], ["DR1181_5", 147.01, 283.01], ["DR1181
 # gate), then a straight line on. Tuned so the pure-pursuit follower (which cuts a little inside)
 # clears the 3 m gates' posts in the Covet Gravel Rally.
 BMP_LEFT_RACING = {"DR1181_3": -2.5, "DR1181_5": -2.0, "DR1181_6": -1.0, "DR1181_7": 0.5, "DR1181_8": 1.2,
-                   "DR1181_9": 1.5, "DR1181_10": 1.0, "DR1181_11": -1.2, "DR1181_12": -4.5, "DR1181_13": -3.2,
+                   "DR1181_9": 1.5, "DR1181_10": 1.0, "DR1181_11": -1.2, "DR1181_12": -3.5, "DR1181_13": -3.2,
                    "DR1181_14": -3.2, "DR1181_15": -3.2}
 
 
@@ -26,8 +26,10 @@ def _frame(venue_id):
     return p["x"], p["y"], fx, fy, fy, -fx
 
 
-def bmp_left(offsets=None):
-    """Racing line through the BMP downhill left; `offsets` overrides BMP_LEFT_RACING per node."""
+def bmp_left(offsets=None, tail=25):
+    """Racing line through the BMP left (stock, downhill) or its flat copy on the proving ground (venue
+    pg-corner-left, same course frame); `offsets` overrides BMP_LEFT_RACING per node, `tail` is how far the
+    line runs on past the last node (the follower brakes to a stop over the end of it)."""
     sx, sy, fx, fy, rx, ry = _frame("bmp-gravel-corner")
     left = dict(BMP_LEFT_RACING, **(offsets or {}))
     names = [n for n, _, _ in BMP_LEFT]
@@ -46,6 +48,6 @@ def bmp_left(offsets=None):
     last, prev = pts[names[-1]], pts[names[-2]]
     th = math.atan2(last[1] - prev[1], last[0] - prev[0])
     off = left.get(names[-1], 0.0)
-    out.append(local(last[0] + math.cos(th) * 25 + math.cos(th + math.pi / 2) * off,
-                     last[1] + math.sin(th) * 25 + math.sin(th + math.pi / 2) * off))
+    out.append(local(last[0] + math.cos(th) * tail + math.cos(th + math.pi / 2) * off,
+                     last[1] + math.sin(th) * tail + math.sin(th + math.pi / 2) * off))
     return out

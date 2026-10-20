@@ -319,15 +319,23 @@ def current_config():
     return lua("local v = be:getPlayerVehicle(0) return tostring(v and v.partConfig)")
 
 
-def drill_session(drill_id, level="west_coast_usa"):
+def drill_session(drill_id, level=None):
     """The usual start of a drill scenario: reload the mod (and the car's sampler), select the drill
     with its course at the venue start, auto-retry off, and the drill's own car (Go to drill swaps it
-    when the car differs, on the same map). Raises if the map isn't loaded. Pair with end_session."""
+    when the car differs). `level` defaults to the drill's venue map; when another map is loaded, Go to
+    drill loads it (a few seconds for the proving ground, a minute or more for stock maps). Pair with
+    end_session."""
+    level = level or drill(drill_id)["environment"]["levelId"]
     reload_mod(ui_too=False)
     fresh_sampler()
     choose(drill_id)
     if debug_state().get("level") != level:
-        raise RuntimeError(f"load {level} first (e.g. Go to drill on {drill_id})")
+        lua("extensions.rallyAcademy.goToDrill() return 1")
+        if not wait_level(level, drill(drill_id)["vehicle"]["configPath"]):
+            raise RuntimeError(f"{level} didn't load for {drill_id}")
+        reload_mod(ui_too=False)
+        fresh_sampler()
+        choose(drill_id)
     lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
     want = drill(drill_id)["vehicle"]["configPath"]
     if want not in current_config():

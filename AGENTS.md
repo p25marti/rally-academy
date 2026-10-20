@@ -23,7 +23,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
-| `tools/mapgen/` | Proving-ground prototype: generates a level into `mod/levels/` (gitignored, not shipped; [IDEAS](docs/IDEAS.md)) |
+| `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match |
 | `docs/` | Everything else; `docs/decisions/` = ADRs |
 | `reference/` | Historical design input; not shipped, not authoritative |
 
@@ -56,7 +56,8 @@ python tools/dev.py link               # live-link mod/ into the game (junction)
 python tools/dev.py log --ours         # the mod's lines from beamng.log
 python tools/dev.py ship -F msg.txt    # check --strict, then branch, commit, fast-forward main, push
 python tools/ingame/record.py --all    # videos of the drill scenarios in recordings/ (TESTING)
-python tools/ingame/audit.py --write   # every graded course's surfaces, grip, grade, tilt -> docs/COURSE_AUDIT.md
+python tools/ingame/audit.py --all --write  # every graded course's surfaces, grip, grade, tilt -> docs/COURSE_AUDIT.md
+python tools/mapgen/build.py           # regenerate the proving ground after editing its layout
 ```
 
 On Windows, Lua tools run through WSL automatically ([DEVELOPMENT](docs/DEVELOPMENT.md#tooling)).
@@ -97,6 +98,8 @@ Learned the hard way (0.39.4):
 - **Scripted driving:**
   - Retry restores the player's realistic gearbox; switch to arcade after each Retry.
   - Arcade turns a held brake at standstill into reverse; release the brake below 4 km/h.
+  - On flat ground a light brake with the throttle closed lets the arcade box drop to 1st, and engine braking
+    stops the Covet within the corner; hold some throttle or a gear (sequential) when a script brakes lightly.
   - Physics varies run to run by about a metre; check verdicts, not exact numbers.
   - Steering a line: `academy.follow_path` (pure pursuit through MCP, one round trip per
     tick) drives course-frame points; precision to ~0.1 m.

@@ -59,6 +59,17 @@ all six are built.
       ([ADR 0007](decisions/0007-venues-as-data.md)). Next: promote captured setups into
       venue or drill data (P1).
 
+## Proving ground: our own map ([ADR 0008](decisions/0008-proving-ground-map.md))
+
+- [x] Generator (`tools/mapgen/build.py`) and a shipped level: flat surface strips, a mud pad, a gravel corner.
+- [x] The seven drills on the BMP downhill left moved to its flat copy (A07, A08, B04, C01, C02, C08, E02),
+      scenarios retuned and fixtures re-recorded there.
+- [ ] Move other flat-ground drills where it isolates the mechanic better (arena and circle drills), with
+      courses laid out for the proving ground.
+- [ ] Per-surface variants (same layout on gravel, snow, asphalt): targets and progress per surface; needs
+      its own decision.
+- [ ] Looks: a backdrop past the terrain edge, painted markings, a few props, only where cheap.
+
 ## P2 — First automatically graded drill
 
 Capabilities, drill-by-drill needs and build order: [GRADING.md](GRADING.md).

@@ -15,3 +15,4 @@ Template: **Context** (what forced a choice) · **Decision** · **Consequences**
 | [0005](0005-main-menu-via-vue-ui-mods.md) | Main-menu Academy screen as a BeamNG Vue UI mod (button + route) | Accepted |
 | [0006](0006-stages-are-the-games-rally-mode.md) | Full stages are the game's Rally mode; stage drills F01–F05, F08 cut | Accepted |
 | [0007](0007-venues-as-data.md) | Venues are shared data (`venues.json`); drills refer to them by id | Accepted |
+| [0008](0008-proving-ground-map.md) | Our own generated map, the proving ground, for flat single-surface drills | Accepted |

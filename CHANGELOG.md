@@ -6,6 +6,13 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **The Rally Academy proving ground, our own map** (ADR 0008): a small generated level that ships with
+  the mod and loads in seconds. Flat gravel, asphalt, snow and dirt areas on grass, and a gravel corner.
+- **Seven corner drills moved to a flat copy of their corner** (A07, A08, B04, C01, C02, C08, E02): the
+  BMP downhill left rebuilt on the proving ground with the same shape and gates but no 14 m drop, so the
+  technique, not the hill, decides the run. Targets re-measured there: A07's exit speeds rose to 35 / 46 /
+  55 km/h and B04's to 30 / 42 / 50 km/h (the flat corner carries more speed), and C01's lift-off rotation
+  fell to 4 / 6 / 8 degrees (on the downhill the slope had been doing part of the work).
 - **A03 downshifting also moved to the all-dirt straight**, and a gear now counts only once it's held
   0.3 s: 0.40's sequential gearbox can blip 3-2-3 while shifting up, which read as a downshift.
 - **B01 threshold braking and B02 lockup recovery moved to a flat, all-dirt straight** (the BMP dirt

@@ -1,0 +1,445 @@
+{
+  "ra_Grass": {
+    "internalName": "ra_Grass",
+    "class": "TerrainMaterial",
+    "persistentId": "0a4f7783-80b7-5710-9d80-222715aae037",
+    "aoBaseTex": "/levels/template/art/terrains/t_terrain_base_grass_ao.png",
+    "aoBaseTexSize": 512,
+    "aoDetailTex": "/assets/materials/terrain/grass/ind_grass/t_ind_grass_ao.png",
+    "aoMacroTex": "/assets/materials/terrain/soil/macro_clumply/t_macro_clumpy_ao.png",
+    "aoMacroTexSize": 64,
+    "baseColorBaseTex": "/levels/template/art/terrains/t_terrain_base_grass_b.png",
+    "baseColorBaseTexSize": 512,
+    "baseColorDetailStrength": [
+      0.25,
+      0.25
+    ],
+    "baseColorDetailTex": "/assets/materials/terrain/grass/ind_grass/t_ind_grass_b.png",
+    "baseColorMacroStrength": [
+      0.0500000007,
+      0.119999997
+    ],
+    "baseColorMacroTex": "/assets/materials/terrain/soil/macro_clumply/t_macro_clumpy_b.png",
+    "baseColorMacroTexSize": 64,
+    "groundmodelName": "GRASS",
+    "heightBaseTex": "/levels/template/art/terrains/t_terrain_base_grass_h.png",
+    "heightBaseTexSize": 512,
+    "heightDetailTex": "/assets/materials/terrain/grass/ind_grass/t_ind_grass_h.png",
+    "heightMacroTex": "/assets/materials/terrain/soil/macro_clumply/t_macro_clumpy_h.png",
+    "heightMacroTexSize": 64,
+    "macroDistances": [
+      0,
+      10,
+      100,
+      3000
+    ],
+    "normalBaseTex": "/levels/template/art/terrains/t_terrain_base_grass_nm.png",
+    "normalBaseTexSize": 512,
+    "normalDetailStrength": [
+      0.699999988,
+      0.150000006
+    ],
+    "normalDetailTex": "/assets/materials/terrain/grass/ind_grass/t_ind_grass_nm.png",
+    "normalMacroStrength": [
+      0.200000003,
+      0.400000006
+    ],
+    "normalMacroTex": "/assets/materials/terrain/soil/macro_clumply/t_macro_clumpy_nm.png",
+    "normalMacroTexSize": 64,
+    "roughnessBaseTex": "/levels/template/art/terrains/t_terrain_base_grass_r.png",
+    "roughnessBaseTexSize": 512,
+    "roughnessDetailStrength": [
+      0.300000012,
+      0.300000012
+    ],
+    "roughnessDetailTex": "/assets/materials/terrain/grass/ind_grass/t_ind_grass_r.png",
+    "roughnessMacroStrength": [
+      0.150000006,
+      0.800000012
+    ],
+    "roughnessMacroTex": "/assets/materials/terrain/soil/macro_clumply/t_macro_clumpy_r.png",
+    "roughnessMacroTexSize": 64
+  },
+  "ra_gravel": {
+    "internalName": "ra_gravel",
+    "class": "TerrainMaterial",
+    "persistentId": "b56185a7-48d9-558e-9497-007fe00e339e",
+    "aoBaseTex": "/levels/template/art/terrains/t_terrain_base_gravel_ao.png",
+    "aoBaseTexSize": 512,
+    "aoDetailStrength": [
+      1,
+      0
+    ],
+    "aoDetailTex": "/levels/template/art/terrains/t_dirt_rocky_ao.png",
+    "aoMacroTex": "/levels/template/art/terrains/t_macro_clumpy_ao.png",
+    "aoMacroTexSize": 80,
+    "baseColorBaseTex": "/levels/template/art/terrains/t_terrain_base_gravel_b.png",
+    "baseColorBaseTexSize": 512,
+    "baseColorDetailStrength": [
+      0.25,
+      0
+    ],
+    "baseColorDetailTex": "/levels/template/art/terrains/t_dirt_rocky_b.png",
+    "baseColorMacroStrength": [
+      0.300000012,
+      0.100000001
+    ],
+    "baseColorMacroTex": "/levels/template/art/terrains/t_macro_clumpy_b.png",
+    "baseColorMacroTexSize": 80,
+    "detailDistances": [
+      0,
+      0,
+      40,
+      70
+    ],
+    "groundmodelName": "GRAVEL",
+    "heightBaseTex": "/levels/template/art/terrains/t_terrain_base_gravel_h.png",
+    "heightBaseTexSize": 512,
+    "heightDetailTex": "/levels/template/art/terrains/t_dirt_rocky_h.png",
+    "heightMacroTex": "/levels/template/art/terrains/t_macro_clumpy_h.png",
+    "heightMacroTexSize": 80,
+    "normalBaseTex": "/levels/template/art/terrains/t_terrain_base_gravel_nm.png",
+    "normalBaseTexSize": 512,
+    "normalDetailStrength": [
+      0.800000012,
+      0
+    ],
+    "normalDetailTex": "/levels/template/art/terrains/t_dirt_rocky_nm.png",
+    "normalMacroStrength": [
+      0,
+      0.200000003
+    ],
+    "normalMacroTex": "/levels/template/art/terrains/t_macro_clumpy_nm.png",
+    "normalMacroTexSize": 80,
+    "roughnessBaseTex": "/levels/template/art/terrains/t_terrain_base_gravel_r.png",
+    "roughnessBaseTexSize": 512,
+    "roughnessDetailStrength": [
+      1,
+      0
+    ],
+    "roughnessDetailTex": "/levels/template/art/terrains/t_dirt_rocky_r.png",
+    "roughnessMacroStrength": [
+      0.5,
+      1
+    ],
+    "roughnessMacroTex": "/levels/template/art/terrains/t_macro_clumpy_r.png",
+    "roughnessMacroTexSize": 80
+  },
+  "ra_Asphalt": {
+    "internalName": "ra_Asphalt",
+    "class": "TerrainMaterial",
+    "persistentId": "2b09319c-e95c-511e-a1b3-7e2d0fb7ab1d",
+    "annotation": "ASPHALT",
+    "aoBaseTex": "/levels/template/art/terrains/t_terrain_base_asphalt_ao.png",
+    "aoBaseTexSize": 150,
+    "aoDetailStrength": [
+      1,
+      0
+    ],
+    "aoDetailTex": "/levels/template/art/terrains/t_asphalt_02_ao.png",
+    "aoMacroStrength": [
+      1,
+      0.5
+    ],
+    "aoMacroTex": "/levels/template/art/terrains/t_macro_asphalt_ao.png",
+    "aoMacroTexSize": 80,
+    "baseColorBaseTex": "/levels/template/art/terrains/t_terrain_base_asphalt_b.png",
+    "baseColorBaseTexSize": 150,
+    "baseColorDetailStrength": [
+      0.300000012,
+      0
+    ],
+    "baseColorDetailTex": "/levels/template/art/terrains/t_asphalt_02_b.png",
+    "baseColorMacroStrength": [
+      0.200000003,
+      0.100000001
+    ],
+    "baseColorMacroTex": "/levels/template/art/terrains/t_macro_asphalt_b.png",
+    "baseColorMacroTexSize": 80,
+    "detailDistances": [
+      0,
+      0,
+      30,
+      50
+    ],
+    "groundmodelName": "ASPHALT",
+    "heightBaseTex": "/levels/template/art/terrains/t_terrain_base_asphalt_h.png",
+    "heightBaseTexSize": 150,
+    "heightDetailTex": "/levels/template/art/terrains/t_asphalt_02_h.png",
+    "heightMacroTex": "/levels/template/art/terrains/t_macro_asphalt_h.png",
+    "heightMacroTexSize": 80,
+    "macroDistances": [
+      0,
+      10,
+      100,
+      3000
+    ],
+    "normalBaseTex": "/levels/template/art/terrains/t_terrain_base_asphalt_nm.png",
+    "normalBaseTexSize": 150,
+    "normalDetailStrength": [
+      0.600000024,
+      0.200000003
+    ],
+    "normalDetailTex": "/levels/template/art/terrains/t_asphalt_02_nm.png",
+    "normalMacroStrength": [
+      0.600000024,
+      0.600000024
+    ],
+    "normalMacroTex": "/levels/template/art/terrains/t_macro_asphalt_nm.png",
+    "normalMacroTexSize": 80,
+    "roughnessBaseTex": "/levels/template/art/terrains/t_terrain_base_asphalt_r.png",
+    "roughnessBaseTexSize": 150,
+    "roughnessDetailStrength": [
+      1,
+      0
+    ],
+    "roughnessDetailTex": "/levels/template/art/terrains/t_asphalt_02_r.png",
+    "roughnessMacroStrength": [
+      0.699999988,
+      1
+    ],
+    "roughnessMacroTex": "/levels/template/art/terrains/t_macro_asphalt_r.png",
+    "roughnessMacroTexSize": 80
+  },
+  "ra_snow": {
+    "internalName": "ra_snow",
+    "class": "TerrainMaterial",
+    "persistentId": "1ad85c19-f087-5e00-9f9f-8f1d552d0246",
+    "aoBaseTex": "/levels/template/art/terrains/t_terrain_base_snow_ao.png",
+    "aoDetailStrength": [
+      0.5,
+      0
+    ],
+    "aoDetailTex": "/levels/template/art/terrains/t_snow_ao.png",
+    "aoDetailTexSize": 4,
+    "aoMacroStrength": [
+      0.5,
+      0.5
+    ],
+    "aoMacroTex": "/levels/template/art/terrains/t_macro_snow_ao.png",
+    "aoMacroTexSize": 30,
+    "baseColorBaseTex": "/levels/template/art/terrains/t_terrain_base_snow_b.png",
+    "baseColorDetailStrength": [
+      0.300000012,
+      0
+    ],
+    "baseColorDetailTex": "/levels/template/art/terrains/t_snow_b.png",
+    "baseColorDetailTexSize": 4,
+    "baseColorMacroStrength": [
+      0.300000012,
+      0.5
+    ],
+    "baseColorMacroTex": "/levels/template/art/terrains/t_macro_snow_b.png",
+    "baseColorMacroTexSize": 30,
+    "detailDistances": [
+      0,
+      0,
+      30,
+      50
+    ],
+    "groundmodelName": "SNOW",
+    "heightBaseTex": "/levels/template/art/terrains/t_terrain_base_snow_h.png",
+    "heightDetailTex": "/levels/template/art/terrains/t_snow_h.png",
+    "heightDetailTexSize": 4,
+    "heightMacroTex": "/levels/template/art/terrains/t_macro_snow_h.png",
+    "heightMacroTexSize": 30,
+    "normalBaseTex": "/levels/template/art/terrains/t_terrain_base_snow_nm.png",
+    "normalDetailStrength": [
+      0.5,
+      0
+    ],
+    "normalDetailTex": "/levels/template/art/terrains/t_snow_nm.png",
+    "normalDetailTexSize": 4,
+    "normalMacroStrength": [
+      0.800000012,
+      0
+    ],
+    "normalMacroTex": "/levels/template/art/terrains/t_macro_snow_nm.png",
+    "normalMacroTexSize": 30,
+    "roughnessBaseTex": "/levels/template/art/terrains/t_terrain_base_snow_r.png",
+    "roughnessDetailStrength": [
+      0.800000012,
+      0
+    ],
+    "roughnessDetailTex": "/levels/template/art/terrains/t_snow_r.png",
+    "roughnessDetailTexSize": 4,
+    "roughnessMacroStrength": [
+      0.800000012,
+      0.800000012
+    ],
+    "roughnessMacroTex": "/levels/template/art/terrains/t_macro_snow_r.png",
+    "roughnessMacroTexSize": 30
+  },
+  "ra_Dirt": {
+    "internalName": "ra_Dirt",
+    "class": "TerrainMaterial",
+    "persistentId": "c02af1bb-d8ee-522c-a598-d0580fb6834c",
+    "aoBaseTex": "/levels/template/art/terrains/t_terrain_base_dirt_ao.png",
+    "aoBaseTexSize": 512,
+    "aoDetailStrength": [
+      1,
+      0
+    ],
+    "aoDetailTex": "/levels/template/art/terrains/t_dirt_crumbly_ao.png",
+    "aoMacroTex": "/levels/template/art/terrains/t_macro_clumpy_ao.png",
+    "aoMacroTexSize": 80,
+    "baseColorBaseTex": "/levels/template/art/terrains/t_terrain_base_dirt_b.png",
+    "baseColorBaseTexSize": 512,
+    "baseColorDetailStrength": [
+      0.25,
+      0
+    ],
+    "baseColorDetailTex": "/levels/template/art/terrains/t_dirt_crumbly_b.png",
+    "baseColorMacroStrength": [
+      0.300000012,
+      0.300000012
+    ],
+    "baseColorMacroTex": "/levels/template/art/terrains/t_macro_clumpy_b.png",
+    "baseColorMacroTexSize": 80,
+    "detailDistance": 80,
+    "detailDistances": [
+      0,
+      0,
+      30,
+      60
+    ],
+    "detailSize": 2,
+    "detailStrength": 0.600000024,
+    "diffuseSize": 512,
+    "groundmodelName": "DIRT",
+    "heightBaseTex": "/levels/template/art/terrains/t_terrain_base_dirt_h.png",
+    "heightBaseTexSize": 512,
+    "heightDetailTex": "/levels/template/art/terrains/t_dirt_crumbly_h.png",
+    "heightMacroTex": "/levels/template/art/terrains/t_macro_clumpy_h.png",
+    "heightMacroTexSize": 80,
+    "macroDistance": 800,
+    "macroDistances": [
+      0,
+      10,
+      100,
+      3000
+    ],
+    "macroSize": 80,
+    "macroStrength": 0.150000006,
+    "normalBaseTex": "/levels/template/art/terrains/t_terrain_base_dirt_nm.png",
+    "normalBaseTexSize": 512,
+    "normalDetailStrength": [
+      0.800000012,
+      0
+    ],
+    "normalDetailTex": "/levels/template/art/terrains/t_dirt_crumbly_nm.png",
+    "normalMacroStrength": [
+      0.5,
+      0.200000003
+    ],
+    "normalMacroTex": "/levels/template/art/terrains/t_macro_clumpy_nm.png",
+    "normalMacroTexSize": 80,
+    "roughnessBaseTex": "/levels/template/art/terrains/t_terrain_base_dirt_r.png",
+    "roughnessBaseTexSize": 512,
+    "roughnessDetailStrength": [
+      1,
+      0
+    ],
+    "roughnessDetailTex": "/levels/template/art/terrains/t_dirt_crumbly_r.png",
+    "roughnessMacroStrength": [
+      0.5,
+      1
+    ],
+    "roughnessMacroTex": "/levels/template/art/terrains/t_macro_clumpy_r.png",
+    "roughnessMacroTexSize": 80
+  },
+  "ra_Mud": {
+    "internalName": "ra_Mud",
+    "class": "TerrainMaterial",
+    "persistentId": "eab24dc2-08ec-5750-b47b-1b194958fb1a",
+    "aoBaseTex": "/levels/template/art/terrains/t_terrain_base_mud_ao.png",
+    "aoBaseTexSize": 300,
+    "aoDetailStrength": [
+      1,
+      0
+    ],
+    "aoDetailTex": "/levels/template/art/terrains/t_mud_ao.png",
+    "aoMacroTex": "/levels/template/art/terrains/t_macro_clumpy_ao.png",
+    "aoMacroTexSize": 40,
+    "baseColorBaseTex": "/levels/template/art/terrains/t_terrain_base_mud_b.png",
+    "baseColorBaseTexSize": 300,
+    "baseColorDetailStrength": [
+      0.25,
+      0
+    ],
+    "baseColorDetailTex": "/levels/template/art/terrains/t_mud_b.png",
+    "baseColorMacroStrength": [
+      0.0500000007,
+      0.100000001
+    ],
+    "baseColorMacroTex": "/levels/template/art/terrains/t_macro_clumpy_b.png",
+    "baseColorMacroTexSize": 40,
+    "detailDistance": 80,
+    "detailDistances": [
+      0,
+      0,
+      20,
+      40
+    ],
+    "detailSize": 2,
+    "detailStrength": 0.600000024,
+    "diffuseSize": 512,
+    "groundmodelName": "MUD",
+    "heightBaseTex": "/levels/template/art/terrains/t_terrain_base_mud_h.png",
+    "heightBaseTexSize": 300,
+    "heightDetailTex": "/levels/template/art/terrains/t_mud_h.png",
+    "heightMacroTex": "/levels/template/art/terrains/t_macro_clumpy_h.png",
+    "heightMacroTexSize": 40,
+    "macroDistance": 800,
+    "macroDistances": [
+      0,
+      10,
+      100,
+      3000
+    ],
+    "macroSize": 80,
+    "macroStrength": 0.150000006,
+    "normalBaseTex": "/levels/template/art/terrains/t_terrain_base_mud_nm.png",
+    "normalBaseTexSize": 300,
+    "normalDetailStrength": [
+      0.699999988,
+      0
+    ],
+    "normalDetailTex": "/levels/template/art/terrains/t_mud_nm.png",
+    "normalMacroStrength": [
+      0.25,
+      0.25
+    ],
+    "normalMacroTex": "/levels/template/art/terrains/t_macro_clumpy_nm.png",
+    "normalMacroTexSize": 40,
+    "roughnessBaseTex": "/levels/template/art/terrains/t_terrain_base_mud_r.png",
+    "roughnessBaseTexSize": 300,
+    "roughnessDetailStrength": [
+      1,
+      0
+    ],
+    "roughnessDetailTex": "/levels/template/art/terrains/t_mud_r.png",
+    "roughnessMacroStrength": [
+      0.5,
+      1
+    ],
+    "roughnessMacroTex": "/levels/template/art/terrains/t_macro_clumpy_r.png",
+    "roughnessMacroTexSize": 40
+  },
+  "templateTerrainMaterialTextureSet": {
+    "name": "templateTerrainMaterialTextureSet",
+    "class": "TerrainMaterialTextureSet",
+    "baseTexSize": [
+      512,
+      512
+    ],
+    "detailTexSize": [
+      1024,
+      1024
+    ],
+    "macroTexSize": [
+      1024,
+      1024
+    ]
+  }
+}

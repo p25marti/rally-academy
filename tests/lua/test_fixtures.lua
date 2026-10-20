@@ -28,17 +28,20 @@
 -- A05 (course): BMP dirt arena, stop line 60 m from the venue start, pure-pursuit script aimed at a
 --      bumper distance before the line, braking at 3.5 m/s2 from 44 km/h: gold = 0.48 m before;
 --      bronze = 1.25 m (misses silver's 1 m); just_past = 0.01 m past (a miss); past = 0.78 m past.
--- A07, A08 (course): BMP downhill left (venue bmp-gravel-corner), Covet Gravel Rally, pure-pursuit
---      racing line from tools/ingame/lines.py (outside, late apex, track-out); a07_gold = 50 km/h
---      cap (52 at the exit); a07_clip = line 1 m left at the exit (left post); a08_gold = 46 km/h;
---      a08_weave = weaving across the road after the exit gate (2 corrections).
+-- Corner drills A07, A08, B04, C01, C02, C08, E02 (course): re-recorded 0.40.0 on the proving ground's flat copy of
+--      the BMP downhill left (venue pg-corner-left, ADR 0008), Covet Gravel Rally, lines from tools/ingame/lines.py.
+-- A07, A08: pure pursuit along the racing line (outside, late apex, track-out); a07_gold / silver / bronze =
+--      60 / 50 / 40 km/h (59.9 / 50.0 / 40.0 at the exit); a07_clip = line 1 m left at the exit (left post).
+--      A08 on a later apex with the line unwinding to the finish: a08_bronze = 41 km/h (one correction; the
+--      scenario's run at the same speed got silver), a08_bronze2 = 44; a08_weave = weaving after the exit.
 -- B01, B02 (course): BMP dirt arena's long straight (venue bmp-dirt-arena-long), stop zone 150 m from the
 --      start, all on dirt; 0.40.0. b01c_gold = pure pursuit to the zone centre from 72 km/h braking at 4.6 m/s2
 --      (0.4 m past the centre); b01c_past = 7.5 m/s2 (8.4 m past the zone). b02c_gold = hold 62 km/h to 115 m,
 --      full brake 0.6 s then eased (0.5 s lock); b02c_held = full brake held to the stop.
--- B04 (course): BMP downhill left, Covet Gravel Rally, racing line from lines.py at up to 60 km/h with
---      scripted pedals: gold = brake 0.35 from the marker easing to 0 three metres before the apex;
---      straight = brake 0.45 only before turn-in; late = brake 0.22 until 12 m past the apex.
+-- B04 (course): the flat corner, arcade gearbox, 65 km/h: gold = brake 0.2 from the marker easing to 0 three
+--      metres before the apex (52 km/h out); straight = brake 0.7 from 45 to 58 m only, then 0.1 throttle; late =
+--      as gold, but 0.12 brake with 0.4 throttle from 3 m before to 6 m past the apex. (Lighter braking with the
+--      throttle closed stops the car on the flat: the arcade box drops to 1st and the engine brakes hard.)
 -- B05 (course): BMP dirt circle (venue bmp-dirt-ring), Covet Gravel Rally in 2nd (sequential), pure
 --      pursuit round the 15 m ring, throttle held (0.15 or more) with 0.25 brake dabs every 25 m:
 --      gold = 32 km/h (0.8 m off the line at most); wide = 38 km/h (runs 4 m wide); nobrake = 34 km/h,
@@ -53,15 +56,14 @@
 --      a lift, then holding a slower speed: gold = 40 km/h, lift 10 m at 35 m, then 26 (2.9 m push, back
 --      by the regain gate); silver = 42, lift 12 m (4.1 m push); bronze = 40, lift at 45 m (back only by
 --      the exit); nopush = 30 km/h; wide = 46 km/h, no lift (12 m wide).
--- C02 (course): BMP downhill left, Covet Gravel Rally in 2nd (sequential), lines.bmp_left with the line
---      ~2 m further inside at nodes 7-9, holding an entry speed, then a full-brake pulse after the Turn in
---      gate, then holding an exit speed: gold = 65 km/h, 8 m pulse from 74 m (38.8°); silver = 65, 7 m
---      from 73 m (12.2°); bronze = same inputs another run (11.5°: physics varies); miss = 55 km/h, 5 m
---      from 78 m (2.3°).
--- C08 (course): as C02 plus a Flick gate, with a scripted steering override: hold 62 km/h, from 54 m lift and
---      steer 0.5 right for 8 m, then 0.8 left with 0.8 brake for 8 m, then the pursuit holds 45 km/h:
---      bronze = 8.8°; clip = the same inputs (10.7°, then the right post of the Apex gate); norotate =
---      a 5 m flick at 0.6 with brake throughout (2.7°); noflick = no steering away.
+-- C02 (course): the flat corner, in 2nd (sequential), lines.bmp_left with the line ~2 m further inside at nodes
+--      7-9, holding an entry speed, then a full-brake pulse after the Turn in gate, then holding an exit speed:
+--      gold = 65 km/h, 8 m pulse from 74 m (17.1°); silver = 65, 7 m from 73 m (12.0°); bronze = 55, 5 m from
+--      78 m (8.8°); miss = 55, 4 m from 78 m (6.9°).
+-- C08 (course): as C02 plus a Flick gate, the approach nearer the middle, with a scripted steering override:
+--      hold 66 km/h, from 54 m lift and steer 0.5 right for 8 m, then full lock left with full brake for 8 m,
+--      then the pursuit holds 45 km/h: silver / silver2 = 12.7° / 14.4°; clip = approaching on the outside
+--      (right post of the Turn in gate); norotate = the same flick at 56 km/h (4.2°); noflick = no steering away.
 -- C04 (course): BMP dirt arena, Covet Gravel Rally in 2nd (sequential), pure pursuit up to a 4.5 m radius
 --      turn round the pivot cone and back, braking to an entry speed before the cone, then the handbrake
 --      with a steering override (0.3-0.4 lock) from 45 m, then holding an exit speed: gold = 50 km/h,
@@ -70,9 +72,10 @@
 -- C07 (course): BMP dirt arena, Covet Gravel Rally in 2nd (sequential), pure pursuit up to the crossing, then
 --      10 m circles round each cone (clockwise right, anticlockwise left) at a steady speed: gold = 28 km/h
 --      (21.3 s); silver = 25 (21.8 s); bronze = 20 (25.0 s); wide = 32 km/h (ran wide of the right lobe gate).
--- C01 (course): C02's corner, Covet Gravel Rally in 2nd (sequential), lines.bmp_left about 3 m inside at
---      nodes 7-9, 65 km/h braked to 61 before the Turn in gate, 0.5 throttle, a 15 m lift from 70 m, then
---      holding 45: the same inputs gave silver (11.0°), bronze (7.7°) and norotate (3.6°).
+-- C01 (course): the flat corner, in 2nd (sequential), lines.bmp_left about 3 m inside at nodes 7-9, 65 km/h
+--      braked to 61 before the Turn in gate, 0.5 throttle, a 15 m lift from 70 m, then holding 45: bronze /
+--      bronze2 = 4.6° / 4.4° (the lift rotates the car less on the flat than on the stock downhill, 3.6-11°);
+--      norotate = entry 54, lift from 72 m (0.7°).
 -- D01 (course): BMP dirt arena, Covet Gravel Rally in 2nd (sequential), pure pursuit along a cosine weave
 --      (±amplitude at each cone, 15 m apart) at a steady speed: gold = 32 km/h, ±2.4 m (13.6 s); silver =
 --      30, ±3 m (14.6 s); bronze = 26, ±3 m (16.2 s); clip = 38 km/h, ±3 m (hit cone 4).
@@ -80,10 +83,9 @@
 --      zone centre at a set deceleration (follow_path decel): gold = 4 m/s2 (0.5 m past the centre); silver =
 --      5.5 (1.7 m past); bronze = 5.8 (2.7 m past); overshoot = 6 (0.4 m past the zone); lockup = full brake
 --      from 125 m, on the tarmac (locked 1.7 s, 16 m short).
--- E02 (course): C02's corner and line, Covet Gravel Rally in 2nd (sequential), 63-64 km/h, a 6-7 m brake pulse
---      after the Turn in gate, 0.12 throttle, then 0.6 throttle from 110 m (just before the apex): gold =
---      11.3° and 76 km/h out; silver = 8.8°; bronze = 4.6°; nothrottle = holding 46 km/h after the pulse
---      (peak 28% throttle after the apex).
+-- E02 (course): the flat corner and C02's line, in 2nd (sequential), 64 km/h, a 7 m brake pulse from 73 m, 0.12
+--      throttle, then 0.6 throttle from 110 m (just before the apex): gold / gold2 = 13.6° / 13.2° and 68.6 km/h
+--      out; nothrottle = holding 46 km/h after the pulse (peak 16% throttle after the apex).
 -- D05, D06, E05 (course): West Coast USA Off-Road Circuit (venues offroad-blind-hairpin, wcusa-offroad-circuit,
 --      offroad-kicker), Covet Gravel Rally in 2nd (sequential), pure pursuit along the circuit's road-network
 --      centre line holding a speed, then a second speed from a set distance. D05: gold = 37 km/h (38.6 at the Turn
@@ -317,7 +319,8 @@ function T.a05_course_line_rules_and_medals_still_agree_with_the_in_game_verdict
 end
 
 function T.a07_a08_corner_rules_and_medals_still_agree_with_the_in_game_verdicts()
-  local want = {a07_gold = {'A07', 'gold'}, a07_clip = {'A07', false}, a08_gold = {'A08', 'gold'}, a08_weave = {'A08', false}}
+  local want = {a07_gold = {'A07', 'gold'}, a07_silver = {'A07', 'silver'}, a07_bronze = {'A07', 'bronze'},
+    a07_clip = {'A07', false}, a08_bronze = {'A08', 'bronze'}, a08_bronze2 = {'A08', 'bronze'}, a08_weave = {'A08', false}}
   for name, w in pairs(want) do
     local res, rec = gradeCourse(name, w[1])
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
@@ -325,7 +328,7 @@ function T.a07_a08_corner_rules_and_medals_still_agree_with_the_in_game_verdicts
     eq(res.tier or false, w[2], name .. ' medal')
   end
   has(check(gradeCourse('a07_clip', 'A07'), 'markers_clear').text, 'Clipped the left post of the gate')
-  eq(check(gradeCourse('a08_gold', 'A08'), 'steady_exit').text, 'Steady exit: no steering corrections', 'steady')
+  has(check(gradeCourse('a08_bronze', 'A08'), 'steady_exit').text, '1 steering correction after the exit gate')
   has(check(gradeCourse('a08_weave', 'A08'), 'steady_exit').text, '2 steering corrections after the exit gate')
 end
 
@@ -406,14 +409,14 @@ function T.c02_brake_rotation_rules_and_medals_still_agree_with_the_in_game_verd
 end
 
 function T.c08_flick_rules_still_agree_with_the_in_game_verdicts()
-  local want = {c08_bronze = 'bronze', c08_clip = false, c08_norotate = false, c08_noflick = false}
+  local want = {c08_silver = 'silver', c08_silver2 = 'silver', c08_clip = false, c08_norotate = false, c08_noflick = false}
   for name, tier in pairs(want) do
     local res, rec = gradeCourse(name, 'C08')
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, tier, name .. ' medal')
   end
-  has(check(gradeCourse('c08_bronze', 'C08'), 'flick').text, 'Flicked')
+  has(check(gradeCourse('c08_silver', 'C08'), 'flick').text, 'Flicked')
   has(check(gradeCourse('c08_noflick', 'C08'), 'flick').text, 'No flick')
   has(check(gradeCourse('c08_norotate', 'C08'), 'rear_slide').text, 'lift or brake harder')
 end
@@ -443,14 +446,14 @@ function T.c07_figure_eight_rules_and_medals_still_agree_with_the_in_game_verdic
 end
 
 function T.c01_lift_off_rules_and_medals_still_agree_with_the_in_game_verdicts()
-  local want = {c01_silver = 'silver', c01_bronze = 'bronze', c01_norotate = false}
+  local want = {c01_bronze = 'bronze', c01_bronze2 = 'bronze', c01_norotate = false}
   for name, tier in pairs(want) do
     local res, rec = gradeCourse(name, 'C01')
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, tier, name .. ' medal')
   end
-  has(check(gradeCourse('c01_silver', 'C01'), 'no_brake_between_gates').text, 'No braking between gates 1 and 2')
+  has(check(gradeCourse('c01_bronze', 'C01'), 'no_brake_between_gates').text, 'No braking between gates 1 and 2')
   has(check(gradeCourse('c01_norotate', 'C01'), 'rear_slide').text, 'lift sharply')
 end
 
@@ -479,7 +482,7 @@ function T.d08_surface_change_rules_and_medals_still_agree_with_the_in_game_verd
 end
 
 function T.e02_fwd_technique_rules_and_medals_still_agree_with_the_in_game_verdicts()
-  local want = {e02_gold = 'gold', e02_silver = 'silver', e02_bronze = 'bronze', e02_nothrottle = false}
+  local want = {e02_gold = 'gold', e02_gold2 = 'gold', e02_nothrottle = false}
   for name, tier in pairs(want) do
     local res, rec = gradeCourse(name, 'E02')
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)

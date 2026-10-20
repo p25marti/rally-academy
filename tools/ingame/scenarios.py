@@ -259,23 +259,25 @@ def gears():
 
 @scenario
 def corners():
-    """A07 and A08 on the BMP downhill left (Covet Gravel Rally, scripted racing line from lines.py):
-    a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss.
-    Swaps to the drill car with Go to drill (same map)."""
+    """A07 and A08 on the proving ground's flat copy of the BMP left (Covet Gravel Rally, scripted racing
+    lines from lines.py): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving
+    after the exit miss."""
     import lines as L
     p = []
     A.drill_session("A07")
     kw = dict(decel=2.5, max_throttle=0.9, stop_within=0.5)
-    s = A.course_run("A07", L.bmp_left(), kmh=50, **kw)
+    s = A.course_run("A07", L.bmp_left(), kmh=55, **kw)
     expect(p, "A07 racing line earns a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
            f"{s.get('tier')}: {s.get('reason')}")
-    s = A.course_run("A07", L.bmp_left({"DR1181_11": -0.5, "DR1181_12": -3.3}), kmh=45, **kw)
+    s = A.course_run("A07", L.bmp_left({"DR1181_12": -2.5, "DR1181_13": -2.5}), kmh=48, **kw)
     expect(p, "A07 clipping the exit post misses", s.get("passed") is False and "Clipped" in str(s.get("reason")), s.get("reason"))
     lua("extensions.rallyAcademy.select('A08') extensions.rallyAcademy.useVenueStart() return 1")
-    s = A.course_run("A08", L.bmp_left(), kmh=46, **kw)
+    # a later apex than A07's, unwinding from the exit gate to the finish (the road keeps turning past it)
+    late = {"DR1181_9": 2.2, "DR1181_10": 1.5, "DR1181_13": -3.0, "DR1181_14": -2.0, "DR1181_15": -1.5}
+    s = A.course_run("A08", L.bmp_left(late, tail=60), kmh=41, **kw)
     expect(p, "A08 late apex and steady exit earns a medal", s.get("passed") is True and s.get("tier") in ("gold", "silver"),
            f"{s.get('tier')}: {s.get('reason')}")
-    s = A.course_run("A08", L.bmp_left({"DR1181_13": -0.5, "DR1181_14": -4.2, "DR1181_15": -0.5}), kmh=44, **kw)
+    s = A.course_run("A08", L.bmp_left(dict(late, DR1181_13=-0.5, DR1181_14=-4.2, DR1181_15=-0.5), tail=60), kmh=41, **kw)
     expect(p, "A08 weaving after the exit misses", s.get("passed") is False and "steering correction" in str(s.get("reason")),
            s.get("reason"))
     A.end_session("A07", "A08")
@@ -284,8 +286,10 @@ def corners():
 
 @scenario
 def trail():
-    """B04 on the BMP downhill left (Covet Gravel Rally): braking from the marker and easing off into the
-    turn earns a medal; braking only in a straight line before turning in misses."""
+    """B04 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): braking lightly from the
+    marker and easing off into the turn earns a medal; braking only in a straight line before turning in
+    misses. On the flat, light braking with the throttle closed stops the car quickly (engine braking in a
+    low gear), so the trail brake is gentle and the entry faster than on the stock downhill."""
     import lines as L
     p = []
     A.drill_session("B04")
@@ -295,18 +299,19 @@ def trail():
         if trav < 50:
             return None
         if trav < apex - 3:
-            return (0.0, max(0.0, 0.35 * (1 - (trav - 50) / (apex - 53))))
+            return (0.0, max(0.0, 0.2 * (1 - (trav - 50) / (apex - 53))))
         return (0.6, 0.0)
 
     def straight_pedals(_kmh, trav):
         if trav < 45:
             return None
-        return (0.0, 0.45) if trav < 62 else (0.25, 0.0)
-    kw = dict(kmh=60, decel=2.5, max_throttle=1.0, stop_within=0.5)
-    s = A.course_run("B04", L.bmp_left(), pedals=trail_pedals, **kw)
+        return (0.0, 0.7) if trav < 58 else (0.1, 0.0)
+    kw = dict(kmh=65, decel=2.5, max_throttle=1.0, stop_within=0.5)
+    line = L.bmp_left({"DR1181_12": -1.5, "DR1181_13": -1.5})  # through the middle of the 8 m exit gate
+    s = A.course_run("B04", line, pedals=trail_pedals, **kw)
     expect(p, "trail braking into the corner earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
-    s = A.course_run("B04", L.bmp_left(), pedals=straight_pedals, **kw)
+    s = A.course_run("B04", line, pedals=straight_pedals, **kw)
     expect(p, "braking only before turn-in misses", s.get("passed") is False and "into the corner" in str(s.get("reason")),
            s.get("reason"))
     A.end_session("B04")
@@ -428,7 +433,7 @@ def understeer():
 
 
 def _corner_pulse_run(drill, kmh, pulse_at, pulse_m, then_kmh, offsets=None):
-    """The BMP downhill left in 2nd (sequential): hold `kmh`, a full-brake pulse of `pulse_m` metres from
+    """The BMP left (or its flat copy) in 2nd (sequential): hold `kmh`, a full-brake pulse of `pulse_m` metres from
     `pulse_at` metres, then hold `then_kmh`, along lines.bmp_left(offsets)."""
     import lines as L
     shifted = []
@@ -453,8 +458,9 @@ C02_LINE = {"DR1181_7": 1.8, "DR1181_8": 2.2, "DR1181_9": 2.2}  # inside: the ro
 
 @scenario
 def rotation():
-    """C02 on the BMP downhill left (Covet Gravel Rally): a brake pulse after turn-in rotates the car for a
-    medal (scripted rotations vary a lot, so up to three tries); a gentle pulse at lower speed doesn't rotate it."""
+    """C02 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): a brake pulse after turn-in
+    rotates the car for a medal (scripted rotations vary a lot, so up to three tries); a short pulse at lower
+    speed doesn't rotate it (about 6 degrees; a 5 m pulse at 55 km/h reaches the 8 degree target on the flat)."""
     p = []
     A.drill_session("C02")
     for _ in range(3):
@@ -463,13 +469,13 @@ def rotation():
             break
     expect(p, "a brake pulse after turn-in rotates the car for a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
-    s = _corner_pulse_run("C02", 55, 78, 5, 40, C02_LINE)
+    s = _corner_pulse_run("C02", 55, 78, 4, 40, C02_LINE)
     expect(p, "no rotation misses", s.get("passed") is False and "lift or brake harder" in str(s.get("reason")), s.get("reason"))
     A.end_session("C02")
     return p
 
 
-def _flick_run(kmh=62, at=54, away=0.5, away_m=8, into=-0.8, into_m=8, brake=0.8):
+def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0, offsets=None):
     """C08: hold `kmh`, then from `at` metres lift and steer `away` (right) for `away_m`, then `into` (left)
     with `brake` for `into_m`, then the pursuit holds 45 km/h."""
     import lines as L
@@ -494,15 +500,17 @@ def _flick_run(kmh=62, at=54, away=0.5, away_m=8, into=-0.8, into_m=8, brake=0.8
         if at <= trav < at + away_m:
             return away
         return into if at + away_m <= trav < at + away_m + into_m else None
-    return A.course_run("C08", L.bmp_left(C02_LINE), gearbox="sequential", on_tick=on_tick, pedals=pedals,
+    # the approach nearer the middle than C02's outside line: the flick itself swings the car out
+    line = L.bmp_left({**C02_LINE, "DR1181_3": 0.5, **(offsets or {})})
+    return A.course_run("C08", line, gearbox="sequential", on_tick=on_tick, pedals=pedals,
                         steer=steer, kmh=kmh + 15, max_throttle=1.0, timeout=40, stop_within=0.5)
 
 
 @scenario
 def flick():
-    """C08 on the BMP downhill left (Covet Gravel Rally): a lift-and-flick with a touch of brake swings the
-    rear for a pass (scripted flicks pass a third to half the time: up to five tries); turning in without
-    flicking misses."""
+    """C08 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): a lift-and-flick with a
+    stab of brake swings the rear for a pass (scripted flicks vary: up to five tries); turning in without
+    flicking misses. The flat corner needs a harder flick than the stock downhill (full brake, 66 km/h)."""
     p = []
     A.drill_session("C08")
     for _ in range(5):
@@ -596,7 +604,7 @@ def figure8():
     return p
 
 
-def _liftoff_run(entry_kmh=61, lift_at=70):
+def _liftoff_run(entry_kmh=61, lift_at=70, offsets=None):
     """C01: 65 km/h, braked to `entry_kmh` before the Turn in gate, 0.5 throttle, a 15 m lift from
     `lift_at` metres, then hold 45 km/h, on a line ~3 m inside through the apex."""
     import lines as L
@@ -618,15 +626,15 @@ def _liftoff_run(entry_kmh=61, lift_at=70):
         if trav < lift_at:
             return (0.5, 0.0)
         return (0.0, 0.0) if trav < lift_at + 15 else hold(v, 45)
-    line = L.bmp_left({"DR1181_6": 1.0, "DR1181_7": 3.2, "DR1181_8": 3.6, "DR1181_9": 3.0})
+    line = L.bmp_left(dict({"DR1181_6": 1.0, "DR1181_7": 3.2, "DR1181_8": 3.6, "DR1181_9": 3.0}, **(offsets or {})))
     return A.course_run("C01", line, gearbox="sequential", on_tick=on_tick, pedals=pedals, kmh=80, max_throttle=1.0,
                         timeout=40, stop_within=0.5)
 
 
 @scenario
 def liftoff():
-    """C01 on the BMP downhill left (Covet Gravel Rally): lifting off at turn-in from 61 km/h rotates the car for
-    a pass (scripted lifts pass only a third to half the time, so up to five tries); from 54 km/h it doesn't."""
+    """C01 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): lifting off at turn-in from
+    61 km/h rotates the car for a pass (4-5 degrees on the flat; up to five tries); from 54 km/h it doesn't."""
     p = []
     A.drill_session("C01")
     for _ in range(5):
@@ -724,7 +732,7 @@ def _fwd_exit_run(throttle_at=110, throttle=0.6):
 
 @scenario
 def fwdexit():
-    """E02 on the BMP downhill left (Covet Gravel Rally): a brake pulse to rotate, then throttle from the apex
+    """E02 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): a brake pulse to rotate, then throttle from the apex
     pulls the car out for a pass (up to three tries: rotations vary); no throttle after the apex misses."""
     p = []
     A.drill_session("E02")

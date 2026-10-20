@@ -27,11 +27,16 @@ STEAM_GUESSES = [r"C:\Program Files (x86)\Steam\steamapps\common\BeamNG.drive",
                  r"E:\SteamLibrary\steamapps\common\BeamNG.drive"]
 
 
-def game_dir(arg):
+def find_game(arg=None):
+    """The BeamNG install folder, or None."""
     for d in [arg, os.environ.get("BEAMNG_GAME")] + STEAM_GUESSES:
         if d and (Path(d) / "content" / "levels" / "template.zip").exists():
             return Path(d)
-    sys.exit("BeamNG install not found: pass --game or set BEAMNG_GAME")
+    return None
+
+
+def game_dir(arg):
+    return find_game(arg) or sys.exit("BeamNG install not found: pass --game or set BEAMNG_GAME")
 
 
 def pid(name, key):
@@ -39,30 +44,77 @@ def pid(name, key):
     return str(uuid.uuid5(uuid.NAMESPACE_URL, f"rally-academy/{name}/{key}"))
 
 
-def grey_png(size, row):
-    """A size x size 8-bit greyscale PNG whose every row is `row`."""
+# Preview colours per template material (the map list's thumbnail is a plan of the layout).
+COLOURS = {"Grass": (74, 110, 52), "gravel": (168, 152, 120), "Asphalt": (60, 60, 64), "snow": (236, 240, 245),
+           "Dirt": (132, 98, 64), "Mud": (86, 66, 46), "BeachSand": (214, 196, 150), "rock": (120, 118, 112)}
+
+
+def preview_png(layer, size, wanted, px=512):
+    """A top-down plan of the material layer, px x px, north up."""
+    step = size // px
+    cols = [COLOURS.get(m, (255, 0, 255)) for m in wanted]
+    rows = []
+    for y in range(px - 1, -1, -1):  # PNG rows run top (north) to bottom
+        src = (y * step) * size
+        rows.append(b"\0" + b"".join(bytes(cols[layer[src + x * step]]) for x in range(px)))
+
     def chunk(typ, data):
         return struct.pack(">I", len(data)) + typ + data + struct.pack(">I", zlib.crc32(typ + data))
-    body = zlib.compress((b"\0" + row) * size, 9)
-    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 0, 0, 0, 0))
-            + chunk(b"IDAT", body) + chunk(b"IEND", b""))
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", px, px, 8, 2, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(b"".join(rows), 9)) + chunk(b"IEND", b""))
 
 
 def jsonl(objs):
     return "".join(json.dumps(o, separators=(",", ":")) + "\n" for o in objs)
 
 
-def build(layout, game):
+def smooth(pts, steps=4):
+    """Catmull-Rom through the points (end points kept), `steps` pieces per segment."""
+    p = [pts[0]] + pts + [pts[-1]]
+    out = []
+    for i in range(1, len(p) - 2):
+        for k in range(steps):
+            t = k / steps
+            out.append(tuple(0.5 * (2 * p[i][j] + (-p[i - 1][j] + p[i + 1][j]) * t
+                                    + (2 * p[i - 1][j] - 5 * p[i][j] + 4 * p[i + 1][j] - p[i + 2][j]) * t * t
+                                    + (-p[i - 1][j] + 3 * p[i][j] - 3 * p[i + 1][j] + p[i + 2][j]) * t ** 3) for j in (0, 1)))
+    return out + [tuple(pts[-1])]
+
+
+def road_line(r):
+    """A road's smoothed centre line in world coordinates."""
+    ox, oy = r["origin"]
+    return [(ox + x, oy + y) for x, y in smooth([tuple(q) for q in r["points"]])]
+
+
+def paint_road(layer, size, half, r, mat):
+    """Paint every 1 m square whose centre lies within width / 2 of the road's centre line."""
+    w2 = (r["width"] / 2) ** 2
+    line = road_line(r)
+    for (ax, ay), (bx, by) in zip(line, line[1:]):
+        dx, dy = bx - ax, by - ay
+        ll = dx * dx + dy * dy or 1e-9
+        pad = r["width"] / 2 + 1
+        for gy in range(max(0, int(min(ay, by) - pad + half)), min(size, int(max(ay, by) + pad + half) + 1)):
+            cy = gy - half + 0.5
+            for gx in range(max(0, int(min(ax, bx) - pad + half)), min(size, int(max(ax, bx) + pad + half) + 1)):
+                cx = gx - half + 0.5
+                t = max(0.0, min(1.0, ((cx - ax) * dx + (cy - ay) * dy) / ll))
+                if (cx - ax - t * dx) ** 2 + (cy - ay - t * dy) ** 2 <= w2:
+                    layer[gy * size + gx] = mat
+
+
+def generate(layout, game):
+    """Every file of the level: {path inside mod/levels/<name>/: bytes}."""
     name, size = layout["name"], layout["size"]
     t = layout["terrain"]
-    out = MOD / "levels" / name
     lv = f"/levels/{name}"
     tpl = zipfile.ZipFile(game / "content" / "levels" / "template.zip")
 
     # Terrain materials: the template's definitions for the ones we use (filler first = layer 0).
     tmats = json.loads(tpl.read("levels/template/art/terrains/main.materials.json"))
     by_name = {v.get("internalName"): (k, v) for k, v in tmats.items() if v.get("class") == "TerrainMaterial"}
-    wanted = [layout["filler"]] + [p["material"] for p in layout["pads"] if p["material"] != layout["filler"]]
+    wanted = [layout["filler"]] + [p["material"] for p in layout["pads"] + layout.get("roads", [])]
     wanted = list(dict.fromkeys(wanted))
     missing = [m for m in wanted if m not in by_name]
     if missing:
@@ -94,6 +146,8 @@ def build(layout, game):
             row = gy * size
             for gx in range(max(0, x0), min(size, x1)):
                 layer[row + gx] = index[p["material"]]
+    for r in layout.get("roads", []):
+        paint_road(layer, size, half, r, index[r["material"]])
     names = b"".join(bytes([len(ours[m])]) + ours[m].encode() for m in wanted)
     ter = (bytes([9]) + struct.pack("<I", size) + struct.pack("<H", raw) * (size * size) + bytes(layer)
            + struct.pack("<I", len(wanted)) + names)
@@ -101,7 +155,7 @@ def build(layout, game):
     files = {
         "info.json": json.dumps({
             "title": layout["title"], "description": layout["description"], "size": [size, size],
-            "authors": "Rally Academy", "isAuxiliary": False, "supportsTraffic": False, "supportsTimeOfDay": True,
+            "previews": ["preview.png"], "authors": "Rally Academy", "isAuxiliary": False, "supportsTraffic": False, "supportsTimeOfDay": True,
             "defaultDate": {"year": 2026, "month": 7, "day": 29}}, indent=2) + "\n",
         "theTerrain.terrain.json": json.dumps({
             "binaryFormat": "version(char), size(unsigned int), heightMap(heightMapSize * heightMapItemSize), "
@@ -132,19 +186,37 @@ def build(layout, game):
         {"class": "SpawnSphere", "name": "spawn_default", "persistentId": pid(name, "spawn"), "__parent": "PlayerDropPoints",
          "position": [sx, sy, t["groundZ"] + 1], "dataBlock": "SpawnSphereMarker", "enabled": "1", "radius": 1}])
 
-    out.mkdir(parents=True, exist_ok=True)
-    for rel, text in files.items():
+    out = {rel: text.replace("\r\n", "\n").encode("utf-8") for rel, text in files.items()}  # LF, as git keeps them
+    out["theTerrain.ter"] = ter
+    out["preview.png"] = preview_png(layer, size, wanted)
+    # No fluid depth map (<terrain>.ter.depth.png): the log notes "all fluids will be disabled as ground type",
+    # which is what we want for now. An all-zero map (like the template's) made every wheel sink 0.2 m into the
+    # gravel and bog the car down to walking pace at full throttle (0.40.0).
+    return out
+
+
+def level_dir(layout):
+    return MOD / "levels" / layout["name"]
+
+
+def build(layout, game):
+    """Write the level into mod/levels/<name>/."""
+    out = level_dir(layout)
+    for rel, data in generate(layout, game).items():
         f = out / rel
         f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_text(text, encoding="utf-8", newline="\n")
-    (out / "theTerrain.ter").write_bytes(ter)
-    # Fluid depth map next to the terrain (8-bit greyscale, all zero like the template's). Without it the log
-    # warns that fluids are disabled as a ground type (0.40.0).
-    (out / "theTerrain.ter.depth.png").write_bytes(grey_png(size, bytes(size)))
-    print(f"wrote {out.relative_to(ROOT)}: {size} x {size} m terrain at z {t['groundZ']} m, "
-          f"{len(layout['pads'])} pads ({', '.join(p['id'] + '=' + p['material'] for p in layout['pads'])}), "
-          f"{len(ter) / 1e6:.1f} MB terrain")
+        f.write_bytes(data)
+    t = layout["terrain"]
+    print(f"wrote {out.relative_to(ROOT)}: {layout['size']} x {layout['size']} m terrain at z {t['groundZ']} m, "
+          f"{len(layout['pads'])} pads, {len(layout.get('roads', []))} roads")
     return out
+
+
+def stale(layout, game):
+    """Files under mod/levels/<name>/ that differ from what the layout generates, are missing, or are extra."""
+    want, out = generate(layout, game), level_dir(layout)
+    have = {f.relative_to(out).as_posix() for f in out.rglob("*") if f.is_file()} if out.is_dir() else set()
+    return sorted(set(want) ^ have | {rel for rel in want if rel in have and (out / rel).read_bytes() != want[rel]})
 
 
 def main(argv):
