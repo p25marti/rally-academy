@@ -744,6 +744,30 @@
         }
       },
       "notes": "offroad-kicker on the proving ground's copy of the Off-Road Circuit's first 640 m (shifted (-80, -455) m, same heading, measured elevation kept), so its drills keep their gates."
+    },
+    {
+      "id": "pg-camber",
+      "mapsId": "P9",
+      "name": "Proving ground: camber corners",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 540.0,
+          "y": -120.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "A 440 m gravel road heading north from here: a banked left (16 %), an off-camber right (10 %), a banked right, an off-camber left, all 90 degrees at 35 m radius, 8 m wide, tape 6 m beyond each edge."
     }
   ]
 }

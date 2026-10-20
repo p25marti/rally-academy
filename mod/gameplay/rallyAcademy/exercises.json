@@ -3419,8 +3419,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "bmp-gravel-track",
-        "areaHint": "BMP Gravel Track (MAPS W1), start line ~(103, 165). Banked berm corners.",
+        "venue": "pg-camber",
+        "areaHint": "Proving ground camber corners (MAPS P9): a banked left, an off-camber right, a banked right and an off-camber left, all the same 35 m radius, so the camber is the only difference.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [

@@ -79,7 +79,8 @@ all six are built.
       E01 on asphalt and snow twins of the corner, B03 (with surface variants) and B08, and a winding test road for
       A06, D02, F07, F06 and the parked E03 / E04.
 - [x] Terrain features (ADR 0010): elevation, banking, camber and bumps along roads. The hill circuit (D05, D06, E05).
-- [ ] The rest of the terrain drills: D07 camber, E06 jump, E07 rough ground, E08 water.
+- [x] D07 camber on its own road: banked and off-camber corners of the same radius.
+- [ ] The rest of the terrain drills: E06 jump, E07 rough ground, E08 water.
 - [ ] Still to try: reshape the strips into road-width lanes plus handling pads, a start truss, real (physical) cones.
 
 ## P2 — First automatically graded drill

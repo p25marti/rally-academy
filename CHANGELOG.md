@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **D07 road camber moved to the proving ground**: a gravel road of four identical 35 m corners, two banked toward the
+  inside (16 %) and two off-camber (10 %), one of each per direction, so camber is the only thing that changes.
 - **Hills, crests and banked corners on the proving ground** (ADR 0010): the map builder now shapes the terrain along
   a road (elevation, banking, camber, bumps) and blends it back to flat, in areas of their own so the flat drills
   stay flat (the build refuses anything that reaches them). First use: the Off-Road Circuit's first 640 m copied with
