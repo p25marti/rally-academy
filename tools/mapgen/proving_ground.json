@@ -1151,6 +1151,36 @@
       "width": 0.4,
       "textureLength": 8,
       "priority": 5
+    },
+    {
+      "kind": "road_track",
+      "road": "gravel-lane",
+      "offset": 0,
+      "material": "Dirt_road_variation_02",
+      "width": 7.5,
+      "textureLength": 30,
+      "priority": 30
+    },
+    {
+      "kind": "road_edges",
+      "road": "gravel-lane",
+      "material": "italy_road_edge_damage_wide",
+      "width": 3,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "road_track",
+      "road": "gravel-lane",
+      "offset": 0,
+      "material": "dirt_tiretracks",
+      "width": 3.2,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        5,
+        5
+      ]
     }
   ],
   "decalMaterials": {
@@ -1308,6 +1338,90 @@
         [
           -135,
           -29
+        ]
+      ]
+    },
+    {
+      "id": "gravel-lane",
+      "_comment": "West Coast USA's gravel lane DR825 (venues gravel-lane-tightening/opening, D03/D04), flat: its road-network nodes shifted (900, 200) m, same compass orientation, so the drills keep their gates.",
+      "material": "gravel",
+      "width": 7,
+      "origin": [
+        900.0,
+        200.0
+      ],
+      "points": [
+        [
+          -889.11,
+          -52.45
+        ],
+        [
+          -867.16,
+          -64.41
+        ],
+        [
+          -859.71,
+          -68.47
+        ],
+        [
+          -851.45,
+          -70.65
+        ],
+        [
+          -822.97,
+          -69.45
+        ],
+        [
+          -813.73,
+          -71.62
+        ],
+        [
+          -806.42,
+          -76.17
+        ],
+        [
+          -801.14,
+          -82.66
+        ],
+        [
+          -798.41,
+          -91.99
+        ],
+        [
+          -799.83,
+          -101.05
+        ],
+        [
+          -805.6,
+          -108.67
+        ],
+        [
+          -813.29,
+          -114.03
+        ],
+        [
+          -824.36,
+          -123.64
+        ],
+        [
+          -827.73,
+          -130.8
+        ],
+        [
+          -827.73,
+          -139.21
+        ],
+        [
+          -824.05,
+          -151.56
+        ],
+        [
+          -821.76,
+          -162.82
+        ],
+        [
+          -816.78,
+          -187.32
         ]
       ]
     }

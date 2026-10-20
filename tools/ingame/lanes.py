@@ -14,8 +14,12 @@ DR825 = [
 ]
 
 
-def samples(first, last):
-    """(x, y) every metre from node DR825_<first> to DR825_<last> (either direction)."""
+# The proving ground's copy of the lane (road "gravel-lane", venues pg-lane-*) sits this far from the original.
+PG_SHIFT = (900.0, 200.0)
+
+
+def samples(first, last, shift=(0.0, 0.0)):
+    """(x, y) every metre from node DR825_<first> to DR825_<last> (either direction), moved by `shift`."""
     ids = [int(n.split('_')[1]) for n, _, _ in DR825]
     sel = [p for p, i in zip(DR825, ids) if min(first, last) <= i <= max(first, last)]
     if first > last:
@@ -23,10 +27,12 @@ def samples(first, last):
     out = []
     for (_, ax, ay), (_, bx, by) in zip(sel, sel[1:]):
         seg = math.hypot(bx - ax, by - ay)
-        out += [(ax + (bx - ax) * i / seg, ay + (by - ay) * i / seg) for i in range(int(seg))]
+        out += [(ax + (bx - ax) * i / seg + shift[0], ay + (by - ay) * i / seg + shift[1]) for i in range(int(seg))]
     return out
 
 
 def line(start, first, last, a, b):
-    """Course-frame points (circuit.local) from metre a to b of the lane between those nodes."""
-    return [circuit.local(start, x, y) for x, y in samples(first, last)[a:b]]
+    """Course-frame points (circuit.local) from metre a to b of the lane between those nodes; a start far from the
+    original lane is taken to be on the proving ground's copy."""
+    near = min(abs(start["pos"]["x"] - x) + abs(start["pos"]["y"] - y) for _, x, y in DR825) < 300
+    return [circuit.local(start, x, y) for x, y in samples(first, last, (0.0, 0.0) if near else PG_SHIFT)[a:b]]

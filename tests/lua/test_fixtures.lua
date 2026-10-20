@@ -109,7 +109,9 @@
 --      25 m; b06 = 40 km/h, a 10 m lift at 35 m, then 26; b07 = 60 km/h, 6 m of full brake (bronze there); c04 =
 --      braked to 45, a 6 m pull at 0.3 lock, exit 30; c07 = 28 km/h circles; d01 = 32 km/h, ±2.4 m. The older runs
 --      above them were recorded on the BMP dirt arena and circle (DIRT_DUSTY); the rules didn't change.
---      a02 = the launch fed in from 25 % throttle (full at 45 km/h); a04 = the 30 km/h throttle hold (bronze here:
+--      d03 = the flat copy of lane DR825, 45 km/h easing to 36 from 50 m (38 out); d04 = its opening left, the
+--      throttle ramped from 36 m (56 out). a02 = the launch fed in from 25 % throttle (full at 45 km/h);
+--      a04 = the 30 km/h throttle hold (bronze here:
 --      gate 3 at 27.9 km/h, under silver's 28).
 local json = require('json')
 local Rules = require('ge/extensions/rallyAcademy/rules')
@@ -270,6 +272,7 @@ end
 function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
   local want = {a01_gold_pg = {'A01', 'gold'}, a02_gold_pg = {'A02', 'gold'}, a04_bronze_pg = {'A04', 'bronze'},
     b05_gold_pg = {'B05', 'gold'}, b06_gold_pg = {'B06', 'gold'},
+    d03_gold_pg = {'D03', 'gold'}, d04_gold_pg = {'D04', 'gold'},
     b07_bronze_pg = {'B07', 'bronze'}, c04_gold_pg = {'C04', 'gold'}, c07_gold_pg = {'C07', 'gold'}, d01_gold_pg = {'D01', 'gold'}}
   for name, w in pairs(want) do
     local res, rec = gradeCourse(name, w[1])

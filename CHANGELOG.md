@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **D03 tightening and D04 opening corners moved to the proving ground**: West Coast USA's gravel lane rebuilt flat
+  next to the strips, same shape, same gates. Without the crest and the climb both corners carry more speed, so
+  their medal speeds rose a little (D03 30 / 36 km/h, D04 48 / 54 km/h).
 - **Barriers line the exercise paths**, set back with run-off (the owner's choice): red-and-white concrete race
   barriers 10 m outside the corner's bend, guardrail with posts along its approach and down both sides of every
   strip, spectator tape on the inside of the bend. A small mistake runs onto the grass; only a big one reaches a

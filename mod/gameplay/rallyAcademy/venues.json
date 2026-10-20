@@ -528,6 +528,54 @@
         }
       },
       "notes": "The south end of the proving ground's snow strip, facing north along it: 390 m of dead-level SNOW, 120 m wide, the same shape as pg-dirt-strip, for surface variants (ADR 0009)."
+    },
+    {
+      "id": "pg-lane-tightening",
+      "mapsId": "P4",
+      "name": "Proving ground: gravel lane, tightening right",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 34.6,
+          "y": 134.63,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.8781,
+          "y": -0.4785,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "gravel-lane-tightening on the proving ground's flat copy of gravel lane DR825 (shifted (900, 200) m, same heading), so its drill keeps its gates; 7 m of gravel on grass, dead level."
+    },
+    {
+      "id": "pg-lane-opening",
+      "mapsId": "P4",
+      "name": "Proving ground: gravel lane, opening left",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 77.15,
+          "y": 77.67,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.7551,
+          "y": 0.6556,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "gravel-lane-opening on the proving ground's flat copy of gravel lane DR825 (shifted (900, 200) m, same heading), so its drill keeps its gates; 7 m of gravel on grass, dead level."
     }
   ]
 }

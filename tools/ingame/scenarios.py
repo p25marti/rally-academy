@@ -831,7 +831,7 @@ def crest():
 
 
 def _lane_run(drill, n0, n1, a, b, kmh, then_kmh=None, then_at=1e9, throttle_at=None, throttle_max=0.45, ramp=0.005):
-    """A run along gravel lane DR825 (nodes n0 to n1, metres a to b) in 2nd (sequential): hold `kmh` (a gentle launch),
+    """A run along gravel lane DR825 or its proving-ground copy (nodes n0 to n1, metres a to b) in 2nd (sequential): hold `kmh` (a gentle launch),
     then `then_kmh` from `then_at` metres, or a throttle ramp from 0.25 up to `throttle_max` from `throttle_at`."""
     import lanes
     line = lanes.line(A.drill(drill)["environment"]["spawn"], n0, n1, a, b)
@@ -855,14 +855,15 @@ def _lane_run(drill, n0, n1, a, b, kmh, then_kmh=None, then_at=1e9, throttle_at=
 
 @scenario
 def tighten():
-    """D03 on gravel lane DR825 (Covet Gravel Rally): easing off as the right-hander tightens earns a medal; 50 km/h
-    in runs wide where it closes."""
+    """D03 on the proving ground's flat copy of gravel lane DR825 (Covet Gravel Rally): easing off as the right-hander
+    tightens earns a medal; 55 km/h in runs wide where it closes (the flat copy carries more speed than the stock
+    lane's crest did)."""
     p = []
     A.drill_session("D03")
     s = _lane_run("D03", 2, 13, 2, 118, 45, 30, 50)
     expect(p, "easing off into the tightening corner earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
-    s = _lane_run("D03", 2, 13, 2, 118, 50, 36, 50)
+    s = _lane_run("D03", 2, 13, 2, 118, 55, 40, 50)
     expect(p, "too fast in runs wide and misses", s.get("passed") is False, s.get("reason"))
     A.end_session("D03")
     return p
@@ -870,11 +871,11 @@ def tighten():
 
 @scenario
 def opening():
-    """D04 on gravel lane DR825 (Covet Gravel Rally): a progressive throttle out of the opening left-hander earns a
-    medal; too much spins the front and runs wide."""
+    """D04 on the proving ground's flat copy of gravel lane DR825 (Covet Gravel Rally): a progressive throttle out of
+    the opening left-hander earns a medal; too much spins the front and runs wide."""
     p = []
     A.drill_session("D04")
-    s = _lane_run("D04", 13, 2, 2, 100, 25, throttle_at=32, throttle_max=0.45, ramp=0.005)
+    s = _lane_run("D04", 13, 2, 2, 100, 25, throttle_at=36, throttle_max=0.45, ramp=0.005)
     expect(p, "a progressive throttle earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
     s = _lane_run("D04", 13, 2, 2, 100, 25, throttle_at=32, throttle_max=0.6, ramp=0.01)

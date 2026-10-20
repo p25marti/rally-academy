@@ -279,7 +279,7 @@ post touched, no handbrake, no spin, 30 km/h out; silver 8° and 55 km/h; gold 1
 with a brake pulse and 0.6 throttle from just before the apex came out at 68-69 km/h with 13° of rotation
 (gold); 0.45 throttle never reached the half-throttle mark; holding 46 km/h instead never passed 16%.
 
-Gravel lane drills (DR825, west of the town; MAPS W6; Covet Gravel Rally). About 6 m of gravel.
+Gravel lane drills (DR825, west of the town; MAPS W6; Covet Gravel Rally), since 2026-10-20 on the proving ground's flat copy of the lane (MAPS P4, 7 m of gravel): without the crest and the climb both corners carry more speed, so their silver and gold speeds rose (D03 30 / 36 km/h, D04 48 / 54 km/h); scripted on the copy D03 easing from 45 km/h left the Exit at 38 km/h (gold) and 55 km/h ran wide of the Apex; D04's throttle from 36 m left at 56 km/h (gold). The notes below are from the stock lane.
 - D03: eastbound, a right-hander whose radius tightens from about 60 m to 18 m over a small crest. Bronze:
   Entry, Apex and Exit gates, no post touched, at most one wheel off the gravel for 0.5 s, no contact, no
   spin, 20 km/h out; silver 28 km/h; gold 34 km/h. Scripted: 38–46 km/h in, easing to 24–36 km/h by 45–50 m,

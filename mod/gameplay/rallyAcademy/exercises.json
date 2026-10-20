@@ -2907,8 +2907,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "gravel-lane-tightening",
-        "areaHint": "Gravel lane DR825 west of the town (MAPS W6): a right-hander whose radius tightens from about 60 m to 18 m over a small crest. Entry, Apex (at the tightest point) and Exit gates.",
+        "venue": "pg-lane-tightening",
+        "areaHint": "Proving ground gravel lane (MAPS P4, West Coast USA's lane DR825 copied flat): a right-hander whose radius tightens from about 60 m to 18 m. Entry, Apex (at the tightest point) and Exit gates.",
         "venueNeeds": {
           "kind": "corner",
           "shape": "decreasing",
@@ -2932,7 +2932,7 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Through the Entry, Apex and Exit gates without touching a post, no more than one wheel off the gravel for 0.5 s, no contact, no spin, out of the Exit at 20 km/h or more. Silver: 28 km/h. Gold: 34 km/h.",
+        "successDefinition": "Through the Entry, Apex and Exit gates without touching a post, no more than one wheel off the gravel for 0.5 s, no contact, no spin, out of the Exit at 20 km/h or more. Silver: 30 km/h. Gold: 36 km/h.",
         "metricToRecord": "Clean tightening corners / 10",
         "mode": "automatic",
         "rules": [
@@ -2997,7 +2997,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 28,
+                "minKmh": 30,
                 "maxKmh": 150,
                 "gate": 3
               }
@@ -3008,7 +3008,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 34,
+                "minKmh": 36,
                 "maxKmh": 150,
                 "gate": 3
               }
@@ -3032,8 +3032,8 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "gravel-lane-opening",
-        "areaHint": "Gravel lane DR825 west of the town (MAPS W6), uphill: a 19 m left-hander that opens steadily onto a straight. Apex, Opening and Exit gates.",
+        "venue": "pg-lane-opening",
+        "areaHint": "Proving ground gravel lane (MAPS P4, West Coast USA's lane DR825 copied flat): a 19 m left-hander that opens steadily onto a straight. Apex, Opening and Exit gates.",
         "venueNeeds": {
           "kind": "corner",
           "shape": "increasing",
@@ -3057,7 +3057,7 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Through the Apex, Opening and Exit gates without touching a post, a third of the throttle or more for 1 s after the apex, no front wheel spinning for more than 0.5 s after the apex, no more than one wheel off the gravel, no contact, no spin, out of the Exit at 25 km/h or more. Silver: 45 km/h. Gold: 52 km/h.",
+        "successDefinition": "Through the Apex, Opening and Exit gates without touching a post, a third of the throttle or more for 1 s after the apex, no front wheel spinning for more than 0.5 s after the apex, no more than one wheel off the gravel, no contact, no spin, out of the Exit at 25 km/h or more. Silver: 48 km/h. Gold: 54 km/h.",
         "metricToRecord": "Clean opening-corner exits / 10",
         "mode": "automatic",
         "rules": [
@@ -3135,7 +3135,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 45,
+                "minKmh": 48,
                 "maxKmh": 150,
                 "gate": 3
               }
@@ -3146,7 +3146,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 52,
+                "minKmh": 54,
                 "maxKmh": 150,
                 "gate": 3
               }

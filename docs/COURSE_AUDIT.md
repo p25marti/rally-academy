@@ -25,8 +25,8 @@ Each graded drill's course, along the line the car drove in its best recorded ru
 | C07 | ra_proving_ground | `c07_gold_pg` | 172 m | 0.0 m | 0.3 % | 3.6° | DIRT 100 % (grip 0.70) | flat, one surface |
 | C08 | ra_proving_ground | `c08_silver` | 161 m | 0.1 m | 0.7 % | 4.4° | GRAVEL 81 %, GRASS 19 % (grip 0.68) | mixed surface |
 | D01 | ra_proving_ground | `d01_gold_pg` | 120 m | 0.0 m | 0.3 % | 2.6° | DIRT 100 % (grip 0.70) | flat, one surface |
-| D03 | west_coast_usa | `d03_gold` | 102 m | 3.4 m | 10.6 % | 8.9° | GRAVEL 94 %, GRASS 6 %, DIRT_DUSTY 1 % (grip 0.69) | sloped |
-| D04 | west_coast_usa | `d04_gold` | 84 m | 6.4 m | 17.1 % | 11.5° | GRAVEL 90 %, GRASS 10 % (grip 0.68) | steep |
+| D03 | ra_proving_ground | `d03_gold_pg` | 102 m | 0.0 m | 0.2 % | 3.6° | GRAVEL 100 % (grip 0.69) | flat, one surface |
+| D04 | ra_proving_ground | `d04_gold_pg` | 84 m | 0.1 m | 0.4 % | 4.4° | GRAVEL 95 %, GRASS 5 % (grip 0.69) | flat, one surface |
 | D05 | west_coast_usa | `d05_gold` | 149 m | 6.8 m | 21.9 % | 20.4° | DIRT_DUSTY 100 % (grip 0.68) | steep, tilted |
 | D06 | west_coast_usa | `d06_gold` | 316 m | 6.5 m | 11.0 % | 13.1° | DIRT_DUSTY 100 % (grip 0.68) | sloped, tilted |
 | D08 | west_coast_usa | `d08_gold` | 162 m | 1.9 m | 6.8 % | 8.1° | GRAVEL 81 %, ASPHALT 19 % (grip 0.74) | mixed surface |

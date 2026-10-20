@@ -29,6 +29,7 @@ Ships with the mod; loads in about 3 s. The play area is flat (z 110 m) on grass
 | --- | --- | --- | --- | --- |
 | P1 | **Gravel corner (left)** | start (−280, −20), facing north | GRAVEL on grass | The BMP downhill left (W1, road DR1181) copied flat: same centre line in the same course frame, 10 m of gravel, 50 m of run-off past the old track-out. Venue `pg-corner-left` (A07, A08, B04, C01, C02, C08, E02) |
 | P2 | Surface strips | x −435…435, y −480…−80 | GRAVEL, ASPHALT, SNOW, DIRT | Four identical 120 × 400 m strips. On the dirt strip: `pg-dirt-strip` at its south end (375, −470) facing north (A01, A03, A05, B01, B02, C04, C07, D01), `pg-dirt-ring` (390, −165) and `pg-dirt-arc` (365, −165) facing east for the 15 m ring drills (B05; B06, B07). `pg-gravel-strip`, `pg-asphalt-strip` and `pg-snow-strip` start at the south end of the other strips the same way, for surface variants (A01-A05, ADR 0009) (B01 and C04 trials in [IDEAS](IDEAS.md#a-rally-academy-proving-ground-our-own-map)) |
+| P4 | **Gravel lane** | around (60, 90) | GRAVEL on grass | West Coast USA's lane DR825 (W6) copied flat, shifted (900, 200) m with the same compass heading, 7 m wide, 25 m of run-off at each end. Venues `pg-lane-tightening` (D03) and `pg-lane-opening` (D04); `tools/ingame/lanes.py` knows the shift |
 | P3 | Mud pad | x −50…50, y −480…−380 | MUD | Not yet used |
 
 ### West Coast USA (`west_coast_usa`): loose-surface training complex

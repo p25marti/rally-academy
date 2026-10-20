@@ -7,11 +7,12 @@
 {"ctxid":0,"pos":[254.48,-127.43,109.75],"rotationMatrix":[-0.96543,0.26067,0,-0.26067,-0.96543,0,0,0,1],"scale":1.141,"type":"tree_oak_bush_a"}
 {"ctxid":0,"pos":[276.4,-93.89,109.75],"rotationMatrix":[0.99993,0.01211,0,-0.01211,0.99993,0,0,0,1],"scale":1.217,"type":"tree_oak_bush_a"}
 {"ctxid":0,"pos":[-362.58,-41.9,109.75],"rotationMatrix":[0.055,0.99849,0,-0.99849,0.055,0,0,0,1],"scale":0.93,"type":"tree_oak_bush_a"}
-{"ctxid":0,"pos":[488.18,-28.54,109.75],"rotationMatrix":[0.89064,0.45471,0,-0.45471,0.89064,0,0,0,1],"scale":0.96,"type":"tree_oak_bush_a"}
+{"ctxid":0,"pos":[498.18,-28.54,109.75],"rotationMatrix":[0.89064,0.45471,0,-0.45471,0.89064,0,0,0,1],"scale":0.96,"type":"tree_oak_bush_a"}
 {"ctxid":0,"pos":[-342.62,-23.27,109.75],"rotationMatrix":[0.48514,0.87444,0,-0.87444,0.48514,0,0,0,1],"scale":1.14,"type":"tree_oak_bush_a"}
 {"ctxid":0,"pos":[465.35,-17.33,109.75],"rotationMatrix":[-0.52264,0.85255,0,-0.85255,-0.52264,0,0,0,1],"scale":1.085,"type":"tree_oak_bush_a"}
 {"ctxid":0,"pos":[-147.21,-10.87,109.75],"rotationMatrix":[0.87324,-0.48729,0,0.48729,0.87324,0,0,0,1],"scale":0.978,"type":"tree_oak_bush_a"}
 {"ctxid":0,"pos":[-412.17,98.08,109.75],"rotationMatrix":[0.1576,0.9875,0,-0.9875,0.1576,0,0,0,1],"scale":1.005,"type":"tree_oak_bush_a"}
 {"ctxid":0,"pos":[-512.44,115.64,109.75],"rotationMatrix":[0.74155,-0.67089,0,0.67089,0.74155,0,0,0,1],"scale":0.845,"type":"tree_oak_bush_a"}
-{"ctxid":0,"pos":[408.01,132.06,109.75],"rotationMatrix":[0.99926,-0.03842,0,0.03842,0.99926,0,0,0,1],"scale":0.836,"type":"tree_oak_bush_a"}
-{"ctxid":0,"pos":[-405.31,153.95,109.75],"rotationMatrix":[0.98702,-0.16058,0,0.16058,0.98702,0,0,0,1],"scale":0.803,"type":"tree_oak_bush_a"}
+{"ctxid":0,"pos":[438.01,132.06,109.75],"rotationMatrix":[0.99926,-0.03842,0,0.03842,0.99926,0,0,0,1],"scale":0.836,"type":"tree_oak_bush_a"}
+{"ctxid":0,"pos":[-345.31,153.95,109.75],"rotationMatrix":[0.98702,-0.16058,0,0.16058,0.98702,0,0,0,1],"scale":0.803,"type":"tree_oak_bush_a"}
+{"ctxid":0,"pos":[-273.19,199.89,109.75],"rotationMatrix":[-0.4093,-0.9124,0,0.9124,-0.4093,0,0,0,1],"scale":0.967,"type":"tree_oak_bush_a"}
