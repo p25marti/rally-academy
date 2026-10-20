@@ -93,7 +93,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `corners` | A07 and A08 on the proving ground's flat corner (Covet Gravel Rally, racing line from `lines.py`): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss |
 | `gears` | A03 on its course (the proving ground's dirt strip, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
 | `launch` | A02 on its course (the proving ground's dirt strip; the run ends at the 40 km/h gate): feeding the throttle in earns a medal (flat out spins the wheels); 34 km/h at the gate misses |
-| `surfaces` | Module A on every surface (dirt, gravel, asphalt, snow variants, ADR 0009): each drill's medal technique passes on each; prints a table of verdicts. About 20 runs |
+| `surfaces` | A01-A05, B01 and C04 on every surface (dirt, gravel, asphalt, snow variants, ADR 0009): each drill's medal technique, adapted per surface, passes on each; prints a table of verdicts. About 30 runs; `RA_SURFACES=B01,C04` runs some drills only |
 | `events` | On the proving ground's dirt strip: a handbrake spin, a run on the grass beside it and a puncture are detected (and the puncture isn't contact) |
 | `goto` | Go to drill loads Utah in the gravel Covet for E08, then the proving ground for B01 (slow: a stock map load) |
 | `fit` | Venue fit test on West Coast USA: B01 fits the dirt arena's long straight but not facing the barrier; B05's circle fits the dirt arena |

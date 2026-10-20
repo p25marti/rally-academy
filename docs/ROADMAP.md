@@ -69,8 +69,8 @@ all six are built.
       re-recorded there (`*_pg` fixtures).
 - [x] Surface variants (ADR 0009): module A on dirt, gravel, asphalt and snow, picked on the HUD and the
       Academy screen; the `surfaces` scenario drives every one.
-- [ ] Variants for more drills (B01 braking and C04 handbrake show the biggest differences per surface), and
-      progress views that sum across surfaces.
+- [x] B01 and C04 variants (same targets; the technique adapts per surface).
+- [ ] Variants for more drills, and progress views that sum across surfaces.
 - [x] Looks: hills round the play area (2 km terrain), rock faces, autumn forests from the game's tree library.
 - [ ] More looks: grass cover, painted markings, a few props (tyre walls, a paddock).
 

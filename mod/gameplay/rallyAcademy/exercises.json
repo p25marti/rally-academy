@@ -1079,6 +1079,27 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2): 390 m of dead-level gravel; the stop zone is 150 m from the start."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2): 390 m of dead-level asphalt; the stop zone is 150 m from the start."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2): 390 m of dead-level snow; the stop zone is 150 m from the start."
+        }
+      ],
       "instructions": "Reach 70 km/h on the run-up, then brake progressively at the grip limit and stop with the car's centre in the stop zone. No long lockups.",
       "resetInstructions": "Go to drill puts you at the start of the arena's long straight with the stop zone laid out ahead. Move course here re-lays it from where you are.",
       "props": "None: the stop zone is drawn for you. Keep any ABS settings unchanged.",
@@ -2207,6 +2228,27 @@
           ]
         }
       },
+      "surface": "Dirt",
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-strip",
+          "areaHint": "Proving ground gravel strip (MAPS P2), dead-level open dirt: a hairpin laid out on the open dirt, turning left round a pivot cone and back out through an exit gate."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-strip",
+          "areaHint": "Proving ground asphalt strip (MAPS P2), dead-level open dirt: a hairpin laid out on the open dirt, turning left round a pivot cone and back out through an exit gate."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-strip",
+          "areaHint": "Proving ground snow strip (MAPS P2), dead-level open dirt: a hairpin laid out on the open dirt, turning left round a pivot cone and back out through an exit gate."
+        }
+      ],
       "instructions": "Approach at about 50 km/h and brake to about 40 before the Pivot cone. Turn in left with half lock, then pull the handbrake once, firmly, to swing the rear round the cone (keep it on your left). Release it and drive out through the Exit gate the way you came.",
       "resetInstructions": "Go to drill puts you 34 m before the Entry gate, with the hairpin laid out. Move course here re-lays it from where you are.",
       "props": "None: the cone and gates are drawn for you.",

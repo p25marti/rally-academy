@@ -362,6 +362,13 @@ parking and a 3.5 m/s² stop from 44 km/h are within every surface's grip), A04 
 snow (bronze: the wheels spin the revs past silver's 6300 rpm in 1st, so shift up early), A02 as above. Only
 A02-snow has its own targets so far.
 
+B01 and C04 have the same variants, with the base targets on every surface: the driving adapts, not the medal.
+B01 braking at 3.5 m/s² earns gold on dirt, gravel and asphalt; at 6 m/s² dirt and gravel lock the wheels (1.2-1.3 s)
+while asphalt doesn't; on snow even 3.5 locks as the car slows, and 3.0 m/s² (braking earlier) earns gold. C04's
+handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grippy front cuts into the pivot cone
+at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
+entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
+
 ## 6. Hybrid grading
 
 Some criteria test what the driver knows, not what the car did. These drills

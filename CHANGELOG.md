@@ -9,6 +9,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - **Surface variants for module A** (ADR 0009): A01-A05 on dirt, gravel, asphalt and snow, each surface with its own
   progress and medals. Pick the surface on the HUD panel or the Academy screen (a dot shows your best medal on
   each). A02's launch on snow has its own, slower times; everything else plays the same targets on every surface.
+  B01 threshold braking and C04 handbrake hairpins have the same four surfaces: brake earlier on snow, use less
+  lock for the hairpin on asphalt.
 - **A02 launches and A04 throttle hold moved to the proving ground's dirt strip** (A02 used to start on the BMP
   start line's tarmac). On loose ground a flat-out launch spins the wheels: feed the throttle in.
 - **The proving ground looks like a real place**: a 2 km map now, the practice areas in a wooded valley with

@@ -27,7 +27,8 @@ medals. Everything in the mod (progress, medals, saved setups, fixtures, the HUD
 
 ## Consequences
 
-- The drill list doesn't grow; module A gains 15 variants (gravel, asphalt and snow for A01-A05, dirt being the base).
+- The drill list doesn't grow; module A gains 15 variants (gravel, asphalt and snow for A01-A05, dirt being the base),
+  then B01 and C04 (2026-10-20).
 - Progress views that sum per drill (the Academy screen's module counts, the Analysis page) count the base drill
   only for now.
 - A variant can't change the course layout (it inherits the base course). If one ever needs to, it gets its own drill.

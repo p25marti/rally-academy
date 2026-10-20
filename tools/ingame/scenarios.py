@@ -534,7 +534,7 @@ def flick():
     return p
 
 
-def _hairpin_run(pull_m=6, entry_kmh=45, lock=-0.3, exit_kmh=30):
+def _hairpin_run(pull_m=6, entry_kmh=45, lock=-0.3, exit_kmh=30, drill="C04"):
     """C04: 50 km/h, brake to `entry_kmh` before the pivot cone, the handbrake for `pull_m` metres from 45 m
     at `lock` steering, then hold `exit_kmh` round a 4.5 m turn and back out."""
     path = ([(0, y) for y in range(0, 44)]
@@ -558,7 +558,7 @@ def _hairpin_run(pull_m=6, entry_kmh=45, lock=-0.3, exit_kmh=30):
 
     def steer(_v, trav):
         return lock if 45 <= trav < 45 + pull_m else None
-    return A.course_run("C04", path, gearbox="sequential", on_tick=on_tick, pedals=pedals, steer=steer, kmh=65,
+    return A.course_run(drill, path, gearbox="sequential", on_tick=on_tick, pedals=pedals, steer=steer, kmh=65,
                         max_throttle=1.0, timeout=40, stop_within=0.5)
 
 
@@ -1066,7 +1066,22 @@ def _module_a_runs(kmh_scale=1.0):
         "A04": lambda d: _hold_run(lambda m: 30),
         "A05": lambda d: precise(lambda: A.course_run(d, [(0, 0), (0, 60 - front - 0.5)], kmh=44, decel=3.5,
                                                       max_throttle=0.7)),
+        # B01: brake earlier and gentler on snow (4.6 m/s2 locks the wheels there; 3 m/s2 doesn't)
+        "B01": lambda d: precise(lambda: A.course_run(d, [(0, 0), (0, 150)], kmh=72, max_throttle=1.0, stop_within=0.4,
+                                                      decel=3.0 if A.drill(d).get("surface") == "Snow" else 4.6)),
+        # C04: less lock on asphalt (the grippy front cuts into the cone), a slower entry on snow (it swings 50 deg)
+        "C04": lambda d: _c04_run(d),
     }
+
+
+def _c04_run(d, tries=3):
+    surface = A.drill(d).get("surface")
+    kw = {"Asphalt": {"lock": -0.2}, "Snow": {"entry_kmh": 40, "exit_kmh": 25}}.get(surface, {})
+    for _ in range(tries):  # scripted handbrake swings vary
+        s = _hairpin_run(drill=d, **kw)
+        if s.get("passed"):
+            break
+    return s
 
 
 def _launch_run(drill, surface="Dirt"):
@@ -1081,11 +1096,14 @@ def _launch_run(drill, surface="Dirt"):
 
 @scenario
 def surfaces():
-    """Module A on every surface (the proving ground's dirt, gravel, asphalt and snow strips, ADR 0009): the drill's
-    scripted medal technique passes on each surface variant. Prints a table of verdicts and the numbers behind them."""
+    """A01-A05, B01 and C04 on every surface (the proving ground's dirt, gravel, asphalt and snow strips, ADR 0009):
+    the drill's scripted medal technique, adapted per surface where a driver would adapt it, passes on each variant.
+    Prints a table of verdicts and the numbers behind them. RA_SURFACES=B01,C04 limits it to some drills."""
+    import os
     p, table = [], []
     runs = _module_a_runs()
-    for base in ("A01", "A02", "A03", "A04", "A05"):
+    only = os.environ.get("RA_SURFACES")  # e.g. RA_SURFACES=B01,C04 to run some drills only
+    for base in [b for b in ("A01", "A02", "A03", "A04", "A05", "B01", "C04") if not only or b in only.split(",")]:
         for sf in A.drill(base).get("surfaces") or [{"id": base, "name": "Standard"}]:
             d = sf["id"]
             A.drill_session(d)
