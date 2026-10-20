@@ -22,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import borrow  # noqa: E402
+import decals  # noqa: E402
 import nature  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -206,7 +207,9 @@ def generate(layout, game):
             + ([{"name": "vegetation", "class": "SimGroup", "persistentId": pid(name, "vegetation"), "__parent": "level_objects"}]
                if trees or layout.get("groundcover") else [])
             + ([{"name": "props", "class": "SimGroup", "persistentId": pid(name, "props"), "__parent": "level_objects"}]
-               if layout.get("props") else [])),
+               if layout.get("props") else [])
+            + ([{"name": "decals", "class": "SimGroup", "persistentId": pid(name, "decals"), "__parent": "level_objects"}]
+               if layout.get("decals") else [])),
         "main/MissionGroup/level_objects/terrain/items.level.json": jsonl([
             {"name": "theTerrain", "class": "TerrainBlock", "persistentId": pid(name, "terrain"), "__parent": "terrain",
              "position": [-half, -half, t["baseZ"]], "materialTextureSet": texset, "maxHeight": t["maxHeight"],
@@ -236,6 +239,17 @@ def generate(layout, game):
         files["main/MissionGroup/level_objects/vegetation/items.level.json"] = jsonl(vegetation)
     if layout.get("props"):
         files["main/MissionGroup/level_objects/props/items.level.json"] = jsonl(props(layout, terrain))
+    if layout.get("decals"):
+        files["main/MissionGroup/level_objects/decals/items.level.json"] = jsonl(decals.decal_roads(layout, terrain, road_line, pid))
+        stock = borrow.Stock(game)
+        used = sorted({e["material"] for e in layout["decals"]})
+        src = layout.get("decalMaterials", {})
+        missing = [m for m in used if m not in src]
+        if missing:
+            raise SystemExit(f"decal materials without a source level in decalMaterials: {missing}")
+        files["art/decals/main.materials.json"] = json.dumps(
+            # objects find materials by name, which in a stock file can differ from mapTo (skidmarks_01)
+            {m: dict(stock.material(src[m], m), name=m, persistentId=pid(name, f"decalmat/{m}")) for m in used}, indent=2) + "\n"
     out = {rel: text.replace("\r\n", "\n").encode("utf-8") for rel, text in files.items()}  # LF, as git keeps them
     out["theTerrain.ter"] = ter
     out["preview.png"] = preview_png(layer, size, wanted, terrain, trees)
@@ -309,7 +323,7 @@ def grass_cover(layout, game, ours, ground_z):
         for key, v in g.get("set", {}).items():  # overrides (density, radius)
             o[key] = v
         objs.append(o)
-        mats[src["material"]] = dict(stock.material(g["from"], src["material"]),
+        mats[src["material"]] = dict(stock.material(g["from"], src["material"]), name=src["material"],
                                      persistentId=pid(layout["name"], f"grassmat/{src['material']}"))
     return objs, mats
 

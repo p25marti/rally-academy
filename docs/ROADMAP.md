@@ -73,7 +73,8 @@ all six are built.
 - [ ] Variants for more drills, and progress views that sum across surfaces.
 - [x] Looks: hills round the play area (2 km terrain), rock faces, autumn forests from the game's tree library.
 - [x] More looks: grass cover, forest floor, a late-afternoon sun, a rally service park and trackside props.
-- [ ] Still to try: painted markings on the asphalt strip, a start truss over each strip, real (physical) cones.
+- [x] Roads that look driven on: edge blends, wear (ruts, gravel flows, skid and handbrake marks), asphalt markings.
+- [ ] Still to try: reshape the strips into road-width lanes plus handling pads, a start truss, real (physical) cones.
 
 ## P2 — First automatically graded drill
 

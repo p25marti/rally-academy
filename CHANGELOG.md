@@ -6,6 +6,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **The proving ground's roads look driven on**: the gravel corner is a real dirt road now, with wheel ruts on the
+  line, loose gravel pushed wide and ragged grassy edges; every strip has a natural edge into the grass and worn
+  tracks down the middle; the asphalt strip has edge lines, a dashed 12 m test lane and a start line, with skid
+  marks where B01 and A05 stop and handbrake swings round C04's cone on every surface; the ring and the mud pad
+  have their tracks too. It's all paint on top: grip and grading are unchanged.
 - **The proving ground feels lived in**: grass cover on the grass (green and autumn-dry tufts), bare forest
   floor under the woods, a low late-afternoon sun with long shadows, and the game's own rally kit as scenery: a
   service park behind the start line (team gazebos with tables and chairs, site cabins, a branded fence), start

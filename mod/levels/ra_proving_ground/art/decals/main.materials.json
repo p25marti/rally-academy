@@ -1,0 +1,614 @@
+{
+  "Dirt_road_variation_02": {
+    "name": "Dirt_road_variation_02",
+    "mapTo": "Dirt_road_variation_02",
+    "class": "Material",
+    "persistentId": "63bda497-a307-5ca4-bdc2-c5f19dda3b8d",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/dirt/Dirt_road_variation_02/t_dirt_variation_02_ao.data.png",
+        "baseColorFactor": [
+          0.603926003,
+          0.593747973,
+          0.553659976,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/dirt/Dirt_road_variation_02/t_dirt_variation_02_b.color.png",
+        "detailNormalMap": "/assets/materials/decalroad/dirt/Dirt_road_variation_02/t_dirt_tiretracks_normal_detail_02_nm.normal.png",
+        "detailNormalMapStrength": 4,
+        "detailScale": [
+          2,
+          8
+        ],
+        "normalMap": "/assets/materials/decalroad/dirt/Dirt_road_variation_02/t_dirt_variation_02_nm.normal.png",
+        "opacityMap": "/assets/materials/decalroad/dirt/Dirt_road_variation_02/t_dirt_variation_02_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/dirt/Dirt_road_variation_02/t_dirt_variation_02_r.data.png"
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      }
+    ],
+    "annotation": "NATURE",
+    "materialTag0": "RoadAndPath",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "ECA_road_edge_dirt": {
+    "name": "ECA_road_edge_dirt",
+    "mapTo": "ECA_road_edge_dirt",
+    "class": "Material",
+    "persistentId": "719fb43b-eabc-5d2b-9125-a9b20f18fe49",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_ao.data.png",
+        "baseColorFactor": [
+          0.960511982,
+          0.936806023,
+          0.936806023,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_b.color.png",
+        "detailNormalMap": "/assets/materials/decalroad/dirt/m_road_edge_dirt/t_asphalt_edge_brake_up_01_nm.normal.png",
+        "detailNormalMapStrength": 3,
+        "detailScale": [
+          1,
+          0.0625
+        ],
+        "normalMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_nm.normal.png",
+        "opacityMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_r.data.png",
+        "specular": [
+          0.545098007,
+          0.545098007,
+          0.545098007,
+          1
+        ]
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "specular": [
+          0.521569014,
+          0.521569014,
+          0.521569014,
+          0.00800000038
+        ]
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "specular": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "specular": null
+      }
+    ],
+    "alphaRef": 0,
+    "annotation": "ASPHALT",
+    "castShadows": false,
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "specularStrength0": "0.490196",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "dirt_road_flows": {
+    "name": "dirt_road_flows",
+    "mapTo": "dirt_road_flows",
+    "class": "Material",
+    "persistentId": "596ed888-7375-55d7-807d-50c2c5caf401",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/dirt/dirt_road_flows/t_dirt_road_flows_ao.data.png",
+        "baseColorFactor": [
+          0.830663979,
+          0.79519701,
+          0.711459994,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/dirt/dirt_road_flows/t_dirt_road_flows_b.color.png",
+        "normalMap": "/assets/materials/decalroad/dirt/dirt_road_flows/t_dirt_road_flows_nm.normal.png",
+        "opacityMap": "/assets/materials/decalroad/dirt/dirt_road_flows/t_dirt_road_flows_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/dirt/dirt_road_flows/t_dirt_road_flows_r.data.png"
+      },
+      {
+        "baseColorFactor": null
+      },
+      {
+        "baseColorFactor": null
+      },
+      {
+        "baseColorFactor": null
+      }
+    ],
+    "annotation": "NATURE",
+    "materialTag0": "RoadAndPath",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "dirt_tiretracks": {
+    "name": "dirt_tiretracks",
+    "mapTo": "dirt_tiretracks",
+    "class": "Material",
+    "persistentId": "ca013a4e-035e-5a0d-b214-5a3e3b73307f",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/treadmark/m_dirt_tiretracks/t_dirt_tiretracks_ao.data.png",
+        "baseColorFactor": [
+          0.665374994,
+          0.640290976,
+          0.565768003,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/treadmark/m_dirt_tiretracks/t_dirt_tiretracks_b.color.png",
+        "detailNormalMap": "/assets/materials/decalroad/dirt/Dirt_road_variation_02/t_dirt_tiretracks_normal_detail_02_nm.normal.png",
+        "detailNormalMapStrength": 1.5,
+        "detailScale": [
+          2,
+          4
+        ],
+        "normalMap": "/assets/materials/decalroad/treadmark/m_dirt_tiretracks/t_dirt_tiretracks_nm.normal.png",
+        "opacityMap": "/assets/materials/decalroad/treadmark/m_dirt_tiretracks/t_dirt_tiretracks_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/treadmark/m_dirt_tiretracks/t_dirt_tiretracks_r.data.png"
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      }
+    ],
+    "annotation": "NATURE",
+    "materialTag0": "RoadAndPath",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "italy_road_edge_damage_wide": {
+    "name": "italy_road_edge_damage_wide",
+    "mapTo": "italy_road_edge_damage_wide",
+    "class": "Material",
+    "persistentId": "ac38f1ac-c49b-5595-be5e-32574036d197",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_ao.data.png",
+        "baseColorFactor": [
+          1,
+          0.999989986,
+          0.999989986,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_b.color.png",
+        "detailNormalMap": "/assets/materials/decalroad/dirt/m_road_edge_dirt/t_asphalt_edge_brake_up_01_nm.normal.png",
+        "detailNormalMapStrength": 3,
+        "detailScale": [
+          1,
+          0.0625
+        ],
+        "normalMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_nm.normal.png",
+        "opacityMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/asphalt/ECA_road_edge_dirt/t_eca_asphalt_dirt_edge_02_r.data.png",
+        "specular": [
+          0.545098007,
+          0.545098007,
+          0.545098007,
+          1
+        ]
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "specular": [
+          0.521569014,
+          0.521569014,
+          0.521569014,
+          0.00800000038
+        ]
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "specular": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "specular": null
+      }
+    ],
+    "alphaRef": 0,
+    "annotation": "ASPHALT",
+    "castShadows": false,
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "specularStrength0": "0.490196",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "line_white": {
+    "name": "line_white",
+    "mapTo": "line_white",
+    "class": "Material",
+    "persistentId": "5463c36f-29bb-5fa0-9182-2e602be2b036",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/lines/chalk_marking/t_line_white_ao.data.png",
+        "baseColorMap": "/assets/materials/decalroad/lines/line_white/t_line_white_b.color.png",
+        "normalMap": "/assets/materials/decalroad/lines/line_white/t_line_white_nm.normal.png",
+        "opacityFactor": 0.699999988,
+        "opacityMap": "/assets/materials/decalroad/lines/line_white/t_line_white_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/lines/chalk_marking/t_line_white_r.data.png"
+      },
+      {
+        "opacityFactor": null
+      },
+      {
+        "opacityFactor": null
+      },
+      {
+        "opacityFactor": null
+      }
+    ],
+    "alphaRef": 150,
+    "annotation": "SOLID_LINE",
+    "castShadows": false,
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "specularStrength0": "0",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "line_white_dashed": {
+    "name": "line_white_dashed",
+    "mapTo": "line_white_dashed",
+    "class": "Material",
+    "persistentId": "0c29116c-1edb-50a2-9dc5-b7866a0797a8",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/lines/line_white_dashed/t_line_white_dashed_ao.data.png",
+        "baseColorMap": "/assets/materials/decalroad/lines/line_white_dashed/t_line_white_dashed_b.color.png",
+        "normalMap": "/assets/materials/decalroad/lines/line_dashed_short/t_line_white_dashed_nm.normal.png",
+        "opacityFactor": 0.699999988,
+        "opacityMap": "/assets/materials/decalroad/lines/line_white_dashed/t_line_white_dashed_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/lines/line_white_dashed/t_line_white_dashed_r.data.png"
+      },
+      {
+        "opacityFactor": null
+      },
+      {
+        "opacityFactor": null
+      },
+      {
+        "opacityFactor": null
+      }
+    ],
+    "alphaRef": 150,
+    "annotation": "SOLID_LINE",
+    "castShadows": false,
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "specularStrength0": "0",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "m_asphalt_road_dirt_grass_edge": {
+    "name": "m_asphalt_road_dirt_grass_edge",
+    "mapTo": "m_asphalt_road_dirt_grass_edge",
+    "class": "Material",
+    "persistentId": "ab4f8dad-d23f-59a8-a252-a6be90b214cc",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/dirt/m_asphalt_road_dirt_grass_edge/t_asphalt_dirt_moss_edge_ao.data.png",
+        "baseColorFactor": [
+          1,
+          1,
+          0.999989986,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/dirt/m_asphalt_road_dirt_grass_edge/t_asphalt_dirt_moss_edge_b.color.png",
+        "detailNormalMap": "/assets/materials/decalroad/dirt/m_dirt_variation_01/t_dirt_variation_01_nm.normal.png",
+        "detailNormalMapStrength": 0.300000012,
+        "detailScale": [
+          1,
+          0.5
+        ],
+        "normalMap": "/assets/materials/decalroad/dirt/m_asphalt_road_dirt_grass_edge/t_asphalt_dirt_moss_edge_nm.normal.png",
+        "opacityFactor": 0.879000008,
+        "opacityMap": "/assets/materials/decalroad/dirt/m_asphalt_road_dirt_grass_edge/t_asphalt_dirt_moss_edge_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/dirt/m_asphalt_road_dirt_grass_edge/t_asphalt_dirt_moss_edge_r.data.png",
+        "specular": [
+          0.545098007,
+          0.545098007,
+          0.545098007,
+          1
+        ]
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "opacityFactor": null,
+        "specular": [
+          0.521569014,
+          0.521569014,
+          0.521569014,
+          0.00800000038
+        ]
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "opacityFactor": null,
+        "specular": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "opacityFactor": null,
+        "specular": null
+      }
+    ],
+    "alphaRef": 0,
+    "annotation": "GRASS",
+    "castShadows": false,
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "specularStrength0": "0.490196",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "m_mud_tiretracks": {
+    "name": "m_mud_tiretracks",
+    "mapTo": "m_mud_tiretracks",
+    "class": "Material",
+    "persistentId": "55c98dc4-59b2-5c76-88e0-121b12e7e931",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/mud/m_mud_tiretracks/t_mud_tiretracks_ao.data.png",
+        "baseColorFactor": [
+          0.996078491,
+          0.996078491,
+          0.996078491,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/mud/m_mud_tiretracks/t_mud_tiretracks_b.color.png",
+        "detailNormalMap": "/assets/materials/breakup/mud_large/t_asphalt_detail_02_nm.normal.png",
+        "detailNormalMapStrength": 0.5,
+        "detailScale": [
+          2,
+          8
+        ],
+        "normalMap": "/assets/materials/decalroad/mud/m_mud_tiretracks/t_mud_tiretracks_nm.normal.png",
+        "opacityMap": "/assets/materials/decalroad/mud/m_mud_tiretracks/t_mud_tiretracks_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/mud/m_mud_tiretracks/t_mud_tiretracks_r.data.png"
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null
+      }
+    ],
+    "alphaRef": 0,
+    "annotation": "MUD",
+    "cubemap": "cubemap_substancePanorama_reflection",
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "m_treadmarks_wet": {
+    "name": "m_treadmarks_wet",
+    "mapTo": "m_treadmarks_wet",
+    "class": "Material",
+    "persistentId": "b8f6a0fc-6c21-5ed4-82e2-60955195e788",
+    "Stages": [
+      {
+        "baseColorFactor": [
+          0.392156988,
+          0.392156988,
+          0.392156988,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/treadmark/m_treadmarks_wet/t_treadmarks_wet_b.color.png",
+        "opacityMap": "/assets/materials/decalroad/treadmark/m_treadmarks_wet/t_treadmarks_wet_o.data.png",
+        "pixelSpecular": true,
+        "roughnessMap": "/assets/materials/decalroad/treadmark/m_treadmarks_wet/t_treadmarks_wet_r.data.png",
+        "specular": [
+          1,
+          0.999989986,
+          0.999989986,
+          1
+        ]
+      },
+      {
+        "baseColorFactor": null,
+        "pixelSpecular": null,
+        "specular": null
+      },
+      {
+        "baseColorFactor": null,
+        "pixelSpecular": null,
+        "specular": null
+      },
+      {
+        "baseColorFactor": null,
+        "pixelSpecular": null,
+        "specular": null
+      }
+    ],
+    "alphaRef": 0,
+    "annotation": "ASPHALT",
+    "castShadows": false,
+    "dynamicCubemap": true,
+    "groundType": "ASPHALT_WET",
+    "materialTag0": "RoadAndPath",
+    "translucent": true,
+    "translucentRecvShadows": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "skidmarks_01": {
+    "name": "skidmarks_01",
+    "mapTo": "skidmarks_01",
+    "class": "Material",
+    "persistentId": "bea97569-07cf-5025-b4bf-a13896832c4e",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/treadmark/m_asphalt_skidmarks_01/t_asphalt_skidmarks_01_ao.data.png",
+        "baseColorFactor": [
+          1,
+          0.999989986,
+          0.999989986,
+          0.699999988
+        ],
+        "baseColorMap": "/assets/materials/decalroad/treadmark/m_asphalt_skidmarks_01/t_asphalt_skidmarks_01_b.color.png",
+        "detailNormalMap": "/assets/materials/breakup/mud_large/t_asphalt_detail_02_nm.normal.png",
+        "detailNormalMapStrength": 0.5,
+        "detailScale": [
+          3,
+          6
+        ],
+        "normalMap": "/assets/materials/decalroad/treadmark/m_asphalt_skidmarks_01/t_asphalt_skidmarks_01_nm.normal.png",
+        "opacityFactor": 0.912999988,
+        "opacityMap": "/assets/materials/decalroad/treadmark/m_asphalt_skidmarks_01/t_asphalt_skidmarks_01_o.data.png",
+        "roughnessMap": "/assets/materials/decalroad/treadmark/m_asphalt_skidmarks_01/t_asphalt_skidmarks_01_r.data.png"
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "opacityFactor": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "opacityFactor": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailNormalMapStrength": null,
+        "detailScale": null,
+        "opacityFactor": null
+      }
+    ],
+    "alphaRef": 80,
+    "annotation": "ASPHALT",
+    "castShadows": false,
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "materialTag2": "Industrial",
+    "specularStrength0": "1.37255",
+    "translucent": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  },
+  "tread_marks_worn": {
+    "name": "tread_marks_worn",
+    "mapTo": "tread_marks_worn",
+    "class": "Material",
+    "persistentId": "b0f09772-9fe8-56fb-bc29-44e9442ba96c",
+    "Stages": [
+      {
+        "ambientOcclusionMap": "/assets/materials/decalroad/treadmark/tread_marks_worn/t_tread_marks_worn_ao.data.png",
+        "baseColorFactor": [
+          0.698894978,
+          0.698898017,
+          0.698902011,
+          1
+        ],
+        "baseColorMap": "/assets/materials/decalroad/treadmark/tread_marks_worn/t_tread_marks_worn_b.color.png",
+        "detailNormalMap": "/assets/materials/breakup/mud_large/t_asphalt_detail_02_nm.normal.png",
+        "detailScale": [
+          1.5,
+          6
+        ],
+        "normalMap": "/assets/materials/decalroad/treadmark/tread_marks_worn/t_tread_marks_worn_nm.normal.png",
+        "opacityFactor": 0.504999995,
+        "opacityMap": "/assets/materials/decalroad/treadmark/tread_marks_worn/t_tread_marks_worn_o.data.png",
+        "roughnessFactor": 0.764999986,
+        "roughnessMap": "/assets/materials/decalroad/treadmark/tread_marks_worn/t_tread_marks_worn_r.data.png"
+      },
+      {
+        "baseColorFactor": null,
+        "detailScale": null,
+        "opacityFactor": null,
+        "roughnessFactor": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailScale": null,
+        "opacityFactor": null,
+        "roughnessFactor": null
+      },
+      {
+        "baseColorFactor": null,
+        "detailScale": null,
+        "opacityFactor": null,
+        "roughnessFactor": null
+      }
+    ],
+    "alphaRef": 0,
+    "annotation": "ASPHALT",
+    "castShadows": false,
+    "materialTag0": "RoadAndPath",
+    "materialTag1": "beamng",
+    "materialTag2": "Natural",
+    "materialTag3": "Natural",
+    "materialTag4": "east_coast_usa",
+    "specularStrength0": "0",
+    "translucent": true,
+    "translucentRecvShadows": true,
+    "translucentZWrite": true,
+    "version": 1.5
+  }
+}

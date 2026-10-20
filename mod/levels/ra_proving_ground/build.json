@@ -1,7 +1,8 @@
 {
- "layout": "75922d632cb5e34815bd12bf6c893296ba2b1c6d8cf279f367d6ccb5367b6890",
- "generator": "4c4af4dcadec50f0b107da70e1f0ad1300ae0ae4f1a0fa7af21fa8f2d63ecdf6",
+ "layout": "80496bc6a714854a60e3f1d303a89aa27e4c83091789bb4810f8704e4fb7e5cd",
+ "generator": "9b91d142c5f15c01321561fdeda10391c95b43d3441eb2c3988ae9b78b91033f",
  "files": {
+  "art/decals/main.materials.json": "f2b6cf3b95a3446185c8b910d7ec656d2440787da45526cdca3b3a7066833308",
   "art/forest/managedItemData.json": "b87771a47974d9db3577f15c84a7c5680d2598a2222803c97418ba59c18b01c4",
   "art/groundcover/main.materials.json": "776346c3a0a2689728254166034adb9d5b429b023a1cade117fd3ea84f879c9d",
   "art/shapes/trees/main.materials.json": "4af58ecced3e64719a848e970ad2f684819c415904fc14b23fea24f3d05174a9",
@@ -30,7 +31,8 @@
   "info.json": "e4173261dfc77d9cfb1dc89e791d077d43fc46e9835d5f9ab9f4bbe96fdcc88f",
   "main/MissionGroup/PlayerDropPoints/items.level.json": "fd49ad0fc81afea810b3d058290beaec2e938ed5dd7bec8a6fca24255220e8ee",
   "main/MissionGroup/items.level.json": "67a36d180cc79901970e7ed088efb8738596831f4f7b6ec4aa003d99744ef9ea",
-  "main/MissionGroup/level_objects/items.level.json": "e15ce6541c298a9132722ba419a14ba70fc0838e06b22af57ec3e8ab272c12e3",
+  "main/MissionGroup/level_objects/decals/items.level.json": "120949b643413719882e32955a41364d281342a7efe68522c5c2c062e4eebb58",
+  "main/MissionGroup/level_objects/items.level.json": "9ed49e17c5c5be4dfdaefc8ba4f4d298c13a4e7129d3d576f376ee4d55c6cc19",
   "main/MissionGroup/level_objects/props/items.level.json": "a62cab2665f37e305554015f488c95b47a36ec1bce171c2e008908c61fcda7be",
   "main/MissionGroup/level_objects/sky_and_sun/items.level.json": "23cf70376b991c5ff2aa40dfd7bbae81644c730dcaf3a1f7b1925319bd173b15",
   "main/MissionGroup/level_objects/terrain/items.level.json": "efa760589eae929a440930369dddfb36027b73b1659b47d93f1a932329b09606",

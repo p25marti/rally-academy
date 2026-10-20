@@ -377,6 +377,518 @@
       "count": 9
     }
   ],
+  "decals": [
+    {
+      "kind": "road_track",
+      "road": "corner-left",
+      "offset": 0,
+      "material": "Dirt_road_variation_02",
+      "width": 10.5,
+      "textureLength": 30,
+      "priority": 30
+    },
+    {
+      "kind": "road_edges",
+      "road": "corner-left",
+      "material": "italy_road_edge_damage_wide",
+      "width": 3.5,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "road_track",
+      "road": "corner-left",
+      "offset": 0.6,
+      "material": "dirt_tiretracks",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        5,
+        5
+      ]
+    },
+    {
+      "kind": "road_track",
+      "road": "corner-left",
+      "offset": -3.6,
+      "material": "dirt_road_flows",
+      "width": 2.5,
+      "textureLength": 10,
+      "priority": 12,
+      "fade": [
+        8,
+        8
+      ]
+    },
+    {
+      "kind": "pad_edges",
+      "pads": [
+        "gravel"
+      ],
+      "material": "italy_road_edge_damage_wide",
+      "width": 4,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "pad_edges",
+      "pads": [
+        "dirt"
+      ],
+      "material": "italy_road_edge_damage_wide",
+      "width": 4,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "pad_edges",
+      "pads": [
+        "snow"
+      ],
+      "material": "ECA_road_edge_dirt",
+      "width": 4,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "pad_edges",
+      "pads": [
+        "asphalt"
+      ],
+      "material": "m_asphalt_road_dirt_grass_edge",
+      "width": 4,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "pad_edges",
+      "pads": [
+        "mud"
+      ],
+      "material": "ECA_road_edge_dirt",
+      "width": 4,
+      "textureLength": 8,
+      "priority": 20
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -375.0,
+          -476
+        ],
+        [
+          -375.0,
+          -330
+        ],
+        [
+          -375.0,
+          -200
+        ]
+      ],
+      "material": "dirt_tiretracks",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        10,
+        30
+      ]
+    },
+    {
+      "kind": "circle",
+      "center": [
+        -379.5,
+        -426
+      ],
+      "radius": 5.5,
+      "from": -20,
+      "to": 200,
+      "material": "dirt_tiretracks",
+      "width": 2.5,
+      "textureLength": 10,
+      "priority": 9,
+      "fade": [
+        3,
+        3
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          375.0,
+          -476
+        ],
+        [
+          375.0,
+          -330
+        ],
+        [
+          375.0,
+          -200
+        ]
+      ],
+      "material": "dirt_tiretracks",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        10,
+        30
+      ]
+    },
+    {
+      "kind": "circle",
+      "center": [
+        370.5,
+        -426
+      ],
+      "radius": 5.5,
+      "from": -20,
+      "to": 200,
+      "material": "dirt_tiretracks",
+      "width": 2.5,
+      "textureLength": 10,
+      "priority": 9,
+      "fade": [
+        3,
+        3
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          125.0,
+          -476
+        ],
+        [
+          125.0,
+          -330
+        ],
+        [
+          125.0,
+          -200
+        ]
+      ],
+      "material": "m_treadmarks_wet",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        10,
+        30
+      ]
+    },
+    {
+      "kind": "circle",
+      "center": [
+        120.5,
+        -426
+      ],
+      "radius": 5.5,
+      "from": -20,
+      "to": 200,
+      "material": "m_treadmarks_wet",
+      "width": 2.5,
+      "textureLength": 10,
+      "priority": 9,
+      "fade": [
+        3,
+        3
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -125.0,
+          -476
+        ],
+        [
+          -125.0,
+          -330
+        ],
+        [
+          -125.0,
+          -200
+        ]
+      ],
+      "material": "tread_marks_worn",
+      "width": 3.5,
+      "textureLength": 14,
+      "priority": 10,
+      "fade": [
+        10,
+        30
+      ]
+    },
+    {
+      "kind": "circle",
+      "center": [
+        -129.5,
+        -426
+      ],
+      "radius": 5.5,
+      "from": -20,
+      "to": 200,
+      "material": "skidmarks_01",
+      "width": 2.5,
+      "textureLength": 10,
+      "priority": 9,
+      "fade": [
+        3,
+        3
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -125.78,
+          -347
+        ],
+        [
+          -125.78,
+          -322
+        ]
+      ],
+      "material": "skidmarks_01",
+      "width": 0.45,
+      "textureLength": 6,
+      "priority": 8,
+      "fade": [
+        2,
+        1
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -124.22,
+          -347
+        ],
+        [
+          -124.22,
+          -322
+        ]
+      ],
+      "material": "skidmarks_01",
+      "width": 0.45,
+      "textureLength": 6,
+      "priority": 8,
+      "fade": [
+        2,
+        1
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -125.78,
+          -428
+        ],
+        [
+          -125.78,
+          -412
+        ]
+      ],
+      "material": "skidmarks_01",
+      "width": 0.45,
+      "textureLength": 6,
+      "priority": 8,
+      "fade": [
+        2,
+        1
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -124.22,
+          -428
+        ],
+        [
+          -124.22,
+          -412
+        ]
+      ],
+      "material": "skidmarks_01",
+      "width": 0.45,
+      "textureLength": 6,
+      "priority": 8,
+      "fade": [
+        2,
+        1
+      ]
+    },
+    {
+      "kind": "circle",
+      "center": [
+        390,
+        -150
+      ],
+      "radius": 15,
+      "material": "dirt_tiretracks",
+      "width": 3.2,
+      "textureLength": 14,
+      "priority": 10
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -42,
+          -472
+        ],
+        [
+          0,
+          -430
+        ],
+        [
+          40,
+          -392
+        ]
+      ],
+      "material": "m_mud_tiretracks",
+      "width": 3.2,
+      "textureLength": 10,
+      "priority": 10,
+      "fade": [
+        4,
+        4
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          35,
+          -474
+        ],
+        [
+          -5,
+          -440
+        ],
+        [
+          -38,
+          -396
+        ]
+      ],
+      "material": "m_mud_tiretracks",
+      "width": 3.2,
+      "textureLength": 10,
+      "priority": 10,
+      "fade": [
+        4,
+        4
+      ]
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -183.5,
+          -478
+        ],
+        [
+          -183.5,
+          -82
+        ]
+      ],
+      "material": "line_white",
+      "width": 0.25,
+      "textureLength": 8,
+      "priority": 5
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -66.5,
+          -478
+        ],
+        [
+          -66.5,
+          -82
+        ]
+      ],
+      "material": "line_white",
+      "width": 0.25,
+      "textureLength": 8,
+      "priority": 5
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -131.0,
+          -478
+        ],
+        [
+          -131.0,
+          -82
+        ]
+      ],
+      "material": "line_white_dashed",
+      "width": 0.2,
+      "textureLength": 12,
+      "priority": 5
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -119.0,
+          -478
+        ],
+        [
+          -119.0,
+          -82
+        ]
+      ],
+      "material": "line_white_dashed",
+      "width": 0.2,
+      "textureLength": 12,
+      "priority": 5
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          -183.5,
+          -470
+        ],
+        [
+          -66.5,
+          -470
+        ]
+      ],
+      "material": "line_white",
+      "width": 0.4,
+      "textureLength": 8,
+      "priority": 5
+    }
+  ],
+  "decalMaterials": {
+    "Dirt_road_variation_02": "east_coast_usa",
+    "italy_road_edge_damage_wide": "italy",
+    "dirt_tiretracks": "east_coast_usa",
+    "dirt_road_flows": "east_coast_usa",
+    "ECA_road_edge_dirt": "east_coast_usa",
+    "m_asphalt_road_dirt_grass_edge": "automation_test_track",
+    "m_treadmarks_wet": "driver_training",
+    "tread_marks_worn": "east_coast_usa",
+    "skidmarks_01": "gridmap_v2",
+    "m_mud_tiretracks": "derby",
+    "line_white": "driver_training",
+    "line_white_dashed": "driver_training"
+  },
   "filler": "Grass",
   "pads": [
     {
