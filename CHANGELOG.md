@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **B04 trail braking grades how smooth your inputs are**: the brake must come off in one motion into the apex and
+  the throttle go on in one motion after it, no pumping, snapping off or stabbing (gold: from nothing to full in 0.4 s
+  or more), with coaching that counts the pumps or lifts. The HUD's input trace shows you the shape.
 - **Input trace on the HUD**: while you drive, the panel draws your throttle (green) and brake (red) over the last
   8 seconds, like a sim's input telemetry; after the run it shows that run's whole trace with its gates marked, so you
   can see how you released the brake into the apex. Telemetry now records the driver's own pedal inputs too.

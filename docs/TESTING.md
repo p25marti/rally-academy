@@ -73,7 +73,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
 | `a04` | A04 on its course (the proving ground's dirt strip, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (stop line 60 m ahead) and B02 on its course (40 m stop area), both on the proving ground's dirt strip, a PASS and a MISS each |
-| `trail` | B04 on the proving ground's flat corner (the BMP downhill left copied flat): trail braking into the corner earns a medal; braking only before turn-in misses |
+| `trail` | B04 on the proving ground's flat corner (the BMP downhill left copied flat): trail braking into the corner and feeding the throttle in earns gold; braking only before turn-in, pumping the brake, or stabbing the throttle misses |
 | `tighten` | D03 on the proving ground's flat copy of gravel lane DR825: easing off into the tightening corner earns a medal; too fast runs wide |
 | `opening` | D04 on the proving ground's flat copy of gravel lane DR825: a progressive throttle earns a medal; too much spins and misses |
 | `blind` | D05 on the proving ground's hill circuit: a conservative approach to the blind crest hairpin earns a medal; 55 km/h misses |
