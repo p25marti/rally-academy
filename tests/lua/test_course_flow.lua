@@ -346,4 +346,29 @@ function T.f06_puncture_gate_deflates_a_tyre_as_the_car_crosses()
   has(h.logText('rallyAcademy'), 'F06: puncture at gate 1')
 end
 
+-- B03: the driver's mark sits `prediction` metres past the Brake gate; the HUD's buttons move it within the range.
+function T.b03_the_mark_follows_the_prediction()
+  local h = stubs.install()
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  h.level = 'ra_proving_ground'
+  M.select('B03')
+  local s = h.lastState()
+  eq(s.course.predict.m, 25, 'the default mark')
+  eq(s.course.predict.min, 10, 'range from')
+  local function markAhead() -- metres ahead of the start, read from the course a run record carries
+    local sp = H.drills().B03.environment.spawn
+    M.retry()
+    local line = M.getLastRun().meta.course.line
+    return (line.x - sp.pos.x) * sp.dir.x + (line.y - sp.pos.y) * sp.dir.y
+  end
+  eq(math.floor(markAhead() + 0.5), 145, 'brake gate at 120 m + 25')
+  M.nudgePrediction(5)
+  eq(h.lastState().course.predict.m, 30, 'moved')
+  eq(math.floor(markAhead() + 0.5), 150, 'the mark moved with it')
+  M.setPrediction(99)
+  eq(h.lastState().course.predict.m, 45, 'clamped to the range')
+  has(h.lastState().reason, 'Your mark: 45 m past the brake line')
+end
+
 return T

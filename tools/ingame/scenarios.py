@@ -1006,6 +1006,35 @@ def puncture():
     return p
 
 
+# B03: where the Covet Gravel Rally stops from 50 km/h braking at 0.8 from the Brake line, in metres past it (its
+# front bumper; about +-1 m run to run): the estimates a driver who knows the surface would set.
+B03_ESTIMATE = {"B03": 18, "B03-asphalt": 15, "B03-snow": 24}
+
+
+def _predicted_stop(drill, mark):
+    lua(f"extensions.rallyAcademy.setPrediction({mark}) return 1")
+    return A.braking_run(50, lambda _kmh, _t: 0.8, brake_after_m=119.5)
+
+
+@scenario
+def predict():
+    """B03 on the proving ground's dirt, asphalt and snow strips (Covet Gravel Rally): with the mark set where the car
+    really stops from 50 km/h (asphalt 15 m, dirt 18, snow 24 past the Brake line) the stop earns a medal; a mark of 30
+    m on dirt is far off and misses."""
+    p = []
+    for d, mark in B03_ESTIMATE.items():
+        A.drill_session(d)
+        s = _predicted_stop(d, mark)
+        expect(p, f"{d}: a good estimate earns a medal", s.get("passed") is True and s.get("tier") is not None,
+               f"{s.get('tier')}: {s.get('reason')}")
+        if d == "B03":
+            s = _predicted_stop(d, 30)
+            expect(p, "B03: a far-off estimate misses", s.get("passed") is False and "short of your mark" in str(s.get("reason")),
+                   s.get("reason"))
+        A.end_session(d)
+    return p
+
+
 # D07's camber road: the off-camber corners, in metres along the road.
 D07_OFF_CAMBER = [(145, 200), (335, 390)]
 

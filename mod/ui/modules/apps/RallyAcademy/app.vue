@@ -46,6 +46,14 @@
         {{ st.state === "passed" ? "✓" : st.state === "missed" ? "✗" : "·" }} {{ st.label }}
       </span>
       <span v-if="vm.course.keep" class="ra-keep">cone on your {{ vm.course.keep }}</span>
+      <!-- B03: the driver's predicted stop, set before the run (Lua moves the mark). -->
+      <div v-if="vm.course.predict && !driving" class="ra-predict">
+        Your mark
+        <button class="ra-btn" @click="cmd('nudgePrediction', -1)">−</button>
+        <b>{{ vm.course.predict.m }} m</b>
+        <button class="ra-btn" @click="cmd('nudgePrediction', 1)">+</button>
+        past the brake line
+      </div>
       <div v-if="vm.course.clipped" class="ra-aid fail">Clipped {{ vm.course.clipped }}</div>
       <div v-else-if="vm.course.aid" class="ra-aid">
         {{ vm.course.aid }}
@@ -194,11 +202,12 @@ const bestText = computed(() => {
 })
 
 const COMMANDS = { goToDrill: 1, markStart: 1, markFinish: 1, addGate: 1, clearGates: 1, retry: 1, recordAttempt: 1,
-                   useVenueStart: 1, setAutoRetry: 1 }
+                   useVenueStart: 1, setAutoRetry: 1, nudgePrediction: 1 }
 const BOOL_ARG = { recordAttempt: 1, setAutoRetry: 1 }
+const NUM_ARG = { nudgePrediction: 1 }
 function cmd(name, arg) {
   if (!COMMANDS[name]) return
-  const args = BOOL_ARG[name] ? (arg ? "true" : "false") : ""
+  const args = BOOL_ARG[name] ? (arg ? "true" : "false") : NUM_ARG[name] ? String(Number(arg) || 0) : ""
   api.engineLua(`if extensions.rallyAcademy then extensions.rallyAcademy.${name}(${args}) end`)
 }
 
@@ -389,6 +398,17 @@ onMounted(() => {
     }
     &.missed {
       color: var(--bng-add-red-400);
+    }
+  }
+  .ra-predict {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    margin-top: 0.2rem;
+    .ra-btn {
+      padding: 0 0.5rem;
+      min-width: 1.6rem;
     }
   }
   .ra-keep {

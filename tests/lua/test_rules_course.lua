@@ -92,6 +92,35 @@ function T.with_physical_markers_what_the_car_touched_decides()
   has(hit.text, 'Clipped the cone at 18 km/h')
 end
 
+-- B03: 14 m/s (50 km/h) along y through a brake gate at 120 m, braking at 6 m/s2 from `brakeY`; the mark at `markY`.
+local function braking(brakeY, markY)
+  local course = L.place({gates = {{y = 120, widthM = 8}}, line = {y = markY, widthM = 8}}, START)
+  local samples, t, y, v = {}, 0, 0, 14
+  while v > 0 do
+    local brk = y >= brakeY and 0.8 or 0
+    samples[#samples + 1] = {t = t, x = 0, y = y, air = v, hx = 0, hy = 1, brk = brk, w = {}}
+    t = t + 0.05
+    if brk > 0 then v = math.max(0, v - 6 * 0.05) end
+    y = y + v * 0.05
+  end
+  samples[#samples + 1] = {t = t, x = 0, y = y, air = 0, hx = 0, hy = 1, brk = 0.8, w = {}}
+  return {samples = samples, runStartT = 0}, {course = course, gates = course.gates, car = COVET}, y
+end
+
+function T.predicted_stop_grades_the_estimate_from_braking_at_the_line()
+  local rule = {type = 'predicted_stop', withinM = 3, brakeWithinM = 3}
+  -- braking from 121 m stops the car (its position) 16.3 m on; the front bumper is 1.85 m ahead of that
+  local _, _, stopY = braking(121, 0)
+  local bumper = stopY + 1.85
+  local function verdict(brakeY, markY) return R.evaluate({rule}, braking(brakeY, markY)).checks[1] end
+  local ok = verdict(121, bumper - 1)
+  eq(ok.ok, true, ok.text)
+  has(ok.text, 'Stopped 1.0 m past your mark (target within 3 m)')
+  has(verdict(121, bumper + 5).text, 'Stopped 5.0 m short of your mark')
+  has(verdict(127, bumper).text, 'Started braking 7.4 m after the line') -- the first 20 Hz sample past 127
+  has(verdict(110, bumper).text, 'Braked before the line')
+end
+
 function T.park_in_box_wants_the_whole_body_inside()
   eq(check({type = 'park_in_box'}, drive(cleanLine(parkAt()))).ok, true, 'centred')
   local over = check({type = 'park_in_box'}, drive(cleanLine(parkAt(0.845, 0))))

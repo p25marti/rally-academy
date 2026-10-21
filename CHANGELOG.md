@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **B03 stopping-distance estimation is graded automatically**: set **Your mark** on the HUD before the run (how far
+  past the Brake line you'll stop), brake at the line from 50 km/h, and the grade is how close the bumper stops to your
+  mark (3 m; silver 2, gold 1). Cones show the mark; each surface teaches its own distance.
 - **F06 puncture adaptation is graded automatically**: the mod deflates a random tyre as you cross the Puncture gate;
   get under 35 km/h within 4 s and nurse the car through the S to the finish without going over, medals for time
   (silver 36 s, gold 30 s).

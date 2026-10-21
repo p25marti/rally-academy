@@ -159,6 +159,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `handbrake_pulls` | none (optional `count` 1, `minKmh` 5) | The handbrake goes on (over 0.5) exactly `count` times while moving |
 | `flick` | none (optional `fromGate` 1, `toGate` 2, `turn` 'left', `awayDeg` 30, `intoDeg` 60, `maxSeconds` 1.5) | Between the two gates the steering wheel goes at least `awayDeg` away from the turn, then at least `intoDeg` into it within `maxSeconds` (a Scandinavian flick) |
 | `throttle_on_between` | none (optional `fromGate` 2, `toGate` 3, `minThrottle` 0.5, `minSeconds` 0.5) | Between the two gates (the apex and the exit) the throttle is at `minThrottle` or more for at least `minSeconds` in total |
+| `predicted_stop` | none (optional `withinM` 3, `brakeWithinM` 3, `gate` 1) | B03: braking starts within `brakeWithinM` past the gate and not before it, then the front bumper stops within `withinM` of the driver's mark (the course's `predict` line) |
 | `limp_speed` | `maxKmh` (optional `graceSeconds` 4) | From `graceSeconds` after a tyre goes flat (telemetry `flat`) to the end of the run, never faster than `maxKmh`. Fails if no tyre went flat |
 | `airtime` | none (optional `minSeconds` 0, `maxSeconds`, `minForce` 50) | The longest stretch with all four wheels off the ground (each wheel's raw downforce under `minForce` N; recordings before 2026-10-21 carry a smoothed force that reads low) is between `minSeconds` and `maxSeconds` |
 | `ran_wide` | none (optional `minM` 1, `maxM` 5, `fromGate` 1, `toGate` −1) | Between the two gates the car runs outside the course circle's line by `minM` to `maxM`: a mild push, not a trip off the circle |
@@ -376,6 +377,14 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+B03 stopping-distance estimation is automatic since 2026-10-21: before each run the driver sets **Your mark** on the
+HUD (metres past the Brake line, 10-45 m, the course's `predict`); the mod lays a line with two cones there. Reach the
+Brake line at 47-53 km/h, brake at it (within 3 m, not before: it's the estimate that's tested), and stop with the front
+bumper within 3 m of the mark (`predicted_stop`; silver 2 m, gold 1 m). Scripted (arcade, 50 km/h, 0.8 brake from the
+line): the car stops about 15 m past it on asphalt, 17.5 on dirt, 24 on snow, about +-1 m run to run; with the mark
+there, gold on each; a 30 m mark on dirt is 12 m out. Fixtures `b03_gold_pg`, `b03-asphalt_gold_pg`,
+`b03-snow_gold_pg`, `b03_miss_far_pg`.
+
 F06 puncture adaptation is automatic since 2026-10-21, on the test road: a course gate may carry an `event`, and
 crossing F06's Puncture gate (30 m in) deflates a random tyre (`beamstate.deflateRandomTire()` in the car, as the
 game's own binding does); then a Bend gate in the S and a Finish. Within 4 s of the flat the car must be under 35
@@ -486,7 +495,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | A08 | Apex and exit selection | Gates, cone contact, steering steadiness after exit | Automatic |
 | B01 | Threshold braking | Zone, lockup, cone contact | Automatic |
 | B02 | Wheel lockup recognition | Lockup duration (~1 s), corridor | Automatic |
-| B03 | Stopping-distance estimation | Prediction marker prompt, line offset, contact | Hybrid |
+| B03 | Stopping-distance estimation | The driver's mark set on the HUD, 50 km/h at the Brake line, braking at it, bumper to the mark (built 2026-10-21) | Automatic |
 | B04 | Trail braking | Brake off by apex, lockup, corridor | Automatic |
 | B05 | Left-foot braking | Circle laps and corridor, spin, throttle never off, brake on throttle | Automatic |
 | B06 | Understeer correction | Push wide of the line, path regained by a gate, spin | Automatic |

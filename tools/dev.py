@@ -71,12 +71,16 @@ def _num(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
+# What a course gate may do to the car as it crosses (rallyAcademy.lua): 'puncture' deflates a random tyre (F06).
+GATE_EVENTS = {"puncture"}
+
+
 def course_errors(course) -> list[str]:
     """assessment.course: gates, cones and a parking box in metres from the start (x right, y ahead)."""
     if not isinstance(course, dict):
         return ["assessment.course must be an object"]
     errors = []
-    unknown = set(course) - {"gates", "cones", "box", "line", "zone", "circle"}
+    unknown = set(course) - {"gates", "cones", "box", "line", "zone", "circle", "predict"}
     if unknown:
         errors.append(f"assessment.course: unknown keys {sorted(unknown)}")
     for kind in ("gates", "cones"):
@@ -91,6 +95,8 @@ def course_errors(course) -> list[str]:
                 errors.append(f"assessment.course.gates[{i}] needs widthM > 0")
             elif kind == "cones" and it.get("keep", "left") not in ("left", "right"):
                 errors.append(f"assessment.course.cones[{i}].keep must be 'left' or 'right'")
+            elif kind == "gates" and it.get("event", "puncture") not in GATE_EVENTS:
+                errors.append(f"assessment.course.gates[{i}].event must be one of {sorted(GATE_EVENTS)}")
     box = course.get("box")
     if box is not None and not (isinstance(box, dict) and _num(box.get("y")) and _num(box.get("x", 0))
                                 and _num(box.get("lengthM")) and box["lengthM"] > 0
@@ -103,6 +109,15 @@ def course_errors(course) -> list[str]:
     if line is not None and not (isinstance(line, dict) and _num(line.get("y")) and _num(line.get("x", 0))
                                  and _num(line.get("widthM", 8)) and line.get("widthM", 8) > 0):
         errors.append("assessment.course.line needs numeric y (and x) and widthM > 0")
+    predict = course.get("predict")
+    if predict is not None:
+        gates = course.get("gates") if isinstance(course.get("gates"), list) else []
+        p = predict if isinstance(predict, dict) else {}
+        lo, hi, step, gate = p.get("minM"), p.get("maxM"), p.get("stepM", 1), p.get("gate", 1)
+        if not (_num(lo) and _num(hi) and lo < hi and _num(step) and step > 0
+                and isinstance(gate, int) and 1 <= gate <= len(gates)
+                and _num(p.get("defaultM", lo)) and lo <= p.get("defaultM", lo) <= hi):
+            errors.append("assessment.course.predict needs minM < maxM, stepM > 0, defaultM between them and gate = one of the course's gates")
     circle = course.get("circle")
     if circle is not None and not (isinstance(circle, dict) and _num(circle.get("x", 0)) and _num(circle.get("y", 0))
                                    and _num(circle.get("radiusM")) and circle["radiusM"] > 0

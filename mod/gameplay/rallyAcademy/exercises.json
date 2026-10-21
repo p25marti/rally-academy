@@ -1507,16 +1507,79 @@
           "areaHint": "Proving ground snow strip (MAPS P2): 390 m of dead-level snow from the start. Pick a stopping marker, reach 50 km/h and brake; then the same on the other surfaces."
         }
       ],
-      "instructions": "Before each run, estimate stopping spot, then brake from exactly 50 km/h; six runs per surface.",
-      "resetInstructions": "Go to drill puts you 120 m behind the start line. Reach 50 km/h and brake so you stop on the flat, no more than about 45 m past the line.",
-      "props": "Record separate pavement/gravel observations; surface runs need two saved positions.",
+      "instructions": "Before each run, guess where the car will stop and set Your mark on the HUD (metres past the Brake line). Reach the Brake line at 50 km/h and brake firmly at it, the same way every time; the grade is how close you stop to your mark. Learn the distance on each surface: it changes a lot on snow.",
+      "resetInstructions": "Go to drill puts you 120 m behind the Brake line; Retry for each estimate.",
+      "props": "The Brake line's posts, and two cones at your mark that move when you change it.",
       "assessment": {
         "attempts": 12,
         "requiredPasses": 9,
-        "successDefinition": "Actual bumper stops within 3 m of your predicted stopping marker; no collision.",
+        "successDefinition": "Set your mark on the HUD, reach the Brake line at 47-53 km/h, start braking at it (within 3 m, not before) and stop with the front bumper within 3 m of your mark. Silver: 2 m. Gold: 1 m.",
         "metricToRecord": "Prediction error (metres), by surface",
-        "mode": "selfAssessment",
-        "rules": []
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 47,
+            "maxKmh": 53,
+            "gate": 1
+          },
+          {
+            "type": "predicted_stop",
+            "withinM": 3,
+            "brakeWithinM": 3
+          },
+          {
+            "type": "no_reverse",
+            "maxM": 0.3
+          },
+          {
+            "type": "no_damage"
+          }
+        ],
+        "endWhen": "stopped",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 120,
+              "widthM": 8,
+              "label": "Brake"
+            }
+          ],
+          "predict": {
+            "gate": 1,
+            "minM": 10,
+            "maxM": 45,
+            "stepM": 1,
+            "defaultM": 25,
+            "widthM": 8
+          }
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "predicted_stop",
+                "withinM": 2,
+                "brakeWithinM": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "predicted_stop",
+                "withinM": 1,
+                "brakeWithinM": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

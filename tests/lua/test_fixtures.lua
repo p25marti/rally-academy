@@ -666,4 +666,13 @@ function T.f06_recorded_limps_grade_the_pace_on_the_flat()
   has(check(gradeCourse('f06_miss_fast_pg', 'F06'), 'limp_speed').text, 'slow right down when a tyre goes')
 end
 
+-- B03 recorded on the dirt, asphalt and snow strips (scenario predict): 50 km/h to the Brake line, 0.8 brake from it, the
+-- mark set where the car stops (dirt 18 m, asphalt 15, snow 24: gold each); the miss set 30 m on dirt.
+function T.b03_recorded_estimates_grade_against_the_mark()
+  agree('B03', {b03_gold_pg = 'gold', b03_miss_far_pg = false})
+  agree('B03-asphalt', {['b03-asphalt_gold_pg'] = 'gold'})
+  agree('B03-snow', {['b03-snow_gold_pg'] = 'gold'})
+  has(check(gradeCourse('b03_miss_far_pg', 'B03'), 'predicted_stop').text, 'short of your mark')
+end
+
 return T

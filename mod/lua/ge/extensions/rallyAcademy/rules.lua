@@ -974,6 +974,45 @@ function E.throttle_on_between(rule, samples, ctx)
   return false, string.format('Only %.1f s on the throttle after the apex (peak %.0f%%): drive the front out', on, peak * 100)
 end
 
+-- Predicting the stop (B03): ctx.course.line is the driver's mark (the course's `predict`, set on the HUD before the
+-- run) and gate `gate` the line to brake at. Braking must start within `brakeWithinM` past the gate and not before it
+-- (so it's the estimate that's tested, not a late correction); then the front bumper must stop within `withinM` of
+-- the mark.
+-- rule: {type = 'predicted_stop', withinM = 3, brakeWithinM = 3, gate = 1}
+function E.predicted_stop(rule, samples, ctx)
+  local line = ctx and ctx.course and ctx.course.line
+  if not line then return false, 'No mark laid out' end
+  local gates, err = gateList(ctx)
+  if not gates then return false, err end
+  local gi = rule.gate or 1
+  local g, pass = gates[gi], Gates.passes(gates, samples)[gi]
+  if not (g and pass and pass.reached) then return false, 'Never reached the brake line' end
+  local brakeAt
+  for _, s in ipairs(samples) do
+    if (s.brk or 0) >= 0.2 and (s.air or 0) > 2 and s.x then
+      if s.t < pass.t then return false, 'Braked before the line: reach it at speed, then brake at it' end
+      brakeAt = s
+      break
+    end
+  end
+  if not brakeAt then return false, 'Never braked' end
+  local gx, gy = g.dir.x, g.dir.y
+  local n = math.sqrt(gx * gx + gy * gy)
+  local late = ((brakeAt.x - g.pos.x) * gx + (brakeAt.y - g.pos.y) * gy) / n
+  if late > (rule.brakeWithinM or 3) then
+    return false, string.format('Started braking %.1f m after the line: brake at it, it is your estimate being tested', late)
+  end
+  local last = samples[#samples]
+  local hx, hy = heading(last)
+  if not (last.x and hx) then return false, 'No position data for this run' end
+  local short = Layout.bumperToLine(line, carOf(ctx), last.x, last.y, hx, hy)
+  local within = rule.withinM or 3
+  local where = string.format('%.1f m %s your mark (target within %g m)', math.abs(short), short >= 0 and 'short of' or 'past',
+    within)
+  if math.abs(short) <= within then return true, 'Stopped ' .. where end
+  return false, 'Stopped ' .. where
+end
+
 -- Limping on a flat (F06): from `graceSeconds` after a tyre goes flat (telemetry `flat`, the count of flat
 -- tyres) to the end of the run, never faster than `maxKmh`.
 -- rule: {type = 'limp_speed', maxKmh = 35, graceSeconds = 4}
@@ -1115,6 +1154,7 @@ R.TYPES = {
   handbrake_pulls = {},
   throttle_on_between = {},
   airtime = {},
+  predicted_stop = {},
   limp_speed = {'maxKmh'},
   back_on_line_by_gate = {},
 }

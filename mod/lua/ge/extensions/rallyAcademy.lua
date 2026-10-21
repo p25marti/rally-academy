@@ -234,6 +234,27 @@ local function courseDef()
   return lesson and lesson.assessment and lesson.assessment.course or nil
 end
 
+-- B03: the driver's predicted stop, metres past the course's brake gate (course.predict), per drill this session.
+local predictions = {}
+local function prediction(def)
+  local p = def and def.predict
+  if not p then return nil end
+  return predictions[selected] or p.defaultM or p.minM or 0
+end
+
+-- The course as laid out: the definition, plus the driver's mark as a line `prediction` metres past the brake gate.
+-- (Saved setups fingerprint the plain definition, so moving the mark doesn't make a saved start stale.)
+local function placedDef()
+  local def = courseDef()
+  local m = prediction(def)
+  if not m then return def end
+  local gate = (def.gates or {})[def.predict.gate or 1] or {}
+  local out = {}
+  for k, v in pairs(def) do out[k] = v end
+  out.line = {x = gate.x or 0, y = (gate.y or 0) + m, widthM = def.predict.widthM or 8, label = 'Your mark'}
+  return out
+end
+
 -- Persist the selected drill's start, finish and gates for the current map. A course's
 -- gates come from the course, so only its start is saved.
 local function venueOf(id) local env = byId[id] and byId[id].environment return env and env.venue or nil end
@@ -272,7 +293,7 @@ end
 -- car's height above the ground, like marked gates (the car's position is ~0.4 m up).
 local CAR_HEIGHT = 0.4
 local function placeCourse()
-  local def = courseDef()
+  local def = placedDef()
   if not (def and startState) then course = nil; Props.clear(); return end
   course = Layout.place(def, startState)
   local z0 = startState.pos.z
@@ -406,6 +427,26 @@ function M.useVenueStart()
 end
 
 -- HUD toggle: start the next attempt automatically after a graded run.
+-- B03: set the predicted stop (metres past the brake line), clamped to the course's range and step; the mark moves.
+-- Not while a run is going: the estimate comes first.
+function M.setPrediction(m)
+  local def = courseDef()
+  local p = def and def.predict
+  if not p or phase == 'running' then return end
+  local step = p.stepM or 1
+  m = math.max(p.minM or 0, math.min(p.maxM or 100, math.floor((tonumber(m) or 0) / step + 0.5) * step))
+  predictions[selected] = m
+  placeCourse()
+  lastReason = string.format('Your mark: %g m past the brake line. Now drive it.', m)
+  output()
+end
+
+function M.nudgePrediction(steps)
+  local def = courseDef()
+  if not (def and def.predict) then return end
+  M.setPrediction(prediction(def) + (tonumber(steps) or 0) * (def.predict.stepM or 1))
+end
+
 function M.setAutoRetry(on)
   prefs.autoRetry = on == true
   Store.savePrefs(prefs)
@@ -779,8 +820,11 @@ function liveCourse()
     end
   end
   local cone = course.cones[1]
+  local def = courseDef()
+  local m = prediction(def)
   return {steps = steps, aid = cur.aid or false, fit = cur.fit or false, clipped = cur.clipped or false,
-          keep = cone and cone.keep or false}
+          keep = cone and cone.keep or false,
+          predict = m and {m = m, min = def.predict.minM, max = def.predict.maxM} or false}
 end
 
 local function tierLabel(name) return (name:gsub('^%l', string.upper)) end
