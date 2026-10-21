@@ -952,6 +952,23 @@ def ford():
     return p
 
 
+@scenario
+def jump():
+    """E06 over the proving ground's kicker (Covet Gravel Rally, arcade): a steady 57 km/h flies about 0.65 s and lands
+    clean (a medal); 68 km/h flies too far and the landing damages the car."""
+    p = []
+    A.drill_session("E06")
+    line = _road_centre("E06", "jump-road", 280)
+    s = _zoned_run("E06", line, [], top=57)
+    expect(p, "a committed but controlled jump: a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _zoned_run("E06", line, [], top=68)
+    lines = [str(x) for x in (A.grade_lines() or [])]
+    expect(p, "68 km/h breaks the car on landing", s.get("passed") is False and any("Damaged the car" in x for x in lines), lines)
+    A.end_session("E06")
+    return p
+
+
 # D07's camber road: the off-camber corners, in metres along the road.
 D07_OFF_CAMBER = [(145, 200), (335, 390)]
 

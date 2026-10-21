@@ -128,7 +128,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       hairpins on the mountain face, gravel / asphalt / snow, new 2026-10-20). D07 (camber, automatic since 2026-10-21). D02 (linked corners, automatic since 2026-10-21).
 - [ ] Module E. Done: E02 (FWD rotate-then-pull exit, the corner venue), E05 (a planted crest on the Off-Road
       Circuit), E07 (the rough track, automatic since 2026-10-21). E08 (the ford, automatic since
-      2026-10-21). E06 (jump) is next to grade. E03 and E04 are parked with C03, C05 and C06 (RWD/AWD).
+      2026-10-21). E06 (the jump, automatic since 2026-10-21). E03 and E04 are parked with C03, C05 and C06 (RWD/AWD).
 
 ## P3 — Machine-readable drills
 

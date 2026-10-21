@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E06 jump is graded automatically**: over the kicker and straight through a narrow landing gate without damage,
+  with medals for time in the air (0.3 s; silver 0.5, gold 0.65): commit to the jump, but not so much the landing
+  breaks the car.
 - **E08 water crossing is graded automatically**: no faster than 25 km/h into the water, still moving at the far bank,
   no stall or damage, and medals for time (silver 19 s, gold 17.8 s): brisk approach, modest entry, steady crossing.
 - **E07 rough terrain is graded automatically**: gates round the 200 m of bumps, no more than light damage (the

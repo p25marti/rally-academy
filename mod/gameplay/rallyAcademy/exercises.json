@@ -4823,16 +4823,92 @@
           ]
         }
       },
-      "instructions": "Approach square, stabilize car before takeoff and land while maintaining road alignment.",
-      "resetInstructions": "Stationary 150 m before jump; same approach direction/speed band.",
-      "props": "Find jump by recce in Freeroam first; official Utah Rally loop confirms jumps.",
+      "instructions": "Line the car up square to the kicker early and hold a steady throttle through the Approach gate so it leaves the lip settled, wheels straight. Keep the steering still in the air and land straight through the narrow Landing gate. More speed means more air, until the landing breaks the car: commit, but not too much.",
+      "resetInstructions": "Go to drill puts you 150 m before the kicker.",
+      "props": "Gate posts before the kicker, at the landing (5 m wide) and at the finish.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Four wheels land on intended road, no roll or damage, vehicle continues under control.",
-        "metricToRecord": "Controlled landings / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Over the kicker with all four wheels off the ground for at least 0.3 s, landing straight through the narrow Landing gate without damage (50 at most) or a spin, to the Finish. Silver: 0.5 s in the air. Gold: 0.65 s.",
+        "metricToRecord": "Controlled landings and airtime",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "DIRT"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "airtime",
+            "minSeconds": 0.3
+          },
+          {
+            "type": "no_damage",
+            "maxDamage": 50,
+            "hint": "too fast for the landing: commit less"
+          },
+          {
+            "type": "no_reverse"
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0.0,
+              "y": 135.0,
+              "widthM": 6,
+              "label": "Approach",
+              "headingDeg": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 195.0,
+              "widthM": 5,
+              "label": "Landing",
+              "headingDeg": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 265.0,
+              "widthM": 6,
+              "label": "Finish",
+              "headingDeg": 0.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "airtime",
+                "minSeconds": 0.5
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "airtime",
+                "minSeconds": 0.65
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",

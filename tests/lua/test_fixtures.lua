@@ -114,6 +114,7 @@
 --      d05 / d06 / e05 = the hill circuit (the Off-Road Circuit's first 640 m copied with elevation and banking):
 --      37 km/h into the blind hairpin; 45 then 40 km/h; e05 re-recorded 2026-10-21 with the raw wheel force: 45 km/h
 --      through the banked left then 50 over the kicker (51 at the crest, 0.12 s in the air).
+--      e06 = the jump (scenario jump): a steady 57 km/h (gold, about 0.65 s in the air); the miss took 68 (damage +238).
 --      e08 = the ford (scenario ford): 60 km/h on the approach, 22 from 25 m before the water to 110 m (gold, 17.5 s);
 --      the miss held 40 into the water.
 --      e07 = the rough track (scenario rough): 75 km/h on the smooth approach, 50 over the rough (gold, 22.6 s); the
@@ -289,7 +290,7 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
     b05_gold_pg = {'B05', 'gold'}, b06_gold_pg = {'B06', 'gold'},
     d03_gold_pg = {'D03', 'gold'}, d04_gold_pg = {'D04', 'gold'},
     d08_gold_pg = {'D08', 'gold'}, d05_gold_pg = {'D05', 'gold'}, d06_silver_pg = {'D06', 'silver'},
-    e05_gold_pg = {'E05', 'gold'}, d09_gold_pg = {'D09', 'gold'}, d07_gold_pg = {'D07', 'gold'},
+    e05_gold_pg = {'E05', 'gold'}, e06_gold_pg = {'E06', 'gold'}, d09_gold_pg = {'D09', 'gold'}, d07_gold_pg = {'D07', 'gold'},
     d02_gold_pg = {'D02', 'gold'}, e07_gold_pg = {'E07', 'gold'}, e08_gold_pg = {'E08', 'gold'},
     b07_bronze_pg = {'B07', 'bronze'}, c04_gold_pg = {'C04', 'gold'}, c07_gold_pg = {'C07', 'gold'}, d01_gold_pg = {'D01', 'gold'}}
   for name, w in pairs(want) do
@@ -299,6 +300,14 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, w[2], name .. ' medal')
   end
+end
+
+-- E06 recorded over the kicker with the raw wheel force: the gold run's airtime is measured, and 68 km/h breaks the car.
+function T.e06_recorded_jumps_measure_the_air_and_the_landing()
+  has(check(gradeCourse('e06_gold_pg', 'E06'), 'airtime').text, 's in the air')
+  local miss = gradeCourse('e06_miss_damage_pg', 'E06')
+  eq(miss.passed, false, 'a miss')
+  has(check(miss, 'no_damage').text, 'too fast for the landing')
 end
 
 -- E08 miss recorded at the ford: 40 km/h into the water, over the Entry gate's 25.

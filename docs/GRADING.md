@@ -375,6 +375,13 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+E06 jump is automatic since 2026-10-21, over the jump road's kicker: an Approach gate 15 m before it, a 5 m Landing
+gate (landing off line misses it or touches a post), a Finish, on the dirt, no spin or reversing, no more than 50
+damage (coached as too much commitment), and airtime as the medal: 0.3 s in the air; silver 0.5 s, gold 0.65 s.
+Scripted (arcade, centre line, steady speed, raw wheel force): 40 km/h 0.30 s, 45 0.42 s, 50 0.53 s, 55 0.65 s, 60
+0.72 s, all undamaged; 65 0.85 s with +62 damage, 68 +194 to +238. A steady 57 earns gold. Fixtures `e06_gold_pg`,
+`e06_miss_damage_pg`.
+
 E08 water crossing is automatic since 2026-10-21, at the ford: an Entry gate 5 m before the water (25 km/h at most), a
 Far bank gate up the climb out (10 km/h at least: it kept moving through the water), a Finish, real posts, on the dirt,
 no stall, no damage, no reversing, 30 s; medals for time (silver 19 s, gold 17.8 s). Scripted (arcade, centre line):
@@ -490,7 +497,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | E03 | RWD technique | Spin, corridor, wheelspin | Automatic |
 | E04 | AWD technique | Understeer, corridor, exit speed | Automatic |
 | E05 | Crest management | Crest speed, airtime, steady exit, landing damage, spin | Automatic |
-| E06 | Jump takeoff and landing | Landing on road, rollover, damage | Automatic |
+| E06 | Jump takeoff and landing | Airtime, a narrow landing gate, damage, on the track (built 2026-10-21) | Automatic |
 | E07 | Rough terrain | Gates, damage from the bumps, on the track, time (built 2026-10-21) | Automatic |
 | E08 | Water crossings | Entry speed, kept moving at the far bank, stall, damage, time (built 2026-10-21) | Automatic |
 | F06 | Puncture adaptation | Puncture injection, damage baseline, 35 km/h cap, rollover | Automatic |
