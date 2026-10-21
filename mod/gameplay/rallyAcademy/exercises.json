@@ -1619,13 +1619,13 @@
           ]
         }
       },
-      "instructions": "Brake on the approach from the Brake marker, keep easing the brake off as you steer into the corner, and be fully off it by the apex gate. Then drive out through the exit.",
+      "instructions": "Brake on the approach from the Brake marker, then keep easing the brake off in one smooth motion as you steer into the corner, fully off by the apex gate; then squeeze the throttle on and keep it on out through the exit. The input trace on the panel shows your brake (red) and throttle (green): aim for one clean ramp down, then one up.",
       "resetInstructions": "Go to drill puts you 67 m before the corner with the brake marker, apex gate and exit laid out. Move course here re-lays them from where you are.",
       "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Brake from the marker and carry it into the turn-in for at least 0.4 s while steering, fully off by the 4 m apex gate, through the exit at 30 km/h or more, no wheel locked over 0.3 s, no more than one wheel off the gravel, no spin. Silver: 42 km/h at the exit, all four wheels on the gravel. Gold: 50 km/h.",
+        "successDefinition": "Brake from the marker and carry it into the turn-in for at least 0.4 s while steering, easing it off in one motion (no more than 20% re-applied, never snapping off), fully off by the 4 m apex gate, then feed the throttle in without lifting or stabbing, through the exit at 30 km/h or more, no wheel locked over 0.3 s, no more than one wheel off the gravel, no spin. Silver: 42 km/h at the exit, all four wheels on the gravel, 10% re-applied and no change faster than 400% a second. Gold: 50 km/h, 5% and 250% a second (from nothing to full in 0.4 s or more).",
         "metricToRecord": "Clean trail-braked entries / 10",
         "mode": "automatic",
         "endWhen": "gates",
@@ -1690,6 +1690,22 @@
             "minKmh": 30,
             "maxKmh": 150,
             "gate": 3
+          },
+          {
+            "type": "smooth_pedal",
+            "pedal": "brake",
+            "fromGate": 1,
+            "toGate": 2,
+            "maxReapply": 0.2,
+            "maxRate": 6
+          },
+          {
+            "type": "smooth_pedal",
+            "pedal": "throttle",
+            "fromGate": 1,
+            "toGate": 3,
+            "maxReapply": 0.2,
+            "maxRate": 6
           }
         ],
         "tiers": [
@@ -1709,6 +1725,22 @@
                 ],
                 "maxWheelsOff": 0,
                 "maxSeconds": 0.3
+              },
+              {
+                "type": "smooth_pedal",
+                "pedal": "brake",
+                "fromGate": 1,
+                "toGate": 2,
+                "maxReapply": 0.1,
+                "maxRate": 4
+              },
+              {
+                "type": "smooth_pedal",
+                "pedal": "throttle",
+                "fromGate": 1,
+                "toGate": 3,
+                "maxReapply": 0.1,
+                "maxRate": 4
               }
             ]
           },
@@ -1728,6 +1760,22 @@
                 ],
                 "maxWheelsOff": 0,
                 "maxSeconds": 0.3
+              },
+              {
+                "type": "smooth_pedal",
+                "pedal": "brake",
+                "fromGate": 1,
+                "toGate": 2,
+                "maxReapply": 0.05,
+                "maxRate": 2.5
+              },
+              {
+                "type": "smooth_pedal",
+                "pedal": "throttle",
+                "fromGate": 1,
+                "toGate": 3,
+                "maxReapply": 0.05,
+                "maxRate": 2.5
               }
             ]
           }

@@ -38,6 +38,9 @@
 --      b01c_silver / silver2 = pure pursuit to the zone centre from 72 km/h braking at 4.6 / 5.0 m/s2 (0.8 / 1.3 m
 --      past the centre); b01c_past = 7.5 m/s2 (7.1 m past the zone). b02c_gold = hold 62 km/h to 115 m, full brake
 --      0.6 s then eased (0.5 s lock); b02c_held = full brake held to the stop.
+-- B04 (course): b04_*_pg (2026-10-21, with the driver's raw inputs bi / ti): gold_pg = brake 0.2 from the marker easing
+--      to 0 three metres before the apex, then the throttle fed in to full over 8 m; miss_pumped_pg = the brake
+--      pumped +-0.08 every 6 m; miss_stab_pg = full throttle at once. Older, on the stock corner:
 -- B04 (course): the flat corner, arcade gearbox, 65 km/h: gold = brake 0.2 from the marker easing to 0 three
 --      metres before the apex (52 km/h out); straight = brake 0.7 from 45 to 58 m only, then 0.1 throttle; late =
 --      as gold, but 0.12 brake with 0.4 throttle from 3 m before to 6 m past the apex. (Lighter braking with the
@@ -448,15 +451,31 @@ function T.b01_b02_course_zone_rules_and_medals_still_agree_with_the_in_game_ver
   has(check(gradeCourse('b02c_held', 'B02'), 'lockup_recovered').text, 'stayed locked')
 end
 
+-- The text of a drill's smooth_pedal check for one pedal (B04 has two).
+local function pedalCheck(res, pedal)
+  for _, c in ipairs(res.checks) do
+    if c.type == 'smooth_pedal' and c.text:find(pedal == 'brake' and 'Brake' or 'Throttle', 1, true) then return c end
+  end
+end
+
 function T.b04_trail_braking_rules_and_medals_still_agree_with_the_in_game_verdicts()
-  local want = {b04_gold = 'gold', b04_straight = false, b04_late = false}
+  local want = {b04_gold_pg = 'gold', b04_miss_pumped_pg = false, b04_miss_stab_pg = false, b04_straight = false, b04_late = false}
   for name, tier in pairs(want) do
     local res, rec = gradeCourse(name, 'B04')
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, tier, name .. ' medal')
   end
-  has(check(gradeCourse('b04_gold', 'B04'), 'trail_braked').text, 'Trail-braked')
+  has(check(gradeCourse('b04_gold_pg', 'B04'), 'trail_braked').text, 'Trail-braked')
+  has(pedalCheck(gradeCourse('b04_gold_pg', 'B04'), 'brake').text, 'eased off in one motion')
+  has(pedalCheck(gradeCourse('b04_gold_pg', 'B04'), 'throttle').text, 'fed in smoothly')
+  has(pedalCheck(gradeCourse('b04_miss_pumped_pg', 'B04'), 'brake').text, 'Brake pumped')
+  has(pedalCheck(gradeCourse('b04_miss_stab_pg', 'B04'), 'throttle').text, 'Throttle stabbed')
+  -- recorded before smoothness was graded (2026-10-21), without the driver's raw inputs: its throttle (as applied)
+  -- stepped on at the apex and wavers, which misses today
+  local old = gradeCourse('b04_gold', 'B04')
+  eq(old.passed, false, 'the old gold run misses today')
+  eq(pedalCheck(old, 'throttle').ok, false, 'for its throttle')
   has(check(gradeCourse('b04_straight', 'B04'), 'trail_braked').text, 'carry the brake into the corner')
   has(check(gradeCourse('b04_late', 'B04'), 'brake_off_by_gate').text, 'Still braking at the apex')
 end

@@ -320,10 +320,11 @@ def corners():
     return p
 
 
-def _trail_run(drill, kmh=65, brake=0.2, throttle=0.0, exit_throttle=0.6):
+def _trail_run(drill, kmh=65, brake=0.2, throttle=0.0, exit_throttle=1.0, ramp_m=8, wobble=0.0):
     """B04: `kmh`, then braking lightly from the marker (`brake`, eased off towards the apex, with `throttle` held
-    under it so the arcade box doesn't drop to 1st and stall the car) and back on the throttle at the apex, through
-    the middle of the exit gate (`exit_throttle` from the apex)."""
+    under it so the arcade box doesn't drop to 1st and stall the car), then the throttle fed in from the apex up to
+    `exit_throttle` over `ramp_m` metres, through the middle of the exit gate. `wobble` pumps the brake (+-, every
+    6 m) for the miss case."""
     import lines as L
     apex = 118.7  # metres along lines.bmp_left() to the apex gate
 
@@ -331,8 +332,13 @@ def _trail_run(drill, kmh=65, brake=0.2, throttle=0.0, exit_throttle=0.6):
         if trav < 50:
             return None
         if trav < apex - 3:
-            return (throttle, max(0.0, brake * (1 - (trav - 50) / (apex - 53))))
-        return (exit_throttle, 0.0)
+            b = max(0.0, brake * (1 - (trav - 50) / (apex - 53)))
+            if wobble and b > 0:
+                b = max(0.0, b + wobble * math.sin((trav - 50) * math.pi / 3))
+            return (throttle, b)
+        lo = max(0.1, throttle)  # from the throttle held under the brake: dropping it first would be a lift
+        fed = exit_throttle if not ramp_m else min(exit_throttle, lo + (exit_throttle - lo) * (trav - apex + 3) / ramp_m)
+        return (fed, 0.0)
     return A.course_run(drill, L.bmp_left({"DR1181_12": -1.5, "DR1181_13": -1.5}), pedals=trail_pedals, kmh=kmh,
                         decel=2.5, max_throttle=1.0, stop_within=0.5)
 
@@ -340,8 +346,8 @@ def _trail_run(drill, kmh=65, brake=0.2, throttle=0.0, exit_throttle=0.6):
 @scenario
 def trail():
     """B04 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): braking lightly from the
-    marker and easing off into the turn earns a medal; braking only in a straight line before turning in
-    misses. On the flat, light braking with the throttle closed stops the car quickly (engine braking in a
+    marker and easing off into the turn, then feeding the throttle in, earns a medal; braking only in a straight
+    line before turning in, pumping the brake, or stabbing the throttle at the apex misses. On the flat, light braking with the throttle closed stops the car quickly (engine braking in a
     low gear), so the trail brake is gentle and the entry faster than on the stock downhill."""
     import lines as L
     p = []
@@ -358,6 +364,12 @@ def trail():
            f"{s.get('tier')}: {s.get('reason')}")
     s = A.course_run("B04", line, pedals=straight_pedals, **kw)
     expect(p, "braking only before turn-in misses", s.get("passed") is False and "into the corner" in str(s.get("reason")),
+           s.get("reason"))
+    s = _trail_run("B04", wobble=0.08)
+    expect(p, "pumping the brake while easing off misses", s.get("passed") is False and "Brake pumped" in str(s.get("reason")),
+           s.get("reason"))
+    s = _trail_run("B04", exit_throttle=1.0, ramp_m=0)
+    expect(p, "stabbing the throttle at the apex misses", s.get("passed") is False and "Throttle stabbed" in str(s.get("reason")),
            s.get("reason"))
     A.end_session("B04")
     return p

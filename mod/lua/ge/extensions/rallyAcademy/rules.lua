@@ -2,7 +2,8 @@
 -- Pure Lua (no engine globals), so every rule is unit-tested against synthetic
 -- and recorded runs. Each check returns a readable reason: the reason is the coaching.
 --
--- Run record samples (runRecord.lua, telemetry.lua): t (sim s), air (m/s), brk/thr (0..1),
+-- Run record samples (runRecord.lua, telemetry.lua): t (sim s), air (m/s), brk/thr (0..1, as applied),
+-- bi/ti (0..1, the driver's own brake and throttle input, before ABS and traction control; since 2026-10-21),
 -- gear (gearIndex: 0 neutral, -1 reverse), rpm, eng (1 = engine running), hb (handbrake),
 -- hx, hy (heading), vx, vy (velocity, m/s), uz (up vector z: 1 upright), dmg (beamstate damage),
 -- steer (steering wheel angle in degrees, electrics.steering: about +80 mid-corner in the Covet),
@@ -974,6 +975,77 @@ function E.throttle_on_between(rule, samples, ctx)
   return false, string.format('Only %.1f s on the throttle after the apex (peak %.0f%%): drive the front out', on, peak * 100)
 end
 
+-- Smooth pedal work between two gates (B04): the driver's own input (`bi` / `ti`; older recordings `brk` / `thr`).
+-- pedal 'brake': from the brake's peak in the window it comes off in one motion: brake added back after the peak
+-- (pumping), as a share of the peak, is at most `maxReapply`, and it never drops faster than `maxRate` (per second,
+-- over 0.1 s: snapping off). pedal 'throttle': from when the brake comes off (within the window; the throttle a
+-- driver lifts on reaching the brakes doesn't count) the throttle goes on in one motion: taken back (lifting) at most
+-- `maxReapply` of its peak, never rising faster than `maxRate` (stabbing). The window ends at `toGate`, or the run's end.
+-- rule: {type = 'smooth_pedal', pedal = 'brake', fromGate = 1, toGate = 2, maxReapply = 0.1, maxRate = 3}
+local PUMP = 0.02 -- a rise (brake) or drop (throttle) of 2 % or more against the motion counts as one pump or lift
+function E.smooth_pedal(rule, samples, ctx)
+  local gates, err = gateList(ctx)
+  if not gates then return false, err end
+  local from, to = rule.fromGate or 1, rule.toGate or 2
+  local passes = Gates.passes(gates, samples)
+  if not (passes[from] and passes[from].reached) then return false, string.format('Gate %d not reached', from) end
+  local t0, t1 = passes[from].t, passes[to] and passes[to].reached and passes[to].t or math.huge
+  local brake = rule.pedal ~= 'throttle'
+  local ts, vs, bs = {}, {}, {}
+  for _, s in ipairs(samples) do
+    if s.t >= t0 and s.t <= t1 then
+      ts[#ts + 1] = s.t
+      vs[#vs + 1] = brake and (s.bi or s.brk or 0) or (s.ti or s.thr or 0)
+      bs[#bs + 1] = s.bi or s.brk or 0
+    end
+  end
+  if #vs < 2 then return false, 'No pedal data between the gates' end
+  local first, peak = nil, 0
+  if brake then
+    for i, v in ipairs(vs) do if v > peak then first, peak = i, v end end
+  else
+    local start = 1
+    for i, b in ipairs(bs) do if b > 0.05 then start = i end end
+    for i = start, #vs do
+      if not first and vs[i] > 0.05 then first = i end
+      if first then peak = math.max(peak, vs[i]) end
+    end
+  end
+  if not first or peak < 0.05 then
+    return false, string.format('No %s between gates %d and %d', brake and 'braking' or 'throttle', from, to)
+  end
+  local back, rate, pumps, run = 0, 0, 0, 0
+  -- the brake from just after its peak; the throttle from its first sample, against the one before (a stab from zero)
+  for i = brake and first + 1 or math.max(2, first), #vs do
+    local d = brake and (vs[i] - vs[i - 1]) or (vs[i - 1] - vs[i]) -- against the motion
+    if d > 0 then
+      back = back + d
+      run = run + d
+      if run >= PUMP and run - d < PUMP then pumps = pumps + 1 end
+    else
+      run = 0
+    end
+    -- the steepest change over 0.1 s, so one noisy frame doesn't count
+    local j = i
+    while j < #vs and ts[j] - ts[i - 1] < 0.1 do j = j + 1 end
+    if ts[j] > ts[i - 1] then
+      rate = math.max(rate, (brake and (vs[i - 1] - vs[j]) or (vs[j] - vs[i - 1])) / (ts[j] - ts[i - 1]))
+    end
+  end
+  local share, maxRate = back / peak, rule.maxRate or math.huge
+  if share > (rule.maxReapply or 0.1) then
+    local n = math.max(1, pumps)
+    local times = n == 1 and 'once' or (n == 2 and 'twice' or (n .. ' times'))
+    return false, brake and ('Brake pumped ' .. times .. ' while easing off: one smooth release')
+      or ('Throttle lifted ' .. times .. ' on the way out: feed it in, keep it in')
+  end
+  if rate > maxRate then
+    return false, string.format(brake and 'Brake snapped off (%.0f%%/s, limit %.0f): feather it out'
+      or 'Throttle stabbed (%.0f%%/s, limit %.0f): squeeze it in', rate * 100, maxRate * 100)
+  end
+  return true, string.format(brake and 'Brake eased off in one motion from %.0f%%' or 'Throttle fed in smoothly to %.0f%%', peak * 100)
+end
+
 -- Predicting the stop (B03): ctx.course.line is the driver's mark (the course's `predict`, set on the HUD before the
 -- run) and gate `gate` the line to brake at. Braking must start within `brakeWithinM` past the gate and not before it
 -- (so it's the estimate that's tested, not a late correction); then the front bumper must stop within `withinM` of
@@ -1154,6 +1226,7 @@ R.TYPES = {
   handbrake_pulls = {},
   throttle_on_between = {},
   airtime = {},
+  smooth_pedal = {},
   predicted_stop = {},
   limp_speed = {'maxKmh'},
   back_on_line_by_gate = {},

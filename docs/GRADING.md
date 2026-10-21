@@ -159,6 +159,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `handbrake_pulls` | none (optional `count` 1, `minKmh` 5) | The handbrake goes on (over 0.5) exactly `count` times while moving |
 | `flick` | none (optional `fromGate` 1, `toGate` 2, `turn` 'left', `awayDeg` 30, `intoDeg` 60, `maxSeconds` 1.5) | Between the two gates the steering wheel goes at least `awayDeg` away from the turn, then at least `intoDeg` into it within `maxSeconds` (a Scandinavian flick) |
 | `throttle_on_between` | none (optional `fromGate` 2, `toGate` 3, `minThrottle` 0.5, `minSeconds` 0.5) | Between the two gates (the apex and the exit) the throttle is at `minThrottle` or more for at least `minSeconds` in total |
+| `smooth_pedal` | none (`pedal` 'brake' or 'throttle', `fromGate`, `toGate`, optional `maxReapply` 0.1, `maxRate`) | The driver's own input (`bi` / `ti`) between two gates. Brake: from its peak it comes off in one motion, re-applied (pumping) at most `maxReapply` of the peak, never dropping faster than `maxRate` a second (snapping off). Throttle: from when the brake comes off it goes on in one motion, taken back (lifting) at most `maxReapply`, never rising faster than `maxRate` (stabbing). Coaching counts the pumps or lifts |
 | `predicted_stop` | none (optional `withinM` 3, `brakeWithinM` 3, `gate` 1) | B03: braking starts within `brakeWithinM` past the gate and not before it, then the front bumper stops within `withinM` of the driver's mark (the course's `predict` line) |
 | `limp_speed` | `maxKmh` (optional `graceSeconds` 4) | From `graceSeconds` after a tyre goes flat (telemetry `flat`) to the end of the run, never faster than `maxKmh`. Fails if no tyre went flat |
 | `airtime` | none (optional `minSeconds` 0, `maxSeconds`, `minForce` 50) | The longest stretch with all four wheels off the ground (each wheel's raw downforce under `minForce` N; recordings before 2026-10-21 carry a smoothed force that reads low) is between `minSeconds` and `maxSeconds` |
@@ -377,6 +378,15 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+B04 trail braking grades smoothness since 2026-10-21, as the HUD's input trace shows it: the brake from the Brake
+marker to the apex must come off in one motion and the throttle from there to the exit go on in one motion
+(`smooth_pedal`): pass at 20 % re-applied and 600 % a second, silver 10 % and 400 %, gold 5 % and 250 % (from nothing to
+full in 0.4 s or more), on top of the exit speed medals. Scripted (arcade): braking 0.2 from the marker eased to 0
+before the apex, then the throttle fed in to full over 8 m: gold on gravel, asphalt and snow (snow feeds in from the
+throttle held under the brake: dropping it first reads as a lift). The same with the brake pumped +-0.08: "Brake
+pumped 25 times"; full throttle at once: "Throttle stabbed (1000%/s, limit 600)". The older stock recordings (no raw
+inputs, the throttle stepped on) miss today. Fixtures `b04_gold_pg`, `b04_miss_pumped_pg`, `b04_miss_stab_pg`.
+
 B03 stopping-distance estimation is automatic since 2026-10-21: before each run the driver sets **Your mark** on the
 HUD (metres past the Brake line, 10-45 m, the course's `predict`); the mod lays a line with two cones there. Reach the
 Brake line at 47-53 km/h, brake at it (within 3 m, not before: it's the estimate that's tested), and stop with the front
@@ -496,7 +506,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | B01 | Threshold braking | Zone, lockup, cone contact | Automatic |
 | B02 | Wheel lockup recognition | Lockup duration (~1 s), corridor | Automatic |
 | B03 | Stopping-distance estimation | The driver's mark set on the HUD, 50 km/h at the Brake line, braking at it, bumper to the mark (built 2026-10-21) | Automatic |
-| B04 | Trail braking | Brake off by apex, lockup, corridor | Automatic |
+| B04 | Trail braking | Trail braked into the turn, brake off by the apex, the brake eased off and the throttle fed in smoothly, exit speed | Automatic |
 | B05 | Left-foot braking | Circle laps and corridor, spin, throttle never off, brake on throttle | Automatic |
 | B06 | Understeer correction | Push wide of the line, path regained by a gate, spin | Automatic |
 | B07 | Oversteer correction | Rear slide, spin, exit lane, countersteer unwound, corrections | Automatic |

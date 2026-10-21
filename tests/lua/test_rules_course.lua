@@ -121,6 +121,47 @@ function T.predicted_stop_grades_the_estimate_from_braking_at_the_line()
   has(verdict(110, bumper).text, 'Braked before the line')
 end
 
+-- smooth_pedal: two gates 20 m apart on y, the car at 10 m/s; `brakeAt(t)` / `throttleAt(t)` give the driver's
+-- inputs (bi / ti) at each 0.05 s sample.
+local function pedalRun(brakeAt, throttleAt)
+  local course = L.place({gates = {{y = 10, widthM = 8}, {y = 40, widthM = 8}, {y = 70, widthM = 8}}}, START)
+  local samples = {}
+  for i = 0, 160 do
+    local t = i * 0.05
+    samples[#samples + 1] = {t = t, x = 0, y = t * 10, air = 10, hx = 0, hy = 1, w = {},
+                             bi = brakeAt(t), ti = throttleAt(t), brk = brakeAt(t), thr = throttleAt(t)}
+  end
+  return {samples = samples, runStartT = 0}, {course = course, gates = course.gates}
+end
+
+function T.smooth_pedal_tells_a_clean_release_from_pumping_and_snapping()
+  local rule = {type = 'smooth_pedal', pedal = 'brake', fromGate = 1, toGate = 2, maxReapply = 0.1, maxRate = 3}
+  local function zero() return 0 end
+  local function check2(brakeAt) return R.evaluate({rule}, pedalRun(brakeAt, zero)).checks[1] end
+  -- on at 0.6 from 1 s (gate 1), eased off linearly over 2 s
+  local clean = check2(function(t) return t < 1 and 0 or math.max(0, 0.6 * (1 - (t - 1) / 2)) end)
+  eq(clean.ok, true, clean.text)
+  has(clean.text, 'Brake eased off in one motion from 60%')
+  local pumped = check2(function(t) return t < 1 and 0 or math.max(0, 0.6 * (1 - (t - 1) / 2) + 0.08 * math.sin(t * 12)) end)
+  eq(pumped.ok, false, 'pumping')
+  has(pumped.text, 'Brake pumped')
+  local snapped = check2(function(t) return (t >= 1 and t < 2) and 0.6 or 0 end)
+  eq(snapped.ok, false, 'snapped')
+  has(snapped.text, 'Brake snapped off')
+end
+
+function T.smooth_pedal_watches_the_throttle_from_when_the_brake_comes_off()
+  local rule = {type = 'smooth_pedal', pedal = 'throttle', fromGate = 1, toGate = 3, maxReapply = 0.1, maxRate = 3}
+  local function brakeAt(t) return (t >= 1 and t < 2.5) and 0.4 * (1 - (t - 1) / 1.5) or 0 end
+  local function check2(throttleAt) return R.evaluate({rule}, pedalRun(brakeAt, throttleAt)).checks[1] end
+  -- the approach's throttle, lifted at the brakes, doesn't count; then fed in over 1 s from 3 s
+  local fed = check2(function(t) return t < 1 and 0.7 or (t < 3 and 0 or math.min(1, t - 3)) end)
+  eq(fed.ok, true, fed.text)
+  has(fed.text, 'Throttle fed in smoothly to 100%')
+  has(check2(function(t) return t < 3 and 0 or 1 end).text, 'Throttle stabbed')
+  has(check2(function(t) return t < 3 and 0 or (t < 4 and 0.8 or (t < 4.5 and 0.3 or 0.8)) end).text, 'Throttle lifted once')
+end
+
 function T.park_in_box_wants_the_whole_body_inside()
   eq(check({type = 'park_in_box'}, drive(cleanLine(parkAt()))).ok, true, 'centred')
   local over = check({type = 'park_in_box'}, drive(cleanLine(parkAt(0.845, 0))))
