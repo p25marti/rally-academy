@@ -375,6 +375,14 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+E01 snow vs gravel vs tarmac is automatic since 2026-10-21, on the gravel corner and its asphalt and snow twins:
+Apex, Exit and Finish gates on the corner's centre line (A08's gates sit on a late-apex line, 2 m inside, which a
+centre-line car clips), real posts, on the corner's surface, no spin or contact, and apex speed as the medal, with
+each surface's own targets: gravel 42 / 48 / 52 km/h, asphalt 50 / 56 / 61, snow 40 / 46 / 50. Scripted (arcade,
+steady speed, centre line), the fastest apex each surface held and the first that failed: gravel 53 / 56, asphalt
+63 / 66, snow 52.5 / 56 (snow runs off where gravel clips the post; BeamNG's snow grips 0.64 to gravel's 0.68).
+Fixtures `e01_silver_pg`, `e01-asphalt_gold_pg`, `e01-snow_gold_pg`, `e01_miss_fast_pg`.
+
 E06 jump is automatic since 2026-10-21, over the jump road's kicker: an Approach gate 15 m before it, a 5 m Landing
 gate (landing off line misses it or touches a post), a Finish, on the dirt, no spin or reversing, no more than 50
 damage (coached as too much commitment), and airtime as the medal: 0.3 s in the air; silver 0.5 s, gold 0.65 s.
@@ -442,7 +450,7 @@ need HUD prompts and the `hybrid` mode:
 | A06 | Name the next bend before the first apex | Pick from options |
 | B03 | Predict the stopping point | Place a marker before the run |
 | B08, D07 | Which input or side changed the grip | Pick from options |
-| E01 | Safe speed and braking observations per surface | Short form |
+| E01 | Snow vs gravel vs tarmac | Gates and posts, on the surface, apex speed per surface (built 2026-10-21) | Automatic |
 | F07 | One handling difference between setups | Free text |
 
 ## 7. Scene control

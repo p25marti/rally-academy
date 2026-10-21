@@ -4392,25 +4392,182 @@
           "id": "asphalt",
           "name": "Asphalt",
           "venue": "pg-corner-asphalt",
-          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level."
+          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "ASPHALT"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            },
+            {
+              "type": "speed_at_gates",
+              "minKmh": 50,
+              "maxKmh": 150,
+              "gate": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "speed_at_gates",
+                  "minKmh": 56,
+                  "maxKmh": 150,
+                  "gate": 1
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "speed_at_gates",
+                  "minKmh": 61,
+                  "maxKmh": 150,
+                  "gate": 1
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "snow",
           "name": "Snow",
           "venue": "pg-corner-snow",
-          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level."
+          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "SNOW"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            },
+            {
+              "type": "speed_at_gates",
+              "minKmh": 40,
+              "maxKmh": 150,
+              "gate": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "speed_at_gates",
+                  "minKmh": 46,
+                  "maxKmh": 150,
+                  "gate": 1
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "speed_at_gates",
+                  "minKmh": 50,
+                  "maxKmh": 150,
+                  "gate": 1
+                }
+              ]
+            }
+          ]
         }
       ],
-      "instructions": "Perform 4 controlled corners on snow, 4 on tarmac, 4 on gravel; record safe approach speed and braking behavior.",
-      "resetInstructions": "Three saved starts, one on each surface (not identical geometry).",
-      "props": "OPTIONAL Winter West Coast 0.39.1 mod; check compatibility and actual traction. Fall back to 2-surface comparison if unavailable.",
+      "instructions": "The same left-hander on gravel, asphalt and snow (pick the Surface). Find each surface's safe speed: brake in a straight line before turning in, then carry as much speed through the Apex gate as the grip allows. Feel how much earlier you brake on snow and gravel, and how much more the tarmac takes.",
+      "resetInstructions": "Go to drill puts you at the corner's straight; the Surface row switches corners.",
+      "props": "Gate posts at the apex, exit and finish of each corner.",
       "assessment": {
         "attempts": 12,
         "requiredPasses": 9,
-        "successDefinition": "Complete each turn with all wheels on road and no collision; log safe speed for all three surfaces.",
-        "metricToRecord": "Clean turns per surface + observations",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Through the Apex, Exit and Finish gates on the road, no post touched, no spin or contact, carrying the surface's safe speed through the Apex. Gravel: 42 km/h, silver 48, gold 52; asphalt 50 / 56 / 61; snow 40 / 46 / 50.",
+        "metricToRecord": "Apex speed per surface",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 42,
+            "maxKmh": 150,
+            "gate": 1
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -35.99,
+              "y": 98.16,
+              "widthM": 7,
+              "label": "Apex",
+              "headingDeg": -83.3
+            },
+            {
+              "x": -83.34,
+              "y": 71.87,
+              "widthM": 7,
+              "label": "Exit",
+              "headingDeg": -153.4
+            },
+            {
+              "x": -93.81,
+              "y": 51.38,
+              "widthM": 8,
+              "label": "Finish",
+              "headingDeg": -152.9
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 48,
+                "maxKmh": 150,
+                "gate": 1
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 52,
+                "maxKmh": 150,
+                "gate": 1
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://www.beamng.com/resources/winter-west-coast-usa.34794/",

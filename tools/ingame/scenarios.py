@@ -969,6 +969,27 @@ def jump():
     return p
 
 
+# E01: each surface's apex speed for gold (km/h, steady on the centre line: the scripted car overshoots by 1-2).
+E01_GOLD = {"E01": ("corner-left", 50), "E01-asphalt": ("corner-asphalt", 60), "E01-snow": ("corner-snow", 49)}
+
+
+@scenario
+def surfacecorner():
+    """E01 on the gravel corner and its asphalt and snow twins (Covet Gravel Rally, arcade, steady speed on the centre
+    line): each surface's safe speed earns gold (gravel 50, asphalt 60, snow 49 km/h); 58 on gravel is too fast."""
+    p = []
+    for d, (road, kmh) in E01_GOLD.items():
+        A.drill_session(d)
+        s = _zoned_run(d, _road_centre(d, road, 230), [], top=kmh)
+        expect(p, f"{d}: the surface's safe speed earns a medal", s.get("passed") is True and s.get("tier") is not None,
+               f"{s.get('tier')}: {s.get('reason')}")
+        if d == "E01":
+            s = _zoned_run(d, _road_centre(d, road, 230), [], top=58)
+            expect(p, "E01: 58 km/h on gravel is too fast", s.get("passed") is False, s.get("reason"))
+        A.end_session(d)
+    return p
+
+
 # D07's camber road: the off-camber corners, in metres along the road.
 D07_OFF_CAMBER = [(145, 200), (335, 390)]
 

@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E01 snow vs gravel vs tarmac is graded automatically**: the same left-hander on each surface, with apex speed as
+  the medal and targets per surface (gravel gold 52 km/h, asphalt 61, snow 50), so you learn each one's safe speed.
 - **E06 jump is graded automatically**: over the kicker and straight through a narrow landing gate without damage,
   with medals for time in the air (0.3 s; silver 0.5, gold 0.65): commit to the jump, but not so much the landing
   breaks the car.
