@@ -25,15 +25,18 @@ line that ignores the drill misses its gates: A07's 3 m exit gate sits at the tr
   road tilts across, its width and its surface's grip (`tools/mapgen/racingline.py`).
 - **A drill's line goes through its gates** (`racingLine.lua`, pure): from where the drill starts the car, along the
   road it's on the way it faces, the **minimum-curvature path** inside the road (half a car and a little from each
-  edge) that passes every gate at least 1 m inside its posts, to 30 m past the last gate. Each point carries a target
+  edge) that passes every gate at least 1.5 m inside its posts, to 30 m past the last gate. Each point carries a target
   speed from a simple model (grip, the road's banking or off-camber, a standing start, braking for each corner) and
   what to do there: brake, hold the corner's limit, or accelerate.
 - **Show line** draws it as a flat ribbon on the ground, red, yellow and green (HUD button, Shift+F15); off by
   default, remembered.
 - **Watch AI** puts the car back at the start and lets the game's AI drive the same line
-  (`ai.driveUsingPath{script = ...}`, within 1 m of it, aggression 0.8, its own speeds). The run is graded like the
+  (`ai.driveUsingPath{script = ...}`, within 0.5 m of it, aggression 0.8, its own speeds). The run is graded like the
   player's, so the student sees what the line earns, but it isn't recorded: no attempt, no progress, no auto-retry.
   Retry, Miss or the car stopping at the line's end hands the car back.
+- **Watch AI is opt-in per drill** (`assessment.aiDemo`, a variant can override it), offered only where the AI's run
+  has been seen to pass (owner, 2026-10-21: hide it elsewhere for now). It drives the line, not a technique, and
+  strays up to about a metre from the line at speed, so it misses technique drills and narrow gates.
 
 ## Consequences
 

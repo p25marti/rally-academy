@@ -11,7 +11,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   shape, surface and banking and goes through the drill's gates, for every corner, hairpin and road drill on every
   surface. Off until you turn it on.
 - **Watch AI**: the game's AI drives the drill's racing line from the start while you watch. Its run is graded so you
-  see what the line earns, but it never counts as your attempt. Retry takes the car back.
+  see what the line earns, but it never counts as your attempt. Retry takes the car back. For now it's on the
+  drills where the AI's run passes: A07, D02, D03, D04, D06, D09 and E01 (gravel; A07 and E01 on asphalt too).
+- **Stream Deck**: the shared profile has a Line key (Shift+F15) in the spare slot.
 - **The proving ground's roads are on the minimap**: every drill road now shows on the HUD map, and the game's
   navigation and AI can find them (the road graph).
 - **The Rally Academy HUD layout**: the mod brings its own layout and switches to it when the proving ground loads, so

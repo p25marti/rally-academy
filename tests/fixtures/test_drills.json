@@ -103,7 +103,8 @@
           {
             "type": "no_brake_between_gates"
           }
-        ]
+        ],
+        "aiDemo": true
       }
     },
     {

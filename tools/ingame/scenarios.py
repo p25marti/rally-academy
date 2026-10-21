@@ -1183,8 +1183,8 @@ def opening():
 
 @scenario
 def demo():
-    """Watch AI on A07 (the gravel corner) and D09 (the gravel hairpins): the button appears where the drill has a
-    racing line, the game's AI drives it from the start and the run is graded (a medal on both) but not counted, and once
+    """Watch AI on A07 (the gravel corner) and D09 (the gravel hairpins): the button appears where the drill opts in
+    (assessment.aiDemo), the game's AI drives it from the start and the run is graded (a medal on both) but not counted, and once
     the AI has braked to a stop at the line's end the car is the player's again; Retry during a demo hands it back
     too."""
     p = []

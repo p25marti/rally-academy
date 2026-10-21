@@ -200,6 +200,13 @@ local function racingLine()
   return racing.pts
 end
 
+-- Watch AI is offered where the drill has a racing line and opts in (assessment.aiDemo): drills whose AI run has been
+-- seen to pass. Technique drills (a brake pulse, a flick) and speed bands are beyond what the AI shows.
+local function canDemo()
+  local lesson = selected and byId[selected]
+  return lesson ~= nil and lesson.assessment.aiDemo == true and racingLine() ~= nil
+end
+
 local function output(includeCatalog)
   local lesson = selected and byId[selected] or nil
   guihooks.trigger('rallyAcademyState', {
@@ -229,6 +236,7 @@ local function output(includeCatalog)
     hudLayout = prefs.hudLayout ~= false,
     showLine = prefs.showLine == true,
     hasLine = racingLine() ~= nil, -- this drill's start is on one of the map's racing lines
+    canDemo = canDemo(), -- Watch AI: a line, and the AI has been seen to pass this drill (assessment.aiDemo)
     demo = cur.demo == true, -- the AI is driving this run (Watch AI)
   })
 end
@@ -635,12 +643,13 @@ end
 -- run is graded like the player's but not recorded.
 local DEMO_AGGRESSION = 0.8 -- ai.lua: 0.3 is everyday driving, 1 the limit of grip
 local DEMO_PATH_WIDTH = 0.5 -- m: how far the AI may stray from the line (its default, the car's width, misses gates)
-function M.demo()
-  local line = racingLine()
-  if not line then
-    lastReason = 'No racing line for this drill here, so there is no AI demo.'
+function M.demo(force) -- force: try it on a drill that doesn't opt in (developer surveys, not the HUD)
+  if not (canDemo() or (force == true and racingLine())) then
+    lastReason = racingLine() and 'No AI demo for this drill yet: the AI drives the line, not the technique.'
+      or 'No racing line for this drill here, so there is no AI demo.'
     output(); return
   end
+  local line = racingLine()
   M.retry()
   local veh = currentVehicle()
   if phase ~= 'ready' or not veh then return end
@@ -1405,7 +1414,7 @@ function M.debugState()
           hasCourse = course ~= nil, usingVenueStart = usingVenueStart, autoRetry = prefs.autoRetry ~= false,
           autoRetryIn = cur.autoRetryIn, clipped = cur.clipped, fit = cur.fit, aid = cur.aid,
           car = carSize and carSize.car, props = Props.active(), hits = cur.hits,
-          demo = cur.demo, demoAi = demoVehId ~= nil, hasLine = racingLine() ~= nil}
+          demo = cur.demo, demoAi = demoVehId ~= nil, hasLine = racingLine() ~= nil, canDemo = canDemo()}
 end
 
 -- Record the car's telemetry outside any drill (venue fit tests, tools/ingame/fit.py): no

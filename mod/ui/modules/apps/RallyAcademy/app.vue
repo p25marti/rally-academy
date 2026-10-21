@@ -107,7 +107,7 @@
       <button v-if="vm.hasLine" class="ra-btn" :class="{ on: vm.showLine }" @click="cmd('setShowLine', !vm.showLine)">
         Line {{ vm.showLine ? "on" : "off" }}
       </button>
-      <button v-if="vm.hasLine" class="ra-btn" :class="{ on: vm.demo }" @click="cmd('demo')">▶ Watch AI</button>
+      <button v-if="vm.canDemo" class="ra-btn" :class="{ on: vm.demo }" @click="cmd('demo')">▶ Watch AI</button>
     </div>
 
     <p v-if="!vm.autoRetryIn" class="ra-reason">{{ vm.reason }}</p>

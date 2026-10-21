@@ -888,7 +888,8 @@
               }
             ]
           }
-        ]
+        ],
+        "aiDemo": true
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -982,7 +983,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "aiDemo": false
         }
       ]
     },
@@ -3466,7 +3468,8 @@
               }
             ]
           }
-        ]
+        ],
+        "aiDemo": true
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -3591,7 +3594,8 @@
               }
             ]
           }
-        ]
+        ],
+        "aiDemo": true
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -3729,7 +3733,8 @@
               }
             ]
           }
-        ]
+        ],
+        "aiDemo": true
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -3957,7 +3962,8 @@
               }
             ]
           }
-        ]
+        ],
+        "aiDemo": true
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -4381,7 +4387,8 @@
               }
             ]
           }
-        ]
+        ],
+        "aiDemo": true
       },
       "variants": [
         {
@@ -4418,7 +4425,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "aiDemo": false
         },
         {
           "id": "snow",
@@ -4454,7 +4462,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "aiDemo": false
         }
       ],
       "references": {
@@ -4589,7 +4598,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "aiDemo": false
         }
       ],
       "instructions": "The same left-hander on gravel, asphalt and snow (pick the Surface). Find each surface's safe speed: brake in a straight line before turning in, then carry as much speed through the Apex gate as the grip allows. Feel how much earlier you brake on snow and gravel, and how much more the tarmac takes.",
@@ -4678,7 +4688,8 @@
               }
             ]
           }
-        ]
+        ],
+        "aiDemo": true
       },
       "references": {
         "map": "https://www.beamng.com/resources/winter-west-coast-usa.34794/",

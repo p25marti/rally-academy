@@ -215,6 +215,20 @@ function T.retry_or_miss_during_the_ai_run_stops_it()
   has(h.lastState().reason, 'AI demo stopped')
 end
 
+function T.watch_ai_only_where_the_drill_opts_in()
+  local h, M = onLine(true)
+  eq(h.lastState().canDemo, true, 'T03 opts in (assessment.aiDemo)')
+  M.select('T04') -- no aiDemo: a line to show, but no AI demo
+  h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
+  M.markStart()
+  local s = h.lastState()
+  eq(s.hasLine, true, 'the line is there')
+  eq(s.canDemo, false, 'Watch AI is not offered')
+  M.demo()
+  eq(aiCommands(h, 'ai.driveUsingPath'), 0, 'and the AI stays off')
+  has(h.lastState().reason, 'No AI demo for this drill yet')
+end
+
 function T.a_drill_without_a_line_says_so()
   local h, M = onLine(false)
   eq(h.lastState().hasLine, false, 'no line on this map')

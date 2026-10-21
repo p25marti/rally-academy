@@ -223,7 +223,7 @@ def expanded(exercises: list) -> list:
     return variants.all_drills([e for e in exercises if isinstance(e, dict)])
 
 
-VARIANT_KEYS = {"id", "name", "venue", "areaHint", "vehicle", "rules", "tiers", "successDefinition"}
+VARIANT_KEYS = {"id", "name", "venue", "areaHint", "vehicle", "rules", "tiers", "successDefinition", "aiDemo"}
 
 
 def variant_errors(ex: dict) -> list[str]:
@@ -312,6 +312,8 @@ def validate_exercises(data: dict) -> list[str]:
         for key in ("attempts", "requiredPasses"):
             if not isinstance(a.get(key), int) or a[key] < 1:
                 errors.append(f"{where}: assessment.{key} must be a positive integer")
+        if "aiDemo" in a and not isinstance(a["aiDemo"], bool):
+            errors.append(f"{where}: assessment.aiDemo must be true or false")  # a variant's, once merged
         if isinstance(a.get("attempts"), int) and isinstance(a.get("requiredPasses"), int) \
                 and a["requiredPasses"] > a["attempts"]:
             errors.append(f"{where}: requiredPasses > attempts")

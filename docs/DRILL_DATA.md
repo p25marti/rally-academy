@@ -40,7 +40,8 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "gates": {"count": 3, "widthM": 10}, // optional: gates the driver marks with + Gate
         "course": {...},                   // optional: an authored course (below); replaces gates
         "rules": [],                       // typed rules; empty = no machine grading
-        "tiers": [...]                     // optional: silver and gold medals (below)
+        "tiers": [...],                    // optional: silver and gold medals (below)
+        "aiDemo": true                     // optional: offer Watch AI (ADR 0013); only where the AI's run passes
       },
       "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)
       "references": { "map": "url", "vehicle": "url" }
@@ -127,7 +128,8 @@ lists the others:
 ```
 
 Each variant becomes a drill of its own, `A02-snow`, with its own progress and medals. It inherits everything from
-the drill except what it sets: `venue` (required), `areaHint`, `vehicle`, `successDefinition`, and rule overrides.
+the drill except what it sets: `venue` (required), `areaHint`, `vehicle`, `successDefinition`, `aiDemo`, and rule
+overrides.
 An override replaces every rule of the same type (or is added), in `rules` and in the named medal tier, as medal
 tiers do. Set targets per surface only where the measured physics needs it; run the `surfaces` scenario
 (TESTING) after a change. `dev.py validate` checks variants as the drills they become.

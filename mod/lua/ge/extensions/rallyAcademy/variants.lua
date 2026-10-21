@@ -59,6 +59,7 @@ function V.expand(lesson)
     for _, t in ipairs(v.tiers or {}) do tierOver[t.name] = t.rules end
     for _, t in ipairs(a.tiers or {}) do t.rules = V.mergeRules(t.rules, tierOver[t.name]) end
     if v.successDefinition then a.successDefinition = v.successDefinition end
+    if v.aiDemo ~= nil then a.aiDemo = v.aiDemo end -- Watch AI on this surface or not (ADR 0013)
     table.insert(out, d)
   end
   return out

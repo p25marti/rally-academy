@@ -39,7 +39,7 @@ actions left unbound.
 | --- | --- | --- | --- | --- | --- |
 | **Row 1** | Retry (F13) | Go to drill (F14) | Previous drill (F15) | Next drill (F16) | Menu (F17) |
 | **Row 2** | Move course here (F18) | Venue start (F19) | Mark finish (F20) | + Gate (F21) | Clear gates (F22) |
-| **Row 3** | Pass (F23) | Miss (F24) | Auto-retry (Shift+F13) | Save spot (Shift+F14) | spare |
+| **Row 3** | Pass (F23) | Miss (F24) | Auto-retry (Shift+F13) | Save spot (Shift+F14) | Line (Shift+F15) |
 
 Row 1 is what you press while drilling; row 2 is setup; row 3 is scoring and extras. Retry sits
 top-left, where your thumb finds it without looking.
@@ -66,7 +66,7 @@ and red for scoring.
 | Miss (F24) | `fail2` | Red cross |
 | Auto-retry (Shift+F13) | `Reset1a` | A loop: "keep going round". A plain Hotkey can't show on/off; a Hotkey Switch with `Toggle_On` / `Toggle_Off` can, but drifts out of step if you also toggle it in the HUD |
 | Save spot (Shift+F14) | `Map_Marker` | A map pin: bookmark this place |
-| spare | `StudentDriver` or blank | A label tile for the profile |
+| Line (Shift+F15) | our own (red, yellow and green ribbon) | The racing line in its own colours; BEAM.deck has nothing like it |
 
 Alternatives if you prefer: `Reset1b` (orange loop) for Retry, `FastTravel1` (plain chevrons) for
 Go to drill, `Dir_LeftB1` / `Dir_RightB1` (bold arrows), `flagB1` (chequered flag) for Mark
@@ -93,8 +93,9 @@ To build it yourself instead (about five minutes):
 
 Change it in the Stream Deck app, export it (Stream Deck preferences → Profiles → right-click →
 Export) over `extras/streamdeck/rally_academy.streamDeckProfile`, and check the keys still match
-the default bindings. Elgato documents profiles as made in the app and exported, not
-hand-written, so we keep the exported file rather than generating one.
+the default bindings (`tests/python/test_streamdeck.py` checks). Elgato documents profiles as made in the app and
+exported, not hand-written, so we keep the exported file rather than generating one; a small change can be made in
+the export's `manifest.json` by copying a key of the same kind, as the Line key was.
 
 ## Troubleshooting
 

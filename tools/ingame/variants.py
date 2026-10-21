@@ -46,6 +46,8 @@ def expand(drill):
             t["rules"] = merge_rules(t.get("rules"), tier_over.get(t["name"]))
         if "successDefinition" in v:
             a["successDefinition"] = v["successDefinition"]
+        if "aiDemo" in v:
+            a["aiDemo"] = v["aiDemo"]
         out.append(d)
     return out
 
