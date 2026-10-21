@@ -372,6 +372,14 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+E08 water crossing is automatic since 2026-10-21, at the ford: an Entry gate 5 m before the water (25 km/h at most), a
+Far bank gate up the climb out (10 km/h at least: it kept moving through the water), a Finish, real posts, on the dirt,
+no stall, no damage, no reversing, 30 s; medals for time (silver 19 s, gold 17.8 s). Scripted (arcade, centre line):
+60 on the approach, 22 into the water and back on the power up the far bank: 17.4-17.5 s, gold; holding 22 to the
+far bank: 18.4 s, silver; a timid 15: 21.3 s, bronze; 40 into the water: miss at the Entry gate. Steady runs reach the
+far bank near their own speed (the throttle makes up the water's drag on the climb). Fixtures `e08_gold_pg`,
+`e08_miss_fast_pg`.
+
 E07 rough terrain is automatic since 2026-10-21, on the rough track: Rough and Smooth gates round the 200 m of bumps and a
 Finish, real posts, on the dirt, no spin, no more than 50 damage (coached as the bumps' doing), 40 s; medals for time
 (silver 25 s, gold 23 s). Scripted (arcade, centre line): up to 50 km/h the car takes the bumps unhurt, 55-60 damages it
@@ -481,7 +489,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | E05 | Crest management | Crest speed, airtime, steady exit, landing damage, spin | Automatic |
 | E06 | Jump takeoff and landing | Landing on road, rollover, damage | Automatic |
 | E07 | Rough terrain | Gates, damage from the bumps, on the track, time (built 2026-10-21) | Automatic |
-| E08 | Water crossings | Stall, damage, corridor, recovery use | Automatic |
+| E08 | Water crossings | Entry speed, kept moving at the far bank, stall, damage, time (built 2026-10-21) | Automatic |
 | F06 | Puncture adaptation | Puncture injection, damage baseline, 35 km/h cap, rollover | Automatic |
 | F07 | Vehicle setup comparisons | Setup switching, A/B stats, handling-difference prompt | Hybrid |
 

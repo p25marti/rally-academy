@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E08 water crossing is graded automatically**: no faster than 25 km/h into the water, still moving at the far bank,
+  no stall or damage, and medals for time (silver 19 s, gold 17.8 s): brisk approach, modest entry, steady crossing.
 - **E07 rough terrain is graded automatically**: gates round the 200 m of bumps, no more than light damage (the
   coaching says the bumps did it), and medals for time (silver 25 s, gold 23 s): fast on the smooth, measured on the
   rough.

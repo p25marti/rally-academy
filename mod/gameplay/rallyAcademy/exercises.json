@@ -4987,16 +4987,106 @@
           ]
         }
       },
-      "instructions": "Approach with modest speed, cross without stopping midstream, exit onto dry track.",
-      "resetInstructions": "Stationary 80 m before ford; choose shallow driveable section.",
-      "props": "Select safe ford during recce; depth depends on position and vehicle.",
+      "instructions": "Approach briskly, then slow to a modest pace before the Entry gate: hit 0.4 m of water fast and it hauls the car down hard. Cross on a steady throttle, never stopping midstream, and drive out up the far bank. Back on the power from the Far bank to the Finish.",
+      "resetInstructions": "Go to drill puts you at the ford road's start, 80 m before the water.",
+      "props": "Gate posts at the water's edge, on the far bank and at the finish.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No engine stall, major impact, off-course travel or recovery use.",
-        "metricToRecord": "Clean ford crossings / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Into the water at 25 km/h or less (Entry gate), through it without stopping or stalling (10 km/h or more at the Far bank), on the track, no damage, to the Finish in 30 s. Silver: 19 s. Gold: 17.8 s.",
+        "metricToRecord": "Clean ford crossings and time",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "DIRT"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 0,
+            "maxKmh": 25,
+            "gate": 1
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 10,
+            "maxKmh": 150,
+            "gate": 2
+          },
+          {
+            "type": "no_stall"
+          },
+          {
+            "type": "no_damage",
+            "maxDamage": 50
+          },
+          {
+            "type": "no_reverse"
+          },
+          {
+            "type": "max_time",
+            "maxSeconds": 30
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0.0,
+              "y": 85.0,
+              "widthM": 5.5,
+              "label": "Entry",
+              "headingDeg": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 125.0,
+              "widthM": 5.5,
+              "label": "Far bank",
+              "headingDeg": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 165.0,
+              "widthM": 5.5,
+              "label": "Finish",
+              "headingDeg": 0.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 19
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 17.8
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",

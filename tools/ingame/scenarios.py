@@ -934,6 +934,23 @@ def rough():
     return p
 
 
+@scenario
+def ford():
+    """E08 through the proving ground's ford (Covet Gravel Rally, arcade): 60 km/h on the approach, 22 into and through
+    the water and back on the power up the far bank earns gold; 40 km/h into the water is too fast and misses."""
+    p = []
+    A.drill_session("E08")
+    line = _road_centre("E08", "ford-road", 180)
+    s = _zoned_run("E08", line, [(80, 110, 22)], top=60)
+    expect(p, "a modest entry and a steady crossing: a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _zoned_run("E08", line, [], top=40)
+    expect(p, "40 km/h into the water misses", s.get("passed") is False and "gate 1 too fast" in str(s.get("reason")),
+           s.get("reason"))
+    A.end_session("E08")
+    return p
+
+
 # D07's camber road: the off-camber corners, in metres along the road.
 D07_OFF_CAMBER = [(145, 200), (335, 390)]
 

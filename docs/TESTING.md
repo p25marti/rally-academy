@@ -93,6 +93,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `corners` | A07 and A08 on the proving ground's flat corner (Covet Gravel Rally, racing line from `lines.py`): a clean line earns a medal on each; A07 clipping the exit post and A08 weaving after the exit miss |
 | `gears` | A03 on its course (the proving ground's dirt strip, sequential gearbox with scripted gears): 3rd to 2nd into the stop box earns a medal; 3rd straight to 1st misses |
 | `launch` | A02 on its course (the proving ground's dirt strip; the run ends at the 40 km/h gate): feeding the throttle in earns a medal (flat out spins the wheels); 34 km/h at the gate misses |
+| `ford` | E08 at the ford: 60 on the approach, 22 into and through the water, power up the far bank: gold; 40 into the water misses at the Entry gate |
 | `rough` | E07 on the rough track: the approach at pace and 50 km/h over the rough earns gold; 60 all the way damages the car on the bumps |
 | `linked` | D02 on the test road's linked S: 55 into the first bend, 50 through the rest, on the power early: gold; 60 into the first bend clips the second apex's post |
 | `camber` | D07 on the camber road: 57 km/h through the banked corners and 45 into the off-camber ones earns gold; a cautious 45 everywhere misses (too slow in the banked corners); 64 runs off |

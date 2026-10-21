@@ -113,6 +113,8 @@
 --      throttle ramped from 36 m (56 out). d08 = the surface-change straight, 62 km/h braking at 4 m/s2.
 --      d05 / d06 / e05 = the hill circuit (the Off-Road Circuit's first 640 m copied with elevation and banking):
 --      37 km/h into the blind hairpin; 45 then 40 km/h; 45 km/h through the banked left then 56 over the kicker.
+--      e08 = the ford (scenario ford): 60 km/h on the approach, 22 from 25 m before the water to 110 m (gold, 17.5 s);
+--      the miss held 40 into the water.
 --      e07 = the rough track (scenario rough): 75 km/h on the smooth approach, 50 over the rough (gold, 22.6 s); the
 --      miss held 60 all the way (damage on the bumps, wide in the S).
 --      d02 = the test road's linked S (scenario linked, real posts): 55 km/h into the first bend, 50 through the rest,
@@ -287,7 +289,7 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
     d03_gold_pg = {'D03', 'gold'}, d04_gold_pg = {'D04', 'gold'},
     d08_gold_pg = {'D08', 'gold'}, d05_gold_pg = {'D05', 'gold'}, d06_silver_pg = {'D06', 'silver'},
     e05_gold_pg = {'E05', 'gold'}, d09_gold_pg = {'D09', 'gold'}, d07_gold_pg = {'D07', 'gold'},
-    d02_gold_pg = {'D02', 'gold'}, e07_gold_pg = {'E07', 'gold'},
+    d02_gold_pg = {'D02', 'gold'}, e07_gold_pg = {'E07', 'gold'}, e08_gold_pg = {'E08', 'gold'},
     b07_bronze_pg = {'B07', 'bronze'}, c04_gold_pg = {'C04', 'gold'}, c07_gold_pg = {'C07', 'gold'}, d01_gold_pg = {'D01', 'gold'}}
   for name, w in pairs(want) do
     local res, rec = gradeCourse(name, w[1])
@@ -296,6 +298,15 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, w[2], name .. ' medal')
   end
+end
+
+-- E08 miss recorded at the ford: 40 km/h into the water, over the Entry gate's 25.
+function T.e08_recorded_fast_entry_misses_at_the_waters_edge()
+  local res = gradeCourse('e08_miss_fast_pg', 'E08')
+  eq(res.passed, false, 'a miss')
+  local entry
+  for _, c in ipairs(res.checks) do if c.type == 'speed_at_gates' and not c.ok then entry = c end end
+  has(entry.text, 'gate 1 too fast')
 end
 
 -- E07 miss recorded on the rough track: 60 km/h all the way, and the bumps damage the car (with the drill's coaching).
