@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **D07 road camber is graded automatically**: gates and posts at each of the four apexes, and a minimum speed
+  through the two banked corners (50 km/h; silver 54, gold 57), so it rewards trusting the banking while the
+  off-camber corners punish speed on their own.
 - **D09 uphill hairpins**, a new drill: a switchback up a mountain face on the proving ground, three tight hairpins
   steepening to 16 % round their apex, with gate posts at each apex and exit, guardrails on the drop side and
   corner signs. Gravel, asphalt and snow side by side (Surface row), medals for the time to the top, with times set

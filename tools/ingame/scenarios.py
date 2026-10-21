@@ -863,6 +863,44 @@ def crest():
     return p
 
 
+# D07's camber road: the off-camber corners, in metres along the road.
+D07_OFF_CAMBER = [(145, 200), (335, 390)]
+
+
+def _camber_run(banked, off_camber=45, early=25):
+    """D07 along the camber road's centre line in arcade: `banked` km/h, slowing to `off_camber` from `early` m
+    before each off-camber corner."""
+    road = next(r for r in json.loads((A.ROOT / "tools" / "mapgen" / "proving_ground.json").read_text(encoding="utf-8"))["roads"]
+                if r["id"] == "camber-road")
+    line = [tuple(q) for q in road["points"]]  # the venue faces north from the road's start
+
+    def pedals(v, trav):
+        target = off_camber if any(a - early <= trav <= b for a, b in D07_OFF_CAMBER) else banked
+        if v > target + 2:
+            return (0.0, min(0.8, 0.25 + (v - target) * 0.05))
+        return _hold(v, target, floor=0.1)
+    return A.course_run("D07", line, kmh=banked + 10, pedals=pedals, max_throttle=1.0, decel=3.0, timeout=90,
+                        stop_within=0.5)
+
+
+@scenario
+def camber():
+    """D07 on the proving ground's camber road (Covet Gravel Rally, arcade): 57 km/h through the banked corners and 45
+    into the off-camber ones earns gold; a cautious 45 everywhere is too slow in the banked corners; 64 runs off (60 is right at the limit)."""
+    p = []
+    A.drill_session("D07")
+    s = _camber_run(57)
+    expect(p, "trusting the banking earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _camber_run(45)
+    expect(p, "a cautious 45 everywhere misses (too slow in the banked corners)", s.get("passed") is False
+           and "too slow" in str(s.get("reason")), s.get("reason"))
+    s = _camber_run(64)
+    expect(p, "64 through the banked corners runs off", s.get("passed") is False, s.get("reason"))
+    A.end_session("D07")
+    return p
+
+
 # D09's switchbacks: where each hairpin and the two gentler bends (bottom and top) are, in metres along the road.
 D09_HAIRPINS = [(123, 148), (203, 228), (283, 308)]
 D09_BENDS = [(40, 68), (341, 369)]

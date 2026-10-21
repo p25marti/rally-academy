@@ -113,6 +113,8 @@
 --      throttle ramped from 36 m (56 out). d08 = the surface-change straight, 62 km/h braking at 4 m/s2.
 --      d05 / d06 / e05 = the hill circuit (the Off-Road Circuit's first 640 m copied with elevation and banking):
 --      37 km/h into the blind hairpin; 45 then 40 km/h; 45 km/h through the banked left then 56 over the kicker.
+--      d07 = the camber road (scenario camber, real posts): 57 km/h, slowing to 45 from 25 m before each off-camber
+--      corner, arcade (gold, 59 km/h at the banked apex); misses at 45 everywhere and at 64.
 --      d09 = the mountain face's gravel switchback (scenario hairpins): 55 km/h legs, 28 round the hairpins, 35 in the
 --      bottom and top bends, arcade, 37.7 s.
 --      a02 = the launch fed in from 25 % throttle (full at 45 km/h);
@@ -256,8 +258,9 @@ local function gradeCourse(name, drill)
       if v.id == drill then a = v.assessment end
     end
   end
+  -- runs recorded with real cones and posts (ADR 0011) carry what the car touched; older ones are measured
   return Rules.grade(a, rec, {course = rec.meta.course, gates = rec.meta.course.gates, car = rec.meta.car,
-                              zone = rec.meta.course.zone,
+                              zone = rec.meta.course.zone, hits = rec.meta.hits,
                               time = rec.score and rec.score.time}), rec
 end
 
@@ -279,7 +282,7 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
     b05_gold_pg = {'B05', 'gold'}, b06_gold_pg = {'B06', 'gold'},
     d03_gold_pg = {'D03', 'gold'}, d04_gold_pg = {'D04', 'gold'},
     d08_gold_pg = {'D08', 'gold'}, d05_gold_pg = {'D05', 'gold'}, d06_silver_pg = {'D06', 'silver'},
-    e05_gold_pg = {'E05', 'gold'}, d09_gold_pg = {'D09', 'gold'},
+    e05_gold_pg = {'E05', 'gold'}, d09_gold_pg = {'D09', 'gold'}, d07_gold_pg = {'D07', 'gold'},
     b07_bronze_pg = {'B07', 'bronze'}, c04_gold_pg = {'C04', 'gold'}, c07_gold_pg = {'C07', 'gold'}, d01_gold_pg = {'D01', 'gold'}}
   for name, w in pairs(want) do
     local res, rec = gradeCourse(name, w[1])
@@ -288,6 +291,17 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, w[2], name .. ' medal')
   end
+end
+
+-- D07 misses recorded on the camber road with real posts: a cautious 45 km/h everywhere (too slow through the banked
+-- apex) and 64 km/h, which runs wide in the off-camber right and touches its post.
+function T.d07_recorded_misses_fail_for_the_right_reasons()
+  local slow = gradeCourse('d07_miss_slow_pg', 'D07')
+  eq(slow.passed, false, 'too slow misses')
+  has(check(slow, 'speed_at_gates').text, 'gate 1 too slow')
+  local off = gradeCourse('d07_miss_off_pg', 'D07')
+  eq(off.passed, false, 'too fast misses')
+  has(check(off, 'markers_clear').text, 'Clipped the left post of gate 2')
 end
 
 -- A surface variant grades with its own targets (ADR 0009): A02 on snow allows 10 s to 40 km/h (7 s silver,

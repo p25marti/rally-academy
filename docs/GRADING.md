@@ -371,6 +371,14 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+D07 road camber is automatic since 2026-10-21, on the camber road's four identical 35 m corners: a gate at each apex
+and the finish, real posts, on the gravel, no spin, no damage, and a minimum speed through both banked apexes (50 km/h;
+silver 54, gold 57), so the drill rewards trusting the banking. The off-camber corners need no rule: their own
+physics is the limit. Scripted (arcade, centre line): the banked corners held 59 km/h at the apex and ran off at about
+62; the off-camber ones held 45 and ran off at 47-51. 57 km/h with 45 into the off-camber corners: gold; a cautious 45
+everywhere: miss (46 km/h at the banked apex); 64: off in the off-camber right, touching its post. Fixtures
+`d07_gold_pg`, `d07_miss_slow_pg`, `d07_miss_off_pg`.
+
 D09 uphill hairpins (added 2026-10-20) climbs the proving ground's mountain face: seven gates (each hairpin's apex
 and 15 m after it, then the Top) with real posts, on the road, no spin, no reversing, no damage, 75 s. Medals are
 time to the Top and differ per surface, as the physics does: scripted (arcade, centre line) the best clean climbs
@@ -447,7 +455,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | D04 | Increasing-radius corners | Gates, throttle after the apex, wheelspin after it, wheels off, contact, spin, exit speed | Automatic |
 | D05 | Blind corners | Approach speed band, gates, posts, wall contact, spin | Automatic |
 | D06 | Uphill and downhill corners | Gates, posts, wall contact, lockup, spin, time | Automatic |
-| D07 | Road camber | Corridor, understeer/oversteer, which-side prompt | Hybrid |
+| D07 | Road camber | Apex gates and posts, speed through the banked apexes, on the road, spin (built 2026-10-21) | Automatic |
 | D08 | Mixed-surface transitions | Gates, posts, stop zone, lockup, spin | Automatic |
 | D09 | Uphill hairpins (added 2026-10-20) | Gates and posts at each hairpin, on the road, spin, reversing, time | Automatic |
 | E01 | Snow vs gravel vs tarmac | Corridor, contact, per-surface stats, observation prompt | Hybrid |

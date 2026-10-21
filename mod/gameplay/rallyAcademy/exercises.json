@@ -3808,16 +3808,125 @@
           ]
         }
       },
-      "instructions": "Drive inside- and outside-camber arcs; note how line and speed change available grip.",
+      "instructions": "Drive the four corners, all the same 35 m radius: a banked left, an off-camber right, a banked right, an off-camber left. Trust the banking and carry speed through the banked apexes; brake earlier and go gentler into the off-camber ones, where the road tilts away and grip runs out sooner. Through every apex gate and the Finish.",
       "resetInstructions": "Stationary 50 m before first cambered segment; direction fixed.",
-      "props": "Pick two actual cambered segments on the west training area.",
+      "props": "Gate posts stand at each apex and the finish; nothing to place.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "Stay inside lane and avoid severe understeer/oversteer; identify which side reduced grip.",
-        "metricToRecord": "Clean runs and camber observation",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "Through all five gates on the road without touching a post or spinning, carrying at least 50 km/h through both banked apexes. Silver: 54 km/h. Gold: 57 km/h.",
+        "metricToRecord": "Clean camber runs / 10",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 50,
+            "maxKmh": 150,
+            "gate": 1
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 50,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -10.61,
+              "y": 75.1,
+              "widthM": 7,
+              "label": "Banked left",
+              "headingDeg": -45.6
+            },
+            {
+              "x": -100.1,
+              "y": 95.61,
+              "widthM": 7,
+              "label": "Off-camber right",
+              "headingDeg": -44.4
+            },
+            {
+              "x": -99.39,
+              "y": 185.1,
+              "widthM": 7,
+              "label": "Banked right",
+              "headingDeg": 45.6
+            },
+            {
+              "x": -9.9,
+              "y": 205.61,
+              "widthM": 7,
+              "label": "Off-camber left",
+              "headingDeg": 44.4
+            },
+            {
+              "x": -0.0,
+              "y": 270.0,
+              "widthM": 7,
+              "label": "Finish",
+              "headingDeg": 0.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 54,
+                "maxKmh": 150,
+                "gate": 1
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 54,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 57,
+                "maxKmh": 150,
+                "gate": 1
+              },
+              {
+                "type": "speed_at_gates",
+                "minKmh": 57,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
