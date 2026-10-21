@@ -916,6 +916,13 @@ function M.onUpdate(dtReal, dtSim)
         or string.format('Missed gate %d (%s)', cur.gateIdx, Gates.missText(gates[cur.gateIdx], c.offset))
       logf('I', '%s: gate %d %s at %.0f km/h, %.1f m off centre', selected, cur.gateIdx,
         cur.gateResults[cur.gateIdx], speed * 3.6, c.offset)
+      local event = gates[cur.gateIdx].event
+      if event == 'puncture' and c.inside then
+        -- the drill's surprise (F06): a random tyre goes, as the game's own "deflate random tyre" binding does
+        veh:queueLuaCommand('beamstate.deflateRandomTire()')
+        lastReason = 'Puncture! Slow right down and nurse the car to the finish.'
+        logf('I', '%s: puncture at gate %d', selected, cur.gateIdx)
+      end
       cur.gateIdx = cur.gateIdx + 1
       cur.uiAccum = 1 -- publish now
       if endsAtLastGate() and cur.gateIdx > #gates then cur.endingIn, cur.endTime = GRADE_DELAY, cur.elapsed end

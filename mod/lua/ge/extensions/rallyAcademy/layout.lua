@@ -6,7 +6,8 @@
 -- Course coordinates are metres from the start: x to the right, y ahead (the way the car
 -- faces at the start). A placed course is in world x, y; the extension fills in heights.
 -- Any item may carry a `label`, which the HUD's checklist shows ("40 km/h", "Stop box"). Gates
--- may carry `headingDeg`: the way the road goes there, degrees right of ahead (negative = left).
+-- may carry `headingDeg`: the way the road goes there, degrees right of ahead (negative = left), and `event`:
+-- what happens to the car as it crosses ('puncture' deflates a random tyre, F06).
 local Gates = require('ge/extensions/rallyAcademy/gates')
 local L = {}
 
@@ -53,6 +54,7 @@ function L.place(def, start)
     local gdir = L.turned(f, g.headingDeg)
     local gate = Gates.new({pos = {x = x, y = y, z = start.pos.z}, dir = gdir}, g.widthM)
     gate.label = g.label
+    gate.event = g.event -- something the drill does to the car as it crosses ('puncture': F06)
     out.gates[i] = gate
     local half, rx, ry = gate.width / 2, gate.dir.y, -gate.dir.x
     local label = #(def.gates) > 1 and (' of gate ' .. i) or ' of the gate'

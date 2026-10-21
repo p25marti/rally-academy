@@ -990,6 +990,22 @@ def surfacecorner():
     return p
 
 
+@scenario
+def puncture():
+    """F06 on the test road (Covet Gravel Rally, arcade): a tyre goes at the Puncture gate; limping at about 30 km/h
+    to the finish earns a medal; carrying 45 km/h on the flat runs off the road."""
+    p = []
+    A.drill_session("F06")
+    line = _road_centre("F06", "test-road", 270)
+    s = _zoned_run("F06", line, [(35, 260, 30)], top=50)
+    expect(p, "a controlled limp on the flat: a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _zoned_run("F06", line, [(35, 260, 45)], top=50)
+    expect(p, "45 km/h on the flat misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("F06")
+    return p
+
+
 # D07's camber road: the off-camber corners, in metres along the road.
 D07_OFF_CAMBER = [(145, 200), (335, 390)]
 

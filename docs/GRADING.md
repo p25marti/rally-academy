@@ -159,6 +159,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `handbrake_pulls` | none (optional `count` 1, `minKmh` 5) | The handbrake goes on (over 0.5) exactly `count` times while moving |
 | `flick` | none (optional `fromGate` 1, `toGate` 2, `turn` 'left', `awayDeg` 30, `intoDeg` 60, `maxSeconds` 1.5) | Between the two gates the steering wheel goes at least `awayDeg` away from the turn, then at least `intoDeg` into it within `maxSeconds` (a Scandinavian flick) |
 | `throttle_on_between` | none (optional `fromGate` 2, `toGate` 3, `minThrottle` 0.5, `minSeconds` 0.5) | Between the two gates (the apex and the exit) the throttle is at `minThrottle` or more for at least `minSeconds` in total |
+| `limp_speed` | `maxKmh` (optional `graceSeconds` 4) | From `graceSeconds` after a tyre goes flat (telemetry `flat`) to the end of the run, never faster than `maxKmh`. Fails if no tyre went flat |
 | `airtime` | none (optional `minSeconds` 0, `maxSeconds`, `minForce` 50) | The longest stretch with all four wheels off the ground (each wheel's raw downforce under `minForce` N; recordings before 2026-10-21 carry a smoothed force that reads low) is between `minSeconds` and `maxSeconds` |
 | `ran_wide` | none (optional `minM` 1, `maxM` 5, `fromGate` 1, `toGate` −1) | Between the two gates the car runs outside the course circle's line by `minM` to `maxM`: a mild push, not a trip off the circle |
 | `back_on_line_by_gate` | none (optional `gate` −1, `maxM` 1.5) | Where the car crosses the gate it is within `maxM` of the course circle's line |
@@ -375,6 +376,14 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+F06 puncture adaptation is automatic since 2026-10-21, on the test road: a course gate may carry an `event`, and
+crossing F06's Puncture gate (30 m in) deflates a random tyre (`beamstate.deflateRandomTire()` in the car, as the
+game's own binding does); then a Bend gate in the S and a Finish. Within 4 s of the flat the car must be under 35
+km/h and stay there (`limp_speed`), on the road, no spin, roll or further damage, 60 s; medals for time (silver
+36 s, gold 30 s). Scripted (arcade, 50 to the gate): limping at 30 km/h peaks at 33 on the flat, 29.2 s, gold;
+25 km/h 34.3 s, silver; 18 km/h 45.5 s, bronze; 33 can touch 36 (miss) or stay under; 38 reads 40 (miss); 45 also
+runs off at the bend on the flat. Fixtures `f06_gold_pg`, `f06_miss_fast_pg`.
+
 E01 snow vs gravel vs tarmac is automatic since 2026-10-21, on the gravel corner and its asphalt and snow twins:
 Apex, Exit and Finish gates on the corner's centre line (A08's gates sit on a late-apex line, 2 m inside, which a
 centre-line car clips), real posts, on the corner's surface, no spin or contact, and apex speed as the medal, with
@@ -450,7 +459,7 @@ need HUD prompts and the `hybrid` mode:
 | A06 | Name the next bend before the first apex | Pick from options |
 | B03 | Predict the stopping point | Place a marker before the run |
 | B08, D07 | Which input or side changed the grip | Pick from options |
-| E01 | Snow vs gravel vs tarmac | Gates and posts, on the surface, apex speed per surface (built 2026-10-21) | Automatic |
+| E01 | Safe speed and braking observations per surface | Short form |
 | F07 | One handling difference between setups | Free text |
 
 ## 7. Scene control
@@ -500,7 +509,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | D07 | Road camber | Apex gates and posts, speed through the banked apexes, on the road, spin (built 2026-10-21) | Automatic |
 | D08 | Mixed-surface transitions | Gates, posts, stop zone, lockup, spin | Automatic |
 | D09 | Uphill hairpins (added 2026-10-20) | Gates and posts at each hairpin, on the road, spin, reversing, time | Automatic |
-| E01 | Snow vs gravel vs tarmac | Corridor, contact, per-surface stats, observation prompt | Hybrid |
+| E01 | Snow vs gravel vs tarmac | Gates and posts, on the surface, apex speed per surface (built 2026-10-21) | Automatic |
 | E02 | FWD technique | Rear slide before the apex, throttle after it, no handbrake, spin, posts, exit speed | Automatic |
 | E03 | RWD technique | Spin, corridor, wheelspin | Automatic |
 | E04 | AWD technique | Understeer, corridor, exit speed | Automatic |
@@ -508,7 +517,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | E06 | Jump takeoff and landing | Airtime, a narrow landing gate, damage, on the track (built 2026-10-21) | Automatic |
 | E07 | Rough terrain | Gates, damage from the bumps, on the track, time (built 2026-10-21) | Automatic |
 | E08 | Water crossings | Entry speed, kept moving at the far bank, stall, damage, time (built 2026-10-21) | Automatic |
-| F06 | Puncture adaptation | Puncture injection, damage baseline, 35 km/h cap, rollover | Automatic |
+| F06 | Puncture adaptation | A tyre deflated at a gate, 35 km/h on the flat, gates, damage, rollover, time (built 2026-10-21) | Automatic |
 | F07 | Vehicle setup comparisons | Setup switching, A/B stats, handling-difference prompt | Hybrid |
 
 ## Build order

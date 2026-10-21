@@ -658,4 +658,12 @@ function T.e01_each_surface_grades_with_its_own_safe_speed()
   has(check(gradeCourse('e01-asphalt_gold_pg', 'E01'), 'speed_at_gates').text, 'band 42')  -- the gravel targets
 end
 
+-- F06 recorded on the test road (scenario puncture): the mod deflates a tyre at the Puncture gate. 50 km/h to it, then a
+-- 30 km/h limp (gold, 33 at most on the flat); the miss limped at 38 (40 on the flat).
+function T.f06_recorded_limps_grade_the_pace_on_the_flat()
+  agree('F06', {f06_gold_pg = 'gold', f06_miss_fast_pg = false})
+  has(check(gradeCourse('f06_gold_pg', 'F06'), 'limp_speed').text, 'Limped at up to')
+  has(check(gradeCourse('f06_miss_fast_pg', 'F06'), 'limp_speed').text, 'slow right down when a tyre goes')
+end
+
 return T

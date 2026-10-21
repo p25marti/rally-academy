@@ -974,6 +974,25 @@ function E.throttle_on_between(rule, samples, ctx)
   return false, string.format('Only %.1f s on the throttle after the apex (peak %.0f%%): drive the front out', on, peak * 100)
 end
 
+-- Limping on a flat (F06): from `graceSeconds` after a tyre goes flat (telemetry `flat`, the count of flat
+-- tyres) to the end of the run, never faster than `maxKmh`.
+-- rule: {type = 'limp_speed', maxKmh = 35, graceSeconds = 4}
+function E.limp_speed(rule, samples)
+  local t0
+  for _, s in ipairs(samples) do
+    if (s.flat or 0) > 0 then t0 = s.t; break end
+  end
+  if not t0 then return false, 'No tyre went flat on this run' end
+  local from, peak = t0 + (rule.graceSeconds or 4), 0
+  for _, s in ipairs(samples) do
+    if s.t >= from then peak = math.max(peak, (s.air or 0) * KMH) end
+  end
+  if peak <= rule.maxKmh then
+    return true, string.format('Limped at up to %.0f km/h on the flat (limit %g km/h)', peak, rule.maxKmh)
+  end
+  return false, string.format('%.0f km/h on the flat (limit %g km/h): slow right down when a tyre goes', peak, rule.maxKmh)
+end
+
 -- Airtime (E05, E06): the longest stretch with all four wheels off the ground (each wheel's
 -- downforce under `minForce`, telemetry `w[].f`) is between `minSeconds` and `maxSeconds`.
 -- rule: {type = 'airtime', minSeconds = 0, maxSeconds = 0.15, minForce = 50}
@@ -1096,6 +1115,7 @@ R.TYPES = {
   handbrake_pulls = {},
   throttle_on_between = {},
   airtime = {},
+  limp_speed = {'maxKmh'},
   back_on_line_by_gate = {},
 }
 

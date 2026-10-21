@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **F06 puncture adaptation is graded automatically**: the mod deflates a random tyre as you cross the Puncture gate;
+  get under 35 km/h within 4 s and nurse the car through the S to the finish without going over, medals for time
+  (silver 36 s, gold 30 s).
 - **E01 snow vs gravel vs tarmac is graded automatically**: the same left-hander on each surface, with apex speed as
   the medal and targets per surface (gravel gold 52 km/h, asphalt 61, snow 50), so you learn each one's safe speed.
 - **E06 jump is graded automatically**: over the kicker and straight through a narrow landing gate without damage,

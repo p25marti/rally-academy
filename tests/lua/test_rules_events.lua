@@ -110,6 +110,23 @@ function T.handbrake_counts_only_while_moving()
   eq(c.text, 'Used the handbrake at 54 km/h', 'text')
 end
 
+function T.limp_speed_checks_the_pace_on_a_flat_after_the_grace()
+  -- 120 samples at 30 Hz (4 s); a tyre goes at 1 s, the car slows to 8 m/s (29 km/h) from 2 s
+  local function limping(slowTo)
+    return run(function(i, s)
+      if i >= 30 then s.flat = 1 end
+      if i >= 60 then s.air = slowTo end
+    end)
+  end
+  local ok = check({type = 'limp_speed', maxKmh = 35, graceSeconds = 1}, limping(8))
+  eq(ok.ok, true, ok.text)
+  has(ok.text, 'Limped at up to 29 km/h on the flat (limit 35 km/h)')
+  local fast = check({type = 'limp_speed', maxKmh = 35, graceSeconds = 1}, limping(15))
+  eq(fast.ok, false, 'too fast on the flat')
+  has(fast.text, '54 km/h on the flat (limit 35 km/h): slow right down')
+  has(check({type = 'limp_speed', maxKmh = 35}, run()).text, 'No tyre went flat')
+end
+
 function T.a_tyre_going_flat_is_a_puncture()
   local c = check({type = 'no_puncture'}, run(function(i, s) if i >= 70 then s.flat = 1 end end))
   eq(c.ok, false, 'flat')

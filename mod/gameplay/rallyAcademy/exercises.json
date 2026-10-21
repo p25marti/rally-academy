@@ -5354,16 +5354,97 @@
           ]
         }
       },
-      "instructions": "Induce one random tire deflation and drive slowly to finish, adapting steering/braking.",
-      "resetInstructions": "Stationary 40 m before 200–300 m chosen training stretch.",
-      "props": "Ctrl + Shift + H deflates a random tire in default keyboard mappings; wheel differs by run.",
+      "instructions": "Drive towards the Puncture gate: as you cross it a random tyre goes flat. Don't stamp on the brakes: ease off, keep the car straight against the pull, and bring it under 35 km/h within a few seconds. Then nurse it through the S to the Finish, gently on the steering, as quickly as the flat allows without going over 35.",
+      "resetInstructions": "Go to drill puts you at the test road's start; Retry repairs the tyre.",
+      "props": "None: the mod deflates the tyre at the Puncture gate.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No additional crash/roll; keep speed below 35 km/h and reach exit under control.",
-        "metricToRecord": "Safe limps / 10; record which tire",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "A tyre goes at the Puncture gate: within 4 s be under 35 km/h and stay there, through the Bend gate on the road, no spin, roll or further damage, to the Finish in 60 s. Silver: 36 s. Gold: 30 s.",
+        "metricToRecord": "Safe limps and time",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "limp_speed",
+            "maxKmh": 35,
+            "graceSeconds": 4
+          },
+          {
+            "type": "no_damage",
+            "maxDamage": 50
+          },
+          {
+            "type": "no_rollover"
+          },
+          {
+            "type": "max_time",
+            "maxSeconds": 60
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0.0,
+              "y": 30.0,
+              "widthM": 6,
+              "label": "Puncture",
+              "headingDeg": 0.0,
+              "event": "puncture"
+            },
+            {
+              "x": -35.38,
+              "y": 127.32,
+              "widthM": 6,
+              "label": "Bend",
+              "headingDeg": -0.3
+            },
+            {
+              "x": 0.0,
+              "y": 226.64,
+              "widthM": 6,
+              "label": "Finish",
+              "headingDeg": 0.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 36
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 30
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://www.beamng.com/game/news/patch/beamng-drive-v0-39/",

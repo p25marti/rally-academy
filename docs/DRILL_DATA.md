@@ -75,6 +75,7 @@ traffic cone stands at each, reset on Retry, and touching one is a clip ([ADR 00
 "course": {
   "gates": [{"x": 0, "y": 8, "widthM": 3}],          // gates to drive through, in order;
                                                      // "headingDeg": -93 turns a gate to face a corner's road
+  // a gate may carry "event": "puncture" (a random tyre goes flat as the car crosses it: F06)
   "cones": [{"x": 0, "y": 20, "keep": "left"}],      // keep the cone on your left (pass it on its right)
   "box": {"x": -1.5, "y": 33, "lengthM": 6, "widthM": 3.2}, // parking box, square to the course
   "line": {"x": 0, "y": 60, "widthM": 8},           // a stop line, a cone at each end (A05)

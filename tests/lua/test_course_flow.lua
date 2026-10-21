@@ -22,16 +22,17 @@ end
 -- the run is graded (or `holdFor` seconds pass).
 local function driveCourse(h, M, points, opts)
   opts = opts or {}
-  local f = L.frame(SPAWN)
+  local spawn = opts.spawn or SPAWN
+  local f = L.frame(spawn)
   local dt, speed = 0.05, opts.speed or 5
   local function step(x, y, hx, hy, v)
     local wx, wy = L.toWorld(f, x, y)
     local dwx, dwy = f.rx * hx + f.fx * hy, f.ry * hx + f.fy * hy
     h.vehicle.dir = stubs.vec3(dwx, dwy, 0)
     h.vehicle.vel = stubs.vec3(dwx * v, dwy * v, 0)
-    h.vehicle.pos = stubs.vec3(wx, wy, SPAWN.pos.z)
+    h.vehicle.pos = stubs.vec3(wx, wy, spawn.pos.z)
     H.simT = H.simT + dt
-    M.onTelemetry({id = h.vehicle.id, t = H.simT, x = wx, y = wy, z = SPAWN.pos.z, air = v,
+    M.onTelemetry({id = h.vehicle.id, t = H.simT, x = wx, y = wy, z = spawn.pos.z, air = v,
                    hx = dwx, hy = dwy, brk = v == 0 and 0.5 or 0, w = {}})
     M.onUpdate(dt, dt)
   end
@@ -327,6 +328,22 @@ function T.a01_clean_with_props_still_earns_gold()
   M.retry()
   local s = driveCourse(h, M, cleanLine(parkAt()))
   eq(s.grade.tier, 'gold', 'gold')
+end
+
+-- F06: crossing a gate with event 'puncture' deflates a random tyre on the car, as the game's own binding does.
+function T.f06_puncture_gate_deflates_a_tyre_as_the_car_crosses()
+  local h = stubs.install()
+  local M = stubs.loadExtension('rallyAcademy')
+  M.onExtensionLoaded()
+  h.level = 'ra_proving_ground'
+  M.select('F06')
+  M.setAutoRetry(false)
+  M.retry()
+  driveCourse(h, M, {{0, 0}, {0, 40}}, {spawn = H.drills().F06.environment.spawn, holdFor = 0.2})
+  local deflated = false
+  for _, c in ipairs(h.vehicle.luaCommands) do deflated = deflated or c == 'beamstate.deflateRandomTire()' end
+  eq(deflated, true, 'a tyre deflated at the Puncture gate')
+  has(h.logText('rallyAcademy'), 'F06: puncture at gate 1')
 end
 
 return T

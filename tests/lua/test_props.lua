@@ -25,6 +25,12 @@ function T.markers_say_what_stands_there()
   eq(table.concat(kinds, ','), 'post,post,cone,cone,cone', 'two gate posts, the cone, the line cones')
 end
 
+function T.a_gate_can_carry_an_event()
+  local placed = L.place({gates = {{y = 20, widthM = 4, event = 'puncture'}, {y = 40}}}, START)
+  eq(placed.gates[1].event, 'puncture', 'kept on the placed gate')
+  eq(placed.gates[2].event, nil, 'only where given')
+end
+
 function T.a_prop_stands_at_every_marker_on_the_ground()
   local h, P = fresh()
   local markers = L.place(COURSE, START).markers
