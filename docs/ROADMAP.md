@@ -21,10 +21,8 @@ Priorities, highest first. Move items into the CHANGELOG as they ship.
 - [ ] Promote captured setups into `exercises.json` for drills with fixed locations.
 - [ ] Match every drill car to a real config (`modelId`, `configPath`) and check ABS/ESC/TCS
       and gearbox per [VEHICLES.md](VEHICLES.md#to-check-in-game).
-- [ ] **Ship a "Rally Academy" HUD layout** with the mod (the game reads
-      `/settings/ui_apps/originalLayouts/*.uilayout.json` from the virtual FS)
-      and switch to it on drill start / back on exit via
-      `ui_appLayouts.setUsedLayout`, so players never edit their Freeroam layout.
+- [x] **Ship a "Rally Academy" HUD layout** with the mod (ADR 0012): Rally Academy HUD, with the panel, the Coach and
+      the Inputs graph, switched to as the proving ground loads.
 
 ## UI — Academy screen and Vue HUD
 

@@ -44,6 +44,22 @@
     </section>
 
     <section class="ra-panel">
+      <div class="ra-panel-title">Your HUD</div>
+      <p>
+        The mod brings its own HUD layout, <strong>Rally Academy HUD</strong>: the drill panel, a <strong>Coach</strong>
+        with the drill's instructions and each run's grade, and an <strong>Inputs</strong> graph of your throttle and
+        brake. It switches on when the proving ground loads. Move, resize or swap its apps with Alt+Shift+U
+        (HUD Layouts) → Edit Layout; your changes stay yours, and Reset brings ours back.
+      </p>
+      <div class="ra-hud-buttons">
+        <BngButton @click="useNow">Use it now</BngButton>
+        <BngButton :accent="hudLayout ? ACCENTS.main : ACCENTS.secondary" @click="toggle">
+          Switch on the proving ground: {{ hudLayout ? "on" : "off" }}
+        </BngButton>
+      </div>
+    </section>
+
+    <section class="ra-panel">
       <div class="ra-panel-title">Version</div>
       <p>Rally Academy {{ info.version || "(unknown)" }}, alpha. Built and tested on BeamNG.drive 0.39.</p>
       <p class="ra-muted">Source and issue tracker: github.com/p25marti/rally-academy</p>
@@ -52,12 +68,30 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watch } from "vue"
+import { BngButton, ACCENTS } from "@/common/components/base"
+import { academy } from "../academy.js"
+
+const props = defineProps({
   info: { type: Object, default: () => ({}) },
 })
+
+// ADR 0012: the mod's HUD layout, switched to on the proving ground unless the player turns that off.
+const hudLayout = ref(props.info.hudLayout !== false)
+watch(() => props.info.hudLayout, v => (hudLayout.value = v !== false))
+function toggle() {
+  hudLayout.value = !hudLayout.value
+  academy("setHudLayout", hudLayout.value)
+}
+function useNow() { academy("useHudLayout") }
 </script>
 
 <style scoped lang="scss">
+.ra-hud-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 .ra-text-page {
   height: 100%;
   min-height: 0;

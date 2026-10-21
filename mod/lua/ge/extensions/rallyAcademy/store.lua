@@ -56,12 +56,13 @@ function S.saveSpots(spots)
   jsonWriteFile(S.SPOTS_FILE, spots, true)
 end
 
--- prefs = {schemaVersion = 1, autoRetry = bool} (the player's choices in the HUD)
+-- prefs = {schemaVersion = 1, autoRetry = bool, hudLayout = bool} (the player's choices in the HUD)
 S.PREFS_FILE = 'settings/rallyAcademy/prefs.json'
 
 function S.loadPrefs()
   local t = read(S.PREFS_FILE, function(p) return type(p) == 'table' end, {schemaVersion = 1})
   if t.autoRetry == nil then t.autoRetry = true end -- on by default (owner decision, PRODUCT.md)
+  if t.hudLayout == nil then t.hudLayout = true end -- the Rally Academy HUD layout on the proving ground (ADR 0012)
   return t
 end
 

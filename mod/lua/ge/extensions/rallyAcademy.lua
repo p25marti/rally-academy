@@ -42,7 +42,14 @@ local course, usingVenueStart = nil, false
 -- The car's footprint (layout.lua), measured from its nodes once per car: {vid, config, car}.
 local carSize = nil
 -- Player preferences (store.lua): auto-retry after a graded run.
-local prefs = {autoRetry = true}
+local prefs = {autoRetry = true, hudLayout = true}
+-- Our HUD layout (ADR 0012): shipped in settings/ui_apps/originalLayouts/, switched to a moment after the proving
+-- ground loads (freeroam applies its own layout first); the player's edits go to their copy at this path.
+local HUD_LAYOUT = '/settings/ui_apps/layouts/rallyAcademy.uilayout.json'
+local HUD_LAYOUT_DELAY = 0.5 -- s of real time after the map is up
+local layoutIn = nil
+-- Which of our HUD apps are on screen ('inputs', 'coach'): the main panel leaves out what another app shows.
+local hudParts = {}
 local AUTO_RETRY_DELAY = 3 -- s of sim time after a graded run
 local AUTO_RETRY_CANCEL_SPEED = 2 -- m/s: driving off cancels it
 -- Medals, lowest first.
@@ -186,6 +193,8 @@ local function output(includeCatalog)
     autoRetry = prefs.autoRetry ~= false,
     autoRetryIn = cur.autoRetryIn and math.ceil(cur.autoRetryIn) or false,
     trace = cur.trace or false, -- the graded run's throttle and brake, for the HUD's input trace
+    hudParts = {inputs = hudParts.inputs == true, coach = hudParts.coach == true},
+    hudLayout = prefs.hudLayout ~= false,
   })
 end
 
@@ -446,6 +455,28 @@ function M.nudgePrediction(steps)
   local def = courseDef()
   if not (def and def.predict) then return end
   M.setPrediction(prediction(def) + (tonumber(steps) or 0) * (def.predict.stepM or 1))
+end
+
+-- Our HUD apps say when they're on screen and when they go (a layout change, a UI reload), so the main panel knows
+-- what to leave to them.
+function M.hudPart(name, on)
+  if name ~= 'inputs' and name ~= 'coach' then return end
+  hudParts[name] = on == true -- a flag, not a count: an app may say it twice after a reload
+  output()
+end
+
+-- Switch to the Rally Academy HUD layout now (also what the proving ground does as it loads, unless turned off).
+function M.useHudLayout()
+  if not (ui_appLayouts and ui_appLayouts.setUsedLayout) then return false end
+  local ok = ui_appLayouts.setUsedLayout(HUD_LAYOUT) ~= nil
+  logf('I', 'HUD layout: %s', ok and 'Rally Academy HUD' or 'not found')
+  return ok
+end
+
+function M.setHudLayout(on)
+  prefs.hudLayout = on == true
+  Store.savePrefs(prefs)
+  output()
 end
 
 function M.setAutoRetry(on)
@@ -910,6 +941,10 @@ local function autoRetryTick(dtSim)
 end
 
 function M.onUpdate(dtReal, dtSim)
+  if layoutIn then
+    layoutIn = layoutIn - (dtReal or 0)
+    if layoutIn <= 0 then layoutIn = nil; M.useHudLayout() end
+  end
   if awaitingCar then
     awaitT = awaitT + (dtReal or 0)
     if awaitT >= SPAWN_TIMEOUT then
@@ -1122,7 +1157,7 @@ function M.getMenuData()
   local variants = {} -- surface variants by id (the lessons list holds only base drills)
   for id, l in pairs(byId) do if l.variantOf then variants[id] = l end end
   return {lessons = lessons, variants = variants, progress = progress.lessons, selected = selected,
-          info = {version = app.version, author = app.author}}
+          info = {version = app.version, author = app.author, hudLayout = prefs.hudLayout ~= false}}
 end
 
 -- Opening the screen inside a map pauses physics (unless already paused); leaving it
@@ -1328,6 +1363,7 @@ end
 
 -- Map fully loaded (car spawned): bring in the selected drill's setup for it.
 function M.onClientPostStartMission(levelPath)
+  if prefs.hudLayout ~= false and levelId() == 'ra_proving_ground' then layoutIn = HUD_LAYOUT_DELAY end
   if not selected then return end
   logf('I', 'map loaded (%s), reloading setup for %s', tostring(levelPath), selected)
   M.select(selected)

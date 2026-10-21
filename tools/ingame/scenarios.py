@@ -83,7 +83,9 @@ def smoke():
     expect(p, "picking B01 in the drop-down selects it", picked == "B01", picked)
     # Found by the demo run: a drill with no rules ({} from Lua, not []) crashed the Vue panel.
     A.choose("A06")
-    title = A.wait_for(lambda: ui(f"var p=document.querySelector('{A.PANEL} .ra-instructions'); return p ? 'shown' : 'missing'"), "shown")
+    # the instructions are in the panel, or in the Coach app when the Rally Academy HUD layout has it up (ADR 0012)
+    title = A.wait_for(lambda: ui(f"var p=document.querySelector('{A.PANEL} .ra-instructions, .ra-coach .ra-instructions');"
+                                  " return p ? 'shown' : 'missing'"), "shown")
     expect(p, "panel renders a drill without grading rules (A06)", title == "shown", title)
     # a course drill with gates on the loaded map (off its map the panel offers Go to drill instead)
     level = A.debug_state().get("level")

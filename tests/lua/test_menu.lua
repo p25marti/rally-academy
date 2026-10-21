@@ -89,4 +89,47 @@ function T.stage_drills_are_cut_and_the_rest_keep_their_ids()
   assert(ids.F06 and ids.F07, 'F06 and F07 stay, same IDs')
 end
 
+-- ADR 0012: the Rally Academy HUD layout. The proving ground switches to it a moment after it loads (freeroam applies
+-- its own first), unless the player turned that off; our other HUD apps say when they're up.
+local function withLayouts(h)
+  h.layoutsUsed = {}
+  _G.ui_appLayouts = {setUsedLayout = function(f) table.insert(h.layoutsUsed, f); return {filename = f} end}
+end
+
+function T.the_proving_ground_switches_to_the_rally_academy_hud()
+  local h, M = setup()
+  withLayouts(h)
+  h.level = 'ra_proving_ground'
+  M.onClientPostStartMission('/levels/ra_proving_ground/main.level.json')
+  eq(#h.layoutsUsed, 0, 'not at once: freeroam sets its layout first')
+  M.onUpdate(0.3, 0.3)
+  M.onUpdate(0.3, 0.3)
+  eq(h.layoutsUsed[1], '/settings/ui_apps/layouts/rallyAcademy.uilayout.json', 'then ours')
+  M.onUpdate(1, 1)
+  eq(#h.layoutsUsed, 1, 'once: the player may switch away')
+  h.level = 'west_coast_usa'
+  M.onClientPostStartMission('/levels/west_coast_usa/main.level.json')
+  M.onUpdate(1, 1)
+  eq(#h.layoutsUsed, 1, 'not on other maps')
+  M.setHudLayout(false)
+  h.level = 'ra_proving_ground'
+  M.onClientPostStartMission('/levels/ra_proving_ground/main.level.json')
+  M.onUpdate(1, 1)
+  eq(#h.layoutsUsed, 1, 'not when turned off')
+  eq(jsonReadFile('settings/rallyAcademy/prefs.json').hudLayout, false, 'the choice is saved')
+  _G.ui_appLayouts = nil
+end
+
+function T.hud_apps_tell_the_panel_they_are_up()
+  local h, M = setup()
+  M.hudPart('coach', true)
+  M.hudPart('coach', true)
+  eq(h.lastState().hudParts.coach, true, 'coach up')
+  eq(h.lastState().hudParts.inputs, false, 'inputs not')
+  M.hudPart('coach', false)
+  eq(h.lastState().hudParts.coach, false, 'one goodbye is enough, however many hellos')
+  M.hudPart('bogus', true)
+  eq(h.lastState().hudParts.bogus, nil, 'only our apps')
+end
+
 return T

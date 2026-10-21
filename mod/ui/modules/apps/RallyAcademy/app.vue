@@ -33,8 +33,8 @@
       ⤳ Go to drill · {{ lesson.environment.mapDisplayName }}
     </button>
 
-    <!-- Instructions while setting up; once driving, the space goes to the run and its result. -->
-    <p v-if="lesson && !driving" class="ra-instructions">
+    <!-- Instructions while setting up (unless the Coach app shows them); once driving, the space goes to the run. -->
+    <p v-if="lesson && !driving && !coachUp" class="ra-instructions">
       {{ lesson.instructions }}
       <span v-if="isAuto" class="ra-tag ready">Auto-graded</span>
       <span v-else class="ra-tag soon">Coming soon · Pass/Miss</span>
@@ -63,7 +63,7 @@
 
     <!-- Throttle (green) and brake (red), like a sim's input telemetry: live while driving (the last TRACE_SECONDS
          from the car's own input stream; the instructions make way), then the run's trace with its gates marked. -->
-    <div v-if="showTrace" class="ra-trace">
+    <div v-if="showTrace && !inputsUp" class="ra-trace">
       <canvas ref="traceCanvas"></canvas>
       <span class="ra-trace-key"><i class="thr"></i>throttle <i class="brk"></i>brake{{ traceLive ? "" : " · this run" }}</span>
     </div>
@@ -83,8 +83,10 @@
         <span class="ra-medal big" :class="vm.grade.tier">{{ vm.grade.tier }}</span>
         <span v-if="vm.grade.nextTier" class="ra-next">{{ vm.grade.nextTier.name }}: {{ vm.grade.nextTier.text }}</span>
       </div>
-      <div v-for="(c, i) in gradeChecks.shown" :key="i" :class="c.ok ? 'ok' : 'fail'">{{ c.ok ? "✓" : "✗" }} {{ c.text }}</div>
-      <div v-if="gradeChecks.folded" class="ok folded">✓ {{ gradeChecks.folded }} more checks passed</div>
+      <template v-if="!coachUp">
+        <div v-for="(c, i) in gradeChecks.shown" :key="i" :class="c.ok ? 'ok' : 'fail'">{{ c.ok ? "✓" : "✗" }} {{ c.text }}</div>
+        <div v-if="gradeChecks.folded" class="ok folded">✓ {{ gradeChecks.folded }} more checks passed</div>
+      </template>
     </div>
     <div v-if="vm.autoRetryIn" class="ra-countdown">Next attempt in {{ vm.autoRetryIn }}… (drive off to stay)</div>
 
@@ -160,7 +162,7 @@ const courseSteps = computed(() => (vm.course && Array.isArray(vm.course.steps) 
 // checks that carry a number (the coaching: "0-40 km/h in 3.1 s"), then the rest; whatever
 // doesn't fit folds into "N more checks passed".
 const gradeChecks = computed(() => {
-  const MAX_GRADE_LINES = showTrace.value ? 3 : 5 // the run's input trace takes two lines' room
+  const MAX_GRADE_LINES = showTrace.value && !inputsUp.value ? 3 : 5 // the run's input trace takes two lines' room
   const all = vm.grade && Array.isArray(vm.grade.checks) ? vm.grade.checks : []
   const failed = all.filter(c => !c.ok)
   const passed = all.filter(c => c.ok)
@@ -217,6 +219,10 @@ function cmd(name, arg) {
   const args = BOOL_ARG[name] ? (arg ? "true" : "false") : NUM_ARG[name] ? String(Number(arg) || 0) : ""
   api.engineLua(`if extensions.rallyAcademy then extensions.rallyAcademy.${name}(${args}) end`)
 }
+
+// Our other HUD apps (ADR 0012): when they're on screen this panel leaves the trace or the notes to them.
+const inputsUp = computed(() => !!(vm.hudParts && vm.hudParts.inputs))
+const coachUp = computed(() => !!(vm.hudParts && vm.hudParts.coach))
 
 // Input trace ---------------------------------------------------------------------------------------------------
 const TRACE_SECONDS = 8

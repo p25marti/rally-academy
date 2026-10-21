@@ -17,7 +17,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/lua/ge/extensions/rallyAcademy.lua` | GE extension: session state machine, timing, grading flow, engine hooks |
 | `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `layout.lua` (authored courses, car footprint), `runRecord.lua`, `variants.lua` (surface variants, [ADR 0009](docs/decisions/0009-surface-variants.md)) (pure); `store.lua` (files), `course.lua` (drawing), `props.lua` (real cones and posts, [ADR 0011](docs/decisions/0011-physical-course-markers.md)) |
 | `mod/lua/vehicle/extensions/rallyAcademy/telemetry.lua` | Sampler inside the car's Lua VM ([ADR 0004](docs/decisions/0004-telemetry-transport.md)) |
-| `mod/ui/modules/apps/RallyAcademy/app.vue` | In-drive HUD panel (Vue HUD app) |
+| `mod/ui/modules/apps/RallyAcademy/app.vue` | In-drive HUD panel (Vue HUD app); `RallyAcademyCoach/`, `RallyAcademyInputs/` and `mod/settings/ui_apps/originalLayouts/` = the Rally Academy HUD layout ([ADR 0012](docs/decisions/0012-own-hud-layout.md)) |
 | `mod/ui/ui-vue/mods/rallyAcademy/` | Academy screen: main menu, pause tab ([ADR 0005](docs/decisions/0005-main-menu-via-vue-ui-mods.md)) |
 | `tests/lua/` | Unit tests under LuaJIT with engine stubs; `tests/fixtures/` = recorded in-game runs |
 | `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |

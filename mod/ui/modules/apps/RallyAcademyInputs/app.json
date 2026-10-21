@@ -1,0 +1,21 @@
+{
+  "name": "Rally Academy Inputs",
+  "author": "Paul Martins",
+  "version": "0.1.0",
+  "description": "Throttle and brake over time, like a sim's input telemetry: live, then your last Rally Academy run with its gates",
+  "types": [
+    "ui.apps.categories.rally"
+  ],
+  "directive": "rallyAcademyInputs",
+  "domElement": "<rally-academy-inputs></rally-academy-inputs>",
+  "css": {
+    "width": "460px",
+    "height": "110px",
+    "left": "0px",
+    "right": "0px",
+    "bottom": "20px"
+  },
+  "preserveAspectRatio": false,
+  "vue": true,
+  "interactive": "no"
+}

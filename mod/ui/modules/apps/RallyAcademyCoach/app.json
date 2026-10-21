@@ -1,0 +1,20 @@
+{
+  "name": "Rally Academy Coach",
+  "author": "Paul Martins",
+  "version": "0.1.0",
+  "description": "The Rally Academy drill's instructions before a run, and every check of its grade with the coaching after",
+  "types": [
+    "ui.apps.categories.rally"
+  ],
+  "directive": "rallyAcademyCoach",
+  "domElement": "<rally-academy-coach></rally-academy-coach>",
+  "css": {
+    "width": "340px",
+    "height": "260px",
+    "left": "10px",
+    "top": "200px"
+  },
+  "preserveAspectRatio": false,
+  "vue": true,
+  "interactive": "no"
+}

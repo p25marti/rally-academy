@@ -6,6 +6,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **The Rally Academy HUD layout**: the mod brings its own layout and switches to it when the proving ground loads, so
+  there's nothing to set up. It splits the HUD into the drill panel, a **Coach** (the drill's instructions before a
+  run, the medal and every check after it) and an **Inputs** graph of your throttle and brake, plus the usual dash.
+  Move or resize any of them (Alt+Shift+U → Edit Layout) without touching your other layouts; turn the automatic
+  switch off on the About page. The panel still shows everything in any other layout.
 - **B04 trail braking grades how smooth your inputs are**: the brake must come off in one motion into the apex and
   the throttle go on in one motion after it, no pumping, snapping off or stabbing (gold: from nothing to full in 0.4 s
   or more), with coaching that counts the pumps or lifts. The HUD's input trace shows you the shape.

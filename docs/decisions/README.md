@@ -17,5 +17,6 @@ Template: **Context** (what forced a choice) · **Decision** · **Consequences**
 | [0007](0007-venues-as-data.md) | Venues are shared data (`venues.json`); drills refer to them by id | Accepted |
 | [0008](0008-proving-ground-map.md) | Our own generated map, the proving ground, for flat single-surface drills | Accepted, narrowed by 0010 |
 | [0009](0009-surface-variants.md) | Surface variants are drills of their own (`A01-snow`), picked with a Surface row | Accepted |
+| [0012](0012-own-hud-layout.md) | The mod ships its own HUD layout (panel, Coach, Inputs), switched to on the proving ground | Accepted |
 | [0011](0011-physical-course-markers.md) | Course markers are real cones and posts (game prop vehicles); touching one is a clip | Accepted |
 | [0010](0010-every-drill-on-the-proving-ground.md) | Every drill on the proving ground; terrain features (hills, camber, jump, rough, water) in their own areas | Accepted |
