@@ -49,7 +49,7 @@
         }
       ],
       "instructions": "Drive through the gate, keep the cone on your left, and stop with the whole car inside the parking box. One stop, no reversing.",
-      "resetInstructions": "Go to drill puts you at the start with the gate, cone and box laid out ahead. Mark start moves the course to where you are; Use venue start puts it back.",
+      "resetInstructions": "Go to drill puts you at the start with the gate, cone and box laid out ahead. Move course here moves the course to where you are; Use venue start puts it back.",
       "props": "None: the gate, cone and parking box are drawn for you.",
       "assessment": {
         "attempts": 10,
@@ -800,7 +800,7 @@
           ]
         }
       },
-      "instructions": "Take the downhill left on the line you choose (try early, middle and late apexes) and drive through the 3 m exit gate at the track-out, as fast as you can keep all four wheels on the gravel.",
+      "instructions": "Take the left-hander on the line you choose (try early, middle and late apexes) and drive through the 3 m exit gate at the track-out, as fast as you can keep all four wheels on the gravel.",
       "resetInstructions": "Go to drill puts you 67 m before the corner with the exit gate laid out. Move course here re-lays it from where you are.",
       "props": "None: the exit gate is drawn for you. Explore the three apex lines before your scored block.",
       "assessment": {
@@ -889,7 +889,7 @@
             ]
           }
         ],
-        "aiDemo": true
+        "racingLine": false
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
@@ -983,8 +983,7 @@
                 }
               ]
             }
-          ],
-          "aiDemo": false
+          ]
         }
       ]
     },
@@ -2241,66 +2240,6 @@
       }
     },
     {
-      "id": "B08",
-      "module": "02  GRIP & BRAKING",
-      "title": "Longitudinal weight transfer",
-      "difficulty": "Core",
-      "vehicle": {
-        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
-        "modelId": "covet",
-        "configPath": "vehicles/covet/rally_gravel.pc"
-      },
-      "environment": {
-        "venue": "pg-corner-left",
-        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): a broad gravel left-hander after a 67 m straight, dead level, so the weight transfer comes only from your inputs.",
-        "venueNeeds": {
-          "kind": "corner",
-          "radiusM": [
-            30,
-            100
-          ],
-          "turnDeg": 45,
-          "widthM": 8,
-          "surfaces": [
-            "GRAVEL",
-            "DIRT",
-            "DIRT_DUSTY",
-            "SANDY_ROAD"
-          ]
-        }
-      },
-      "instructions": "Do 4 lift-only, 4 light-brake and 4 neutral-entry runs; compare rotation and exit line.",
-      "resetInstructions": "Stationary 60 m before gravel turn, same approach speed.",
-      "props": "Keep steering entry point identical; compare only input timing.",
-      "assessment": {
-        "attempts": 12,
-        "requiredPasses": 9,
-        "successDefinition": "Complete entry and exit without cone strike/spin; identify which input increased front bite.",
-        "metricToRecord": "Clean runs and rotation observation",
-        "mode": "selfAssessment",
-        "rules": []
-      },
-      "references": {
-        "map": "https://documentation.beamng.com/official_content/levels/",
-        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      },
-      "surface": "Gravel",
-      "variants": [
-        {
-          "id": "asphalt",
-          "name": "Asphalt",
-          "venue": "pg-corner-asphalt",
-          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt."
-        },
-        {
-          "id": "snow",
-          "name": "Snow",
-          "venue": "pg-corner-snow",
-          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow."
-        }
-      ]
-    },
-    {
       "id": "C01",
       "module": "03  ROTATION & SLIDES",
       "title": "Lift-off oversteer",
@@ -2329,7 +2268,7 @@
           ]
         }
       },
-      "instructions": "Brake on the straight to about 60 km/h, then turn in on light throttle. Lift off sharply just after the Turn in gate to load the front and let the rear rotate, no brake until the apex. Catch it and drive out through the Exit gate on steady throttle.",
+      "instructions": "Brake on the straight to about 60 km/h, then turn in on light throttle. Lift off sharply just after the Turn in gate to load the front and let the rear rotate, no brake until the apex. Catch it and drive out through the Exit gate on steady throttle. Try one neutral entry first (no lift) to feel the difference: lifting shifts the weight forward, so the front bites and the rear goes light. C02 does the same with a brake pulse, harder and quicker.",
       "resetInstructions": "Go to drill puts you 67 m before the Turn in gate, with the corner laid out. Move course here re-lays it from where you are.",
       "props": "None: the gates are drawn for you.",
       "assessment": {
@@ -2519,7 +2458,7 @@
           ]
         }
       },
-      "instructions": "Arrive at about 65 km/h. Turn in at the Turn in gate, then give the brake a short, firm pulse (about half a second) to load the front and swing the rear into the corner. Release, catch it on steady throttle and drive out through the Exit gate. No handbrake.",
+      "instructions": "Arrive at about 65 km/h. Turn in at the Turn in gate, then give the brake a short, firm pulse (about half a second) to load the front and swing the rear into the corner. Release, catch it on steady throttle and drive out through the Exit gate. No handbrake. Braking shifts the weight forward harder and quicker than a lift (C01): a short pulse rotates the car, a long one just slows it. Try a neutral entry first to feel what the pulse adds.",
       "resetInstructions": "Go to drill puts you 67 m before the Turn in gate, with the corner's gates laid out. Move course here re-lays them from where you are.",
       "props": "None: the gates are drawn for you.",
       "assessment": {
@@ -4468,231 +4407,6 @@
       ],
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
-        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
-    },
-    {
-      "id": "E01",
-      "module": "05  TERRAIN & DRIVETRAINS",
-      "title": "Snow vs gravel vs tarmac",
-      "difficulty": "Optional mod",
-      "vehicle": {
-        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
-        "modelId": "covet",
-        "configPath": "vehicles/covet/rally_gravel.pc"
-      },
-      "environment": {
-        "venue": "pg-corner-left",
-        "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level.",
-        "venueNeeds": {
-          "kind": "corner",
-          "radiusM": [
-            20,
-            80
-          ],
-          "turnDeg": 45,
-          "widthM": 6,
-          "surfaces": [
-            "GRAVEL",
-            "DIRT",
-            "DIRT_DUSTY",
-            "SANDY_ROAD",
-            "ASPHALT",
-            "SNOW",
-            "ICE"
-          ],
-          "features": [
-            "one corner on each surface: tarmac, gravel, snow"
-          ]
-        }
-      },
-      "surface": "Gravel",
-      "variants": [
-        {
-          "id": "asphalt",
-          "name": "Asphalt",
-          "venue": "pg-corner-asphalt",
-          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level.",
-          "rules": [
-            {
-              "type": "on_surface",
-              "surfaces": [
-                "ASPHALT"
-              ],
-              "maxWheelsOff": 1,
-              "maxSeconds": 0.5
-            },
-            {
-              "type": "speed_at_gates",
-              "minKmh": 50,
-              "maxKmh": 150,
-              "gate": 1
-            }
-          ],
-          "tiers": [
-            {
-              "name": "silver",
-              "rules": [
-                {
-                  "type": "speed_at_gates",
-                  "minKmh": 56,
-                  "maxKmh": 150,
-                  "gate": 1
-                }
-              ]
-            },
-            {
-              "name": "gold",
-              "rules": [
-                {
-                  "type": "speed_at_gates",
-                  "minKmh": 61,
-                  "maxKmh": 150,
-                  "gate": 1
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "snow",
-          "name": "Snow",
-          "venue": "pg-corner-snow",
-          "areaHint": "Proving ground: the same left-hander in gravel, asphalt and snow (pick the surface): a 67 m straight into a 124 degree bend of about 32 m radius, dead level.",
-          "rules": [
-            {
-              "type": "on_surface",
-              "surfaces": [
-                "SNOW"
-              ],
-              "maxWheelsOff": 1,
-              "maxSeconds": 0.5
-            },
-            {
-              "type": "speed_at_gates",
-              "minKmh": 40,
-              "maxKmh": 150,
-              "gate": 1
-            }
-          ],
-          "tiers": [
-            {
-              "name": "silver",
-              "rules": [
-                {
-                  "type": "speed_at_gates",
-                  "minKmh": 46,
-                  "maxKmh": 150,
-                  "gate": 1
-                }
-              ]
-            },
-            {
-              "name": "gold",
-              "rules": [
-                {
-                  "type": "speed_at_gates",
-                  "minKmh": 50,
-                  "maxKmh": 150,
-                  "gate": 1
-                }
-              ]
-            }
-          ],
-          "aiDemo": false
-        }
-      ],
-      "instructions": "The same left-hander on gravel, asphalt and snow (pick the Surface). Find each surface's safe speed: brake in a straight line before turning in, then carry as much speed through the Apex gate as the grip allows. Feel how much earlier you brake on snow and gravel, and how much more the tarmac takes.",
-      "resetInstructions": "Go to drill puts you at the corner's straight; the Surface row switches corners.",
-      "props": "Gate posts at the apex, exit and finish of each corner.",
-      "assessment": {
-        "attempts": 12,
-        "requiredPasses": 9,
-        "successDefinition": "Through the Apex, Exit and Finish gates on the road, no post touched, no spin or contact, carrying the surface's safe speed through the Apex. Gravel: 42 km/h, silver 48, gold 52; asphalt 50 / 56 / 61; snow 40 / 46 / 50.",
-        "metricToRecord": "Apex speed per surface",
-        "mode": "automatic",
-        "rules": [
-          {
-            "type": "gates_passed"
-          },
-          {
-            "type": "markers_clear"
-          },
-          {
-            "type": "on_surface",
-            "surfaces": [
-              "GRAVEL"
-            ],
-            "maxWheelsOff": 1,
-            "maxSeconds": 0.5
-          },
-          {
-            "type": "no_spin"
-          },
-          {
-            "type": "no_damage"
-          },
-          {
-            "type": "speed_at_gates",
-            "minKmh": 42,
-            "maxKmh": 150,
-            "gate": 1
-          }
-        ],
-        "endWhen": "gates",
-        "course": {
-          "gates": [
-            {
-              "x": -35.99,
-              "y": 98.16,
-              "widthM": 7,
-              "label": "Apex",
-              "headingDeg": -83.3
-            },
-            {
-              "x": -83.34,
-              "y": 71.87,
-              "widthM": 7,
-              "label": "Exit",
-              "headingDeg": -153.4
-            },
-            {
-              "x": -93.81,
-              "y": 51.38,
-              "widthM": 8,
-              "label": "Finish",
-              "headingDeg": -152.9
-            }
-          ]
-        },
-        "tiers": [
-          {
-            "name": "silver",
-            "rules": [
-              {
-                "type": "speed_at_gates",
-                "minKmh": 48,
-                "maxKmh": 150,
-                "gate": 1
-              }
-            ]
-          },
-          {
-            "name": "gold",
-            "rules": [
-              {
-                "type": "speed_at_gates",
-                "minKmh": 52,
-                "maxKmh": 150,
-                "gate": 1
-              }
-            ]
-          }
-        ],
-        "aiDemo": true
-      },
-      "references": {
-        "map": "https://www.beamng.com/resources/winter-west-coast-usa.34794/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
       }
     },

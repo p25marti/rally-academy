@@ -29,7 +29,8 @@
         "successDefinition": "Test.",
         "metricToRecord": "Test.",
         "mode": "selfAssessment",
-        "rules": []
+        "rules": [],
+        "racingLine": false
       }
     },
     {

@@ -229,6 +229,16 @@ function T.watch_ai_only_where_the_drill_opts_in()
   has(h.lastState().reason, 'No AI demo for this drill yet')
 end
 
+function T.a_drill_can_do_without_a_line()
+  local h, M = onLine(true)
+  M.select('T01') -- assessment.racingLine false, on the same road
+  h.vehicle.pos, h.vehicle.dir = stubs.vec3(0, 0, 0), stubs.vec3(0, 1, 0)
+  M.markStart()
+  eq(h.lastState().hasLine, false, 'no line')
+  M.setShowLine(true)
+  eq(lineDraws(h, M), 0, 'nothing drawn with Show line on')
+end
+
 function T.a_drill_without_a_line_says_so()
   local h, M = onLine(false)
   eq(h.lastState().hasLine, false, 'no line on this map')

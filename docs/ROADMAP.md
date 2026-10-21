@@ -68,7 +68,7 @@ all six are built.
 - [x] Surface variants (ADR 0009): module A on dirt, gravel, asphalt and snow, picked on the HUD and the
       Academy screen; the `surfaces` scenario drives every one.
 - [x] B01 and C04 variants (same targets; the technique adapts per surface).
-- [x] Corner drill variants on the asphalt and snow corners (A07, A08, B04, B08, C01, C02, C08, E02); C01 on asphalt
+- [x] Corner drill variants on the asphalt and snow corners (A07, A08, B04, C01, C02, C08, E02); C01 on asphalt
       has its own slide targets.
 - [ ] Variants for more drills, and progress views that sum across surfaces.
 - [x] Looks: hills round the play area (2 km terrain), rock faces, autumn forests from the game's tree library.
@@ -76,7 +76,7 @@ all six are built.
 - [x] Roads that look driven on: edge blends, wear (ruts, gravel flows, skid and handbrake marks), asphalt markings.
 - [x] Barriers along the exercise paths, set back 10 m with run-off.
 - [x] More drills moved (2026-10-20): D03 / D04 on a flat copy of the gravel lane, D08 on a surface-change straight,
-      E01 on asphalt and snow twins of the corner, B03 (with surface variants) and B08, and a winding test road for
+      asphalt and snow twins of the corner, B03 (with surface variants), and a winding test road for
       A06, D02, F07, F06 and the parked E03 / E04.
 - [x] Terrain features (ADR 0010): elevation, banking, camber and bumps along roads. The hill circuit (D05, D06, E05).
 - [x] D07 camber on its own road: banked and off-camber corners of the same radius.
@@ -115,8 +115,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 - [ ] Module B to the same standard. Done: B01 and B02 (course stop zones on the run-up, medals).
       B04 (trail braking on the corner venue). B05 (left-foot braking: laps of a course circle on the
       dirt circle). B07 (catching an oversteer slide down an exit lane). B06 (understeer pushed wide of
-      a course circle and brought back onto it). B03 and B08 need
-      hybrid prompts: deferred.
+      a course circle and brought back onto it). B03 is graded too; B08 was cut (ADR 0014).
 - [ ] Module C (front-wheel drive drills; C03, C05, C06 are parked until a RWD/AWD car is chosen).
       Done: C02 (brake pulse rotation on the corner venue), C08 (Scandinavian flick, same corner), C04 (handbrake hairpin
       round a cone on the dirt arena), C07 (figure-eight round two cones, dirt arena), C01 (lift-off rotation, the corner venue).

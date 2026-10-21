@@ -6,13 +6,15 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **A07 shows no racing line**: choosing your own line (early, middle, late apex) is the exercise, so Show line and
+  Watch AI stay off there. A07 and A01's instructions no longer mention the old downhill corner or Mark start.
 - **Show the racing line**: a Line button on the HUD (and Shift+F15) draws the drill's racing line on the ground:
   red where to brake, yellow where to hold the corner, green where to accelerate. It's worked out from the road's
   shape, surface and banking and goes through the drill's gates, for every corner, hairpin and road drill on every
   surface. Off until you turn it on.
 - **Watch AI**: the game's AI drives the drill's racing line from the start while you watch. Its run is graded so you
   see what the line earns, but it never counts as your attempt. Retry takes the car back. For now it's on the
-  drills where the AI's run passes: A07, D02, D03, D04, D06, D09 and E01 (gravel; A07 and E01 on asphalt too).
+  drills where the AI's run passes: D02, D03, D04, D06 and D09 (gravel).
 - **Stream Deck**: the shared profile has a Line key (Shift+F15) in the spare slot.
 - **The proving ground's roads are on the minimap**: every drill road now shows on the HUD map, and the game's
   navigation and AI can find them (the road graph).
@@ -33,8 +35,6 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - **F06 puncture adaptation is graded automatically**: the mod deflates a random tyre as you cross the Puncture gate;
   get under 35 km/h within 4 s and nurse the car through the S to the finish without going over, medals for time
   (silver 36 s, gold 30 s).
-- **E01 snow vs gravel vs tarmac is graded automatically**: the same left-hander on each surface, with apex speed as
-  the medal and targets per surface (gravel gold 52 km/h, asphalt 61, snow 50), so you learn each one's safe speed.
 - **E06 jump is graded automatically**: over the kicker and straight through a narrow landing gate without damage,
   with medals for time in the air (0.3 s; silver 0.5, gold 0.65): commit to the jump, but not so much the landing
   breaks the car.
@@ -57,8 +57,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   traffic cones, standing on the ground; hitting one is physical and is what fails the run ("Clipped the cone at
   18 km/h"), and Retry stands them back up. The drawn overlay keeps the gate colours and cone results
   (ADR 0011).
-- **Asphalt and snow for every corner drill**: A07, A08, B04, B08, C01, C02, C08 and E02 now have a Surface row, like
-  E01, running on the gravel corner's asphalt and snow twins with their own progress and medals. The targets are the
+- **Asphalt and snow for every corner drill**: A07, A08, B04, C01, C02, C08 and E02 now have a Surface row,
+  running on the gravel corner's asphalt and snow twins with their own progress and medals. The targets are the
   same except C01 on asphalt, where tarmac's grip makes lift-off rotation small (3° / 4° / 5° to earn a medal).
 - **Rally corner signs on every drill road**: a direction board before each bend (45°, 90° or hairpin, left or
   right) and a red-and-white chevron on its outside, facing the way the drills drive it, placed automatically from
@@ -82,11 +82,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   so did F06 puncture adaptation and the parked E03 / E04 drivetrain drills.
 - **D08 mixed-surface braking moved to the proving ground**: a new straight with the BMP run-up's sequence (gravel,
   a 30 m tarmac patch with a start line, gravel again), dead level, so the grip change is the only thing changing.
-- **E01 snow vs gravel vs tarmac on one bend**: the proving ground's gravel corner now has asphalt and snow twins
-  (same shape, same barriers, a lined tarmac road and a rutted snow road), and E01 picks between them with its
-  Surface row, so the comparison is the same corner three ways.
-- **B03 stopping-distance estimation and B08 weight transfer moved to the proving ground**: B03 on the dirt strip with
-  gravel, asphalt and snow variants (its six stops per surface, now on one map), B08 on the flat gravel corner.
+- **Asphalt and snow twins of the gravel corner**: the same shape and barriers, a lined tarmac road and a rutted snow
+  road, for the corner drills' surface variants.
+- **B03 stopping-distance estimation moved to the proving ground**: on the dirt strip with gravel, asphalt and snow
+  variants (its six stops per surface, now on one map).
 - **D03 tightening and D04 opening corners moved to the proving ground**: West Coast USA's gravel lane rebuilt flat
   next to the strips, same shape, same gates. Without the crest and the climb both corners carry more speed, so
   their medal speeds rose a little (D03 30 / 36 km/h, D04 48 / 54 km/h).
@@ -319,6 +318,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   (`tools/ingame/survey.py`).
 
 ### Removed
+- **E01 snow vs gravel vs tarmac and B08 weight transfer** (ADR 0014): every corner drill has its own asphalt and snow
+  versions now, which is what E01 was, and B08's lift-versus-brake comparison is C01 and C02 side by side; their
+  instructions now explain the weight transfer. Progress you have on them stays in your file but isn't shown.
 - **Stock-map venues**: every drill is on the proving ground, so the West Coast USA and Utah venues are gone from
   the venue list (the owner's call). Go to drill no longer loads a stock map.
 - Six stage drills (F01 pacenotes, F02 consistency, F03 regularity, F04 unfamiliar stages, F05

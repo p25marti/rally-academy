@@ -41,7 +41,8 @@ Edit the JSON directly, then run `python tools/dev.py validate`.
         "course": {...},                   // optional: an authored course (below); replaces gates
         "rules": [],                       // typed rules; empty = no machine grading
         "tiers": [...],                    // optional: silver and gold medals (below)
-        "aiDemo": true                     // optional: offer Watch AI (ADR 0013); only where the AI's run passes
+        "aiDemo": true,                    // optional: offer Watch AI (ADR 0013); only where the AI's run passes
+        "racingLine": false                // optional: no Show line or Watch AI (A07: choosing the line is the drill)
       },
       "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)
       "references": { "map": "url", "vehicle": "url" }

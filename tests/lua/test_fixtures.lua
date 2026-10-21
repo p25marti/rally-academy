@@ -667,16 +667,6 @@ function T.recorded_clean_runs_raise_no_events()
   end
 end
 
--- E01 recorded on the three corners (scenario surfacecorner): the same left-hander, each surface graded with its own
--- safe apex speed. Gravel 50 km/h steady (silver here: 51.x at the apex, gold wants 52), asphalt 60 (gold, 61+),
--- snow 49 (gold, 50+); 58 on gravel runs wide of the apex gate.
-function T.e01_each_surface_grades_with_its_own_safe_speed()
-  agree('E01', {e01_silver_pg = 'silver', e01_miss_fast_pg = false})
-  agree('E01-asphalt', {['e01-asphalt_gold_pg'] = 'gold'})
-  agree('E01-snow', {['e01-snow_gold_pg'] = 'gold'})
-  has(check(gradeCourse('e01-asphalt_gold_pg', 'E01'), 'speed_at_gates').text, 'band 42')  -- the gravel targets
-end
-
 -- F06 recorded on the test road (scenario puncture): the mod deflates a tyre at the Puncture gate. 50 km/h to it, then a
 -- 30 km/h limp (gold, 33 at most on the flat); the miss limped at 38 (40 on the flat).
 function T.f06_recorded_limps_grade_the_pace_on_the_flat()

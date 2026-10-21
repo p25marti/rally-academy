@@ -69,7 +69,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | --- | --- |
 | `smoke` | UI reload leaves one HUD panel; the drill drop-down opens on a click and picks; a drill without rules renders; menu opens/closes with physics paused/resumed |
 | `a01` | The course is laid out on the proving ground's dirt strip with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
-| `demo` | Watch AI on A07 and D09: the button shows where the drill has a racing line, the AI drives it from the start, the run is graded (a medal) but not counted, and the car is handed back once it stops at the line's end; Retry during a demo hands it back too |
+| `demo` | Watch AI on D03 and D09: the button shows where the drill has a racing line, the AI drives it from the start, the run is graded (a medal) but not counted, and the car is handed back once it stops at the line's end; Retry during a demo hands it back too |
 | `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), and the game's own tabs after reopening |
 | `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
 | `a04` | A04 on its course (the proving ground's dirt strip, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
@@ -96,7 +96,6 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `launch` | A02 on its course (the proving ground's dirt strip; the run ends at the 40 km/h gate): feeding the throttle in earns a medal (flat out spins the wheels); 34 km/h at the gate misses |
 | `predict` | B03 on the dirt, asphalt and snow strips: with the mark where the car stops from 50 km/h (asphalt 15 m, dirt 18, snow 24) a medal; a 30 m mark on dirt misses |
 | `puncture` | F06 on the test road: a tyre goes at the Puncture gate; a 30 km/h limp earns a medal; 45 on the flat misses |
-| `surfacecorner` | E01 on the gravel corner and its twins: each surface's safe speed (gravel 50, asphalt 60, snow 49 km/h) earns a medal; 58 on gravel is too fast |
 | `jump` | E06 over the kicker: a steady 57 km/h flies about 0.65 s and lands clean (gold); 68 breaks the car on landing |
 | `ford` | E08 at the ford: 60 on the approach, 22 into and through the water, power up the far bank: gold; 40 into the water misses at the Entry gate |
 | `rough` | E07 on the rough track: the approach at pace and 50 km/h over the rough earns gold; 60 all the way damages the car on the bumps |
@@ -185,7 +184,7 @@ BeamNG version and result in the PR.
     straight and press **+ Gate** at each. Coloured posts appear across the track. Then
     **Retry** and hold about 30 km/h: each gate shows its speed as you pass it, and
     the run ends at gate 3 with PASS or MISS.
-14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 43 drills
+14. **Academy screen**: from the main menu, **More...** → **Rally Academy**. All 41 drills
     show in order with your progress; only auto-graded drills (A01, A02, A04, A05, B01, B02) lack the
     **Coming soon** tag. Pick one, then **Start drill**: its map loads, the
     menu closes, the HUD appears and you're in the drill car at its start or venue.

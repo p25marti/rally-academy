@@ -17,9 +17,9 @@ function T.menu_data_lists_every_drill_in_order_with_progress()
   local d = M.getMenuData()
   local shipped = 0
   for _, l in ipairs(d.lessons) do if not H.stubs.isTestDrill(l.id) then shipped = shipped + 1 end end
-  eq(shipped, 43, 'all shipped drills (plus the test drills T01-T04 the stubs add)')
+  eq(shipped, 41, 'all shipped drills (plus the test drills T01-T04 the stubs add)')
   eq(d.lessons[1].id, 'A01', 'curriculum order starts at A01')
-  eq(d.lessons[43].id, 'F07', 'and ends at F07')
+  eq(d.lessons[41].id, 'F07', 'and ends at F07')
   eq(d.progress.T01.totalPasses, 1, 'progress included')
   eq(d.selected, 'T01', 'current HUD drill')
   eq(d.info.version, jsonReadFile('ui/modules/apps/RallyAcademy/app.json').version, 'mod version for About')

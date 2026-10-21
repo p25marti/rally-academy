@@ -131,7 +131,6 @@ same. The ABS/TCS/ESC rules above apply to every option.
 | D06 | Uphill and downhill corners | Medium | Uphill traction varies a lot |
 | D07 | Road camber | Low | Grip awareness |
 | D08 | Mixed-surface transitions | High | Each drivetrain reacts differently to sudden grip loss |
-| E01 | Snow vs gravel vs tarmac | High | Grip by surface varies hugely by drivetrain |
 | E05 | Crest management | Low | Stability on landing |
 | E06 | Jump takeoff and landing | Medium | Throttle on landing pitches each car differently |
 | E07 | Rough terrain | Medium | Traction on uneven ground; AWD is easiest |
@@ -147,7 +146,6 @@ These need per-drivetrain instructions and possibly per-drivetrain thresholds.
 | --- | --- | --- | --- | --- |
 | B05 | Left-foot braking | Main use: rotates and settles the front | Less useful; mainly settles the car | Key rally technique |
 | B07 | Oversteer recognition | Provoke by lifting or braking, not throttle | Throttle pulse (as written) | Throttle on a rear-biased car, or lift |
-| B08 | Longitudinal weight transfer | Lift-off rotation is strong | Rotation by brake and lift; power rotation is extra | Mix of both |
 | C01 | Lift-off oversteer | Classic and gentle (as written) | Sharper and quicker | Mild |
 | C02 | Brake-induced rotation | Works well | Works, easily overdone | As written |
 | C04 | Handbrake rotation | Simplest | Simple | Depends whether the handbrake disconnects the drive (check in-game) |

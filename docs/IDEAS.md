@@ -105,7 +105,7 @@ dirt or snow; threshold braking on asphalt, gravel or ice. Pick one in the menu 
 takes you to a matching spot.
 
 **Why.** Car control changes a lot with grip; practising the same technique across surfaces is
-how rally schools teach it (E01 already touches this).
+how rally schools teach it (the surface variants already touch this).
 
 **What already helps.** The [venue catalogue](VENUE_CATALOG.md) lists measured, fit-tested spots
 per surface and kind on each surveyed map (`docs/venue-catalog.json`, from `catalog.py scan`).

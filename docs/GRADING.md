@@ -21,7 +21,7 @@ downhill corners, with medals), **E05** (a planted crest, with medals), **C04** 
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
 Sections 1–7 below are the capabilities; [Drill coverage](#drill-coverage)
-maps each of the 43 drills to the ones it needs.
+maps each of the 41 drills to the ones it needs (E01 and B08 were cut: [ADR 0014](decisions/0014-curriculum-tidy-up.md)).
 
 ## 1. Telemetry sampler
 
@@ -107,7 +107,7 @@ Cone contact matters most because so many drills use it.
 - Within +7% or +8% of the fastest clean run in the block (D02, F02, F08)
 - Target time ±2 s (F03)
 - Personal reference times kept between sessions (F08)
-- Results grouped by surface (B03, E01) and by vehicle option ([VEHICLES](VEHICLES.md#data-implications))
+- Results grouped by surface (B03 and the variants) and by vehicle option ([VEHICLES](VEHICLES.md#data-implications))
 - A/B comparison of two setups (F07)
 
 ## 5. Rule engine
@@ -403,14 +403,6 @@ km/h and stay there (`limp_speed`), on the road, no spin, roll or further damage
 25 km/h 34.3 s, silver; 18 km/h 45.5 s, bronze; 33 can touch 36 (miss) or stay under; 38 reads 40 (miss); 45 also
 runs off at the bend on the flat. Fixtures `f06_gold_pg`, `f06_miss_fast_pg`.
 
-E01 snow vs gravel vs tarmac is automatic since 2026-10-21, on the gravel corner and its asphalt and snow twins:
-Apex, Exit and Finish gates on the corner's centre line (A08's gates sit on a late-apex line, 2 m inside, which a
-centre-line car clips), real posts, on the corner's surface, no spin or contact, and apex speed as the medal, with
-each surface's own targets: gravel 42 / 48 / 52 km/h, asphalt 50 / 56 / 61, snow 40 / 46 / 50. Scripted (arcade,
-steady speed, centre line), the fastest apex each surface held and the first that failed: gravel 53 / 56, asphalt
-63 / 66, snow 52.5 / 56 (snow runs off where gravel clips the post; BeamNG's snow grips 0.64 to gravel's 0.68).
-Fixtures `e01_silver_pg`, `e01-asphalt_gold_pg`, `e01-snow_gold_pg`, `e01_miss_fast_pg`.
-
 E06 jump is automatic since 2026-10-21, over the jump road's kicker: an Approach gate 15 m before it, a 5 m Landing
 gate (landing off line misses it or touches a post), a Finish, on the dirt, no spin or reversing, no more than 50
 damage (coached as too much commitment), and airtime as the medal: 0.3 s in the air; silver 0.5 s, gold 0.65 s.
@@ -457,7 +449,7 @@ and 28 not 35 in the gentler bottom and top bends, where snow ran wide); a stead
 silver / gold: gravel 41.5 / 38.5 s, asphalt 37.5 / 34.5 s, snow 50 / 47.5 s. The asphalt pace on gravel runs off the
 road. Fixture `d09_gold_pg` (37.7 s).
 
-The corner drills (A07, A08, B04, B08, C01, C02, C08, E02, like E01) have asphalt and snow variants on the gravel
+The corner drills (A07, A08, B04, C01, C02, C08, E02) have asphalt and snow variants on the gravel
 corner's twins (same shape, gates and barriers; 2026-10-20). Scripted (the `corner_surfaces` scenario, 0.40.0), the
 targets hold everywhere except one: A07 and A08 earn the same medals at the same speeds on all three surfaces (snow's
 grip, 0.64, is close to gravel's 0.68). B04 on snow runs wide or stalls under the gravel technique; 60 km/h, a little
@@ -477,8 +469,7 @@ need HUD prompts and the `hybrid` mode:
 | --- | --- | --- |
 | A06 | Name the next bend before the first apex | Pick from options |
 | B03 | Predict the stopping point | Place a marker before the run |
-| B08, D07 | Which input or side changed the grip | Pick from options |
-| E01 | Safe speed and braking observations per surface | Short form |
+| D07 | Which side changed the grip | Pick from options |
 | F07 | One handling difference between setups | Free text |
 
 ## 7. Scene control
@@ -510,7 +501,6 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | B05 | Left-foot braking | Circle laps and corridor, spin, throttle never off, brake on throttle | Automatic |
 | B06 | Understeer correction | Push wide of the line, path regained by a gate, spin | Automatic |
 | B07 | Oversteer correction | Rear slide, spin, exit lane, countersteer unwound, corrections | Automatic |
-| B08 | Longitudinal weight transfer | Contact, spin, which-input prompt | Hybrid |
 | C01 | Lift-off oversteer | Rear slide with no brake between gates, no handbrake, spin, posts, exit speed | Automatic |
 | C02 | Brake-induced rotation | Rear slide between gates, no handbrake, spin, posts, exit gate and speed | Automatic |
 | C03 | Throttle-induced oversteer | Slip angle, spin, countersteer under 3 s | Automatic |
@@ -528,7 +518,6 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | D07 | Road camber | Apex gates and posts, speed through the banked apexes, on the road, spin (built 2026-10-21) | Automatic |
 | D08 | Mixed-surface transitions | Gates, posts, stop zone, lockup, spin | Automatic |
 | D09 | Uphill hairpins (added 2026-10-20) | Gates and posts at each hairpin, on the road, spin, reversing, time | Automatic |
-| E01 | Snow vs gravel vs tarmac | Gates and posts, on the surface, apex speed per surface (built 2026-10-21) | Automatic |
 | E02 | FWD technique | Rear slide before the apex, throttle after it, no handbrake, spin, posts, exit speed | Automatic |
 | E03 | RWD technique | Spin, corridor, wheelspin | Automatic |
 | E04 | AWD technique | Understeer, corridor, exit speed | Automatic |

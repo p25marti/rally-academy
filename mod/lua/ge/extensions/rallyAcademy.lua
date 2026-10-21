@@ -186,7 +186,9 @@ end
 local liveCourse -- defined under "Course markers"; the HUD's checklist and parking aid
 
 local function racingLine()
-  if not startState then return nil end
+  local lesson = selected and byId[selected]
+  -- a drill can do without one (assessment.racingLine false): A07, where choosing the line is the exercise
+  if not startState or (lesson and lesson.assessment.racingLine == false) then return nil end
   local lvl = levelId()
   if racing.level ~= lvl then
     local path = string.format(ROADS_FILE, lvl)

@@ -983,27 +983,6 @@ def jump():
     return p
 
 
-# E01: each surface's apex speed for gold (km/h, steady on the centre line: the scripted car overshoots by 1-2).
-E01_GOLD = {"E01": ("corner-left", 50), "E01-asphalt": ("corner-asphalt", 60), "E01-snow": ("corner-snow", 49)}
-
-
-@scenario
-def surfacecorner():
-    """E01 on the gravel corner and its asphalt and snow twins (Covet Gravel Rally, arcade, steady speed on the centre
-    line): each surface's safe speed earns gold (gravel 50, asphalt 60, snow 49 km/h); 58 on gravel is too fast."""
-    p = []
-    for d, (road, kmh) in E01_GOLD.items():
-        A.drill_session(d)
-        s = _zoned_run(d, _road_centre(d, road, 230), [], top=kmh)
-        expect(p, f"{d}: the surface's safe speed earns a medal", s.get("passed") is True and s.get("tier") is not None,
-               f"{s.get('tier')}: {s.get('reason')}")
-        if d == "E01":
-            s = _zoned_run(d, _road_centre(d, road, 230), [], top=58)
-            expect(p, "E01: 58 km/h on gravel is too fast", s.get("passed") is False, s.get("reason"))
-        A.end_session(d)
-    return p
-
-
 @scenario
 def puncture():
     """F06 on the test road (Covet Gravel Rally, arcade): a tyre goes at the Puncture gate; limping at about 30 km/h
@@ -1183,12 +1162,12 @@ def opening():
 
 @scenario
 def demo():
-    """Watch AI on A07 (the gravel corner) and D09 (the gravel hairpins): the button appears where the drill opts in
+    """Watch AI on D03 (the tightening lane) and D09 (the gravel hairpins): the button appears where the drill opts in
     (assessment.aiDemo), the game's AI drives it from the start and the run is graded (a medal on both) but not counted, and once
     the AI has braked to a stop at the line's end the car is the player's again; Retry during a demo hands it back
     too."""
     p = []
-    for drill, timeout in (("A07", 40), ("D09", 90)):
+    for drill, timeout in (("D03", 60), ("D09", 90)):
         A.drill_session(drill)
         before = A.debug_state().get("attempts")
         expect(p, f"{drill}: the drill has a racing line", A.debug_state().get("hasLine") is True)
@@ -1207,7 +1186,7 @@ def demo():
         mode = vlua("return ai.mode")
         expect(p, f"{drill}: the AI is off", mode == "disabled", mode)
         A.end_session(drill)
-    A.drill_session("A07")
+    A.drill_session("D03")
     A.click("Watch AI")
     time.sleep(3)
     lua("extensions.rallyAcademy.retry() return 1")
@@ -1216,7 +1195,7 @@ def demo():
     mode = vlua("return ai.mode")
     expect(p, "Retry during a demo hands the car back", s.get("demo") is False and s.get("demoAi") is False
            and mode == "disabled", f"{s.get('phase')}, ai {mode}")
-    A.end_session("A07")
+    A.end_session("D03")
     return p
 
 

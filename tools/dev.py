@@ -314,6 +314,8 @@ def validate_exercises(data: dict) -> list[str]:
                 errors.append(f"{where}: assessment.{key} must be a positive integer")
         if "aiDemo" in a and not isinstance(a["aiDemo"], bool):
             errors.append(f"{where}: assessment.aiDemo must be true or false")  # a variant's, once merged
+        if "racingLine" in a and a["racingLine"] is not False:
+            errors.append(f"{where}: assessment.racingLine can only be false (no racing line for this drill)")
         if isinstance(a.get("attempts"), int) and isinstance(a.get("requiredPasses"), int) \
                 and a["requiredPasses"] > a["attempts"]:
             errors.append(f"{where}: requiredPasses > attempts")
