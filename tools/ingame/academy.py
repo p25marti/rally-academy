@@ -85,7 +85,20 @@ def grade_lines():
     return ui(f"return Array.from(document.querySelectorAll('{PANEL} .ra-grade div')).map(function(d){{return d.textContent.trim()}})")
 
 
+# Every drill's progress as this process first found it: clear_progress puts it back, so a scenario's runs come out
+# of the player's progress without taking the player's own attempts and medals with them.
+_FOUND = None
+
+
+def keep_progress():
+    global _FOUND
+    if _FOUND is None:
+        found = lua_json("return extensions.rallyAcademy.devGetProgress()")
+        _FOUND = found if isinstance(found, dict) else {}
+
+
 def choose(drill_id):
+    keep_progress()
     lua(f"extensions.rallyAcademy.select({json.dumps(drill_id)}) return 1")
     time.sleep(1.0)
 
@@ -358,8 +371,8 @@ def drill_session(drill_id, level=None):
 
 
 def end_session(*drill_ids):
-    """Undo what a drill scenario changed: auto-retry back on, the realistic gearbox, and the attempts
-    it recorded removed from progress."""
+    """Undo what a drill scenario changed: auto-retry back on, the realistic gearbox, and the drills' progress
+    back as it was before the scenarios ran."""
     lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
     realistic()
     clear_progress(*drill_ids)
@@ -370,9 +383,26 @@ def save_fixture(name):
     return lua(f"return tostring(extensions.rallyAcademy.saveLastRun('settings/rallyAcademy/fixtures/{name}.json'))")
 
 
+def lua_value(v):
+    """A JSON-like Python value as a Lua expression."""
+    if v is None:
+        return "nil"
+    if isinstance(v, bool):
+        return "true" if v else "false"
+    if isinstance(v, (int, float)):
+        return repr(v)
+    if isinstance(v, str):
+        return json.dumps(v)
+    if isinstance(v, dict):
+        return "{" + ", ".join(f"[{json.dumps(str(k))}] = {lua_value(x)}" for k, x in v.items()) + "}"
+    return "{" + ", ".join(lua_value(x) for x in v) + "}"
+
+
 def clear_progress(*drill_ids):
+    """Put each drill's progress back as it was before the scenarios ran (keep_progress), dropping their attempts."""
+    keep_progress()
     for d in drill_ids:
-        lua(f"return tostring(extensions.rallyAcademy.devClearProgress({json.dumps(d)}))")
+        lua(f"return tostring(extensions.rallyAcademy.devSetProgress({json.dumps(d)}, {lua_value(_FOUND.get(d))}))")
 
 
 def rule_check(rule):

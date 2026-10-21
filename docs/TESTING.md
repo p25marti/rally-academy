@@ -69,6 +69,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | --- | --- |
 | `smoke` | UI reload leaves one HUD panel; the drill drop-down opens on a click and picks; a drill without rules renders; menu opens/closes with physics paused/resumed |
 | `a01` | The course is laid out on the proving ground's dirt strip with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
+| `demo` | Watch AI on A07 and D09: the button shows where the drill has a racing line, the AI drives it from the start, the run is graded (a medal) but not counted, and the car is handed back once it stops at the line's end; Retry during a demo hands it back too |
 | `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), and the game's own tabs after reopening |
 | `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
 | `a04` | A04 on its course (the proving ground's dirt strip, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |

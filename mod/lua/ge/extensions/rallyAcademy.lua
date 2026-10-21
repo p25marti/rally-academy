@@ -16,6 +16,7 @@ local Course = require('ge/extensions/rallyAcademy/course')
 local Spots = require('ge/extensions/rallyAcademy/spots')
 local Variants = require('ge/extensions/rallyAcademy/variants')
 local Props = require('ge/extensions/rallyAcademy/props')
+local RacingLine = require('ge/extensions/rallyAcademy/racingLine')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 -- Named venues drills refer to (environment.venue); the loader fills in each drill's map,
 -- display name and spawn from it, so the rest of the mod reads them from the drill.
@@ -43,9 +44,9 @@ local course, usingVenueStart = nil, false
 local carSize = nil
 -- Player preferences (store.lua): auto-retry after a graded run, our HUD layout, the racing line.
 local prefs = {autoRetry = true, hudLayout = true, showLine = false}
--- The map's racing lines (built with the map: tools/mapgen/racingline.py) and the selected drill's stretch of one
--- (layout.racingLine), worked out again when the map, the start or the last gate changes.
-local RACING_LINES = 'levels/%s/rallyAcademy/racingLines.json'
+-- The map's drill roads (built with the map: tools/mapgen/racingline.py) and the selected drill's racing line
+-- (racingLine.lua), worked out again when the map, the start or the gates change.
+local ROADS_FILE = 'levels/%s/rallyAcademy/roads.json'
 local racing = {}
 -- Our HUD layout (ADR 0012): shipped in settings/ui_apps/originalLayouts/, switched to a moment after the proving
 -- ground loads (freeroam applies its own layout first); the player's edits go to their copy at this path.
@@ -77,12 +78,24 @@ local GRADE_DELAY = 0.3 -- s of sim time
 --   hits               the physical markers (props.lua) the car touched, in order: {{name, kmh}}
 --   aid                parking aid text near the box; autoRetryIn = countdown after a graded run
 --   swept              radians driven round a course circle (endWhen 'laps'), the right way positive
+-- AI demonstration (Watch AI): the game's AI drives the player's car along the drill's racing line. The car it
+-- drives, while it does; any reset of the run hands the car back, and so does the car stopping after a graded demo.
+local demoVehId = nil
+local DEMO_DONE_SPEED = 0.5 -- m/s
+local function stopDemoAi()
+  if not demoVehId then return end
+  local veh = getObjectByID and getObjectByID(demoVehId)
+  if veh then veh:queueLuaCommand("ai.setMode('disabled')") end
+  demoVehId = nil
+end
+
 local cur
 local function resetRun()
+  stopDemoAi()
   cur = {elapsed = 0, lastTime = nil, grade = nil, settleT = 0, originPos = nil, stillT = 0,
          gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0,
          coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil, swept = 0,
-         hits = {}, trace = nil}
+         hits = {}, trace = nil, demo = false}
 end
 resetRun()
 local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
@@ -176,14 +189,13 @@ local function racingLine()
   if not startState then return nil end
   local lvl = levelId()
   if racing.level ~= lvl then
-    local path = string.format(RACING_LINES, lvl)
+    local path = string.format(ROADS_FILE, lvl)
     local data = (not FS or FS:fileExists('/' .. path)) and jsonReadFile(path) or nil
-    racing = {level = lvl, lines = data and data.lines or {}}
+    racing = {level = lvl, roads = data and data.roads or {}}
   end
-  local last = gates[#gates]
-  if racing.start ~= startState or racing.stop ~= last then
-    racing.start, racing.stop = startState, last
-    racing.pts = Layout.racingLine(racing.lines, startState, last and last.pos)
+  if racing.start ~= startState or racing.gates ~= gates or racing.count ~= #gates then
+    racing.start, racing.gates, racing.count = startState, gates, #gates
+    racing.pts = RacingLine.forDrill(racing.roads, startState, gates)
   end
   return racing.pts
 end
@@ -217,6 +229,7 @@ local function output(includeCatalog)
     hudLayout = prefs.hudLayout ~= false,
     showLine = prefs.showLine == true,
     hasLine = racingLine() ~= nil, -- this drill's start is on one of the map's racing lines
+    demo = cur.demo == true, -- the AI is driving this run (Watch AI)
   })
 end
 
@@ -617,12 +630,44 @@ function M.retry()
   output()
 end
 
+-- Watch AI: back to the start, then the game's AI drives the drill's racing line (ai.driveUsingPath with the line as
+-- its script: it keeps within a car's width of it and picks its own speeds, braking to a stop at the line's end). The
+-- run is graded like the player's but not recorded.
+local DEMO_AGGRESSION = 0.8 -- ai.lua: 0.3 is everyday driving, 1 the limit of grip
+local DEMO_PATH_WIDTH = 0.5 -- m: how far the AI may stray from the line (its default, the car's width, misses gates)
+function M.demo()
+  local line = racingLine()
+  if not line then
+    lastReason = 'No racing line for this drill here, so there is no AI demo.'
+    output(); return
+  end
+  M.retry()
+  local veh = currentVehicle()
+  if phase ~= 'ready' or not veh then return end
+  local nodes = {}
+  for _, p in ipairs(line) do nodes[#nodes + 1] = string.format('{x=%.2f,y=%.2f,z=%.2f,r=%.1f}', p.x, p.y, p.z, DEMO_PATH_WIDTH) end
+  veh:queueLuaCommand(string.format("ai.driveUsingPath({script = {%s}, aggression = %.2f, avoidCars = 'off'})",
+    table.concat(nodes, ','), DEMO_AGGRESSION))
+  cur.demo, demoVehId = true, veh:getID()
+  if run then run.meta.demo = true end
+  logf('I', '%s: AI demo along the racing line (%d points)', selected, #line)
+  lastReason = 'The AI is driving the racing line: watch where it brakes and turns in. Retry takes the car back.'
+  output()
+end
+
 -- Score an attempt: self-assessed drills via the Pass/Miss buttons, automatic drills from
 -- finishRun. Only a driven run can be scored: one that reached its end, or one the driver
 -- ends with Pass/Miss when the drill has no end of its own. A run that does end on its own
 -- can only be abandoned mid-run (Miss), so a partial time never counts.
 function M.recordAttempt(passed)
   if not selected then return end
+  if cur.demo then -- Pass/Miss during the AI's run: it stops, nothing is recorded
+    if RunRecord.isOpen(run) then endRun('abandoned') end
+    resetRun()
+    phase = 'setup'
+    lastReason = 'AI demo stopped. Retry for your own attempt.'
+    output(); return
+  end
   local finished = phase == 'review' or (phase == 'running' and not hasEnd())
   local abandoned = phase == 'running' and hasEnd()
   if not finished and not abandoned then return end
@@ -949,10 +994,18 @@ local function finishRun(how, atTime)
     logf('I', '%s:   %s %s', selected, c.ok and 'ok  ' or 'FAIL', c.text)
     if not c.ok and not firstFail then firstFail = c.text end
   end
-  M.recordAttempt(cur.grade.passed)
   local g = cur.grade
   local verdict = g.passed and ('PASS' .. (g.tier and (' · ' .. tierLabel(g.tier)) or '') .. '.')
     or ('MISS: ' .. firstFail .. '.')
+  if cur.demo then -- the AI's run: graded to show what the line earns, but not the player's attempt
+    phase = 'scored'
+    if run then run.score = {passed = g.passed, time = cur.lastTime, demo = true} end
+    logf('I', '%s: AI demo %s, time %.2f s (not recorded)', selected, g.passed and 'PASS' or 'MISS', cur.lastTime)
+    lastReason = 'AI demo: ' .. verdict .. ' Not counted. Retry for your own attempt.'
+    output()
+    return
+  end
+  M.recordAttempt(cur.grade.passed)
   if g.tier then logf('I', '%s:   medal %s%s', selected, g.tier, g.nextTier and (', next: ' .. g.nextTier.text) or '') end
   if prefs.autoRetry ~= false and not setupMissing() then
     cur.autoRetryIn = AUTO_RETRY_DELAY
@@ -1003,6 +1056,10 @@ function M.onUpdate(dtReal, dtSim)
   end
   if selected then drawCourse() end
   if selected and phase == 'scored' and cur.autoRetryIn then autoRetryTick(dtSim) end
+  if demoVehId and phase == 'scored' then -- the AI brakes to a stop at the line's end: then the car is the player's
+    local veh = getObjectByID and getObjectByID(demoVehId)
+    if not veh or veh:getVelocity():length() < DEMO_DONE_SPEED then stopDemoAi() end
+  end
   if not selected or (phase ~= 'ready' and phase ~= 'running') then return end
   local veh = currentVehicle()
   if not veh or veh:getID() ~= activeVehicleId then
@@ -1347,7 +1404,8 @@ function M.debugState()
           tier = cur.grade and cur.grade.tier, nextTier = cur.grade and cur.grade.nextTier and cur.grade.nextTier.text,
           hasCourse = course ~= nil, usingVenueStart = usingVenueStart, autoRetry = prefs.autoRetry ~= false,
           autoRetryIn = cur.autoRetryIn, clipped = cur.clipped, fit = cur.fit, aid = cur.aid,
-          car = carSize and carSize.car, props = Props.active(), hits = cur.hits}
+          car = carSize and carSize.car, props = Props.active(), hits = cur.hits,
+          demo = cur.demo, demoAi = demoVehId ~= nil, hasLine = racingLine() ~= nil}
 end
 
 -- Record the car's telemetry outside any drill (venue fit tests, tools/ingame/fit.py): no
@@ -1371,15 +1429,25 @@ function M.devRecordStop()
 end
 
 -- Forget a drill's saved progress (scenarios clean up the attempts they record).
-function M.devClearProgress(id)
+-- Every drill's progress entry (or one drill's, false if none): a scenario keeps what it found, to put back with
+-- devSetProgress when it's done instead of clearing the player's own progress.
+function M.devGetProgress(id)
+  if id == nil then return progress.lessons end
+  return progress.lessons[id] or false
+end
+
+-- Set a drill's progress entry (nil or false clears it).
+function M.devSetProgress(id, entry)
   if type(id) ~= 'string' then return false end
-  progress.lessons[id] = nil
+  progress.lessons[id] = type(entry) == 'table' and entry or nil
   saveProgress()
   if id == selected then attempts, successes = 0, 0 end
-  logf('I', 'progress cleared for %s (developer hook)', id)
+  logf('I', 'progress %s for %s (developer hook)', progress.lessons[id] and 'put back' or 'cleared', id)
   output()
   return true
 end
+
+function M.devClearProgress(id) return M.devSetProgress(id, nil) end
 
 -- Engine hooks (lua/ge/main.lua, 0.39.4) --------------------------------------
 

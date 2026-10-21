@@ -145,7 +145,7 @@ local function drawCircle(circle, corridors, fit)
   end
 end
 
--- The racing line ("Show line", layout.racingLine): a flat ribbon on the ground, red where to brake, yellow where the
+-- The racing line ("Show line", racingLine.lua): a flat ribbon on the ground, red where to brake, yellow where the
 -- corner's limit holds the speed, green where to accelerate.
 local PHASE = {[-1] = 'brake', [0] = 'hold', [1] = 'accelerate'}
 local RIBBON_LIFT = 0.1 -- m above the ground at each point (the ground between points can bulge a little)

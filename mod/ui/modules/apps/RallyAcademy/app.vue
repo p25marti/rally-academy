@@ -107,6 +107,7 @@
       <button v-if="vm.hasLine" class="ra-btn" :class="{ on: vm.showLine }" @click="cmd('setShowLine', !vm.showLine)">
         Line {{ vm.showLine ? "on" : "off" }}
       </button>
+      <button v-if="vm.hasLine" class="ra-btn" :class="{ on: vm.demo }" @click="cmd('demo')">▶ Watch AI</button>
     </div>
 
     <p v-if="!vm.autoRetryIn" class="ra-reason">{{ vm.reason }}</p>
@@ -212,7 +213,7 @@ const bestText = computed(() => {
 })
 
 const COMMANDS = { goToDrill: 1, markStart: 1, markFinish: 1, addGate: 1, clearGates: 1, retry: 1, recordAttempt: 1,
-                   useVenueStart: 1, setAutoRetry: 1, setShowLine: 1, nudgePrediction: 1 }
+                   useVenueStart: 1, setAutoRetry: 1, setShowLine: 1, nudgePrediction: 1, demo: 1 }
 const BOOL_ARG = { recordAttempt: 1, setAutoRetry: 1, setShowLine: 1 }
 const NUM_ARG = { nudgePrediction: 1 }
 function cmd(name, arg) {

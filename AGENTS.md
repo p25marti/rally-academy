@@ -15,7 +15,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/gameplay/rallyAcademy/exercises.json` | The drills: source of truth ([DRILL_DATA](docs/DRILL_DATA.md), [ADR 0002](docs/decisions/0002-drill-data-source-of-truth.md)) |
 | `mod/gameplay/rallyAcademy/venues.json` | Named venues (map, spawn) that drills refer to by id ([ADR 0007](docs/decisions/0007-venues-as-data.md)) |
 | `mod/lua/ge/extensions/rallyAcademy.lua` | GE extension: session state machine, timing, grading flow, engine hooks |
-| `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `layout.lua` (authored courses, car footprint, racing lines), `runRecord.lua`, `variants.lua` (surface variants, [ADR 0009](docs/decisions/0009-surface-variants.md)) (pure); `store.lua` (files), `course.lua` (drawing), `props.lua` (real cones and posts, [ADR 0011](docs/decisions/0011-physical-course-markers.md)) |
+| `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `layout.lua` (authored courses, car footprint), `racingLine.lua` (a drill's racing line), `runRecord.lua`, `variants.lua` (surface variants, [ADR 0009](docs/decisions/0009-surface-variants.md)) (pure); `store.lua` (files), `course.lua` (drawing), `props.lua` (real cones and posts, [ADR 0011](docs/decisions/0011-physical-course-markers.md)) |
 | `mod/lua/vehicle/extensions/rallyAcademy/telemetry.lua` | Sampler inside the car's Lua VM ([ADR 0004](docs/decisions/0004-telemetry-transport.md)) |
 | `mod/ui/modules/apps/RallyAcademy/app.vue` | In-drive HUD panel (Vue HUD app); `RallyAcademyCoach/`, `RallyAcademyInputs/` and `mod/settings/ui_apps/originalLayouts/` = the Rally Academy HUD layout ([ADR 0012](docs/decisions/0012-own-hud-layout.md)) |
 | `mod/ui/ui-vue/mods/rallyAcademy/` | Academy screen: main menu, pause tab ([ADR 0005](docs/decisions/0005-main-menu-via-vue-ui-mods.md)) |
@@ -23,7 +23,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
-| `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match. `shapes.py` builds road centre lines from straights and arcs; `markers.py` places the corner signs; `racingline.py` computes each drill road's racing line ([ADR 0013](docs/decisions/0013-racing-lines-from-the-map-builder.md)) |
+| `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match. `shapes.py` builds road centre lines from straights and arcs; `markers.py` places the corner signs; `racingline.py` exports the drill roads the mod's racing lines need ([ADR 0013](docs/decisions/0013-racing-lines-from-the-map-builder.md)) |
 | `docs/` | Everything else; `docs/decisions/` = ADRs |
 | `reference/` | Historical design input; not shipped, not authoritative |
 
@@ -142,7 +142,8 @@ file from the user folder into `tests/fixtures/` and note how it was driven at t
 
 **Add an in-game scenario:** add a function with a docstring to `tools/ingame/scenarios.py`,
 decorated with `@scenario`. Use the `academy.py` helpers, return a list of problems, and
-clean up any progress you record (`A.clear_progress`). List it in TESTING.
+put back the progress of the drills it drove (`A.end_session` / `A.clear_progress` restore what the player had before
+the run). List it in TESTING.
 
 **Find a venue:** `scan.py [--level NAME]` maps a whole map's surfaces and flat ground in seconds, with an
 HTML report (start here for open ground). `survey.py fits <drill>` searches the map for the drill's `venueNeeds`. Or

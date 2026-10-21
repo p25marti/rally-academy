@@ -155,10 +155,10 @@ function H.setupGateDrill()
   return h, M
 end
 
--- Retry, then drive north at kmhAt(y) km/h (brake pressed where brakeAt(y)) until the run is scored.
+-- Retry (or opts.begin()), then drive north at kmhAt(y) km/h (brake pressed where brakeAt(y)) until the run is scored.
 function H.gateRun(h, M, opts)
   local dt, pending = 0.05, nil
-  M.retry()
+  if opts.begin then opts.begin() else M.retry() end
   M.onUpdate(0.1, 0.1) -- settle after the teleport
   for _ = 1, 4000 do
     local v = (opts.kmhAt and opts.kmhAt(h.vehicle.pos.y) or 30) / 3.6

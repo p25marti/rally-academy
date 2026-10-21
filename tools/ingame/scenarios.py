@@ -11,7 +11,7 @@ import math
 import time
 
 import academy as A
-from game import call, inp, lua, state, ui
+from game import call, inp, lua, state, ui, vlua
 
 SCENARIOS = {}
 
@@ -1178,6 +1178,45 @@ def opening():
     s = _lane_run("D04", 13, 2, 2, 100, 25, throttle_at=32, throttle_max=0.6, ramp=0.01)
     expect(p, "too much throttle misses", s.get("passed") is False, s.get("reason"))
     A.end_session("D04")
+    return p
+
+
+@scenario
+def demo():
+    """Watch AI on A07 (the gravel corner) and D09 (the gravel hairpins): the button appears where the drill has a
+    racing line, the game's AI drives it from the start and the run is graded (a medal on both) but not counted, and once
+    the AI has braked to a stop at the line's end the car is the player's again; Retry during a demo hands it back
+    too."""
+    p = []
+    for drill, timeout in (("A07", 40), ("D09", 90)):
+        A.drill_session(drill)
+        before = A.debug_state().get("attempts")
+        expect(p, f"{drill}: the drill has a racing line", A.debug_state().get("hasLine") is True)
+        expect(p, f"{drill}: the Watch AI button", A.click("Watch AI") != "NOT FOUND")
+        s = A.debug_state()
+        expect(p, f"{drill}: the AI drives", s.get("demo") is True and s.get("demoAi") is True, s.get("reason"))
+        scored = A.wait_for(lambda: A.debug_state().get("phase"), "scored", timeout=timeout)
+        s = A.debug_state()
+        expect(p, f"{drill}: the AI's run is graded", scored == "scored" and s.get("passed") is not None,
+               f"{scored}: {s.get('reason')}")
+        expect(p, f"{drill}: the AI's line earns a medal", s.get("tier") is not None, f"{s.get('tier')}: {s.get('reason')}")
+        expect(p, f"{drill}: not counted", s.get("attempts") == before and "Not counted" in str(s.get("reason")),
+               f"attempts {before} -> {s.get('attempts')}")
+        handed = A.wait_for(lambda: A.debug_state().get("demoAi"), False, timeout=20)
+        expect(p, f"{drill}: stopped at the line's end, the car is the player's again", handed is False)
+        mode = vlua("return ai.mode")
+        expect(p, f"{drill}: the AI is off", mode == "disabled", mode)
+        A.end_session(drill)
+    A.drill_session("A07")
+    A.click("Watch AI")
+    time.sleep(3)
+    lua("extensions.rallyAcademy.retry() return 1")
+    time.sleep(1)
+    s = A.debug_state()
+    mode = vlua("return ai.mode")
+    expect(p, "Retry during a demo hands the car back", s.get("demo") is False and s.get("demoAi") is False
+           and mode == "disabled", f"{s.get('phase')}, ai {mode}")
+    A.end_session("A07")
     return p
 
 

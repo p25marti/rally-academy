@@ -258,9 +258,9 @@ def generate(layout, game):
             # objects find materials by name, which in a stock file can differ from mapTo (skidmarks_01)
             {m: dict(stock.material(src[m], m), name=m, persistentId=pid(name, f"decalmat/{m}")) for m in used}, indent=2) + "\n"
     if layout.get("turnMarkers"):
-        # the drill roads' racing lines, for the mod's "Show line" (one per line of the file)
-        files["rallyAcademy/racingLines.json"] = '{"lines": [\n' + ",\n".join(
-            json.dumps(e, separators=(",", ":")) for e in racingline.racing_lines(layout, terrain, road_line)) + "\n]}\n"
+        # the drill roads, for the mod's racing lines (one road per line of the file)
+        files["rallyAcademy/roads.json"] = '{"roads": [\n' + ",\n".join(
+            json.dumps(e, separators=(",", ":")) for e in racingline.drill_roads(layout, terrain, road_line)) + "\n]}\n"
     out = {rel: text.replace("\r\n", "\n").encode("utf-8") for rel, text in files.items()}  # LF, as git keeps them
     out["theTerrain.ter"] = ter
     out["preview.png"] = preview_png(layer, size, wanted, terrain, trees)
