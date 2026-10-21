@@ -78,7 +78,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `opening` | D04 on the proving ground's flat copy of gravel lane DR825: a progressive throttle earns a medal; too much spins and misses |
 | `blind` | D05 on the proving ground's hill circuit: a conservative approach to the blind crest hairpin earns a medal; 55 km/h misses |
 | `hills` | D06 on the proving ground's hill circuit: clean uphill and downhill corners earn a medal; too fast hits the wall |
-| `crest` | E05 on the proving ground's hill circuit: a planted crest earns a medal; flat out takes off and misses |
+| `crest` | E05 on the proving ground's hill circuit: 50 km/h over the crest keeps the wheels down (gold); 60 takes off and misses |
 | `fwdexit` | E02 on the proving ground's flat corner: rotate, then throttle out, passes (up to three tries); no throttle after the apex misses |
 | `surface` | D08 on the proving ground's surface-change straight: a controlled stop across the tarmac-to-gravel change earns a medal; a locked-wheel stop misses |
 | `slalom` | D01 on the proving ground's dirt strip: a clean weave through six cones earns a medal; too fast clips a cone |

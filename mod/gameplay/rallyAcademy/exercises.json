@@ -4703,7 +4703,7 @@
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "40 km/h or more at the Crest gate, all four wheels off the ground for no more than 0.15 s, no more than one steering correction after the crest, through the Landing and Exit gates, no spin, no hard landing or contact (150 damage at most: a bumper scrape is fine). Silver: 50 km/h. Gold: 54 km/h.",
+        "successDefinition": "40 km/h or more at the Crest gate, all four wheels off the ground for no more than 0.15 s, no more than one steering correction after the crest, through the Landing and Exit gates, no spin, no hard landing or contact (150 damage at most: a bumper scrape is fine). Silver: 46 km/h. Gold: 50 km/h (about 52 km/h lifts the wheels).",
         "metricToRecord": "Planted, straight crests / 10",
         "mode": "automatic",
         "rules": [
@@ -4771,7 +4771,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 50,
+                "minKmh": 46,
                 "maxKmh": 150,
                 "gate": 1
               }
@@ -4782,7 +4782,7 @@
             "rules": [
               {
                 "type": "speed_at_gates",
-                "minKmh": 54,
+                "minKmh": 50,
                 "maxKmh": 150,
                 "gate": 1
               }

@@ -112,7 +112,8 @@
 --      d03 = the flat copy of lane DR825, 45 km/h easing to 36 from 50 m (38 out); d04 = its opening left, the
 --      throttle ramped from 36 m (56 out). d08 = the surface-change straight, 62 km/h braking at 4 m/s2.
 --      d05 / d06 / e05 = the hill circuit (the Off-Road Circuit's first 640 m copied with elevation and banking):
---      37 km/h into the blind hairpin; 45 then 40 km/h; 45 km/h through the banked left then 56 over the kicker.
+--      37 km/h into the blind hairpin; 45 then 40 km/h; e05 re-recorded 2026-10-21 with the raw wheel force: 45 km/h
+--      through the banked left then 50 over the kicker (51 at the crest, 0.12 s in the air).
 --      e08 = the ford (scenario ford): 60 km/h on the approach, 22 from 25 m before the water to 110 m (gold, 17.5 s);
 --      the miss held 40 into the water.
 --      e07 = the rough track (scenario rough): 75 km/h on the smooth approach, 50 over the rough (gold, 22.6 s); the
@@ -599,7 +600,9 @@ end
 function T.off_road_circuit_drills_still_agree_with_the_in_game_verdicts()
   agree('D05', {d05_gold = 'gold', d05_silver = 'silver', d05_bronze = 'bronze', d05_fast = false})
   agree('D06', {d06_gold = 'gold', d06_silver = 'silver', d06_bronze = 'bronze', d06_wall = false})
-  agree('E05', {e05_gold = 'gold', e05_silver = 'silver', e05_bronze = 'bronze', e05_airborne = false})
+  -- E05's medals moved down 2026-10-21 (silver 46, gold 50 km/h) once airtime read the raw wheel force: 50.4 km/h at
+  -- the crest is gold now, 46.4 silver. These stock recordings carry the smoothed force, so their airtime reads low.
+  agree('E05', {e05_gold = 'gold', e05_silver = 'gold', e05_bronze = 'silver', e05_airborne = false})
   has(check(gradeCourse('d05_fast', 'D05'), 'speed_at_gates').text, 'too fast')
   has(check(gradeCourse('e05_gold', 'E05'), 'airtime').text, 'All four wheels stayed on the ground')
   has(check(gradeCourse('e05_airborne', 'E05'), 'airtime').text, 'ease off before the crest')

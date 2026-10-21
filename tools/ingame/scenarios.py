@@ -849,16 +849,17 @@ def hills():
 @scenario
 def crest():
     """E05 on the proving ground's copy of the Off-Road Circuit (Covet Gravel Rally): 45 km/h through the banked left
-    after the descent, then about 56 km/h over the kicker keeps the wheels down for a medal; flat out takes off and
-    lands hard. (On the stock circuit 55 km/h through the left was fine: its wall is continuous, the copy's barriers
-    are separate blocks.)"""
+    after the descent, then about 50 km/h over the kicker keeps the wheels down for a medal; 60 takes off (about 52
+    lifts the wheels, measured with the raw wheel force). (On the stock circuit 55 km/h through the left was fine: its
+    wall is continuous, the copy's barriers are separate blocks.)"""
     p = []
     A.drill_session("E05")
-    s = _circuit_run("E05", 236, 420, 45, 56, 60)
+    s = _circuit_run("E05", 236, 420, 45, 50, 60)
     expect(p, "a planted crest earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
-    s = _circuit_run("E05", 236, 420, 55, 75, 50)
-    expect(p, "flat out over the crest misses", s.get("passed") is False, s.get("reason"))
+    s = _circuit_run("E05", 236, 420, 45, 60, 60)
+    expect(p, "60 over the crest takes off and misses", s.get("passed") is False and "off the ground" in str(s.get("reason")),
+           s.get("reason"))
     A.end_session("E05")
     return p
 
@@ -949,26 +950,6 @@ def ford():
            s.get("reason"))
     A.end_session("E08")
     return p
-
-
-# D07's camber road: the off-camber corners, in metres along the road.
-D07_OFF_CAMBER = [(145, 200), (335, 390)]
-
-
-def _camber_run(banked, off_camber=45, early=25):
-    """D07 along the camber road's centre line in arcade: `banked` km/h, slowing to `off_camber` from `early` m
-    before each off-camber corner."""
-    road = next(r for r in json.loads((A.ROOT / "tools" / "mapgen" / "proving_ground.json").read_text(encoding="utf-8"))["roads"]
-                if r["id"] == "camber-road")
-    line = [tuple(q) for q in road["points"]]  # the venue faces north from the road's start
-
-    def pedals(v, trav):
-        target = off_camber if any(a - early <= trav <= b for a, b in D07_OFF_CAMBER) else banked
-        if v > target + 2:
-            return (0.0, min(0.8, 0.25 + (v - target) * 0.05))
-        return _hold(v, target, floor=0.1)
-    return A.course_run("D07", line, kmh=banked + 10, pedals=pedals, max_throttle=1.0, decel=3.0, timeout=90,
-                        stop_within=0.5)
 
 
 @scenario

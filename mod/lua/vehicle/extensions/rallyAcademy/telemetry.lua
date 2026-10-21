@@ -37,7 +37,7 @@ local function send()
     h.x, h.y, v.x, v.y, u.z, beamstate and beamstate.damage or 0, flat)
   for i = 0, wheels.wheelRotatorCount - 1 do
     local wd = wheels.wheelRotators[i]
-    buf:putf('{n=%q,s=%.3f,m=%d,f=%.0f},', wd.name, wd.wheelSpeed or 0, wd.contactMaterialID1 or -1, wd.downForce or 0)
+    buf:putf('{n=%q,s=%.3f,m=%d,f=%.0f},', wd.name, wd.wheelSpeed or 0, wd.contactMaterialID1 or -1, wd.downForceRaw or 0)
   end
   buf:put('}}) end')
   obj:queueGameEngineLua(buf:tostring())

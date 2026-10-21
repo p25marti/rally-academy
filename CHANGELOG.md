@@ -306,6 +306,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
+- **Airtime is measured for real**: the car's telemetry recorded the game's smoothed wheel force, which never drops
+  to zero in a short flight, so the airtime check couldn't see the wheels leave the ground. It records the raw force
+  now. E05 crest management was calibrated with the blind check: with honest airtime about 52 km/h lifts the wheels
+  at its crest, so its medals move to silver 46 km/h, gold 50 (from 50 / 54).
 - **Barriers follow the corner properly**: the concrete wall and guardrails were twisted off the curve (a rotation
   read the wrong way round); they now run joined up along it, guardrail beams towards the road, posts behind.
 - A start you saved before a drill got its own course, or moved venue, no longer overrides it: the old

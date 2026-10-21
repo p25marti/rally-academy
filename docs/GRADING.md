@@ -159,7 +159,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `handbrake_pulls` | none (optional `count` 1, `minKmh` 5) | The handbrake goes on (over 0.5) exactly `count` times while moving |
 | `flick` | none (optional `fromGate` 1, `toGate` 2, `turn` 'left', `awayDeg` 30, `intoDeg` 60, `maxSeconds` 1.5) | Between the two gates the steering wheel goes at least `awayDeg` away from the turn, then at least `intoDeg` into it within `maxSeconds` (a Scandinavian flick) |
 | `throttle_on_between` | none (optional `fromGate` 2, `toGate` 3, `minThrottle` 0.5, `minSeconds` 0.5) | Between the two gates (the apex and the exit) the throttle is at `minThrottle` or more for at least `minSeconds` in total |
-| `airtime` | none (optional `minSeconds` 0, `maxSeconds`, `minForce` 50) | The longest stretch with all four wheels off the ground (each wheel's downforce under `minForce` N) is between `minSeconds` and `maxSeconds` |
+| `airtime` | none (optional `minSeconds` 0, `maxSeconds`, `minForce` 50) | The longest stretch with all four wheels off the ground (each wheel's raw downforce under `minForce` N; recordings before 2026-10-21 carry a smoothed force that reads low) is between `minSeconds` and `maxSeconds` |
 | `ran_wide` | none (optional `minM` 1, `maxM` 5, `fromGate` 1, `toGate` −1) | Between the two gates the car runs outside the course circle's line by `minM` to `maxM`: a mild push, not a trip off the circle |
 | `back_on_line_by_gate` | none (optional `gate` −1, `maxM` 1.5) | Where the car crosses the gate it is within `maxM` of the course circle's line |
 | `left_foot_brakes` | none (optional `minCount` 3, `minSeconds` 0.2, `minBrake` 0.05, `minThrottle` 0.05) | At least `minCount` brake applications made with the throttle still on, each held `minSeconds` or longer; braking with the throttle off says "you lifted to brake" |
@@ -305,8 +305,11 @@ at `dirttrack_15b`, gives 0.3 s of air at 62 km/h), so E06 isn't built here.
 - E05: out of a left-hander, 45 m to the kicker. Bronze: 40 km/h at the Crest gate, all four wheels off the
   ground no more than 0.15 s, at most one steering correction after it, the Landing and Exit gates, no spin,
   no more than 150 damage (from about 52 km/h the car lands nose-first and scrapes its bumper: 27–84);
-  silver 50 km/h; gold 54 km/h. Scripted: 46, 50 and 56 km/h stayed down; 57 km/h bottomed out once (1085);
-  66 km/h flew 0.3 s and landed hard (1508).
+  silver 46 km/h; gold 50 km/h (since 2026-10-21; it was 50 / 54). Those first numbers were taken while the
+  telemetry recorded the game's *smoothed* wheel force, which never drops near zero in a short flight, so the
+  airtime check couldn't trip ("46, 50 and 56 km/h stayed down"). With the raw force, on the proving ground's copy:
+  51 km/h at the crest is 0.12 s in the air, 53 is 0.25 s, 56 is 0.35 s, 60 is 0.47 s: about 52 lifts the wheels,
+  so gold sits just under it.
 
 C01 targets: C02's corner, on the proving ground's flat copy (a 32 m radius, under the 40 m the drill first
 asked for; its `venueNeeds` allow 30 m). Bronze: the rear steps out 4°+ between the Turn in and Apex gates with
