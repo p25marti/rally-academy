@@ -25,13 +25,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, reactive } from "vue"
-import { useBridge } from "@/bridge"
-import { useEvents } from "@/services/events"
+import { computed } from "vue"
+import { useAcademyState } from "../RallyAcademy/hud.js"
 
-const { api } = useBridge()
-const events = useEvents()
-const vm = reactive({ lesson: null, grade: null, phase: "loading" })
+const { state: vm } = useAcademyState("coach")
 
 const lesson = computed(() => vm.lesson || null)
 // Failed checks first, then the passed ones (an empty Lua list arrives as {}).
@@ -43,19 +40,6 @@ const success = computed(() => {
   const a = lesson.value && lesson.value.assessment
   return a && a.mode === "automatic" ? a.successDefinition : null
 })
-
-function onState(data) {
-  // Lua publishes partial updates; `grade = false` clears it.
-  for (const k of ["lesson", "grade", "phase"]) if (k in data) vm[k] = data[k] || null
-  // A reloaded extension forgets which apps are up: say so again, so the main panel leaves the notes to this one.
-  if (data.hudParts && !data.hudParts.coach) api.engineLua("if extensions.rallyAcademy then extensions.rallyAcademy.hudPart('coach', true) end")
-}
-
-onMounted(() => {
-  events.on("rallyAcademyState", onState)
-  api.engineLua("extensions.load('rallyAcademy'); extensions.rallyAcademy.hudPart('coach', true); extensions.rallyAcademy.publish()")
-})
-onUnmounted(() => api.engineLua("if extensions.rallyAcademy then extensions.rallyAcademy.hudPart('coach', false) end"))
 </script>
 
 <style scoped lang="scss">

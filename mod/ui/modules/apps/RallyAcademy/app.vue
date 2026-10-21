@@ -111,15 +111,13 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref, watch } from "vue"
+import { computed, nextTick, ref, watch } from "vue"
 import { BngDropdown } from "@/common/components/base"
-import { useBridge } from "@/bridge"
-import { useEvents, useStreams } from "@/services/events"
+import { useAcademyState } from "./hud.js"
+import { drawLive, drawRun, runTraceOf, useLiveInputs } from "./trace.js"
 
-const { api } = useBridge()
-const events = useEvents() // listeners are removed when the panel unmounts
 
-const vm = reactive({ lessons: [], phase: "loading", successes: 0, attempts: 0 })
+const { state: vm, lua } = useAcademyState(null, onData)
 const selectedId = ref(null)
 
 const lesson = computed(() => vm.lesson || null)
@@ -151,7 +149,7 @@ function tierOf(id) {
   return (p && p[id] && p[id].bestTier) || null
 }
 function pick(id) {
-  if (id !== vm.selected) api.engineLua(`extensions.rallyAcademy.select(${JSON.stringify(id)})`)
+  if (id !== vm.selected) lua(`select(${JSON.stringify(id)})`)
 }
 const isAuto = computed(() => assessment.value.mode === "automatic")
 const hasCourse = computed(() => !!assessment.value.course)
@@ -217,95 +215,36 @@ const NUM_ARG = { nudgePrediction: 1 }
 function cmd(name, arg) {
   if (!COMMANDS[name]) return
   const args = BOOL_ARG[name] ? (arg ? "true" : "false") : NUM_ARG[name] ? String(Number(arg) || 0) : ""
-  api.engineLua(`if extensions.rallyAcademy then extensions.rallyAcademy.${name}(${args}) end`)
+  lua(`${name}(${args})`)
 }
 
 // Our other HUD apps (ADR 0012): when they're on screen this panel leaves the trace or the notes to them.
 const inputsUp = computed(() => !!(vm.hudParts && vm.hudParts.inputs))
 const coachUp = computed(() => !!(vm.hudParts && vm.hudParts.coach))
 
-// Input trace ---------------------------------------------------------------------------------------------------
-const TRACE_SECONDS = 8
+// Input trace (trace.js): live while driving, then the run's own trace with its gates marked, unless the Inputs app
+// is up. Drawn smaller than the Inputs app's.
+const TRACE_STYLE = { lineWidth: 1.75, fontPx: 9, pad: 2 }
 const traceCanvas = ref(null)
-const live = [] // {t (s), thr, brk} from the car's electrics, the last TRACE_SECONDS
 const traceLive = computed(() => vm.phase === "running")
-const runTrace = computed(() => (vm.trace && Array.isArray(vm.trace.t) && vm.trace.t.length > 1 ? vm.trace : null))
+const runTrace = computed(() => runTraceOf(vm.trace))
 const showTrace = computed(() => !!lesson.value && (traceLive.value || ((vm.phase === "review" || vm.phase === "scored") && !!runTrace.value)))
-
-// Draw series of {t, v} (t from t0 to t0 + span) into the canvas: a faint grid at 0, 50 and 100 %, then the lines,
-// then the gate marks (vertical ticks with their labels).
-function drawTrace(t0, span, series, marks) {
-  const c = traceCanvas.value
-  if (!c) return
-  const dpr = window.devicePixelRatio || 1
-  const w = c.clientWidth, h = c.clientHeight
-  if (c.width !== Math.round(w * dpr)) c.width = Math.round(w * dpr)
-  if (c.height !== Math.round(h * dpr)) c.height = Math.round(h * dpr)
-  const g = c.getContext("2d")
-  g.setTransform(dpr, 0, 0, dpr, 0, 0)
-  g.clearRect(0, 0, w, h)
-  const pad = 2
-  const x = t => ((t - t0) / span) * w
-  const y = v => h - pad - Math.max(0, Math.min(1, v)) * (h - 2 * pad)
-  g.strokeStyle = "rgba(255,255,255,0.12)"
-  g.lineWidth = 1
-  for (const v of [0, 0.5, 1]) {
-    g.beginPath(); g.moveTo(0, Math.round(y(v)) + 0.5); g.lineTo(w, Math.round(y(v)) + 0.5); g.stroke()
-  }
-  for (const s of series) {
-    g.strokeStyle = s.color
-    g.lineWidth = 1.75
-    g.beginPath()
-    s.points.forEach((p, i) => (i ? g.lineTo(x(p.t), y(p.v)) : g.moveTo(x(p.t), y(p.v))))
-    g.stroke()
-  }
-  g.fillStyle = "rgba(255,255,255,0.75)"
-  g.font = "9px sans-serif"
-  for (const m of marks || []) {
-    const mx = Math.round(x(m.t)) + 0.5
-    g.strokeStyle = "rgba(255,255,255,0.45)"
-    g.beginPath(); g.moveTo(mx, 0); g.lineTo(mx, h); g.stroke()
-    g.fillText(m.label, Math.min(mx + 2, w - 30), 9)
-  }
-}
-const THR = "rgba(80, 200, 110, 0.95)", BRK = "rgba(235, 75, 75, 0.95)"
-
-useStreams(["electrics"], streams => {
-  const e = streams && streams.electrics
-  if (!e || !traceLive.value) return
-  const t = performance.now() / 1000
-  const thr = e.throttle_input !== undefined ? e.throttle_input : e.throttle
-  const brk = e.brake_input !== undefined ? e.brake_input : e.brake
-  live.push({ t, thr: Number(thr) || 0, brk: Number(brk) || 0 })
-  while (live.length && live[0].t < t - TRACE_SECONDS) live.shift()
-  drawTrace(t - TRACE_SECONDS, TRACE_SECONDS, [
-    { color: THR, points: live.map(p => ({ t: p.t, v: p.thr })) },
-    { color: BRK, points: live.map(p => ({ t: p.t, v: p.brk })) },
-  ])
+useLiveInputs((buffer, now) => {
+  if (traceLive.value && !inputsUp.value) drawLive(traceCanvas.value, buffer, now, TRACE_STYLE)
 })
-
-function drawRunTrace() {
-  const tr = runTrace.value
-  if (!tr || traceLive.value) return
-  const span = tr.span || tr.t[tr.t.length - 1] || 1
-  drawTrace(0, span, [
-    { color: THR, points: tr.t.map((t, i) => ({ t, v: tr.thr[i] })) },
-    { color: BRK, points: tr.t.map((t, i) => ({ t, v: tr.brk[i] })) },
-  ], Array.isArray(tr.marks) ? tr.marks : [])
-}
-watch([runTrace, () => vm.phase], () => nextTick(drawRunTrace))
+watch([runTrace, () => vm.phase], () => nextTick(() => {
+  if (runTrace.value && !traceLive.value) drawRun(traceCanvas.value, runTrace.value, TRACE_STYLE)
+}))
 
 function choose() {
   const id = selectedId.value
   const base = vm.lesson && vm.lesson.variantOf
   if (!id || String(id).startsWith("module-") || id === vm.selected || id === base) return
-  api.engineLua(`extensions.rallyAcademy.select(${JSON.stringify(id)})`)
+  lua(`select(${JSON.stringify(id)})`)
 }
 
-function onState(data) {
-  // Lua publishes partial updates (the catalogue only on request), so merge. Lua sends
-  // `grade = false` explicitly when there is none, so a merge clears it.
-  Object.assign(vm, data)
+// Each state update (merged into vm by useAcademyState): keep the drop-down on Lua's drill.
+function onData(data) {
   if (data.selected) {
     // a surface variant shows as its base drill in the drop-down (the chips show which surface)
     const l = data.lesson || vm.lesson
@@ -317,12 +256,6 @@ function onState(data) {
     choose()
   }
 }
-
-onMounted(() => {
-  events.on("rallyAcademyState", onState)
-  // Keeping Lua authoritative also lets the HUD be closed/reopened without losing the session.
-  api.engineLua("extensions.load('rallyAcademy'); extensions.rallyAcademy.publish()")
-})
 </script>
 
 <style scoped lang="scss">

@@ -19,7 +19,9 @@ mod/                                            exactly the shipped zip root
 ├── lua/vehicle/extensions/rallyAcademy/telemetry.lua   sampler in the car's Lua VM
 ├── lua/ge/extensions/core/input/actions/
 │   └── rallyAcademy_actions.json               bindable actions: Retry, Pass, Miss, Open menu
-├── ui/modules/apps/RallyAcademy/               HUD panel (Vue HUD app: app.json "vue": true)
+├── ui/modules/apps/RallyAcademy/               HUD panel (Vue HUD app: app.json "vue": true); hud.js (the
+│                                               extension's state for every HUD app) and trace.js (the input
+│                                               trace), shared by the three apps
 ├── ui/modules/apps/RallyAcademyCoach/          HUD: the drill's instructions, then the run's grade (ADR 0012)
 ├── ui/modules/apps/RallyAcademyInputs/         HUD: throttle and brake over time (ADR 0012)
 ├── settings/ui_apps/originalLayouts/           the Rally Academy HUD layout (ADR 0012)
