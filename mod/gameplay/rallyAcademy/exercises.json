@@ -4869,16 +4869,89 @@
           ]
         }
       },
-      "instructions": "Traverse uneven road with smooth throttle and minimal large steering corrections.",
-      "resetInstructions": "Stationary 80 m before 150–250 m rough section.",
-      "props": "Keep segment and approach gear fixed; avoid very rocky rock-crawler lines.",
+      "instructions": "Run the smooth approach at pace, then settle the car before the Rough gate and cross the 200 m of uneven ground on a steady, moderate throttle with small steering inputs, letting the suspension work. Too fast and the bumps damage the car. Pick the pace up again from the Smooth gate to the Finish.",
+      "resetInstructions": "Go to drill puts you at the track's start, 80 m before the rough.",
+      "props": "Gate posts mark the start and end of the rough and the finish.",
       "assessment": {
         "attempts": 10,
         "requiredPasses": 8,
-        "successDefinition": "No puncture, broken suspension, roll or departure from chosen trail.",
-        "metricToRecord": "Clean rough-ground traversals / 10",
-        "mode": "selfAssessment",
-        "rules": []
+        "successDefinition": "From the start through the rough 200 m to the Finish on the track, without damaging the car (no more than 50) or spinning, in 40 s. Silver: 25 s. Gold: 23 s.",
+        "metricToRecord": "Clean rough-ground runs and time",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "DIRT"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage",
+            "maxDamage": 50,
+            "hint": "the bumps hurt the car: ease off over the rough and keep it smooth"
+          },
+          {
+            "type": "max_time",
+            "maxSeconds": 40
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -0.0,
+              "y": 80.0,
+              "widthM": 5.5,
+              "label": "Rough",
+              "headingDeg": 0.1
+            },
+            {
+              "x": 0.3,
+              "y": 275.78,
+              "widthM": 5.5,
+              "label": "Smooth",
+              "headingDeg": -3.4
+            },
+            {
+              "x": 0.0,
+              "y": 300.77,
+              "widthM": 5.5,
+              "label": "Finish",
+              "headingDeg": 0.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 25
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 23
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

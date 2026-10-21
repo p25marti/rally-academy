@@ -368,7 +368,8 @@ end
 -- barely dent a car, so cone contact needs the cones themselves (scene control, later).
 -- A tyre deflating adds ~1000 damage, one sample after the flat flag (0.39.4), so damage
 -- gained within PUNCTURE_WINDOW of a tyre going flat is a puncture (no_puncture), not contact.
--- rule: {type = 'no_damage', maxDamage = 50}
+-- `hint` replaces "Hit something" where damage comes from the ground itself (E07's bumps), as coaching.
+-- rule: {type = 'no_damage', maxDamage = 50, hint = 'ease off over the bumps'}
 local PUNCTURE_WINDOW = 0.3 -- s
 function E.no_damage(rule, samples)
   local base, max, prev, punctureUntil = nil, rule.maxDamage or 50, nil, -math.huge
@@ -380,6 +381,10 @@ function E.no_damage(rule, samples)
       prev = s
       if s.dmg - base > max then
         local before = samples[i - 1] or s
+        if rule.hint then
+          return false, string.format('Damaged the car at %.0f km/h (damage +%.0f): %s', (before.air or 0) * KMH, s.dmg - base,
+            rule.hint)
+        end
         return false, string.format('Hit something at %.0f km/h (damage +%.0f)', (before.air or 0) * KMH, s.dmg - base)
       end
     end

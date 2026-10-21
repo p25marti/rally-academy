@@ -143,6 +143,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `no_handbrake` | none (optional `minKmh` 10) | Handbrake not pulled while moving |
 | `no_puncture` | none | No tyre goes flat during the run |
 | `cones_passed` | none | Every course cone is passed on its `keep` side (the car crosses the line through the cone, square to the course, with the cone on that side) |
+| `no_damage` hint | optional `hint` on `no_damage` | Where damage comes from the ground itself (E07's bumps), the text reads "Damaged the car at 58 km/h (damage +56): <hint>" instead of "Hit something" |
 | `markers_clear` | none (optional `clearanceM` 0) | The car never touches a course's cones or gate posts. With the real props standing (ADR 0011), what the car's collisions touched decides; otherwise (no props, an old recording) its body coming within 0.15 m (+ `clearanceM`) of a marker, the body being the footprint measured from the car's nodes when the run starts |
 | `park_in_box` | none (optional `insetM` 0, `label`) | At rest with all four corners of the body inside the course's box, shrunk by `insetM` on every side |
 | `no_reverse` | none (optional `maxM` 0.3) | The car travels no more than `maxM` backwards (against the way it points) |
@@ -371,6 +372,14 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+E07 rough terrain is automatic since 2026-10-21, on the rough track: Rough and Smooth gates round the 200 m of bumps and a
+Finish, real posts, on the dirt, no spin, no more than 50 damage (coached as the bumps' doing), 40 s; medals for time
+(silver 25 s, gold 23 s). Scripted (arcade, centre line): up to 50 km/h the car takes the bumps unhurt, 55-60 damages it
+(+55 to +60), 70 also runs off. The approach at 75 and 50 over the rough: 22.4-22.6 s, gold; a steady 50: 23.3 s,
+silver; 45 over the rough: 24.2 s, silver; a steady 40: 28 s, bronze. Steering corrections aren't graded: the bumps
+kicked the scripted wheel 8-11 times at any speed, so a limit would be guesswork until the owner has driven it.
+Fixtures `e07_gold_pg`, `e07_miss_damage_pg`.
+
 D02 linked corners is automatic since 2026-10-21, on the test road's linked S (a left, a long right, a closing left):
 gates and real posts at the first two apexes and an Exit gate 30 m after the S, on the gravel, no spin, no damage, and
 exit speed (60 km/h; silver 67, gold 72). Scripted (arcade, centre line): a cautious 45 throughout exits at 65 (bronze);
@@ -471,7 +480,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | E04 | AWD technique | Understeer, corridor, exit speed | Automatic |
 | E05 | Crest management | Crest speed, airtime, steady exit, landing damage, spin | Automatic |
 | E06 | Jump takeoff and landing | Landing on road, rollover, damage | Automatic |
-| E07 | Rough terrain | Puncture, damage, rollover, corridor | Automatic |
+| E07 | Rough terrain | Gates, damage from the bumps, on the track, time (built 2026-10-21) | Automatic |
 | E08 | Water crossings | Stall, damage, corridor, recovery use | Automatic |
 | F06 | Puncture adaptation | Puncture injection, damage baseline, 35 km/h cap, rollover | Automatic |
 | F07 | Vehicle setup comparisons | Setup switching, A/B stats, handling-difference prompt | Hybrid |

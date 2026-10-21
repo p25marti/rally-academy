@@ -916,6 +916,24 @@ def linked():
     return p
 
 
+@scenario
+def rough():
+    """E07 on the proving ground's rough track (Covet Gravel Rally, arcade): the approach at pace and 50 km/h over the
+    rough earns gold; 60 km/h all the way damages the car on the bumps."""
+    p = []
+    A.drill_session("E07")
+    line = _road_centre("E07", "rough-road", 320)
+    s = _zoned_run("E07", line, [(80, 280, 50)])
+    expect(p, "pace on the smooth, 50 over the rough: a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _zoned_run("E07", line, [], top=60)
+    lines = [str(x) for x in (A.grade_lines() or [])]
+    expect(p, "60 over the rough damages the car and misses", s.get("passed") is False
+           and any("Damaged the car" in x for x in lines), lines)
+    A.end_session("E07")
+    return p
+
+
 # D07's camber road: the off-camber corners, in metres along the road.
 D07_OFF_CAMBER = [(145, 200), (335, 390)]
 

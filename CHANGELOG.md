@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **E07 rough terrain is graded automatically**: gates round the 200 m of bumps, no more than light damage (the
+  coaching says the bumps did it), and medals for time (silver 25 s, gold 23 s): fast on the smooth, measured on the
+  rough.
 - **D02 linked corners is graded automatically**: gates and posts at both apexes of the test road's linked S and an
   Exit gate after it; medals for exit speed (60 km/h; silver 67, gold 72), so it rewards setting up the second bend and
   getting on the power early. Overcommit to the first bend and you clip the second apex.

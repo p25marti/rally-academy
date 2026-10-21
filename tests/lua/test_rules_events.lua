@@ -48,6 +48,14 @@ function T.damage_jump_is_contact_with_the_speed_it_happened_at()
     'a scrape under the limit')
 end
 
+function T.damage_from_the_ground_coaches_with_the_drills_hint()
+  local c = check({type = 'no_damage', maxDamage = 50, hint = 'ease off over the bumps'}, run(function(i, s)
+    if i >= 60 then s.dmg = 80 end
+  end))
+  eq(c.ok, false, 'damaged')
+  eq(c.text, 'Damaged the car at 54 km/h (damage +80): ease off over the bumps', 'text')
+end
+
 function T.damage_counts_from_the_run_start_not_from_zero()
   eq(check({type = 'no_damage'}, run(function(_, s) s.dmg = 900 end)).ok, true, 'already-damaged car')
 end
