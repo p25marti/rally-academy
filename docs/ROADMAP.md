@@ -113,7 +113,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
       medals), A07 and A08 (corner course with exit, apex and finish gates; exit speed and a
       steady exit). A06 (calling the next bend aloud) needs a hybrid prompt: deferred.
 - [ ] Module B to the same standard. Done: B01 and B02 (course stop zones on the run-up, medals).
-      B04 (trail braking on the corner venue). B05 (left-foot braking: laps of a course circle on the
+      B04 (trail braking, on the test road's closing right since ADR 0014). B05 (left-foot braking: laps of a course circle on the
       dirt circle). B07 (catching an oversteer slide down an exit lane). B06 (understeer pushed wide of
       a course circle and brought back onto it). B03 is graded too; B08 was cut (ADR 0014).
 - [ ] Module C (front-wheel drive drills; C03, C05, C06 are parked until a RWD/AWD car is chosen).

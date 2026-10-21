@@ -1598,30 +1598,30 @@
         "configPath": "vehicles/covet/rally_gravel.pc"
       },
       "environment": {
-        "venue": "pg-corner-left",
-        "areaHint": "Proving ground gravel corner (the BMP left rebuilt flat): brake marker on the approach, the apex gate on the inside at the geometric apex, the exit gate across the road.",
+        "venue": "pg-test-road-east",
+        "areaHint": "Proving ground test road's closing right (gravel): a Brake marker 50 m down the straight, the corner opening at 60 m radius and tightening to 29 m, a 4 m Apex gate on the inside at its tightest, and the Exit as it straightens.",
         "venueNeeds": {
           "kind": "corner",
           "radiusM": [
-            20,
-            60
+            25,
+            70
           ],
-          "turnDeg": 60,
-          "widthM": 8,
+          "turnDeg": 90,
+          "widthM": 7,
           "surfaces": [
             "GRAVEL",
             "DIRT",
             "DIRT_DUSTY",
-            "SANDY_ROAD",
-            "ASPHALT"
+            "SANDY_ROAD"
           ],
           "features": [
-            "runoff outside the corner"
+            "60 m straight approach",
+            "a corner that tightens"
           ]
         }
       },
-      "instructions": "Brake on the approach from the Brake marker, then keep easing the brake off in one smooth motion as you steer into the corner, fully off by the apex gate; then squeeze the throttle on and keep it on out through the exit. The input trace on the panel shows your brake (red) and throttle (green): aim for one clean ramp down, then one up.",
-      "resetInstructions": "Go to drill puts you 67 m before the corner with the brake marker, apex gate and exit laid out. Move course here re-lays them from where you are.",
+      "instructions": "Brake on the approach from the Brake marker, then keep easing the brake off in one smooth motion as you steer into the corner and it tightens, fully off by the apex gate at its tightest; then squeeze the throttle on and keep it on out through the exit. The input trace on the panel shows your brake (red) and throttle (green): aim for one clean ramp down, then one up.",
+      "resetInstructions": "Go to drill puts you 50 m before the brake marker, with the apex gate and exit laid out. Move course here re-lays them from where you are.",
       "props": "None: the gates are drawn for you.",
       "assessment": {
         "attempts": 10,
@@ -1633,23 +1633,23 @@
         "course": {
           "gates": [
             {
-              "x": 0,
-              "y": 50,
-              "widthM": 8,
+              "x": 0.24,
+              "y": 50.0,
+              "widthM": 7,
               "label": "Brake"
             },
             {
-              "x": -34.86,
-              "y": 96.01,
+              "x": 29.29,
+              "y": 112.54,
               "widthM": 4,
-              "headingDeg": -81.2,
+              "headingDeg": 73.9,
               "label": "Apex"
             },
             {
-              "x": -67.96,
-              "y": 90.47,
-              "widthM": 8,
-              "headingDeg": -122.3,
+              "x": 56.65,
+              "y": 111.72,
+              "widthM": 7,
+              "headingDeg": 100.3,
               "label": "Exit"
             }
           ]
@@ -1785,98 +1785,7 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      },
-      "surface": "Gravel",
-      "variants": [
-        {
-          "id": "asphalt",
-          "name": "Asphalt",
-          "venue": "pg-corner-asphalt",
-          "areaHint": "Proving ground asphalt corner: the gravel corner's twin (same shape, gates and barriers) on asphalt.",
-          "rules": [
-            {
-              "type": "on_surface",
-              "surfaces": [
-                "ASPHALT"
-              ],
-              "maxWheelsOff": 1,
-              "maxSeconds": 0.5
-            }
-          ],
-          "tiers": [
-            {
-              "name": "silver",
-              "rules": [
-                {
-                  "type": "on_surface",
-                  "surfaces": [
-                    "ASPHALT"
-                  ],
-                  "maxWheelsOff": 0,
-                  "maxSeconds": 0.3
-                }
-              ]
-            },
-            {
-              "name": "gold",
-              "rules": [
-                {
-                  "type": "on_surface",
-                  "surfaces": [
-                    "ASPHALT"
-                  ],
-                  "maxWheelsOff": 0,
-                  "maxSeconds": 0.3
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "snow",
-          "name": "Snow",
-          "venue": "pg-corner-snow",
-          "areaHint": "Proving ground snow corner: the gravel corner's twin (same shape, gates and barriers) on snow.",
-          "rules": [
-            {
-              "type": "on_surface",
-              "surfaces": [
-                "SNOW"
-              ],
-              "maxWheelsOff": 1,
-              "maxSeconds": 0.5
-            }
-          ],
-          "tiers": [
-            {
-              "name": "silver",
-              "rules": [
-                {
-                  "type": "on_surface",
-                  "surfaces": [
-                    "SNOW"
-                  ],
-                  "maxWheelsOff": 0,
-                  "maxSeconds": 0.3
-                }
-              ]
-            },
-            {
-              "name": "gold",
-              "rules": [
-                {
-                  "type": "on_surface",
-                  "surfaces": [
-                    "SNOW"
-                  ],
-                  "maxWheelsOff": 0,
-                  "maxSeconds": 0.3
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "B05",

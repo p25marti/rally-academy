@@ -242,12 +242,14 @@ the wheels at least 0.2 s and releases within 1 s, then stops in a 40 m stop are
 within 0.7 s, gold 0.5 s. Scripted on the dirt strip (0.40.0): B01 braking at 4.6–5.0 m/s² from 72 km/h stopped
 0.3–1.3 m past the centre (silver, sometimes gold); B02 locked 0.5 s (gold).
 
-B04 targets (the proving ground's flat corner, Covet Gravel Rally): brake from the marker 50 m into the
-approach and keep braking while turning in for 0.4 s, fully off by the 4 m apex gate, no lock over 0.3 s;
-bronze 30 km/h at the exit, silver 42 km/h with all four wheels on the gravel, gold 50 km/h (raised from 25 /
-35 / 42 on the stock downhill). Scripted from 65 km/h: brake 0.2 easing to zero before the apex, 52 km/h out
-(gold). On the flat a light brake with the throttle closed stops the car within the corner (the arcade box drops
-to 1st and the engine brakes hard), so trail braking here is gentle; on the downhill gravity made up for it.
+B04 targets (the test road's closing right since 2026-10-21, ADR 0014; before that the flat corner; Covet Gravel
+Rally): brake from the marker 50 m down the straight and keep braking while turning in for 0.4 s, fully off by the
+4 m apex gate (1 m inside, where the corner is tightest, 29 m radius), no lock over 0.3 s; bronze 30 km/h at the
+exit, silver 42 km/h with all four wheels on the gravel, gold 50 km/h: the corner targets held unchanged. Scripted
+from 65 km/h, the line 1.2 m inside round the apex: brake 0.25 easing to zero before the apex with 0.1 throttle
+under it, the throttle fed to 0.6 over 12 m: gold; feeding it to 0.8 is silver (48.9 km/h out), full throttle runs
+wide into the exit gate's outside post. Gravel only: the test road has no asphalt or snow twin, so B04's surface
+variants went with the move.
 
 B05 targets (the proving ground's dirt ring, venue `pg-dirt-ring`; first set on the BMP dirt circle; Covet Gravel Rally): two anticlockwise laps of a 15 m ring, its centre on
 the circle's centre; bronze inside a 6 m corridor (0.5 s outside allowed), throttle never off for more
@@ -382,10 +384,9 @@ B04 trail braking grades smoothness since 2026-10-21, as the HUD's input trace s
 marker to the apex must come off in one motion and the throttle from there to the exit go on in one motion
 (`smooth_pedal`): pass at 20 % re-applied and 600 % a second, silver 10 % and 400 %, gold 5 % and 250 % (from nothing to
 full in 0.4 s or more), on top of the exit speed medals. Scripted (arcade): braking 0.2 from the marker eased to 0
-before the apex, then the throttle fed in to full over 8 m: gold on gravel, asphalt and snow (snow feeds in from the
-throttle held under the brake: dropping it first reads as a lift). The same with the brake pumped +-0.08: "Brake
-pumped 25 times"; full throttle at once: "Throttle stabbed (1000%/s, limit 600)". The older stock recordings (no raw
-inputs, the throttle stepped on) miss today. Fixtures `b04_gold_pg`, `b04_miss_pumped_pg`, `b04_miss_stab_pg`.
+before the apex, then the throttle fed in: gold (on the corner, on all three surfaces; on the test road, fed to 0.6
+over 12 m). The same with the brake pumped +-0.08: "Brake pumped 33 times"; full throttle at once: "Throttle stabbed
+(900%/s, limit 600)". Fixtures `b04_gold_tr`, `b04_straight_tr`, `b04_pumped_tr`, `b04_stab_tr` (the test road).
 
 B03 stopping-distance estimation is automatic since 2026-10-21: before each run the driver sets **Your mark** on the
 HUD (metres past the Brake line, 10-45 m, the course's `predict`); the mod lays a line with two cones there. Reach the
@@ -449,7 +450,7 @@ and 28 not 35 in the gentler bottom and top bends, where snow ran wide); a stead
 silver / gold: gravel 41.5 / 38.5 s, asphalt 37.5 / 34.5 s, snow 50 / 47.5 s. The asphalt pace on gravel runs off the
 road. Fixture `d09_gold_pg` (37.7 s).
 
-The corner drills (A07, A08, B04, C01, C02, C08, E02) have asphalt and snow variants on the gravel
+The corner drills (A07, A08, C01, C02, C08, E02; B04 until it moved to the test road) have asphalt and snow variants on the gravel
 corner's twins (same shape, gates and barriers; 2026-10-20). Scripted (the `corner_surfaces` scenario, 0.40.0), the
 targets hold everywhere except one: A07 and A08 earn the same medals at the same speeds on all three surfaces (snow's
 grip, 0.64, is close to gravel's 0.68). B04 on snow runs wide or stalls under the gravel technique; 60 km/h, a little

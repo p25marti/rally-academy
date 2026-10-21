@@ -74,7 +74,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
 | `a04` | A04 on its course (the proving ground's dirt strip, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (stop line 60 m ahead) and B02 on its course (40 m stop area), both on the proving ground's dirt strip, a PASS and a MISS each |
-| `trail` | B04 on the proving ground's flat corner (the BMP downhill left copied flat): trail braking into the corner and feeding the throttle in earns gold; braking only before turn-in, pumping the brake, or stabbing the throttle misses |
+| `trail` | B04 on the test road's closing right: trail braking into the tightening corner and feeding the throttle in earns gold; braking only before turn-in, pumping the brake, or stabbing the throttle misses. `RA_SAVE=1` saves the four runs as the `b04_*_tr` fixtures |
 | `tighten` | D03 on the proving ground's flat copy of gravel lane DR825: easing off into the tightening corner earns a medal; too fast runs wide |
 | `opening` | D04 on the proving ground's flat copy of gravel lane DR825: a progressive throttle earns a medal; too much spins and misses |
 | `blind` | D05 on the proving ground's hill circuit: a conservative approach to the blind crest hairpin earns a medal; 55 km/h misses |
@@ -102,7 +102,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `linked` | D02 on the test road's linked S: 55 into the first bend, 50 through the rest, on the power early: gold; 60 into the first bend clips the second apex's post |
 | `camber` | D07 on the camber road: 57 km/h through the banked corners and 45 into the off-camber ones earns gold; a cautious 45 everywhere misses (too slow in the banked corners); 64 runs off |
 | `hairpins` | D09 up the mountain face's switchbacks: each surface's technique (gravel 55 / 28 km/h, asphalt 65 / 32, snow 50 / 24, slowing for the bottom and top bends) earns a medal; the asphalt pace on gravel runs off the road |
-| `corner_surfaces` | A07, A08, B04, C01, C02, C08 and E02 on the gravel corner and its asphalt and snow twins: each drill's medal technique, adapted per surface (`CORNER_ADAPT`), passes on each (up to three tries); prints a table. About 21-63 runs, 15-25 min; `RA_SURFACES=A07,C02` runs some drills only |
+| `corner_surfaces` | A07, A08, C01, C02, C08 and E02 on the gravel corner and its asphalt and snow twins: each drill's medal technique, adapted per surface (`CORNER_ADAPT`), passes on each (up to three tries); prints a table. About 21-63 runs, 15-25 min; `RA_SURFACES=A07,C02` runs some drills only |
 | `surfaces` | A01-A05, B01 and C04 on every surface (dirt, gravel, asphalt, snow variants, ADR 0009): each drill's medal technique, adapted per surface, passes on each; prints a table of verdicts. About 30 runs; `RA_SURFACES=B01,C04` runs some drills only |
 | `events` | On the proving ground's dirt strip: a handbrake spin, a run on the grass beside it and a puncture are detected (and the puncture isn't contact) |
 | `goto` | From West Coast USA (loaded first: slow), Go to drill loads the proving ground in the gravel Covet for E08, then swaps in the Student Driver for B01 without a reload |

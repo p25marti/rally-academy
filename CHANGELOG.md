@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **B04 trail braking moved to the test road's closing right**: a corner that tightens from 60 to 29 m radius, so
+  you keep easing the brake off as it closes, with the apex gate at its tightest. Same targets; gravel only now (its
+  asphalt and snow versions are gone, as the test road has no twins).
 - **A07 shows no racing line**: choosing your own line (early, middle, late apex) is the exercise, so Show line and
   Watch AI stay off there. A07 and A01's instructions no longer mention the old downhill corner or Mark start.
 - **Show the racing line**: a Line button on the HUD (and Shift+F15) draws the drill's racing line on the ground:

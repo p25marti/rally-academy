@@ -314,6 +314,30 @@
       "notes": "The start of a 686 m winding gravel road heading east, 7 m wide, dead level: a linked S (left-right-left, radii 45/38/45 m), a fast right and left (55 and 50 m), then a right that tightens from 60 to 30 m. Tape 6 m beyond each edge."
     },
     {
+      "id": "pg-test-road-east",
+      "mapsId": "P7",
+      "name": "Proving ground: test road, tightening right",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 97.58,
+          "y": 467.42,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 1.0,
+          "y": 0.0049,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The gravel test road 487 m from its start, just out of the fast left, facing east down a 65 m straight into the closing right: about 60 m radius for 40 m, then 29 m for the last 25, 100 degrees in all, flat."
+    },
+    {
       "id": "pg-circuit-start",
       "mapsId": "P8",
       "name": "Proving ground: hill circuit, start line",

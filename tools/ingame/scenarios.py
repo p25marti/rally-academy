@@ -322,57 +322,99 @@ def corners():
     return p
 
 
-def _trail_run(drill, kmh=65, brake=0.2, throttle=0.0, exit_throttle=1.0, ramp_m=8, wobble=0.0):
+def _road_ahead(drill, road_id, length, inside=None):
+    """A proving-ground road's smoothed centre line from the drill's start, the way it faces, `length` metres on, in
+    its course frame. `inside` = (from_m, to_m, metres): moved that far to the right between those distances (eased in
+    and out over 15 m), towards a right-hander's apex."""
+    import sys
+    sys.path.insert(0, str(A.ROOT / "tools" / "mapgen"))
+    import build
+    road = next(r for r in json.loads((A.ROOT / "tools" / "mapgen" / "proving_ground.json").read_text(encoding="utf-8"))["roads"]
+                if r["id"] == road_id)
+    sp = A.drill(drill)["environment"]["spawn"]
+    p, d = sp["pos"], sp["dir"]
+    n = math.hypot(d["x"], d["y"])
+    fx, fy = d["x"] / n, d["y"] / n
+    pts = build.road_line(road)
+    i0 = min(range(len(pts)), key=lambda i: (pts[i][0] - p["x"]) ** 2 + (pts[i][1] - p["y"]) ** 2)
+    out, s = [], 0.0
+    for i in range(i0, len(pts)):
+        if out:
+            s += math.dist(pts[i], pts[i - 1])
+        if s > length:
+            break
+        dx, dy = pts[i][0] - p["x"], pts[i][1] - p["y"]
+        out.append((dx * fy - dy * fx, dx * fx + dy * fy, s))
+    res = []
+    for k, (x, y, s) in enumerate(out):
+        w = 0.0
+        if inside:
+            w = max(0.0, min(1.0, (s - inside[0] + 15) / 15, (inside[1] + 15 - s) / 15)) * inside[2]
+        a, b = out[max(0, k - 1)], out[min(len(out) - 1, k + 1)]
+        hx, hy = b[0] - a[0], b[1] - a[1]
+        hn = math.hypot(hx, hy) or 1.0
+        res.append((x + hy / hn * w, y - hx / hn * w))
+    return res
+
+
+B04_APEX, B04_MARKER = 125.0, 50.0  # metres from the start along the test road to the apex gate and the brake marker
+
+
+def _b04_line():
+    return _road_ahead("B04", "test-road", 200, inside=(100, 130, 1.2))  # the apex gate is 1 m inside
+
+
+def _trail_run(drill="B04", kmh=65, brake=0.25, throttle=0.1, exit_throttle=0.6, ramp_m=12, wobble=0.0):
     """B04: `kmh`, then braking lightly from the marker (`brake`, eased off towards the apex, with `throttle` held
     under it so the arcade box doesn't drop to 1st and stall the car), then the throttle fed in from the apex up to
-    `exit_throttle` over `ramp_m` metres, through the middle of the exit gate. `wobble` pumps the brake (+-, every
-    6 m) for the miss case."""
-    import lines as L
-    apex = 118.7  # metres along lines.bmp_left() to the apex gate
+    `exit_throttle` over `ramp_m` metres. `wobble` pumps the brake (+-, every 6 m) for the miss case."""
+    apex, marker = B04_APEX, B04_MARKER
 
     def trail_pedals(_kmh, trav):
-        if trav < 50:
+        if trav < marker:
             return None
         if trav < apex - 3:
-            b = max(0.0, brake * (1 - (trav - 50) / (apex - 53)))
+            b = max(0.0, brake * (1 - (trav - marker) / (apex - 3 - marker)))
             if wobble and b > 0:
-                b = max(0.0, b + wobble * math.sin((trav - 50) * math.pi / 3))
+                b = max(0.0, b + wobble * math.sin((trav - marker) * math.pi / 3))
             return (throttle, b)
         lo = max(0.1, throttle)  # from the throttle held under the brake: dropping it first would be a lift
         fed = exit_throttle if not ramp_m else min(exit_throttle, lo + (exit_throttle - lo) * (trav - apex + 3) / ramp_m)
         return (fed, 0.0)
-    return A.course_run(drill, L.bmp_left({"DR1181_12": -1.5, "DR1181_13": -1.5}), pedals=trail_pedals, kmh=kmh,
-                        decel=2.5, max_throttle=1.0, stop_within=0.5)
+    return A.course_run(drill, _b04_line(), pedals=trail_pedals, kmh=kmh, decel=2.5, max_throttle=1.0, stop_within=0.5)
 
 
 @scenario
 def trail():
-    """B04 on the proving ground's flat copy of the BMP left (Covet Gravel Rally): braking lightly from the
-    marker and easing off into the turn, then feeding the throttle in, earns a medal; braking only in a straight
-    line before turning in, pumping the brake, or stabbing the throttle at the apex misses. On the flat, light braking with the throttle closed stops the car quickly (engine braking in a
-    low gear), so the trail brake is gentle and the entry faster than on the stock downhill."""
-    import lines as L
+    """B04 on the test road's closing right (Covet Gravel Rally): braking lightly from the marker and easing off as
+    the corner tightens, then feeding the throttle in, earns gold; braking only in a straight line before turning in,
+    pumping the brake, or stabbing the throttle at the apex misses. RA_SAVE=1 saves each run as a fixture
+    (b04_*_tr)."""
+    import os
     p = []
+    save = os.environ.get("RA_SAVE")
     A.drill_session("B04")
 
     def straight_pedals(_kmh, trav):
-        if trav < 45:
+        if trav < B04_MARKER:
             return None
-        return (0.0, 0.7) if trav < 58 else (0.1, 0.0)
-    kw = dict(kmh=65, decel=2.5, max_throttle=1.0, stop_within=0.5)
-    line = L.bmp_left({"DR1181_12": -1.5, "DR1181_13": -1.5})  # through the middle of the 8 m exit gate
-    s = _trail_run("B04")
-    expect(p, "trail braking into the corner earns a medal", s.get("passed") is True and s.get("tier") is not None,
+        return (0.0, 0.7) if trav < B04_MARKER + 13 else (0.1, 0.0)
+    s = _trail_run()
+    expect(p, "trail braking into the closing corner earns a medal", s.get("passed") is True and s.get("tier") is not None,
            f"{s.get('tier')}: {s.get('reason')}")
-    s = A.course_run("B04", line, pedals=straight_pedals, **kw)
+    save and A.save_fixture("b04_gold_tr")
+    s = A.course_run("B04", _b04_line(), pedals=straight_pedals, kmh=65, decel=2.5, max_throttle=1.0, stop_within=0.5)
     expect(p, "braking only before turn-in misses", s.get("passed") is False and "into the corner" in str(s.get("reason")),
            s.get("reason"))
-    s = _trail_run("B04", wobble=0.08)
+    save and A.save_fixture("b04_straight_tr")
+    s = _trail_run(wobble=0.08)
     expect(p, "pumping the brake while easing off misses", s.get("passed") is False and "Brake pumped" in str(s.get("reason")),
            s.get("reason"))
-    s = _trail_run("B04", exit_throttle=1.0, ramp_m=0)
+    save and A.save_fixture("b04_pumped_tr")
+    s = _trail_run(exit_throttle=1.0, ramp_m=0)
     expect(p, "stabbing the throttle at the apex misses", s.get("passed") is False and "Throttle stabbed" in str(s.get("reason")),
            s.get("reason"))
+    save and A.save_fixture("b04_stab_tr")
     A.end_session("B04")
     return p
 
@@ -752,7 +794,6 @@ def fwdexit():
 # The corner drills' scripted medal technique (drill id -> state), for corner_surfaces. `adapt` holds what a driver
 # changes per surface (speeds, mostly), keyed by drill then variant.
 CORNER_ADAPT = {
-    "B04": {"snow": {"kmh": 60, "brake": 0.25, "throttle": 0.15, "exit_throttle": 0.3}},  # gentler exit on snow
     "C01": {"snow": {"entry_kmh": 54, "lift_at": 72},  # snow rotates from a slower entry
             "asphalt": {"approach_kmh": 80, "entry_kmh": 76, "lift_at": 68, "offsets": {"DR1181_9": 3.8, "DR1181_10": 2.5}}},
     "C02": {"snow": {"kmh": 58, "then_kmh": 42}, "asphalt": {"kmh": 72, "pulse_m": 9}},  # tarmac needs a harder pulse
@@ -768,7 +809,6 @@ def _corner_runs():
     return {
         "A07": lambda d: A.course_run(d, L.bmp_left(), kmh=a("A07", d).get("kmh", 55), **CORNER_KW),
         "A08": lambda d: A.course_run(d, L.bmp_left(A08_LATE, tail=60), kmh=a("A08", d).get("kmh", 41), **CORNER_KW),
-        "B04": lambda d: _trail_run(d, **a("B04", d)),
         "C01": lambda d: _liftoff_run(drill=d, **a("C01", d)),
         "C02": lambda d: _corner_pulse_run(d, **{**dict(kmh=65, pulse_at=73, pulse_m=7, then_kmh=46, offsets=C02_LINE),
                                                 **a("C02", d)}),
@@ -779,7 +819,7 @@ def _corner_runs():
 
 @scenario
 def corner_surfaces():
-    """The graded corner drills (A07, A08, B04, C01, C02, C08, E02) on the gravel corner and its asphalt and snow twins
+    """The graded corner drills (A07, A08, C01, C02, C08, E02) on the gravel corner and its asphalt and snow twins
     (ADR 0009): each drill's scripted medal technique, adapted per surface where a driver would adapt it, passes on
     every variant (up to three tries: rotations vary). Prints a table. RA_SURFACES=A07,C02 limits it to some drills."""
     return _surface_suite(_corner_runs(), tries=3)

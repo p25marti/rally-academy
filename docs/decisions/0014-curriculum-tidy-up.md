@@ -1,4 +1,4 @@
-# 0014 — Curriculum tidy-up: E01 and B08 cut, drills off the shared corner, A07 without a line
+# 0014 — Curriculum tidy-up: E01 and B08 cut, B04 to the test road, A07 without a line
 
 **Date:** 2026-10-21 · **Status:** Accepted
 
@@ -22,12 +22,19 @@ The owner agreed to every suggestion (2026-10-21).
 
 - **Cut E01 and B08.** Their ids stay retired (like F01-F05 and F08, ADR 0006). C01's and C02's instructions now
   explain the weight transfer B08 was about: a neutral entry first, then what the lift or the brake pulse adds.
-- **Move drills off the shared corner** where another road teaches the technique better: C08 (the flick) and B04
-  (trail braking), each in a change of its own with re-tuned targets and scripted runs.
+- **B04 trail braking moves to the test road's closing right** (venue `pg-test-road-east`): a corner that tightens
+  from 60 m radius to 29 m is where easing the brake off as you turn in matters most, and the apex gate sits at its
+  tightest. The targets held unchanged (scripted gold). It is gravel only now: the test road has no asphalt or snow
+  twin, so B04's surface variants went.
+- **C08 (the flick) stays on the corner.** It was meant for a hairpin, but neither hairpin worked: driven up, the
+  weight stays on the back and a scripted flick rotated the FWD Covet 4-5°; driven down (from the leg above the
+  second hairpin), 1-4°, and harder flicks ran wide of the apex gate. The 8° target can't be set honestly there, and
+  on the corner the drill is verified.
 - **A07 has no racing line** (`assessment.racingLine: false`): no Show line, no Watch AI.
 
 ## Consequences
 
-- 41 drills. Progress players have on E01 or B08 stays in their file, unused.
+- 41 drills; six on the shared corner (A07, A08, C01, C02, C08, E02), down from nine.
+- Progress players have on E01 or B08 stays in their file, unused, and so does B04's on asphalt and snow.
 - The asphalt and snow corners stay: the remaining corner drills' variants use them.
 - Fixtures and the `surfacecorner` scenario for E01 are gone; the Watch AI scenario uses D03 and D09.

@@ -38,13 +38,10 @@
 --      b01c_silver / silver2 = pure pursuit to the zone centre from 72 km/h braking at 4.6 / 5.0 m/s2 (0.8 / 1.3 m
 --      past the centre); b01c_past = 7.5 m/s2 (7.1 m past the zone). b02c_gold = hold 62 km/h to 115 m, full brake
 --      0.6 s then eased (0.5 s lock); b02c_held = full brake held to the stop.
--- B04 (course): b04_*_pg (2026-10-21, with the driver's raw inputs bi / ti): gold_pg = brake 0.2 from the marker easing
---      to 0 three metres before the apex, then the throttle fed in to full over 8 m; miss_pumped_pg = the brake
---      pumped +-0.08 every 6 m; miss_stab_pg = full throttle at once. Older, on the stock corner:
--- B04 (course): the flat corner, arcade gearbox, 65 km/h: gold = brake 0.2 from the marker easing to 0 three
---      metres before the apex (52 km/h out); straight = brake 0.7 from 45 to 58 m only, then 0.1 throttle; late =
---      as gold, but 0.12 brake with 0.4 throttle from 3 m before to 6 m past the apex. (Lighter braking with the
---      throttle closed stops the car on the flat: the arcade box drops to 1st and the engine brakes hard.)
+-- B04 (course): the test road's closing right (scenario trail, RA_SAVE=1; 2026-10-21, arcade, 65 km/h, the line 1.2 m
+--      inside round the apex): gold_tr = brake 0.25 from the marker easing to 0 three metres before the apex with 0.1
+--      throttle under it, then the throttle fed to 0.6 over 12 m (gold, 50+ km/h out); straight_tr = brake 0.7 for 13 m
+--      from the marker only; pumped_tr = the brake pumped +-0.08 every 6 m; stab_tr = full throttle at the apex at once.
 -- B05 (course): BMP dirt circle (venue bmp-dirt-ring), Covet Gravel Rally in 2nd (sequential), pure
 --      pursuit round the 15 m ring, throttle held (0.15 or more) with 0.25 brake dabs every 25 m:
 --      gold = 32 km/h (0.8 m off the line at most); wide = 38 km/h (runs 4 m wide); nobrake = 34 km/h,
@@ -459,25 +456,19 @@ local function pedalCheck(res, pedal)
 end
 
 function T.b04_trail_braking_rules_and_medals_still_agree_with_the_in_game_verdicts()
-  local want = {b04_gold_pg = 'gold', b04_miss_pumped_pg = false, b04_miss_stab_pg = false, b04_straight = false, b04_late = false}
+  local want = {b04_gold_tr = 'gold', b04_straight_tr = false, b04_pumped_tr = false, b04_stab_tr = false}
   for name, tier in pairs(want) do
     local res, rec = gradeCourse(name, 'B04')
     assert(res.passed == rec.grade.passed, name .. ': rules now say ' .. tostring(res.passed)
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, tier, name .. ' medal')
   end
-  has(check(gradeCourse('b04_gold_pg', 'B04'), 'trail_braked').text, 'Trail-braked')
-  has(pedalCheck(gradeCourse('b04_gold_pg', 'B04'), 'brake').text, 'eased off in one motion')
-  has(pedalCheck(gradeCourse('b04_gold_pg', 'B04'), 'throttle').text, 'fed in smoothly')
-  has(pedalCheck(gradeCourse('b04_miss_pumped_pg', 'B04'), 'brake').text, 'Brake pumped')
-  has(pedalCheck(gradeCourse('b04_miss_stab_pg', 'B04'), 'throttle').text, 'Throttle stabbed')
-  -- recorded before smoothness was graded (2026-10-21), without the driver's raw inputs: its throttle (as applied)
-  -- stepped on at the apex and wavers, which misses today
-  local old = gradeCourse('b04_gold', 'B04')
-  eq(old.passed, false, 'the old gold run misses today')
-  eq(pedalCheck(old, 'throttle').ok, false, 'for its throttle')
-  has(check(gradeCourse('b04_straight', 'B04'), 'trail_braked').text, 'carry the brake into the corner')
-  has(check(gradeCourse('b04_late', 'B04'), 'brake_off_by_gate').text, 'Still braking at the apex')
+  has(check(gradeCourse('b04_gold_tr', 'B04'), 'trail_braked').text, 'Trail-braked')
+  has(pedalCheck(gradeCourse('b04_gold_tr', 'B04'), 'brake').text, 'eased off in one motion')
+  has(pedalCheck(gradeCourse('b04_gold_tr', 'B04'), 'throttle').text, 'fed in smoothly')
+  has(check(gradeCourse('b04_straight_tr', 'B04'), 'trail_braked').text, 'keep some brake on')
+  has(pedalCheck(gradeCourse('b04_pumped_tr', 'B04'), 'brake').text, 'Brake pumped')
+  has(pedalCheck(gradeCourse('b04_stab_tr', 'B04'), 'throttle').text, 'Throttle stabbed')
 end
 
 function T.b05_left_foot_braking_rules_and_medals_still_agree_with_the_in_game_verdicts()
