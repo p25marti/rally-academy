@@ -132,4 +132,13 @@ function T.hud_apps_tell_the_panel_they_are_up()
   eq(h.lastState().hudParts.bogus, nil, 'only our apps')
 end
 
+function T.a_fresh_panel_forgets_apps_a_ui_reload_tore_down()
+  local h, M = setup()
+  M.hudPart('coach', true)
+  M.hudPart('inputs', true)
+  M.hudReset()
+  eq(h.lastState().hudParts.coach, false, 'coach forgotten')
+  eq(h.lastState().hudParts.inputs, false, 'inputs forgotten')
+end
+
 return T

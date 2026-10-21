@@ -465,6 +465,13 @@ function M.hudPart(name, on)
   output()
 end
 
+-- The panel mounting means a fresh UI: a full UI reload tears apps down without saying goodbye, so forget them all;
+-- any still up says so again on the next state (hud.js).
+function M.hudReset()
+  hudParts = {}
+  output()
+end
+
 -- Switch to the Rally Academy HUD layout now (also what the proving ground does as it loads, unless turned off).
 function M.useHudLayout()
   if not (ui_appLayouts and ui_appLayouts.setUsedLayout) then return false end

@@ -1,5 +1,6 @@
 // What every Rally Academy HUD app needs (ADR 0012): the extension's published state, merged as it updates, and, for
-// the apps the panel can leave things to ('inputs', 'coach'), telling Lua they're on screen.
+// the apps the panel can leave things to ('inputs', 'coach'), telling Lua they're on screen. The panel itself passes
+// no part.
 import { onMounted, onUnmounted, reactive } from "vue"
 import { useBridge } from "@/bridge"
 import { useEvents } from "@/services/events"
@@ -22,7 +23,9 @@ export function useAcademyState(part, onData) {
   onMounted(() => {
     // keeping Lua authoritative also lets an app be closed and reopened without losing the session
     api.engineLua("extensions.load('rallyAcademy')")
-    if (part) lua(`hudPart('${part}', true)`)
+    // the panel (no part) mounting is a fresh UI: a full UI reload doesn't unmount apps, so Lua may still think the
+    // Coach or Inputs is up; forget them, and those still here say so again on the next state
+    lua(part ? `hudPart('${part}', true)` : "hudReset()")
     lua("publish()")
   })
   if (part) onUnmounted(() => lua(`hudPart('${part}', false)`))
