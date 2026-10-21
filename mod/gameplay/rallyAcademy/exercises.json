@@ -3269,16 +3269,93 @@
           ]
         }
       },
-      "instructions": "Prioritize second bend exit even if first apex is compromised; compare with single-corner focus.",
-      "resetInstructions": "Stationary 80 m before first bend; RSC start gate at vehicle reset.",
-      "props": "Use Rally Stage Creator (RSC) 20–40 s custom section; create finish past bend two.",
+      "instructions": "Drive the linked S (left, a long right, a closing left) and out through the Exit gate as fast as you can. The exit is what counts: give up a little in the first bend so the car is placed for the second, and get back on the power early out of the last one. Overcommit to the first bend and the second one runs you out of room.",
+      "resetInstructions": "Go to drill puts you at the test road's start, 60 m before the first bend.",
+      "props": "Gate posts stand at both apexes and the Exit.",
       "assessment": {
-        "attempts": 6,
-        "requiredPasses": 5,
-        "successDefinition": "No contact/off-road, and timed segment within +8% of fastest clean attempt.",
-        "metricToRecord": "Clean times / 6, best & median",
-        "mode": "selfAssessment",
-        "rules": []
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Through the linked S (both apex gates) and the Exit gate on the road, without touching a post or spinning, at 60 km/h or more at the Exit. Silver: 67 km/h. Gold: 72 km/h.",
+        "metricToRecord": "Clean runs and exit speed",
+        "mode": "automatic",
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          },
+          {
+            "type": "no_damage"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 60,
+            "maxKmh": 150,
+            "gate": 3
+          }
+        ],
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": -4.37,
+              "y": 79.35,
+              "widthM": 6,
+              "label": "First apex",
+              "headingDeg": -26.2
+            },
+            {
+              "x": -35.38,
+              "y": 127.32,
+              "widthM": 6,
+              "label": "Second apex",
+              "headingDeg": -0.3
+            },
+            {
+              "x": -0.0,
+              "y": 225.64,
+              "widthM": 6,
+              "label": "Exit",
+              "headingDeg": -0.0
+            }
+          ]
+        },
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 67,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "speed_at_gates",
+                "minKmh": 72,
+                "maxKmh": 150,
+                "gate": 3
+              }
+            ]
+          }
+        ]
       },
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",

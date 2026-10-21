@@ -113,6 +113,8 @@
 --      throttle ramped from 36 m (56 out). d08 = the surface-change straight, 62 km/h braking at 4 m/s2.
 --      d05 / d06 / e05 = the hill circuit (the Off-Road Circuit's first 640 m copied with elevation and banking):
 --      37 km/h into the blind hairpin; 45 then 40 km/h; 45 km/h through the banked left then 56 over the kicker.
+--      d02 = the test road's linked S (scenario linked, real posts): 55 km/h into the first bend, 50 through the rest,
+--      on the power from 205 m (gold, 74 km/h at the Exit); the miss took 60 into the first bend.
 --      d07 = the camber road (scenario camber, real posts): 57 km/h, slowing to 45 from 25 m before each off-camber
 --      corner, arcade (gold, 59 km/h at the banked apex); misses at 45 everywhere and at 64.
 --      d09 = the mountain face's gravel switchback (scenario hairpins): 55 km/h legs, 28 round the hairpins, 35 in the
@@ -282,7 +284,7 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
     b05_gold_pg = {'B05', 'gold'}, b06_gold_pg = {'B06', 'gold'},
     d03_gold_pg = {'D03', 'gold'}, d04_gold_pg = {'D04', 'gold'},
     d08_gold_pg = {'D08', 'gold'}, d05_gold_pg = {'D05', 'gold'}, d06_silver_pg = {'D06', 'silver'},
-    e05_gold_pg = {'E05', 'gold'}, d09_gold_pg = {'D09', 'gold'}, d07_gold_pg = {'D07', 'gold'},
+    e05_gold_pg = {'E05', 'gold'}, d09_gold_pg = {'D09', 'gold'}, d07_gold_pg = {'D07', 'gold'}, d02_gold_pg = {'D02', 'gold'},
     b07_bronze_pg = {'B07', 'bronze'}, c04_gold_pg = {'C04', 'gold'}, c07_gold_pg = {'C07', 'gold'}, d01_gold_pg = {'D01', 'gold'}}
   for name, w in pairs(want) do
     local res, rec = gradeCourse(name, w[1])
@@ -291,6 +293,13 @@ function T.proving_ground_medal_runs_still_agree_with_the_in_game_verdicts()
       .. ', the game said ' .. tostring(rec.grade.passed))
     eq(res.tier or false, w[2], name .. ' medal')
   end
+end
+
+-- D02 miss recorded on the test road: 60 km/h into the first bend leaves no room for the second, whose post it touches.
+function T.d02_recorded_overcommit_fails_at_the_second_apex()
+  local res = gradeCourse('d02_miss_overcommit_pg', 'D02')
+  eq(res.passed, false, 'overcommitting misses')
+  has(check(res, 'markers_clear').text, 'Clipped the left post of gate 2')
 end
 
 -- D07 misses recorded on the camber road with real posts: a cautious 45 km/h everywhere (too slow through the banked

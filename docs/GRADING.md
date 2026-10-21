@@ -371,6 +371,13 @@ handbrake hairpin: dirt and gravel alike (23-31° of swing); on asphalt the grip
 at the usual lock, so turn in with less (0.2 instead of 0.3: gold); on snow the rear swings 45-54°, and a slower
 entry (40 km/h, out at 25-28) earns silver every time, gold needing a faster exit (33 km/h once).
 
+D02 linked corners is automatic since 2026-10-21, on the test road's linked S (a left, a long right, a closing left):
+gates and real posts at the first two apexes and an Exit gate 30 m after the S, on the gravel, no spin, no damage, and
+exit speed (60 km/h; silver 67, gold 72). Scripted (arcade, centre line): a cautious 45 throughout exits at 65 (bronze);
+55 into the first bend and 50 through the rest at 69 (silver); the same with the power on 14 m before the S ends at
+74 (gold); 60 into the first bend runs out of room and touches the second apex's post (miss). Fixtures `d02_gold_pg`,
+`d02_miss_overcommit_pg`.
+
 D07 road camber is automatic since 2026-10-21, on the camber road's four identical 35 m corners: a gate at each apex
 and the finish, real posts, on the gravel, no spin, no damage, and a minimum speed through both banked apexes (50 km/h;
 silver 54, gold 57), so the drill rewards trusting the banking. The off-camber corners need no rule: their own
@@ -450,7 +457,7 @@ hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/00
 | C07 | Lateral weight transfer | Gate sequence, cone contact, spin, abrupt stop | Automatic |
 | C08 | Scandinavian flicks | Flick steering, rear slide, no handbrake, spin, posts, exit speed | Automatic |
 | D01 | Slaloms and transitions | Cones on the correct side, cone contact, spin, exit speed ≥ 25 km/h, time | Automatic |
-| D02 | Linked-corner sequencing | Corridor, contact, segment time, +8% of best | Automatic |
+| D02 | Linked-corner sequencing | Apex gates and posts, on the road, exit speed (built 2026-10-21) | Automatic |
 | D03 | Decreasing-radius corners | Gates, posts, wheels off the gravel, contact, spin, exit speed | Automatic |
 | D04 | Increasing-radius corners | Gates, throttle after the apex, wheelspin after it, wheels off, contact, spin, exit speed | Automatic |
 | D05 | Blind corners | Approach speed band, gates, posts, wall contact, spin | Automatic |

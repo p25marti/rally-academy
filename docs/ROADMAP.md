@@ -125,7 +125,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 - [ ] Module D. Done: D01 (six-cone slalom on the dirt arena), D08 (braking across the BMP start line's
       tarmac onto gravel), D05 (blind crest hairpin) and D06 (uphill and downhill corners) on the
       Off-Road Circuit; D03 and D04 (tightening and opening corners on gravel lane DR825); D09 (uphill
-      hairpins on the mountain face, gravel / asphalt / snow, new 2026-10-20). D07 (camber, automatic since 2026-10-21). D02 is self-assessed.
+      hairpins on the mountain face, gravel / asphalt / snow, new 2026-10-20). D07 (camber, automatic since 2026-10-21). D02 (linked corners, automatic since 2026-10-21).
 - [ ] Module E. Done: E02 (FWD rotate-then-pull exit, the corner venue), E05 (a planted crest on the Off-Road
       Circuit). E06 needs a bigger jump than the circuit's: the BMP track's isn't in the road network or
       a prop, so it needs marking with Save spot. E07 needs a properly rough trail. E03 and E04 are parked with C03,

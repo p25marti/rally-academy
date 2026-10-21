@@ -863,6 +863,59 @@ def crest():
     return p
 
 
+def _road_centre(drill, road_id, upto=1e9):
+    """A proving-ground road's smoothed centre line (as the map builder lays it) in the drill's course frame, up to
+    `upto` metres along it."""
+    import sys
+    sys.path.insert(0, str(A.ROOT / "tools" / "mapgen"))
+    import build
+    road = next(r for r in json.loads((A.ROOT / "tools" / "mapgen" / "proving_ground.json").read_text(encoding="utf-8"))["roads"]
+                if r["id"] == road_id)
+    sp = A.drill(drill)["environment"]["spawn"]
+    p, d = sp["pos"], sp["dir"]
+    n = math.hypot(d["x"], d["y"])
+    fx, fy = d["x"] / n, d["y"] / n
+    out, s, last = [], 0.0, None
+    for x, y in build.road_line(road):
+        s += math.hypot(x - last[0], y - last[1]) if last else 0.0
+        last = (x, y)
+        if s > upto:
+            break
+        dx, dy = x - p["x"], y - p["y"]
+        out.append((dx * fy - dy * fx, dx * fx + dy * fy))
+    return out
+
+
+def _zoned_run(drill, line, zones, top=75):
+    """Along `line` in arcade at `top` km/h, except in each zone (from_m, to_m, kmh), braked for from 25 m before."""
+    def pedals(v, trav):
+        target = top
+        for a, b, z in zones:
+            if a - 25 <= trav <= b:
+                target = min(target, z)
+        if v > target + 2:
+            return (0.0, min(0.8, 0.25 + (v - target) * 0.05))
+        return _hold(v, target, floor=0.1)
+    return A.course_run(drill, line, kmh=top + 10, pedals=pedals, max_throttle=1.0, decel=3.0, timeout=90, stop_within=0.5)
+
+
+@scenario
+def linked():
+    """D02 on the proving ground test road's linked S (Covet Gravel Rally, arcade): 55 into the first bend, 50 through
+    the rest and on the power before the S ends earns gold (74 km/h at the Exit); 60 into the first bend runs out of
+    room at the second apex and clips its post."""
+    p = []
+    A.drill_session("D02")
+    line = _road_centre("D02", "test-road", 290)
+    s = _zoned_run("D02", line, [(0, 101, 55), (104, 205, 50)])
+    expect(p, "exit first, early power: a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    s = _zoned_run("D02", line, [(0, 101, 60), (104, 219, 50)])
+    expect(p, "overcommitting to the first bend misses", s.get("passed") is False, s.get("reason"))
+    A.end_session("D02")
+    return p
+
+
 # D07's camber road: the off-camber corners, in metres along the road.
 D07_OFF_CAMBER = [(145, 200), (335, 390)]
 

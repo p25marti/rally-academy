@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **D02 linked corners is graded automatically**: gates and posts at both apexes of the test road's linked S and an
+  Exit gate after it; medals for exit speed (60 km/h; silver 67, gold 72), so it rewards setting up the second bend and
+  getting on the power early. Overcommit to the first bend and you clip the second apex.
 - **D07 road camber is graded automatically**: gates and posts at each of the four apexes, and a minimum speed
   through the two banked corners (50 km/h; silver 54, gold 57), so it rewards trusting the banking while the
   off-camber corners punish speed on their own.
