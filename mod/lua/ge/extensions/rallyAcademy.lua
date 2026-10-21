@@ -71,7 +71,7 @@ local function resetRun()
   cur = {elapsed = 0, lastTime = nil, grade = nil, settleT = 0, originPos = nil, stillT = 0,
          gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0,
          coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil, swept = 0,
-         hits = {}}
+         hits = {}, trace = nil}
 end
 resetRun()
 local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
@@ -185,6 +185,7 @@ local function output(includeCatalog)
     usingVenueStart = usingVenueStart,
     autoRetry = prefs.autoRetry ~= false,
     autoRetryIn = cur.autoRetryIn and math.ceil(cur.autoRetryIn) or false,
+    trace = cur.trace or false, -- the graded run's throttle and brake, for the HUD's input trace
   })
 end
 
@@ -852,6 +853,13 @@ local function finishRun(how, atTime)
   phase = 'review'
   logf('I', '%s: %s in %.2f s', selected, how, cur.lastTime)
   endRun('finished')
+  if run then -- the run's throttle and brake for the HUD's input trace, gates marked
+    local marks = {}
+    for i, p in ipairs(#gates > 0 and Gates.passes(gates, run.samples) or {}) do
+      if p.reached then marks[#marks + 1] = {t = p.t, label = gates[i].label or ('G' .. i)} end
+    end
+    cur.trace = RunRecord.inputTrace(run, 160, marks)
+  end
   local a = assessment()
   if a.mode ~= 'automatic' then
     lastReason = (endsOnStop() and 'Stopped.' or 'Finish reached.') .. ' Grade the technique using Pass/Miss.'

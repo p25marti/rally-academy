@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Input trace on the HUD**: while you drive, the panel draws your throttle (green) and brake (red) over the last
+  8 seconds, like a sim's input telemetry; after the run it shows that run's whole trace with its gates marked, so you
+  can see how you released the brake into the apex. Telemetry now records the driver's own pedal inputs too.
 - **B03 stopping-distance estimation is graded automatically**: set **Your mark** on the HUD before the run (how far
   past the Brake line you'll stop), brake at the line from 50 km/h, and the grade is how close the bumper stops to your
   mark (3 m; silver 2, gold 1). Cones show the mark; each surface teaches its own distance.

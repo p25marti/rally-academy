@@ -63,4 +63,32 @@ function R.summary(rec)
   }
 end
 
+-- The driver's throttle and brake over the run (from its start mark), as at most `n` points for the HUD's input trace:
+-- {t = {s from the start}, thr = {0..1}, brk = {0..1}, marks = {{t, label}}, span = s}. `marks` come in as sim times
+-- ({t, label}) and go out relative. Each point is the first sample in its slice of the run.
+function R.inputTrace(rec, n, marks)
+  local from = rec and rec.runStartT
+  local samples = {}
+  for _, s in ipairs(rec and rec.samples or {}) do
+    if not from or s.t >= from then samples[#samples + 1] = s end
+  end
+  if #samples < 2 then return nil end
+  local t0, t1 = samples[1].t, samples[#samples].t
+  local out = {t = {}, thr = {}, brk = {}, marks = {}, span = t1 - t0}
+  local slot, step = -1, (t1 - t0) / math.max(1, (n or 160) - 1)
+  for _, s in ipairs(samples) do
+    local k = step > 0 and math.floor((s.t - t0) / step) or 0
+    if k ~= slot then
+      slot = k
+      out.t[#out.t + 1] = math.floor((s.t - t0) * 100 + 0.5) / 100
+      out.thr[#out.thr + 1] = math.floor((s.ti or s.thr or 0) * 100 + 0.5) / 100
+      out.brk[#out.brk + 1] = math.floor((s.bi or s.brk or 0) * 100 + 0.5) / 100
+    end
+  end
+  for _, m in ipairs(marks or {}) do
+    if m.t and m.t >= t0 and m.t <= t1 then out.marks[#out.marks + 1] = {t = m.t - t0, label = m.label} end
+  end
+  return out
+end
+
 return R

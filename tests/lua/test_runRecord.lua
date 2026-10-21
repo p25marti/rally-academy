@@ -96,4 +96,19 @@ function T.summary_reports_rate_duration_and_max_speed()
   eq(s.outcome, 'finished', 'outcome')
 end
 
+function T.input_trace_downsamples_the_run_and_marks_its_gates()
+  local rec = R.new({drill = 'B04'})
+  for i = 0, 600 do R.add(rec, {t = 10 + i / 60, thr = 0.5, brk = 0, ti = i / 600, bi = 0.25}) end
+  R.markRunStart(rec)
+  rec.runStartT = 10
+  local tr = R.inputTrace(rec, 50, {{t = 12.5, label = 'Apex'}, {t = 99, label = 'never'}})
+  assert(#tr.t <= 50 and #tr.t >= 45, 'about 50 points: ' .. #tr.t)
+  eq(tr.t[1], 0, 'from the run start')
+  eq(tr.brk[1], 0.25, 'the driver input (bi), not the applied brake')
+  eq(tr.thr[#tr.thr] > 0.95, true, 'throttle input at the end')
+  eq(#tr.marks, 1, 'marks inside the run only')
+  eq(tr.marks[1].t, 2.5, 'relative to the start')
+  eq(R.inputTrace(R.new({}), 50, {}), nil, 'nothing to draw')
+end
+
 return T

@@ -112,7 +112,7 @@ is unit-tested under plain LuaJIT with stubs ([ADR 0003](decisions/0003-testing-
   that `resetRun()` replaces wholesale.
 
 **Telemetry** ([ADR 0004](decisions/0004-telemetry-transport.md)): the car's sampler sends one
-batched sample per frame to GE (inputs, gear, rpm, engine running, speeds, heading and
+batched sample per frame to GE (inputs as applied and as the driver gave them, gear, rpm, engine running, speeds, heading and
 velocity, up vector, damage, flat tyres, per-wheel speed/surface/downforce). Field list:
 `rules.lua` header.
 
@@ -136,7 +136,9 @@ over the game with physics paused (`openMenu`/`closeMenu`/`toggleMenu`, resumed 
 route's `onLeave` hook). It calls
 `extensions.rallyAcademy.getMenuData()` and `startDrill(id)`. The HUD panel is a Vue HUD
 app too (`ui/modules/apps/RallyAcademy/app.vue`, `"vue": true` in `app.json`), compiled at
-runtime by the same mod compiler, so the whole UI is Vue.
+runtime by the same mod compiler, so the whole UI is Vue. Its input trace draws the throttle and brake
+live from the car's electrics stream (`useStreams`) while driving, then the run's own trace (`trace` in the published
+state, from `runRecord.inputTrace`) with its gates marked.
 
 **Authoring.** Starts, finishes, stop zones/lines and gates are marked in-game and saved per
 map and drill (`store.lua`). Planned (ROADMAP P1): promote captured setups into

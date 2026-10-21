@@ -61,6 +61,13 @@
       </div>
     </div>
 
+    <!-- Throttle (green) and brake (red), like a sim's input telemetry: live while driving (the last TRACE_SECONDS
+         from the car's own input stream; the instructions make way), then the run's trace with its gates marked. -->
+    <div v-if="showTrace" class="ra-trace">
+      <canvas ref="traceCanvas"></canvas>
+      <span class="ra-trace-key"><i class="thr"></i>throttle <i class="brk"></i>brake{{ traceLive ? "" : " · this run" }}</span>
+    </div>
+
     <div class="ra-row">
       <span class="ra-timer" :class="{ running: vm.phase === 'running' }">{{ timerText }}</span>
       <span class="ra-best">
@@ -102,10 +109,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue"
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue"
 import { BngDropdown } from "@/common/components/base"
 import { useBridge } from "@/bridge"
-import { useEvents } from "@/services/events"
+import { useEvents, useStreams } from "@/services/events"
 
 const { api } = useBridge()
 const events = useEvents() // listeners are removed when the panel unmounts
@@ -149,11 +156,11 @@ const hasCourse = computed(() => !!assessment.value.course)
 const driving = computed(() => ["running", "review", "scored"].includes(vm.phase))
 // Lua lists may arrive as {} when empty, so check before iterating.
 const courseSteps = computed(() => (vm.course && Array.isArray(vm.course.steps) ? vm.course.steps : []))
-// The panel fits about five grade lines: failed checks first (always all of them), then passed
+// The panel fits about five grade lines (three under the run's input trace): failed checks first (always all of them), then passed
 // checks that carry a number (the coaching: "0-40 km/h in 3.1 s"), then the rest; whatever
 // doesn't fit folds into "N more checks passed".
-const MAX_GRADE_LINES = 5
 const gradeChecks = computed(() => {
+  const MAX_GRADE_LINES = showTrace.value ? 3 : 5 // the run's input trace takes two lines' room
   const all = vm.grade && Array.isArray(vm.grade.checks) ? vm.grade.checks : []
   const failed = all.filter(c => !c.ok)
   const passed = all.filter(c => c.ok)
@@ -210,6 +217,77 @@ function cmd(name, arg) {
   const args = BOOL_ARG[name] ? (arg ? "true" : "false") : NUM_ARG[name] ? String(Number(arg) || 0) : ""
   api.engineLua(`if extensions.rallyAcademy then extensions.rallyAcademy.${name}(${args}) end`)
 }
+
+// Input trace ---------------------------------------------------------------------------------------------------
+const TRACE_SECONDS = 8
+const traceCanvas = ref(null)
+const live = [] // {t (s), thr, brk} from the car's electrics, the last TRACE_SECONDS
+const traceLive = computed(() => vm.phase === "running")
+const runTrace = computed(() => (vm.trace && Array.isArray(vm.trace.t) && vm.trace.t.length > 1 ? vm.trace : null))
+const showTrace = computed(() => !!lesson.value && (traceLive.value || ((vm.phase === "review" || vm.phase === "scored") && !!runTrace.value)))
+
+// Draw series of {t, v} (t from t0 to t0 + span) into the canvas: a faint grid at 0, 50 and 100 %, then the lines,
+// then the gate marks (vertical ticks with their labels).
+function drawTrace(t0, span, series, marks) {
+  const c = traceCanvas.value
+  if (!c) return
+  const dpr = window.devicePixelRatio || 1
+  const w = c.clientWidth, h = c.clientHeight
+  if (c.width !== Math.round(w * dpr)) c.width = Math.round(w * dpr)
+  if (c.height !== Math.round(h * dpr)) c.height = Math.round(h * dpr)
+  const g = c.getContext("2d")
+  g.setTransform(dpr, 0, 0, dpr, 0, 0)
+  g.clearRect(0, 0, w, h)
+  const pad = 2
+  const x = t => ((t - t0) / span) * w
+  const y = v => h - pad - Math.max(0, Math.min(1, v)) * (h - 2 * pad)
+  g.strokeStyle = "rgba(255,255,255,0.12)"
+  g.lineWidth = 1
+  for (const v of [0, 0.5, 1]) {
+    g.beginPath(); g.moveTo(0, Math.round(y(v)) + 0.5); g.lineTo(w, Math.round(y(v)) + 0.5); g.stroke()
+  }
+  for (const s of series) {
+    g.strokeStyle = s.color
+    g.lineWidth = 1.75
+    g.beginPath()
+    s.points.forEach((p, i) => (i ? g.lineTo(x(p.t), y(p.v)) : g.moveTo(x(p.t), y(p.v))))
+    g.stroke()
+  }
+  g.fillStyle = "rgba(255,255,255,0.75)"
+  g.font = "9px sans-serif"
+  for (const m of marks || []) {
+    const mx = Math.round(x(m.t)) + 0.5
+    g.strokeStyle = "rgba(255,255,255,0.45)"
+    g.beginPath(); g.moveTo(mx, 0); g.lineTo(mx, h); g.stroke()
+    g.fillText(m.label, Math.min(mx + 2, w - 30), 9)
+  }
+}
+const THR = "rgba(80, 200, 110, 0.95)", BRK = "rgba(235, 75, 75, 0.95)"
+
+useStreams(["electrics"], streams => {
+  const e = streams && streams.electrics
+  if (!e || !traceLive.value) return
+  const t = performance.now() / 1000
+  const thr = e.throttle_input !== undefined ? e.throttle_input : e.throttle
+  const brk = e.brake_input !== undefined ? e.brake_input : e.brake
+  live.push({ t, thr: Number(thr) || 0, brk: Number(brk) || 0 })
+  while (live.length && live[0].t < t - TRACE_SECONDS) live.shift()
+  drawTrace(t - TRACE_SECONDS, TRACE_SECONDS, [
+    { color: THR, points: live.map(p => ({ t: p.t, v: p.thr })) },
+    { color: BRK, points: live.map(p => ({ t: p.t, v: p.brk })) },
+  ])
+})
+
+function drawRunTrace() {
+  const tr = runTrace.value
+  if (!tr || traceLive.value) return
+  const span = tr.span || tr.t[tr.t.length - 1] || 1
+  drawTrace(0, span, [
+    { color: THR, points: tr.t.map((t, i) => ({ t, v: tr.thr[i] })) },
+    { color: BRK, points: tr.t.map((t, i) => ({ t, v: tr.brk[i] })) },
+  ], Array.isArray(tr.marks) ? tr.marks : [])
+}
+watch([runTrace, () => vm.phase], () => nextTick(drawRunTrace))
 
 function choose() {
   const id = selectedId.value
@@ -331,6 +409,34 @@ onMounted(() => {
   &.soon {
     background-color: var(--bng-cool-gray-100);
     color: var(--bng-off-black);
+  }
+}
+
+.ra-trace {
+  position: relative;
+  margin: 0.15rem 0;
+  canvas {
+    display: block;
+    width: 100%;
+    height: 2.3rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: var(--bng-corners-1);
+  }
+  .ra-trace-key {
+    position: absolute;
+    right: 0.3rem;
+    bottom: 0.15rem;
+    font-size: 0.65rem;
+    color: var(--bng-cool-gray-100);
+    i {
+      display: inline-block;
+      width: 0.6rem;
+      height: 0.15rem;
+      margin: 0 0.2rem 0.15rem 0.4rem;
+      vertical-align: middle;
+      &.thr { background: rgb(80, 200, 110); }
+      &.brk { background: rgb(235, 75, 75); }
+    }
   }
 }
 
