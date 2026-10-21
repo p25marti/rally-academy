@@ -25,6 +25,7 @@ import borrow  # noqa: E402
 import decals  # noqa: E402
 import markers  # noqa: E402
 import nature  # noqa: E402
+import racingline  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 MOD = ROOT / "mod"
@@ -256,6 +257,10 @@ def generate(layout, game):
         files["art/decals/main.materials.json"] = json.dumps(
             # objects find materials by name, which in a stock file can differ from mapTo (skidmarks_01)
             {m: dict(stock.material(src[m], m), name=m, persistentId=pid(name, f"decalmat/{m}")) for m in used}, indent=2) + "\n"
+    if layout.get("turnMarkers"):
+        # the drill roads' racing lines, for the mod's "Show line" (one per line of the file)
+        files["rallyAcademy/racingLines.json"] = '{"lines": [\n' + ",\n".join(
+            json.dumps(e, separators=(",", ":")) for e in racingline.racing_lines(layout, terrain, road_line)) + "\n]}\n"
     out = {rel: text.replace("\r\n", "\n").encode("utf-8") for rel, text in files.items()}  # LF, as git keeps them
     out["theTerrain.ter"] = ter
     out["preview.png"] = preview_png(layer, size, wanted, terrain, trees)
@@ -471,7 +476,8 @@ def digest(data):
 
 def stamp(layout):
     """What a level is built from: the layout and the generator's own source."""
-    src = b"".join((Path(__file__).with_name(f)).read_bytes() for f in ("build.py", "nature.py"))
+    src = b"".join((Path(__file__).with_name(f)).read_bytes()
+                   for f in ("build.py", "nature.py", "decals.py", "markers.py", "racingline.py"))
     return {"layout": digest(json.dumps(layout, sort_keys=True).encode()), "generator": digest(src.replace(b"\r\n", b"\n"))}
 
 

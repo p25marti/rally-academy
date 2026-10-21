@@ -9,6 +9,7 @@ local COLOURS = {
   passed = {0.25, 0.9, 0.4, 0.9}, missed = {1, 0.3, 0.3, 0.9}, zone = {0.25, 0.9, 0.4, 0.35},
   cone = {1, 0.45, 0.05, 0.95}, hint = {0.9, 0.95, 1, 0.7}, car = {0.9, 0.95, 1, 0.8},
   bronze = {0.8, 0.5, 0.25, 0.9}, silver = {0.78, 0.8, 0.86, 0.9}, gold = {1, 0.8, 0.1, 0.95},
+  brake = {1, 0.22, 0.18, 0.85}, hold = {1, 0.85, 0.2, 0.85}, accelerate = {0.25, 0.9, 0.4, 0.85},
 }
 local function colour(name) local c = COLOURS[name]; return ColorF(c[1], c[2], c[3], c[4]) end
 
@@ -144,6 +145,19 @@ local function drawCircle(circle, corridors, fit)
   end
 end
 
+-- The racing line ("Show line", layout.racingLine): a flat ribbon on the ground, red where to brake, yellow where the
+-- corner's limit holds the speed, green where to accelerate.
+local PHASE = {[-1] = 'brake', [0] = 'hold', [1] = 'accelerate'}
+local RIBBON_LIFT = 0.1 -- m above the ground at each point (the ground between points can bulge a little)
+local function drawRacingLine(pts)
+  local size = Point2F(0.04, 0.6) -- height, width (0.40.0)
+  for i = 1, #pts - 1 do
+    local a, b = pts[i], pts[i + 1]
+    debugDrawer:drawSquarePrism(vec3(a.x, a.y, a.z + RIBBON_LIFT), vec3(b.x, b.y, b.z + RIBBON_LIFT), size, size,
+      colour(PHASE[a.phase] or 'hold'))
+  end
+end
+
 -- course = {
 --   gates = {...}, gateResults = {[i] = 'passed' | 'missed'}, nextGate = index or nil,
 --   finish = {pos, dir, radius} or nil, finishKind = 'line' | 'zone' | 'circle',
@@ -155,9 +169,11 @@ end
 --   zoneTiers = {{name, lengthM, widthM}}: a course stop zone's medal sizes (drawn nested)
 --   circle = {x, y, z, radiusM}, corridors = {{name, widthM}}: a circle to lap and its medal corridors
 --   physical = real cones and posts stand at the markers (props.lua): don't draw over them
+--   racingLine = {{x, y, z, kmh, phase}} to draw on the ground, or nil
 -- }
 function C.draw(course)
   if not (debugDrawer and ColorF) then return end
+  if course.racingLine then drawRacingLine(course.racingLine) end
   for i, g in ipairs(course.gates or {}) do
     drawGate(g, course.gateResults[i] or (i == course.nextGate and 'next') or 'upcoming', course.physical)
   end

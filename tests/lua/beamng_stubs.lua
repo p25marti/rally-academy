@@ -139,8 +139,11 @@ function S.install()
   -- Debug overlay (verified to exist 0.39.4): records what was drawn on the last frames.
   h.draws = {}
   _G.ColorF = function(r, g, b, a) return {r = r, g = g, b = b, a = a} end
+  _G.Point2F = function(x, y) return {x = x, y = y} end
   _G.debugDrawer = {drawCylinder = function(_, a, b, radius, colour)
     table.insert(h.draws, {kind = 'cylinder', a = a, b = b, radius = radius, colour = colour})
+  end, drawSquarePrism = function(_, a, b, sizeA, sizeB, colour)
+    table.insert(h.draws, {kind = 'prism', a = a, b = b, sizeA = sizeA, sizeB = sizeB, colour = colour})
   end}
   _G.guihooks = {trigger = function(name, data) table.insert(h.events, {name = name, data = data}) end}
 

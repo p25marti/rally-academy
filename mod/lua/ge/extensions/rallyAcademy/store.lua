@@ -56,7 +56,8 @@ function S.saveSpots(spots)
   jsonWriteFile(S.SPOTS_FILE, spots, true)
 end
 
--- prefs = {schemaVersion = 1, autoRetry = bool, hudLayout = bool} (the player's choices in the HUD)
+-- prefs = {schemaVersion = 1, autoRetry = bool, hudLayout = bool, showLine = bool} (the player's choices in the HUD;
+-- showLine, the racing line, is off unless set)
 S.PREFS_FILE = 'settings/rallyAcademy/prefs.json'
 
 function S.loadPrefs()

@@ -1,6 +1,6 @@
 {
  "layout": "9ce3efbb65172f375e8ee237ad607fcdb15ab7eb5806dd2c065bef61bf638237",
- "generator": "d45814af1dcebfe32eb159969f1c4bc3193bd52bd12bd8f776eaf3d8bff533cd",
+ "generator": "3ee405f8d5ba132dacaca8acdc0e96d24c609b87be91aea613b7b4cd9e9125b5",
  "files": {
   "art/decals/main.materials.json": "f2b6cf3b95a3446185c8b910d7ec656d2440787da45526cdca3b3a7066833308",
   "art/forest/managedItemData.json": "b87771a47974d9db3577f15c84a7c5680d2598a2222803c97418ba59c18b01c4",
@@ -40,6 +40,7 @@
   "main/MissionGroup/level_objects/water/items.level.json": "de6dacfb2ee79587b1580c5c892f9cfe437faae32d1b06f8ca939301ccf80e88",
   "main/items.level.json": "4111bf3d89a3130122913bfb3317a2a86ca9773b69463b652e52116950e409cc",
   "preview.png": "4c3024ff486ce5587fee1182f43a634f4478f1a842c41893a60bf075ea96d318",
+  "rallyAcademy/racingLines.json": "16e6ce2ec0bdce3ebacf99ac35c511afa04667e37fd624ba74ab55eff4f4194d",
   "theTerrain.ter": "050e8cc8c19a0bbf66f7f712f0ed1f8244f1deb7219c8d2459e38890decf39a6",
   "theTerrain.terrain.json": "0b0de4fedc7cf5988c80bafd782188f914d798cd68f2ca2d7cb5d6daa27799bf"
  }

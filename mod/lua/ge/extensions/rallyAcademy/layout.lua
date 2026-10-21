@@ -220,4 +220,49 @@ end
 -- "Keep the cone on your left": you pass to its right.
 function L.keepText(keep) return 'keep it on your ' .. keep end
 
+-- Racing lines ------------------------------------------------------------------
+-- A map's rallyAcademy/racingLines.json (tools/mapgen/racingline.py): {lines = {{road, direction, points =
+-- {{x, y, ground z, km/h, phase}}}}}, phase -1 brake, 1 accelerate, 0 hold the corner's limit.
+
+-- A line counts for a start this close to it, running within about 45 degrees of the way the start faces.
+L.LINE_REACH = 8 -- m
+L.LINE_TAIL = 30 -- m shown past the course's last gate
+
+-- The stretch of a racing line a drill drives: from the point nearest its start to LINE_TAIL metres past the point
+-- nearest `stop` ({x, y}: the course's last gate; nil: on to the line's end), as {{x, y, z, kmh, phase}}. nil when no
+-- line runs through the start the way it faces.
+function L.racingLine(lines, start, stop)
+  local f = L.frame(start)
+  local best, from, bestD = nil, nil, L.LINE_REACH ^ 2
+  for _, line in ipairs(lines or {}) do
+    local pts = line.points or {}
+    for i = 1, #pts - 1 do
+      local p, q = pts[i], pts[i + 1]
+      local d = (p[1] - start.pos.x) ^ 2 + (p[2] - start.pos.y) ^ 2
+      local dx, dy = unit(q[1] - p[1], q[2] - p[2])
+      if d < bestD and dx * f.fx + dy * f.fy > 0.7 then best, from, bestD = pts, i, d end
+    end
+  end
+  if not best then return nil end
+  local to = #best
+  if stop then
+    local near = math.huge
+    for i = from, #best do
+      local d = (best[i][1] - stop.x) ^ 2 + (best[i][2] - stop.y) ^ 2
+      if d < near then near, to = d, i end
+    end
+    local run = 0
+    while to < #best and run < L.LINE_TAIL do
+      run = run + math.sqrt((best[to + 1][1] - best[to][1]) ^ 2 + (best[to + 1][2] - best[to][2]) ^ 2)
+      to = to + 1
+    end
+  end
+  local out = {}
+  for i = from, to do
+    local p = best[i]
+    out[#out + 1] = {x = p[1], y = p[2], z = p[3], kmh = p[4], phase = p[5]}
+  end
+  return out
+end
+
 return L

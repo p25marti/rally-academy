@@ -57,6 +57,10 @@
     {
       "action": "rally_academy_save_spot",
       "control": "shift f14"
+    },
+    {
+      "action": "rally_academy_show_line",
+      "control": "shift f15"
     }
   ]
 }

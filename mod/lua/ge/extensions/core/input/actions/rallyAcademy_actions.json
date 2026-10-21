@@ -110,5 +110,13 @@
     "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.toggleAutoRetry() end",
     "title": "Rally Academy: Auto-retry on/off",
     "desc": "Start the next attempt automatically after a graded run, or not."
+  },
+  "rally_academy_show_line": {
+    "cat": "vehicle",
+    "order": 114,
+    "ctx": "tlua",
+    "onDown": "if extensions.rallyAcademy then extensions.rallyAcademy.toggleLine() end",
+    "title": "Rally Academy: Racing line on/off",
+    "desc": "Show the racing line on the road: red to brake, yellow to hold, green to accelerate."
   }
 }

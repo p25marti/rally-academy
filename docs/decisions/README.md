@@ -20,3 +20,4 @@ Template: **Context** (what forced a choice) · **Decision** · **Consequences**
 | [0012](0012-own-hud-layout.md) | The mod ships its own HUD layout (panel, Coach, Inputs), switched to on the proving ground | Accepted |
 | [0011](0011-physical-course-markers.md) | Course markers are real cones and posts (game prop vehicles); touching one is a clip | Accepted |
 | [0010](0010-every-drill-on-the-proving-ground.md) | Every drill on the proving ground; terrain features (hills, camber, jump, rough, water) in their own areas | Accepted |
+| [0013](0013-racing-lines-from-the-map-builder.md) | Racing lines are computed by the map builder (minimum curvature, a speed model) and shown on request | Accepted |

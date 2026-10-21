@@ -41,8 +41,12 @@ local gates = {}
 local course, usingVenueStart = nil, false
 -- The car's footprint (layout.lua), measured from its nodes once per car: {vid, config, car}.
 local carSize = nil
--- Player preferences (store.lua): auto-retry after a graded run.
-local prefs = {autoRetry = true, hudLayout = true}
+-- Player preferences (store.lua): auto-retry after a graded run, our HUD layout, the racing line.
+local prefs = {autoRetry = true, hudLayout = true, showLine = false}
+-- The map's racing lines (built with the map: tools/mapgen/racingline.py) and the selected drill's stretch of one
+-- (layout.racingLine), worked out again when the map, the start or the last gate changes.
+local RACING_LINES = 'levels/%s/rallyAcademy/racingLines.json'
+local racing = {}
 -- Our HUD layout (ADR 0012): shipped in settings/ui_apps/originalLayouts/, switched to a moment after the proving
 -- ground loads (freeroam applies its own layout first); the player's edits go to their copy at this path.
 local HUD_LAYOUT = '/settings/ui_apps/layouts/rallyAcademy.uilayout.json'
@@ -168,6 +172,22 @@ end
 
 local liveCourse -- defined under "Course markers"; the HUD's checklist and parking aid
 
+local function racingLine()
+  if not startState then return nil end
+  local lvl = levelId()
+  if racing.level ~= lvl then
+    local path = string.format(RACING_LINES, lvl)
+    local data = (not FS or FS:fileExists('/' .. path)) and jsonReadFile(path) or nil
+    racing = {level = lvl, lines = data and data.lines or {}}
+  end
+  local last = gates[#gates]
+  if racing.start ~= startState or racing.stop ~= last then
+    racing.start, racing.stop = startState, last
+    racing.pts = Layout.racingLine(racing.lines, startState, last and last.pos)
+  end
+  return racing.pts
+end
+
 local function output(includeCatalog)
   local lesson = selected and byId[selected] or nil
   guihooks.trigger('rallyAcademyState', {
@@ -195,6 +215,8 @@ local function output(includeCatalog)
     trace = cur.trace or false, -- the graded run's throttle and brake, for the HUD's input trace
     hudParts = {inputs = hudParts.inputs == true, coach = hudParts.coach == true},
     hudLayout = prefs.hudLayout ~= false,
+    showLine = prefs.showLine == true,
+    hasLine = racingLine() ~= nil, -- this drill's start is on one of the map's racing lines
   })
 end
 
@@ -493,7 +515,20 @@ function M.setAutoRetry(on)
   output()
 end
 
+function M.setShowLine(on)
+  prefs.showLine = on == true
+  Store.savePrefs(prefs)
+  output()
+end
+
 -- Key bindings (Stream Deck, docs/STREAM_DECK.md) --------------------------------------
+
+function M.toggleLine()
+  M.setShowLine(not prefs.showLine)
+  local text = 'racing line ' .. (prefs.showLine and 'on' or 'off')
+  if prefs.showLine and not racingLine() then text = text .. ' (none for this drill here)' end
+  if ui_message then ui_message('Rally Academy: ' .. text, 3, 'rallyAcademy') end
+end
 
 function M.toggleAutoRetry()
   M.setAutoRetry(prefs.autoRetry == false)
@@ -777,6 +812,7 @@ local function drawCourse()
     lineZones = course and course.line and medalsFor(targetNamed('line')),
     circle = course and course.circle, corridors = course and course.circle and medalsFor(targetNamed('circle')),
     footprint = footprint, physical = Props.active(),
+    racingLine = prefs.showLine == true and racingLine() or nil,
   })
 end
 

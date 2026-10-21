@@ -15,7 +15,7 @@ mod/                                            exactly the shipped zip root
 │   ├── runRecord.lua  per-attempt telemetry record (pure)
 │   ├── store.lua      saved progress and setups (jsonReadFile/jsonWriteFile only)
 │   ├── props.lua      real cones and posts at a course's markers (spawn, reset, touches; ADR 0011)
-│   └── course.lua     world markers: gates, cones, boxes, stop zone/line, finish (debugDrawer only)
+│   └── course.lua     world markers: gates, cones, boxes, stop zone/line, finish, racing line (debugDrawer only)
 ├── lua/vehicle/extensions/rallyAcademy/telemetry.lua   sampler in the car's Lua VM
 ├── lua/ge/extensions/core/input/actions/
 │   └── rallyAcademy_actions.json               bindable actions: Retry, Pass, Miss, Open menu
@@ -97,6 +97,11 @@ mod/                                            exactly the shipped zip root
   marker, the parking aid and the medal box the car is in), published as `course`.
   Grading goes through `rules.grade`, which adds medal tiers. After a graded run,
   auto-retry counts down 3 s of sim time, then calls Retry (cancelled if the car moves off).
+- **Racing line** ([ADR 0013](decisions/0013-racing-lines-from-the-map-builder.md)): a map can ship
+  `rallyAcademy/racingLines.json` (the proving ground's is built with it). `layout.racingLine` picks the stretch through
+  the drill's start, facing its way, to 30 m past its last gate; worked out again when the map, start or gates change.
+  With prefs `showLine` on, `course.lua` draws it as a ribbon on the ground; the HUD shows a Line button when the drill
+  has one (`hasLine`).
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 

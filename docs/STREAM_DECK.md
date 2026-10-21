@@ -27,6 +27,7 @@ You can rebind any of them in Options → Controls (search "Rally Academy").
 | F24 | Score miss | Self-assessed drills; abandons a run on graded drills |
 | Shift+F13 | Auto-retry on/off | A message confirms which |
 | Shift+F14 | Save spot | Bookmark a possible venue ([VENUES](VENUES.md)) |
+| Shift+F15 | Racing line on/off | Show the road's racing line; a message confirms which (and says when the drill has none) |
 
 **Never use Alt in these bindings.** Ctrl+Alt+Shift+F4 contains Alt+F4, which closed the game
 when we tried it (0.39.4). `dev.py validate` rejects Alt, unknown actions, duplicate keys and

@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Show the racing line**: a Line button on the HUD (and Shift+F15) draws the road's racing line on the ground:
+  red where to brake, yellow where to hold the corner, green where to accelerate. It's worked out from each road's
+  shape, surface and banking, for every corner, hairpin and road drill on every surface. Off until you turn it on.
 - **The proving ground's roads are on the minimap**: every drill road now shows on the HUD map, and the game's
   navigation and AI can find them (the road graph).
 - **The Rally Academy HUD layout**: the mod brings its own layout and switches to it when the proving ground loads, so
