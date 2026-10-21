@@ -6,6 +6,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **The proving ground's roads are on the minimap**: every drill road now shows on the HUD map, and the game's
+  navigation and AI can find them (the road graph).
 - **The Rally Academy HUD layout**: the mod brings its own layout and switches to it when the proving ground loads, so
   there's nothing to set up. It splits the HUD into the drill panel, a **Coach** (the drill's instructions before a
   run, the medal and every check after it) and an **Inputs** graph of your throttle and brake, plus the usual dash.

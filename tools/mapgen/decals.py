@@ -85,4 +85,25 @@ def decal_roads(layout, terrain, road_line, pid):
             if e.get("fade"):
                 o["startEndFade"] = e["fade"]
             out.append(o)
+    return out + nav_roads(layout, terrain, road_line, pid)
+
+
+# The material a navigation road nominally carries: it is hidden, but a DecalRoad needs one (any borrowed decal material).
+NAV_MATERIAL = "Dirt_road_variation_02"
+
+
+def nav_roads(layout, terrain, road_line, pid):
+    """The road graph (map.lua: the minimap's roads, navigation arrows, AI): one hidden DecalRoad per drivable layout
+    road on its centre line at its width, with drivability set. The visible decals keep drivability -1, so each road
+    appears in the graph once. A road with "drivable": false (the creek) stays out."""
+    base = layout["terrain"]["baseZ"]
+    out = []
+    for r in layout.get("roads", []):
+        if r.get("drivable") is False:
+            continue
+        pts = resample(road_line(r), 4.0)
+        nodes = [[round(x, 2), round(y, 2), round(base + terrain.height(x, y), 2), r["width"]] for x, y in pts]
+        out.append({"name": f"ra_nav_{r['id']}", "class": "DecalRoad", "persistentId": pid(layout["name"], f"nav/{r['id']}"),
+                    "__parent": "decals", "position": nodes[0][:3], "material": NAV_MATERIAL, "nodes": nodes,
+                    "improvedSpline": True, "drivability": 1, "oneWay": False, "hidden": True, "renderPriority": 50})
     return out

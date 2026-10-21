@@ -6318,7 +6318,8 @@
         -1.0,
         -1.0
       ],
-      "blendM": 12
+      "blendM": 12,
+      "drivable": false
     },
     {
       "id": "ford-road",

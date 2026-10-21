@@ -80,7 +80,8 @@ Learned the hard way (0.39.4):
   `window` and read it back with a second call.
 - **Screenshots** (`screenshot_image`, `screenshot`) also save a copy to
   `<user folder>/screenshots/mcp/`. That's the one write outside our folders: move your
-  captures to the Recycle Bin when you're done (ask before hard-deleting).
+  captures to the Recycle Bin when you're done (ask before hard-deleting). They leave out the
+  imgui layer (the minimap's roads and car arrow): capture the game window to check those.
 - **Reading mod state:** use `extensions.rallyAcademy.debugState()`, not `debug.getupvalue`.
 - **Reloading after edits:**
   - `extensions.reload('rallyAcademy')` re-runs the extension, which clears its own module

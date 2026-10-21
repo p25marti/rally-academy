@@ -1,5 +1,5 @@
 {
- "layout": "2d412c3920a86318f4f684fea3b217a4e7839440f2327d3293cf26238a931d8f",
+ "layout": "9ce3efbb65172f375e8ee237ad607fcdb15ab7eb5806dd2c065bef61bf638237",
  "generator": "d45814af1dcebfe32eb159969f1c4bc3193bd52bd12bd8f776eaf3d8bff533cd",
  "files": {
   "art/decals/main.materials.json": "f2b6cf3b95a3446185c8b910d7ec656d2440787da45526cdca3b3a7066833308",
@@ -31,7 +31,7 @@
   "info.json": "e4173261dfc77d9cfb1dc89e791d077d43fc46e9835d5f9ab9f4bbe96fdcc88f",
   "main/MissionGroup/PlayerDropPoints/items.level.json": "fd49ad0fc81afea810b3d058290beaec2e938ed5dd7bec8a6fca24255220e8ee",
   "main/MissionGroup/items.level.json": "67a36d180cc79901970e7ed088efb8738596831f4f7b6ec4aa003d99744ef9ea",
-  "main/MissionGroup/level_objects/decals/items.level.json": "1079c1df61affba19f8552000322715f563cff1b654137957154d7b8d9b472e7",
+  "main/MissionGroup/level_objects/decals/items.level.json": "5cf25ced283037885f9b54cd87cfb1548c4ae72563eeb3b5751a68fe33467df7",
   "main/MissionGroup/level_objects/items.level.json": "6aaea5b8ff79b99397a80043b80bd6dbf2e14f984dfdcfc9fc736bfaaf8ffd9f",
   "main/MissionGroup/level_objects/props/items.level.json": "a9ba2022d31282c4b48f9d5d88f3b2391e017fc9ee8d056173ee0382203f35bd",
   "main/MissionGroup/level_objects/sky_and_sun/items.level.json": "23cf70376b991c5ff2aa40dfd7bbae81644c730dcaf3a1f7b1925319bd173b15",
