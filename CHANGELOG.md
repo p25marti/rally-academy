@@ -343,6 +343,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
+- **The Rally Academy HUD stays up**: opening the radial menu (or the UI reloading) switched the proving ground back to
+  your Freeroam layout until the next map load. Now the game itself restores ours; other maps keep your own layout.
 - **The damage diagram no longer covers the Coach**: in the Rally Academy HUD it appeared over the drill notes and
   next to the minimap when the car took damage; it now sits in the right-hand column, under the panel. A layout you've
   customised gets the new position for that app only.

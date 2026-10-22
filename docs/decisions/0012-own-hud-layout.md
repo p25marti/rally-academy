@@ -28,6 +28,9 @@ so a layout of type `freeroam` would quietly become the player's Freeroam layout
   map loads, so ours goes after it), once per load: a player who picks another layout keeps it. Leaving the map
   restores nothing; other modes and maps set their own. The player can turn the switch off (About page; prefs
   `hudLayout`), or switch to it any time.
+- The extension also names the layout in the game state (`core_gamestate`), so the game's own restores (closing the
+  radial menu, a UI reload) bring ours back instead of the Freeroam layout (found 2026-10-21); the next map load
+  resets the state to Freeroam.
 - The panel stays complete on its own: our other apps tell Lua when they're up (`hudPart`), and the panel then leaves
   the notes to the Coach and the graph to Inputs. In any other layout it shows everything as before.
 

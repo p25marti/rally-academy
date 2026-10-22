@@ -94,6 +94,8 @@ end
 local function withLayouts(h)
   h.layoutsUsed = {}
   _G.ui_appLayouts = {setUsedLayout = function(f) table.insert(h.layoutsUsed, f); return {filename = f} end}
+  _G.core_gamestate = {state = {appLayout = 'freeroam'}}
+  function core_gamestate.setGameState(_, layout) core_gamestate.state.appLayout = layout end
 end
 
 function T.the_proving_ground_switches_to_the_rally_academy_hud()
@@ -105,6 +107,7 @@ function T.the_proving_ground_switches_to_the_rally_academy_hud()
   M.onUpdate(0.3, 0.3)
   M.onUpdate(0.3, 0.3)
   eq(h.layoutsUsed[1], '/settings/ui_apps/layouts/rallyAcademy.uilayout.json', 'then ours')
+  eq(core_gamestate.state.appLayout, 'rallyAcademy', 'the game state names ours: the radial menu and a UI reload restore it')
   M.onUpdate(1, 1)
   eq(#h.layoutsUsed, 1, 'once: the player may switch away')
   h.level = 'west_coast_usa'
@@ -117,7 +120,8 @@ function T.the_proving_ground_switches_to_the_rally_academy_hud()
   M.onUpdate(1, 1)
   eq(#h.layoutsUsed, 1, 'not when turned off')
   eq(jsonReadFile('settings/rallyAcademy/prefs.json').hudLayout, false, 'the choice is saved')
-  _G.ui_appLayouts = nil
+  eq(core_gamestate.state.appLayout, 'freeroam', 'turned off: back to the Freeroam layout')
+  _G.ui_appLayouts, _G.core_gamestate = nil, nil
 end
 
 function T.hud_apps_tell_the_panel_they_are_up()

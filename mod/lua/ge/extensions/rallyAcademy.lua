@@ -51,6 +51,7 @@ local racing = {}
 -- Our HUD layout (ADR 0012): shipped in settings/ui_apps/originalLayouts/, switched to a moment after the proving
 -- ground loads (freeroam applies its own layout first); the player's edits go to their copy at this path.
 local HUD_LAYOUT = '/settings/ui_apps/layouts/rallyAcademy.uilayout.json'
+local HUD_LAYOUT_TYPE = 'rallyAcademy' -- the layout's `type`, its own so no other layout choice changes
 local HUD_LAYOUT_DELAY = 0.5 -- s of real time after the map is up
 local layoutIn = nil
 -- Which of our HUD apps are on screen ('inputs', 'coach'): the main panel leaves out what another app shows.
@@ -521,6 +522,9 @@ end
 function M.useHudLayout()
   if not (ui_appLayouts and ui_appLayouts.setUsedLayout) then return false end
   local ok = ui_appLayouts.setUsedLayout(HUD_LAYOUT) ~= nil
+  -- The game state's layout too: the game puts that one back after the radial menu or a UI reload, and it's
+  -- "freeroam" (the player's own Freeroam layout) unless we name ours (0.40.0).
+  if ok and core_gamestate and core_gamestate.setGameState then core_gamestate.setGameState(nil, HUD_LAYOUT_TYPE) end
   logf('I', 'HUD layout: %s', ok and 'Rally Academy HUD' or 'not found')
   return ok
 end
@@ -528,6 +532,11 @@ end
 function M.setHudLayout(on)
   prefs.hudLayout = on == true
   Store.savePrefs(prefs)
+  -- turned off while ours is up: the game state goes back to the player's Freeroam layout
+  if not prefs.hudLayout and core_gamestate and core_gamestate.state and core_gamestate.state.appLayout == HUD_LAYOUT_TYPE
+      and core_gamestate.setGameState then
+    core_gamestate.setGameState(nil, 'freeroam')
+  end
   output()
 end
 

@@ -12,7 +12,7 @@ read_globals = {
   "deepcopy", "tableSize", "scenetree", "core_vehicles", "core_input_actions",
   "spawn", "getPlayerVehicle", "setExtensionUnloadMode", "getCurrentLevelIdentifier",
   "getObjectByID", "core_levels", "debugDrawer", "ColorF", "Point2F", "freeroam_freeroam", "ui_router", "simTimeAuthority", "castRayStatic", "map", "ui_message",
-  "ui_appLayouts",
+  "ui_appLayouts", "core_gamestate",
   "sanitizeVehicleSpawnOptions", "RESET_PHYSICS",
 }
 
@@ -24,7 +24,7 @@ files["mod/scripts/**"] = { read_globals = { "load", "setExtensionUnloadMode" } 
 
 files["tests/lua/**"] = {
   globals = { "_G", "vec3", "quatFromDir", "log", "dump", "be", "guihooks", "jsonReadFile", "jsonWriteFile",
-              "debugDrawer", "ColorF", "Point2F" },
+              "debugDrawer", "ColorF", "Point2F", "core_gamestate" },
 }
 files["tests/vendor/**"] = { only = {} } -- third-party, not linted
 exclude_files = { "tests/vendor/**" }
