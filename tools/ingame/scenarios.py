@@ -371,8 +371,8 @@ def _trail_run(drill="B04", kmh=65, brake=0.25, throttle=0.1, exit_throttle=0.6,
     apex, marker = B04_APEX, B04_MARKER
 
     def trail_pedals(_kmh, trav):
-        if trav < marker:
-            return None
+        if trav < marker:  # on the throttle to the marker: the path follower's own speed hold could brake a touch
+            return (1.0, 0.0)  # there, and the trail brake starting from that reads as re-applied
         if trav < apex - 3:
             b = max(0.0, brake * (1 - (trav - marker) / (apex - 3 - marker)))
             if wobble and b > 0:
@@ -412,8 +412,9 @@ def trail():
            s.get("reason"))
     save and A.save_fixture("b04_pumped_tr")
     s = _trail_run(exit_throttle=1.0, ramp_m=0)
-    expect(p, "stabbing the throttle at the apex misses", s.get("passed") is False and "Throttle stabbed" in str(s.get("reason")),
-           s.get("reason"))
+    # among the failed checks: the scripted inputs sometimes add a brake blip after the pumping run, reported first
+    expect(p, "stabbing the throttle at the apex misses", s.get("passed") is False
+           and any("Throttle stabbed" in c for c in A.failed_checks()), A.failed_checks())
     save and A.save_fixture("b04_stab_tr")
     A.end_session("B04")
     return p

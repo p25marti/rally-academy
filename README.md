@@ -68,16 +68,26 @@ by [tools/mapgen](tools/mapgen/) ([MAPS](docs/MAPS.md)).
 
 ## Install
 
-There's no published release yet. To try it, build the mod zip (Python 3.9+):
+Rally Academy needs **BeamNG.drive 0.40**.
 
-```sh
-python tools/dev.py build      # writes dist/rally_academy.zip
-```
+1. Download **`rally_academy.zip`** from the [latest release](https://github.com/p25marti/rally-academy/releases/latest)
+   (a `.sha256` checksum sits next to it).
+2. Put the zip, **still zipped**, in your BeamNG user folder's `mods` folder. On Windows that's
+   `%LOCALAPPDATA%\BeamNG\BeamNG.drive\current\mods\`.
+3. Start the game. In the main menu, open **More... → Rally Academy**, pick a drill and press **Start drill**: the
+   proving ground loads with the drill's car at the start, and the HUD switches to the Rally Academy layout (you
+   can turn that off on the Academy screen's About page).
 
-Drop `rally_academy.zip`, still zipped, into `<BeamNG user folder>/mods/`. In the game: main menu → **More...** →
-**Rally Academy**, pick a drill and **Start drill**. The HUD switches to the Rally Academy layout on the proving
-ground (turn that off on the About page). Key bindings: Options → Controls → search "Rally Academy", or see
-[STREAM_DECK](docs/STREAM_DECK.md).
+**Keys:** every action has a default key on F13-F24 (none on a normal keyboard), so bind the ones you want in
+Options → Controls (search "Rally Academy"), or use a Stream Deck with the [ready-made profile](extras/streamdeck/).
+The list: [STREAM_DECK](docs/STREAM_DECK.md).
+
+**Updating:** replace `rally_academy.zip` with the new one. The name never changes, so there's only ever one copy;
+your progress is kept (it lives in `settings/rallyAcademy*` in the user folder). **Removing:** delete the zip, or
+switch the mod off in the game's mod manager.
+
+Developers running from a clone (`python tools/dev.py link`) should `python tools/dev.py unlink` before installing
+the zip, so the game doesn't load two copies.
 
 ## Develop
 

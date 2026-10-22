@@ -81,6 +81,15 @@ def hud():
               "return Array.from(p.querySelectorAll('.ra-grade div, .ra-reason')).map(function(e){return e.textContent.trim()}).join(' | ')")
 
 
+def failed_checks():
+    """The texts of the last graded run's failed checks, from the run record (the HUD panel leaves the checks to the
+    Coach when it's up)."""
+    got = lua_json("local r = extensions.rallyAcademy.getLastRun() local out = {} "
+                   "for _, c in ipairs(r and r.grade and r.grade.checks or {}) do "
+                   "if not c.ok then out[#out + 1] = c.text end end return out")
+    return got if isinstance(got, list) else []
+
+
 def grade_lines():
     return ui(f"return Array.from(document.querySelectorAll('{PANEL} .ra-grade div')).map(function(d){{return d.textContent.trim()}})")
 

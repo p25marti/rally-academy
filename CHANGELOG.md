@@ -5,6 +5,25 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-22
+
+The first release, for BeamNG.drive 0.40.
+
+- **41 drills** in six modules, from steering and braking accuracy to trail braking, rotation, hairpins, crests,
+  jumps and water; **34 graded automatically** from telemetry with bronze, silver and gold medals, and 38 surface
+  variants (dirt, gravel, asphalt, snow).
+- **The proving ground**, the mod's own map: every drill runs there and sets itself up (Go to drill), with real cones
+  and posts.
+- **The Rally Academy HUD**: the drill panel, a Coach with the instructions and every check of the grade, and an
+  Inputs graph of throttle and brake, in a layout of its own.
+- **Show line** and **Watch AI**: the drill's racing line on the road, and the game's AI driving it on the road
+  drills.
+- The Academy screen (main menu and pause menu) with progress and analysis, instant retry and auto-retry, default
+  keys on F13-F24 and a Stream Deck profile.
+
+Everything below came after the first starter scaffold (2026-10-13: mark start and finish, retry, a timer,
+self-assessed Pass and Miss, progress saving and 48 drill definitions, untested in the game).
+
 ### Added
 - **B04 trail braking moved to the test road's closing right**: a corner that tightens from 60 to 29 m radius, so
   you keep easing the brake off as it closes, with the apex gate at its tightest. Same targets; gravel only now (its
@@ -384,11 +403,3 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
   without a time), so a partial time can no longer become your best.
 - The run timer started the moment you pressed Retry (a one-frame velocity
   spike after the teleport); it now starts when the car leaves the start.
-
-## [0.1.0] - 2026-10-13
-
-### Added
-- Initial starter scaffold (imported, untested in-game): GE extension with
-  mark start/finish, retry, sim-time timer, self-assessed Pass/Miss and
-  progress saving; HUD app; Retry/Pass/Miss input actions; 48 drill
-  definitions.
