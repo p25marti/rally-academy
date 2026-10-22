@@ -38,7 +38,7 @@ replaces the old file instead of loading alongside it.
    `.sha256`, and the changelog section as notes. Tags containing `-`
    (e.g. `v0.2.0-beta.1`) become pre-releases.
 
-The repository is private, so GitHub Releases are for you and invited testers.
+The repository is public (since 2026-10-22), so anyone can download a GitHub Release; the README links the latest.
 
 ## Publishing to the BeamNG repository (public)
 

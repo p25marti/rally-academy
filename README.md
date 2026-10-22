@@ -2,14 +2,20 @@
 
 [![CI](https://github.com/p25marti/rally-academy/actions/workflows/ci.yml/badge.svg)](https://github.com/p25marti/rally-academy/actions/workflows/ci.yml)
 
+> [!IMPORTANT]
+> **A work in progress, built mostly by AI.** Rally Academy is an alpha for BeamNG.drive 0.40. The drill curriculum
+> began as its author's plan; most of the code, the grading and the documentation were written by
+> [Claude](https://www.anthropic.com/claude) (Anthropic's AI), working with the author, and tested by Claude driving
+> the game itself through BeamNG.drive's built-in MCP server: scripted runs with steady inputs, not yet many hours
+> from real drivers. Expect rough edges, medal targets that change as they're
+> tuned, and drills that get reworked. Feedback and bug reports are welcome in
+> [Issues](https://github.com/p25marti/rally-academy/issues).
+
 Structured rally-driving practice for BeamNG.drive: **41 drills** that build car control step by step, from
 steering and braking accuracy to trail braking, rotation, hairpins, crests, jumps and water. Each drill sets itself
 up on the mod's own map, grades your run from the car's telemetry and tells you what to change.
 
 ![Driving B04 trail braking: the Coach lists every check of the last run, the panel shows the medal, the Inputs graph shows the brake easing off into the corner and the throttle feeding in, and the racing line runs ahead on the road](docs/images/hud.jpg)
-
-> **Status: alpha**, on BeamNG.drive 0.40. Everything below works and is tested in the game by scripted runs; the
-> targets are still being tuned by real drivers.
 
 ## What it does
 
