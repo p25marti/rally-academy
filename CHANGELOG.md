@@ -343,6 +343,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 - The panel no longer shows the "route detection and self-assessment only" note.
 
 ### Fixed
+- **The damage diagram no longer covers the Coach**: in the Rally Academy HUD it appeared over the drill notes and
+  next to the minimap when the car took damage; it now sits in the right-hand column, under the panel. A layout you've
+  customised gets the new position for that app only.
 - **Airtime is measured for real**: the car's telemetry recorded the game's smoothed wheel force, which never drops
   to zero in a short flight, so the airtime check couldn't see the wheels leave the ground. It records the raw force
   now. E05 crest management was calibrated with the blind check: with honest airtime about 52 km/h lifts the wheels
