@@ -17,6 +17,15 @@
     </section>
 
     <section class="ra-panel">
+      <div class="ra-panel-title">Licence</div>
+      <p>
+        Open source under the MIT licence: use it, copy it, change it and share it freely, keeping the copyright
+        notice. The licence text comes with the mod (gameplay/rallyAcademy/LICENSE.txt).
+      </p>
+      <p class="ra-muted">BeamNG's maps, cars and assets stay under BeamNG's terms.</p>
+    </section>
+
+    <section class="ra-panel">
       <div class="ra-panel-title">Built on</div>
       <p>
         BeamNG.drive by BeamNG GmbH: its maps, cars and physics, and the Vue UI mod system this

@@ -515,6 +515,11 @@ def cmd_validate(_args=None) -> None:
 
     levels_check()
 
+    shipped = MOD_DIR / "gameplay" / "rallyAcademy" / "LICENSE.txt"  # the MIT notice travels with every copy of the zip
+    if not shipped.is_file() or shipped.read_bytes() != (ROOT / "LICENSE").read_bytes():
+        fail(f"{shipped.relative_to(ROOT)} must be a copy of LICENSE (cp LICENSE {shipped.relative_to(ROOT).as_posix()})")
+    ok("LICENSE ships with the mod")
+
     stray = [p.name for p in MOD_DIR.iterdir() if p.name not in ALLOWED_TOP_LEVEL]
     if stray:
         fail(f"unexpected top-level entries in mod/: {stray} (only {sorted(ALLOWED_TOP_LEVEL)})")

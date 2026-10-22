@@ -132,6 +132,16 @@ grading against real physics. Start with [CONTRIBUTING.md](CONTRIBUTING.md); cod
 - [RELEASING](docs/RELEASING.md): versions and releases
 - [decisions/](docs/decisions/): short records of why things are the way they are
 
+## License
+
+[MIT](LICENSE): use it, copy it, change it, share it, sell it, as long as the copyright notice comes along. A copy
+of the licence ships inside the mod zip.
+
+Not covered, because they aren't ours: BeamNG.drive's own content (its maps, cars, meshes, textures and the stock
+material definitions the proving ground borrows from the game's levels, `tools/mapgen/borrow.py`) stays under
+BeamNG's terms, and the Stream Deck icons are the BEAM.deck pack's, MIT-licensed by their author
+([credits](extras/streamdeck/)).
+
 ## Credits
 
 Drill curriculum adapted from public rally-school syllabi (Richard Burns Rally, EA SPORTS WRC, DiRT Rally 2.0 / Jon

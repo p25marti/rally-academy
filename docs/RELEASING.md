@@ -50,8 +50,8 @@ Before the first public upload:
 
 - [ ] Read BeamNG's current mod-repository rules on beamng.com. They change,
       and they decide what's accepted.
-- [ ] Decide the public licence and add a `LICENSE` file (the author in `app.json` is set:
-      Paul Martins).
+- [x] Decide the public licence and add a `LICENSE` file: MIT, 2026-10-22 (a copy ships in the zip as
+      `gameplay/rallyAcademy/LICENSE.txt`; `dev.py validate` checks they match).
 - [ ] Replace "Prototype"/"ALPHA" labelling if appropriate, and make sure the
       README credits section is accurate.
 - [ ] Prepare screenshots and a description (what it does, how to bind Retry,

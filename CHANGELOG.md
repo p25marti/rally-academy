@@ -5,6 +5,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 
 ## [Unreleased]
 
+### Added
+- **MIT licence**: Rally Academy is open source. Use, copy, change and share it freely; keep the copyright notice.
+  BeamNG's own content stays under BeamNG's terms.
+
 ## [0.1.0] - 2026-10-22
 
 The first release, for BeamNG.drive 0.40.
