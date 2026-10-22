@@ -67,7 +67,7 @@ on any map, pick what gets judged (speed at each gate, no braking, stay on the r
 target time), name it, then drill it like a built-in one with timing, history and best
 times. Optionally save and share it.
 
-**Why.** The 42 drills cover fundamentals, but everyone has a corner they keep messing up.
+**Why.** The drills cover fundamentals, but everyone has a corner they keep messing up.
 Practising *that* corner, repeatably and measured, is what a rally school can't offer at home.
 
 **What already helps.**

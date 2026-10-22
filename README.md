@@ -1,73 +1,129 @@
 # Rally Academy for BeamNG.drive
 
-A BeamNG.drive mod for structured rally-driving practice: 42 progressive drills
-(foundations → braking → rotation → complex cornering → terrain → adaptation; full
-stages are the game's own Rally mode),
-instant retry to a marked start, run timing, and per-drill progress tracking.
+[![CI](https://github.com/p25marti/rally-academy/actions/workflows/ci.yml/badge.svg)](https://github.com/p25marti/rally-academy/actions/workflows/ci.yml)
 
-> **Status: alpha.** Retry, timing, progress, Go to drill and telemetry recording
-> run on BeamNG 0.39.4. Twenty-six drills (A01–A05, A07, A08, B01, B02, B04–B07, C01, C02, C04, C07, C08, D01, D03–D06, D08, E02, E05) are graded
-> automatically from telemetry, A01 with bronze/silver/gold medals; the others use self-assessed Pass/Miss for now. The
-> Academy screen lives in the main menu (More... → Rally Academy) and the pause menu;
-> see the [roadmap](docs/ROADMAP.md).
+Structured rally-driving practice for BeamNG.drive: **41 drills** that build car control step by step, from
+steering and braking accuracy to trail braking, rotation, hairpins, crests, jumps and water. Each drill sets itself
+up on the mod's own map, grades your run from the car's telemetry and tells you what to change.
 
-## Contributing
+![Driving B04 trail braking: the Coach lists every check of the last run, the panel shows the medal, the Inputs graph shows the brake easing off into the corner and the throttle feeding in, and the racing line runs ahead on the road](docs/images/hud.jpg)
 
-Start with [CONTRIBUTING.md](CONTRIBUTING.md). Coding agents: [AGENTS.md](AGENTS.md). Product
-direction and the owner's standing decisions: [docs/PRODUCT.md](docs/PRODUCT.md).
+> **Status: alpha**, on BeamNG.drive 0.40. Everything below works and is tested in the game by scripted runs; the
+> targets are still being tuned by real drivers.
 
-## Quick start (developers)
+## What it does
 
-Requirements: Python 3.9+ and git. LuaJIT + luacheck are optional locally
-(CI always runs them) — see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#tooling).
+- **Drills that set themselves up.** Pick a drill and **Go to drill**: the mod loads its own map, the proving
+  ground, puts you in the drill's car at the start and lays out the course with real cones and posts.
+- **Automatic grading with medals.** 34 drills are graded from telemetry (speeds at gates, braking, lockups, slip,
+  pedal smoothness, airtime, surface, damage) with bronze, silver and gold. Every check explains itself: "Brake
+  pumped 3 times while easing off: one smooth release".
+- **Instant retry.** One key puts you back at the start, car repaired; after a graded run the next attempt starts
+  by itself unless you drive off.
+- **Its own HUD.** A drill panel, a **Coach** (instructions before the run, the grade after it) and an **Inputs**
+  graph of your throttle and brake, in a layout the mod brings along and you can rearrange.
+- **Racing line and Watch AI.** **Show line** draws the drill's racing line on the road, red where to brake,
+  yellow where to hold, green where to go. On the road drills, **Watch AI** lets the game's AI drive it first.
+- **Surfaces.** 38 surface variants: the same drill on dirt, gravel, asphalt or snow, each with its own progress.
+- **Progress and analysis.** Attempts, passes, best times and medals per drill, in an Academy screen in the main
+  menu and the pause menu.
+- **Hands on the wheel.** Every action has a default key on F13-F24, ready for a Stream Deck or button box
+  ([profile included](extras/streamdeck/)).
+
+## The drills
+
+| Module | Drills | What it covers |
+| --- | --- | --- |
+| A · Foundation & precision | 8 | Steering and placement, launches, gear changes, throttle control, braking to a mark, racing lines |
+| B · Grip & braking | 7 | Threshold braking, lockups, stopping distances, trail braking, left-foot braking, under- and oversteer |
+| C · Rotation & slides | 8 | Lift-off and brake rotation, the handbrake, weight transfer, the Scandinavian flick |
+| D · Complex cornering | 9 | Slaloms, linked and tightening corners, blind crests, hills, camber, surface changes, uphill hairpins |
+| E · Terrain & drivetrains | 7 | FWD technique, crests, jumps, rough ground, water crossings |
+| F · Adaptation & setup | 2 | Driving on with a puncture, comparing setups |
+
+The full list, with where each drill runs, its surfaces and how it's graded: **[docs/DRILLS.md](docs/DRILLS.md)**.
+Seven drills are self-assessed for now, five of them waiting for a rear- or all-wheel-drive car.
+
+<table>
+  <tr>
+    <td><img src="docs/images/academy-drills.jpg" alt="The Academy screen: every drill by module, with its venue, grading and progress, and the selected drill's details"></td>
+    <td><img src="docs/images/academy-analysis.jpg" alt="The Analysis page: attempts, passes and pass rate, progress by module and per drill"></td>
+  </tr>
+  <tr>
+    <td align="center">The Academy screen: pick a drill</td>
+    <td align="center">Analysis: your progress</td>
+  </tr>
+</table>
+
+![The racing line up the switchbacks of D09: red braking zones before each hairpin, yellow through them, green out](docs/images/racing-line.jpg)
+
+## The proving ground
+
+Every drill runs on the mod's own generated map: flat strips of dirt, gravel, asphalt and snow, a corner built in
+three surfaces, a winding test road, a hill circuit, banked and off-camber corners, a mountain switchback, a jump, a
+rough track and a ford, with rally corner signs, barriers and autumn forests round it. It's built from a layout file
+by [tools/mapgen](tools/mapgen/) ([MAPS](docs/MAPS.md)).
+
+![The proving ground from the air: the surface strips in front, the corners, test road and switchbacks behind](docs/images/proving-ground.jpg)
+
+## Install
+
+There's no published release yet. To try it, build the mod zip (Python 3.9+):
 
 ```sh
-python tools/dev.py check      # validate data, lint, unit-test, build dist/rally_academy.zip
-python tools/dev.py link       # live-link ./mod into your BeamNG mods folder
-python tools/dev.py log        # tail beamng.log, filtered to Rally Academy + errors
+python tools/dev.py build      # writes dist/rally_academy.zip
 ```
 
-Then in BeamNG: Free Roam → UI Apps → add **Rally Academy**.
+Drop `rally_academy.zip`, still zipped, into `<BeamNG user folder>/mods/`. In the game: main menu → **More...** →
+**Rally Academy**, pick a drill and **Start drill**. The HUD switches to the Rally Academy layout on the proving
+ground (turn that off on the About page). Key bindings: Options → Controls → search "Rally Academy", or see
+[STREAM_DECK](docs/STREAM_DECK.md).
 
-## Install (players)
+## Develop
 
-Download `rally_academy.zip` from the latest GitHub Release and drop it, still
-zipped, into `<BeamNG user folder>/mods/`. Don't keep an older copy or the
-unpacked dev link alongside it.
+```sh
+python tools/dev.py check --strict   # validate data, lint, unit-test, build (what CI runs)
+python tools/dev.py link             # live-link ./mod into your BeamNG mods folder
+python tools/dev.py ingame smoke     # with the game running: scripted checks through its MCP server
+```
+
+Lua is unit-tested under LuaJIT with stubbed engine globals; scripted in-game scenarios drive the car to check the
+grading against real physics. Start with [CONTRIBUTING.md](CONTRIBUTING.md); coding agents read
+[AGENTS.md](AGENTS.md); product direction and the owner's standing decisions are in [PRODUCT](docs/PRODUCT.md).
 
 ## Repository map
 
 | Path | What lives there |
 | --- | --- |
-| `mod/` | Exactly what ships. Its contents become the zip root (`gameplay/`, `lua/`, `ui/`). |
-| `mod/gameplay/rallyAcademy/exercises.json` | The 41 drills — the source of truth for drill data ([schema](docs/DRILL_DATA.md)). |
-| `tests/lua/` | Unit tests that run the mod's Lua under LuaJIT with stubbed BeamNG globals. |
-| `tools/dev.py` | One CLI for check / build / link / log / bump. |
-| `.github/workflows/` | CI on every push/PR; release on `v*` tags. |
-| `docs/` | How everything works — start with [DEVELOPMENT](docs/DEVELOPMENT.md). |
-| `reference/` | Source material: the original drill spreadsheet and planning history. |
+| `mod/` | Exactly what ships: its contents become the zip root (`gameplay/`, `lua/`, `ui/`, `levels/`, `settings/`) |
+| `mod/gameplay/rallyAcademy/exercises.json` | The 41 drills, the source of truth for drill data ([schema](docs/DRILL_DATA.md)) |
+| `mod/levels/ra_proving_ground/` | The proving ground, generated by `tools/mapgen/` |
+| `tests/` | Lua unit tests, Python tool tests and recorded in-game runs (fixtures) |
+| `tools/dev.py` | One CLI: check, build, link, log, ship, in-game scenarios |
+| `tools/ingame/` | Scripted in-game checks, venue surveys and recordings through the game's MCP server |
+| `tools/mapgen/` | The proving ground's generator |
+| `extras/streamdeck/` | A ready-made Stream Deck profile |
+| `docs/` | How everything works; `docs/decisions/` holds the decision records |
+| `reference/` | Source material: the original drill spreadsheet and planning history |
 
 ## Documentation
 
-- [DEVELOPMENT.md](docs/DEVELOPMENT.md) — setup, the in-game edit/reload loop, git workflow
-- [TESTING.md](docs/TESTING.md) — unit tests, in-game smoke test, what CI checks
-- [RELEASING.md](docs/RELEASING.md) — versioning, GitHub Releases, publishing to the BeamNG repository
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the mod is put together, and where it's heading
-- [DRILL_DATA.md](docs/DRILL_DATA.md) — drill schema and how to edit drills
-- [GRADING.md](docs/GRADING.md) — what automatic grading needs, drill by drill
-- [PRIOR_ART.md](docs/PRIOR_ART.md) — BeamNG systems, tools and mods we can reuse
-- [VEHICLES.md](docs/VEHICLES.md) — drill cars, what to look for, drivetrain options
-- [BEAMNG_API_NOTES.md](docs/BEAMNG_API_NOTES.md) — every engine API we rely on, and whether it's verified
-- [ROADMAP.md](docs/ROADMAP.md) — priorities and known issues
-- [MAPS.md](docs/MAPS.md) — surveyed venues (gravel/dirt) and where each drill takes place
-- [VENUES.md](docs/VENUES.md) — how to find, fit-test and add a venue for a drill
-- [VENUE_CATALOG.md](docs/VENUE_CATALOG.md) — measured practice spots on each surveyed map, by surface and kind
-- [STREAM_DECK.md](docs/STREAM_DECK.md) — default key bindings (F13–F24) and a Stream Deck layout
-- [decisions/](docs/decisions/) — short records of why things are the way they are
+- [DRILLS](docs/DRILLS.md): every drill, where it runs and how it's graded
+- [PRODUCT](docs/PRODUCT.md): what we're building and the standing decisions
+- [ARCHITECTURE](docs/ARCHITECTURE.md): how the mod is put together
+- [GRADING](docs/GRADING.md): the grading rules, targets and how they were set, drill by drill
+- [DRILL_DATA](docs/DRILL_DATA.md): the drill schema and how to edit drills
+- [MAPS](docs/MAPS.md) and [VENUES](docs/VENUES.md): the proving ground and how venues are found
+- [DEVELOPMENT](docs/DEVELOPMENT.md) and [TESTING](docs/TESTING.md): setup, the dev loop, tests and in-game
+  scenarios
+- [BEAMNG_API_NOTES](docs/BEAMNG_API_NOTES.md): every engine API we rely on, and whether it's verified
+- [ROADMAP](docs/ROADMAP.md), [IDEAS](docs/IDEAS.md) and the [CHANGELOG](CHANGELOG.md)
+- [STREAM_DECK](docs/STREAM_DECK.md): default keys and a Stream Deck layout
+- [RELEASING](docs/RELEASING.md): versions and releases
+- [decisions/](docs/decisions/): short records of why things are the way they are
 
 ## Credits
 
-Drill curriculum adapted from public rally-school syllabi (Richard Burns Rally,
-EA SPORTS WRC, DiRT Rally 2.0 / Jon Armstrong, DirtFish, Team O'Neil). These are
-original exercises inspired by them, not reproductions of any school's material
-and not official BeamNG missions.
+Drill curriculum adapted from public rally-school syllabi (Richard Burns Rally, EA SPORTS WRC, DiRT Rally 2.0 / Jon
+Armstrong, DirtFish, Team O'Neil). These are original exercises inspired by them, not reproductions of any school's
+material and not official BeamNG missions. Stream Deck icons from the BEAM.deck pack ([credits](extras/streamdeck/)).

@@ -7,17 +7,9 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-Twenty-six drills are graded automatically: **A01** (gate, cone and parking box, with medals),
-**A02** (launch and shift on a course, with medals), **A03** (downshifting on a course, with
-medals), **A04** (speed hold through gates on a course, with medals), **A05** (stop before a line
-on a course, with medals), **A07** (racing line and exit speed through a corner, with medals),
-**A08** (late apex and a steady exit, with medals), **B01** (threshold braking into a course stop zone, with medals), **B02** (lockup recovery, with
-medals), **B04** (trail braking through a corner, with medals), **B05** (left-foot braking round a
-course circle, with medals), **B06** (correcting understeer back onto a course circle, with medals) and
-**B07** (catching an oversteer slide, with medals) **C01** (lift-off rotation into a corner, with medals), **C02** (brake-induced rotation into a corner, with
-medals), **D01** (six-cone slalom, with medals), **D08** (braking across a tarmac-to-gravel change, with medals), **E02** (FWD rotate-then-pull exit, with medals), **D03** and **D04** (tightening and opening corners, with medals), **D05** (blind crest hairpin, with medals), **D06** (uphill and
-downhill corners, with medals), **E05** (a planted crest, with medals), **C04** (handbrake hairpin round a cone, with medals), **C07** (figure-eight round two cones, with medals) and **C08** (Scandinavian flick, with medals). Every other drill is still
-`selfAssessment` with an empty `rules` list. Engine data sources not listed as
+34 of the 41 drills are graded automatically, all with medals: A01–A05, A07, A08, B01–B07, C01, C02, C04,
+C07, C08, D01–D09, E02, E05–E08 and F06 ([DRILLS](DRILLS.md) lists them). The other seven, A06, F07 and the parked
+C03, C05, C06, E03 and E04, are `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
 Sections 1–7 below are the capabilities; [Drill coverage](#drill-coverage)
@@ -482,8 +474,9 @@ drivetrain ([VEHICLES](VEHICLES.md)), switch setups (F07) and inject a puncture 
 
 ## Drill coverage
 
-36 of 42 drills can be fully automatic once these capabilities exist; 6 need a
-hybrid prompt. (Stage drills F01–F05 and F08 were cut: [ADR 0006](decisions/0006-stages-are-the-games-rally-mode.md).)
+The plan by capability: most drills can be fully automatic once these capabilities exist; a few need a hybrid
+prompt. (Cut: the stage drills F01–F05 and F08, [ADR 0006](decisions/0006-stages-are-the-games-rally-mode.md); E01
+and B08, [ADR 0014](decisions/0014-curriculum-tidy-up.md).)
 
 | Drill | Title | Capabilities needed | Mode |
 | --- | --- | --- | --- |

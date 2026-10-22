@@ -4,7 +4,8 @@
 ([ADR 0002](decisions/0002-drill-data-source-of-truth.md)). The spreadsheet in
 `reference/` is the original design and is no longer kept in sync.
 
-Edit the JSON directly, then run `python tools/dev.py validate`.
+Edit the JSON directly, then run `python tools/dev.py drills` (regenerates [DRILLS](DRILLS.md), the drill list)
+and `python tools/dev.py validate`, which also fails while DRILLS.md is out of date.
 
 ## Schema (version 1)
 

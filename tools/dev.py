@@ -404,6 +404,61 @@ def levels_check() -> None:
     ok(f"{len(layouts)} generated level(s) match their layouts")
 
 
+DRILLS_MD = ROOT / "docs" / "DRILLS.md"
+
+
+def drills_markdown() -> str:
+    """docs/DRILLS.md: every drill by module, where it runs, its surfaces and how it's graded, from exercises.json and
+    venues.json (`python tools/dev.py drills` writes it; validate checks it's current)."""
+    drills = json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8"))["exercises"]
+    venues = {v["id"]: v for v in json.loads((MOD_DIR / VENUES_JSON).read_text(encoding="utf-8"))["venues"]}
+    auto = [d for d in drills if d["assessment"].get("mode") == "automatic"]
+    medals = [d for d in auto if d["assessment"].get("tiers")]
+    parked = [d for d in drills if d.get("parked")]
+    n_var = sum(len(d.get("variants") or []) for d in drills)
+    modules: dict[str, list] = {}
+    for d in drills:
+        modules.setdefault(d["module"], []).append(d)
+    out = ["# Drills", "",
+           "<!-- Generated from mod/gameplay/rallyAcademy/exercises.json by `python tools/dev.py drills`: "
+           "don't edit by hand. -->", "",
+           f"**{len(drills)} drills** in {len(modules)} modules, all on the mod's own map, the proving ground. "
+           f"**{len(auto)}** are graded automatically from telemetry ("
+           + ("all" if len(medals) == len(auto) else str(len(medals))) + " with bronze, silver and gold medals); "
+           f"the other {len(drills) - len(auto)} are self-assessed with Pass and Miss"
+           + (f", {len(parked)} of them waiting for a RWD or AWD car" if parked else "") + ". "
+           f"{n_var} surface variants (the same drill on another surface, with its own progress and medals) make "
+           f"{len(drills) + n_var} drills to play in all. How each one is graded: [GRADING](GRADING.md); the data: "
+           "[DRILL_DATA](DRILL_DATA.md).", ""]
+    for name, ds in modules.items():
+        num, _, title = name.strip().partition(" ")
+        letter = ds[0]["id"][0]
+        out += [f"## {letter} · {title.strip().capitalize().replace('&', '&')}", "",
+                "| Drill | What you practise | Where | Surfaces | Grading |", "| --- | --- | --- | --- | --- |"]
+        for d in ds:
+            a = d["assessment"]
+            if d.get("parked"):
+                grading = "Self-assessed (parked: " + d["parked"].rstrip(".") + ")"
+            elif a.get("mode") == "automatic":
+                grading = "Automatic, medals" if a.get("tiers") else "Automatic"
+                if a.get("aiDemo"):
+                    grading += ", Watch AI"
+            else:
+                grading = "Self-assessed"
+            surfaces = [d.get("surface")] + [v["name"] for v in d.get("variants") or []] if d.get("surface") else ["single surface"]
+            venue = venues.get(d["environment"].get("venue"), {}).get("name", d["environment"].get("venue", "-"))
+            first = d.get("instructions", "").split(". ")[0].rstrip(".").replace("|", "/") + "."
+            out.append(f"| **{d['id']}** {d['title']} | {first} | {venue.replace('Proving ground: ', '')} | "
+                       f"{', '.join(surfaces)} | {grading} |")
+        out.append("")
+    return "\n".join(out)
+
+
+def cmd_drills(_args=None) -> None:
+    DRILLS_MD.write_text(drills_markdown(), encoding="utf-8", newline="\n")
+    ok(f"wrote {DRILLS_MD.relative_to(ROOT)}")
+
+
 def cmd_validate(_args=None) -> None:
     version = read_version()
     json_files = sorted(MOD_DIR.rglob("*.json"))
@@ -432,6 +487,9 @@ def cmd_validate(_args=None) -> None:
     drills = json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8"))["exercises"]
     n_variants = len(expanded(drills)) - len(drills)
     ok(f"{len(drills)} drills valid" + (f", {n_variants} surface variants" if n_variants else ""))
+    if not DRILLS_MD.is_file() or DRILLS_MD.read_text(encoding="utf-8") != drills_markdown():
+        fail(f"{DRILLS_MD.relative_to(ROOT)} is out of date with the drill data (run: python tools/dev.py drills)")
+    ok(f"{DRILLS_MD.relative_to(ROOT)} matches the drills")
     venues = json.loads((MOD_DIR / VENUES_JSON).read_text(encoding="utf-8"))
     errors = validate_venues(venues, json.loads((MOD_DIR / EXERCISES_JSON).read_text(encoding="utf-8")))
     if errors:
@@ -810,6 +868,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--strict", action="store_true", help="fail instead of skipping when luajit/luacheck missing")
     p.set_defaults(func=cmd_check)
     sub.add_parser("validate", help="validate JSON, drills and version").set_defaults(func=cmd_validate)
+    sub.add_parser("drills", help="regenerate docs/DRILLS.md from the drill data").set_defaults(func=cmd_drills)
     p = sub.add_parser("ingame", help="run in-game scenarios (BeamNG running, mod linked)")
     p.add_argument("scenarios", nargs="*", help="scenario names; none lists them")
     p.set_defaults(func=cmd_ingame)

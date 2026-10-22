@@ -24,7 +24,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
 | `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match. `shapes.py` builds road centre lines from straights and arcs; `markers.py` places the corner signs; `racingline.py` exports the drill roads the mod's racing lines need ([ADR 0013](docs/decisions/0013-racing-lines-from-the-map-builder.md)) |
-| `docs/` | Everything else; `docs/decisions/` = ADRs |
+| `docs/` | Everything else; `docs/decisions/` = ADRs; `docs/DRILLS.md` is generated (`dev.py drills`); `docs/images/` = the README's screenshots |
 | `reference/` | Historical design input; not shipped, not authoritative |
 
 ## Ground rules
@@ -50,6 +50,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 
 ```sh
 python tools/dev.py check --strict     # validate + lint + unit tests + build; must pass
+python tools/dev.py drills             # regenerate docs/DRILLS.md after editing exercises.json (validate checks)
 python tools/dev.py ingame smoke pause # with the game running (UI or engine-facing changes)
 python tools/dev.py ingame             # list scenarios
 python tools/dev.py link               # live-link mod/ into the game (junction)
@@ -81,7 +82,8 @@ Learned the hard way (0.39.4):
 - **Screenshots** (`screenshot_image`, `screenshot`) also save a copy to
   `<user folder>/screenshots/mcp/`. That's the one write outside our folders: move your
   captures to the Recycle Bin when you're done (ask before hard-deleting). They leave out the
-  imgui layer (the minimap's roads and car arrow): capture the game window to check those.
+  imgui layer (the minimap's roads and car arrow): `tools/ingame/winshot.py` captures the game window instead
+  (also how the README's `docs/images` are made).
 - **Reading mod state:** use `extensions.rallyAcademy.debugState()`, not `debug.getupvalue`.
 - **Reloading after edits:**
   - `extensions.reload('rallyAcademy')` re-runs the extension, which clears its own module

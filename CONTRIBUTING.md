@@ -21,9 +21,10 @@ python tools/dev.py check     # validate, lint, unit tests, build (Lua tools opt
 python tools/dev.py link      # live-link mod/ into your BeamNG mods folder
 ```
 
-You need Python 3.9+ and BeamNG.drive 0.39 or newer. On Windows, LuaJIT and luacheck run
-in WSL; see [DEVELOPMENT](docs/DEVELOPMENT.md#tooling). Then in the game: Freeroam → HUD
-Layouts → add the **Rally Academy** app. The main menu has **More... → Rally Academy**.
+You need Python 3.9+ and BeamNG.drive 0.40 (0.39 mostly works, but the notes are checked on 0.40). On Windows,
+LuaJIT and luacheck run in WSL; see [DEVELOPMENT](docs/DEVELOPMENT.md#tooling). In the game, the main menu has
+**More... → Rally Academy**: pick a drill and **Start drill**. The proving ground loads and the HUD switches to the
+Rally Academy layout by itself.
 
 ## Testing your change
 

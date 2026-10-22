@@ -106,11 +106,21 @@ warn about this.
   Keep engine calls (`be:`, `guihooks`, file I/O) in small functions so logic can
   be tested with stubs. Each new engine global goes in `.luacheckrc`,
   `tests/lua/beamng_stubs.lua` and [BEAMNG_API_NOTES.md](BEAMNG_API_NOTES.md).
-- **HUD** (`mod/ui/modules/apps/RallyAcademy`): AngularJS directive, view only.
-  It calls Lua through `bngApi.engineLua(...)` and listens for the
-  `rallyAcademyState` event. Never build Lua strings from unchecked user input.
-- **Drills**: edit `exercises.json` directly, then `dev.py validate`. Schema: [DRILL_DATA.md](DRILL_DATA.md).
+- **HUD** (`mod/ui/modules/apps/RallyAcademy*`): Vue HUD apps, view only. They call Lua through the
+  bridge's `engineLua` (`hud.js`) and listen for the `rallyAcademyState` event. Never build Lua strings from
+  unchecked user input.
+- **Drills**: edit `exercises.json` directly, then `dev.py drills` (regenerates [DRILLS.md](DRILLS.md)) and
+  `dev.py validate`. Schema: [DRILL_DATA.md](DRILL_DATA.md).
 - Formatting is set by `.editorconfig` (2-space indent, LF line endings).
+
+## README screenshots
+
+`docs/images/` holds the README's screenshots, about 1600 px wide JPEGs. They're window captures
+(`python tools/ingame/winshot.py docs/images/NAME.jpg --width 1600`), because the game's own screenshots leave out
+the minimap. To set one up: run a drill's scenario helper for the HUD after a graded run, `ui_visibility.set(false)`
+for a shot without the HUD, `tools/mapgen/views.py`'s `look(cam, target)` for a free camera. Take it between
+`A.drill_session` and `A.end_session`, which puts back the drill's progress as it was (a scripted run for a screenshot
+counts as an attempt otherwise).
 
 ## Git workflow
 

@@ -129,7 +129,7 @@ Reuse before building: [PRIOR_ART.md](PRIOR_ART.md).
 
 ## P3 — Machine-readable drills
 
-- [ ] Typed rule schema for all 42 drills; split into automatic and human-review rules.
+- [ ] Typed rule schema for every drill; split into automatic and human-review rules.
 - [ ] Rule evaluators with unit tests for each.
 
 ## P4 — Stages
@@ -158,4 +158,4 @@ live in [IDEAS.md](IDEAS.md) until the owner decides to pick one up.
 | Retry may shift the car if the start spot is occupied | `safeTeleport` avoids overlaps, so a start right beside cones/props can be nudged | — |
 | Cone contact isn't detected for marked courses | Cones barely damage a car; authored courses (A01, A05) measure contact with their drawn cones instead, but marked drills (B01, D01) can't grade it | authored courses, scene control (GRADING §7) |
 | Owner hasn't driven the auto-graded drills on the rig yet | Scripted runs use the arcade gearbox; a real manual-gearbox stall or missed shift (A02) is only unit-tested; A01's and A02's medal targets are set from scripted runs | TESTING |
-| Pass/Miss is self-assessed (all but A01–A05, A07, A08, B01, B02, B04–B07, C01, C02, C04, C07, C08, D01, D03–D06, D08, E02, E05) | No objective grading | P2/P3 |
+| Pass/Miss is self-assessed for A06, F07 and the parked C03, C05, C06, E03, E04 | No objective grading | P2/P3 |
