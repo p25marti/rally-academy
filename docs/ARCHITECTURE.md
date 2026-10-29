@@ -24,7 +24,7 @@ mod/                                            exactly the shipped zip root
 │                                               extension's state for every HUD app) and trace.js (the input
 │                                               trace), shared by the three apps
 ├── ui/modules/apps/RallyAcademyCoach/          HUD: the drill's instructions, then the run's grade (ADR 0012)
-├── ui/modules/apps/RallyAcademyInputs/         HUD: throttle and brake over time (ADR 0012)
+├── ui/modules/apps/RallyAcademyInputs/         HUD: throttle, brake, handbrake and steering over time (ADR 0012)
 ├── settings/ui_apps/originalLayouts/           the Rally Academy HUD layout (ADR 0012)
 │   ├── app.json  app.vue  app.png
 └── ui/ui-vue/mods/rallyAcademy/                Academy screen: main menu, pause tab (Vue UI mod)
@@ -149,8 +149,8 @@ over the game with physics paused (`openMenu`/`closeMenu`/`toggleMenu`, resumed 
 route's `onLeave` hook). It calls
 `extensions.rallyAcademy.getMenuData()` and `startDrill(id)`. The HUD panel is a Vue HUD
 app too (`ui/modules/apps/RallyAcademy/app.vue`, `"vue": true` in `app.json`), compiled at
-runtime by the same mod compiler, so the whole UI is Vue. Its input trace draws the throttle and brake
-live from the car's electrics stream (`useStreams`) while driving, then the run's own trace (`trace` in the published
+runtime by the same mod compiler, so the whole UI is Vue. Its input trace draws the throttle, brake and
+handbrake (the Inputs app also the steering, in a lane of its own) live from the car's electrics stream (`useStreams`) while driving, then the run's own trace (`trace` in the published
 state, from `runRecord.inputTrace`) with its gates marked.
 
 **Authoring.** Starts, finishes, stop zones/lines and gates are marked in-game and saved per

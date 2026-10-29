@@ -65,7 +65,7 @@
          from the car's own input stream; the instructions make way), then the run's trace with its gates marked. -->
     <div v-if="showTrace && !inputsUp" class="ra-trace">
       <canvas ref="traceCanvas"></canvas>
-      <span class="ra-trace-key"><i class="thr"></i>throttle <i class="brk"></i>brake{{ traceLive ? "" : " · this run" }}</span>
+      <span class="ra-trace-key"><i class="thr"></i>throttle <i class="brk"></i>brake <i class="hb"></i>handbrake{{ traceLive ? "" : " · this run" }}</span>
     </div>
 
     <div class="ra-row">
@@ -228,7 +228,7 @@ const coachUp = computed(() => !!(vm.hudParts && vm.hudParts.coach))
 
 // Input trace (trace.js): live while driving, then the run's own trace with its gates marked, unless the Inputs app
 // is up. Drawn smaller than the Inputs app's.
-const TRACE_STYLE = { lineWidth: 1.75, fontPx: 9, pad: 2 }
+const TRACE_STYLE = { lineWidth: 1.75, fontPx: 9, pad: 2, steering: false } // too small for a steering lane: the Inputs app has one
 const traceCanvas = ref(null)
 const traceLive = computed(() => vm.phase === "running")
 const runTrace = computed(() => runTraceOf(vm.trace))
@@ -379,6 +379,7 @@ function onData(data) {
       vertical-align: middle;
       &.thr { background: rgb(80, 200, 110); }
       &.brk { background: rgb(235, 75, 75); }
+      &.hb { background: rgb(90, 160, 255); }
     }
   }
 }

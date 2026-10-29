@@ -5,6 +5,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 
 ## [Unreleased]
 
+### Added
+- **The input graph shows the handbrake and your steering**: the Inputs app draws the handbrake (blue) with the
+  throttle and brake, and the steering in a lane under them, centred, left up, so you can see a flick, a handbrake pull
+  or a correction next to your pedals. The panel's small trace adds the handbrake. Telemetry records the steering input.
+
 ## [0.1.1] - 2026-10-22
 
 The same mod as 0.1.0, now open source.

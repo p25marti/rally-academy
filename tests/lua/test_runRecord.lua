@@ -98,7 +98,9 @@ end
 
 function T.input_trace_downsamples_the_run_and_marks_its_gates()
   local rec = R.new({drill = 'B04'})
-  for i = 0, 600 do R.add(rec, {t = 10 + i / 60, thr = 0.5, brk = 0, ti = i / 600, bi = 0.25}) end
+  for i = 0, 600 do
+    R.add(rec, {t = 10 + i / 60, thr = 0.5, brk = 0, ti = i / 600, bi = 0.25, hb = i > 300 and 1 or 0, si = i / 600})
+  end
   R.markRunStart(rec)
   rec.runStartT = 10
   local tr = R.inputTrace(rec, 50, {{t = 12.5, label = 'Apex'}, {t = 99, label = 'never'}})
@@ -106,9 +108,21 @@ function T.input_trace_downsamples_the_run_and_marks_its_gates()
   eq(tr.t[1], 0, 'from the run start')
   eq(tr.brk[1], 0.25, 'the driver input (bi), not the applied brake')
   eq(tr.thr[#tr.thr] > 0.95, true, 'throttle input at the end')
+  eq(tr.hb[1], 0, 'handbrake off at first')
+  eq(tr.hb[#tr.hb], 1, 'and pulled by the end')
+  eq(tr.st[1], 0, 'steering straight at first')
+  eq(tr.st[#tr.st] < -0.95, true, 'steered right by the end (si +1): the trace has left +')
   eq(#tr.marks, 1, 'marks inside the run only')
   eq(tr.marks[1].t, 2.5, 'relative to the start')
   eq(R.inputTrace(R.new({}), 50, {}), nil, 'nothing to draw')
+end
+
+function T.input_trace_has_no_steering_when_the_run_has_none()
+  local rec = R.new({drill = 'B04'}) -- recorded before the steering input was sampled
+  for i = 0, 60 do R.add(rec, {t = i / 60, ti = 0.5, bi = 0, hb = 0}) end
+  local tr = R.inputTrace(rec, 20, {})
+  eq(tr.st, nil, 'no steering lane')
+  eq(tr.hb[1], 0, 'the handbrake is there')
 end
 
 return T

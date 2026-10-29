@@ -63,9 +63,11 @@ function R.summary(rec)
   }
 end
 
--- The driver's throttle and brake over the run (from its start mark), as at most `n` points for the HUD's input trace:
--- {t = {s from the start}, thr = {0..1}, brk = {0..1}, marks = {{t, label}}, span = s}. `marks` come in as sim times
--- ({t, label}) and go out relative. Each point is the first sample in its slice of the run.
+-- The driver's inputs over the run (from its start mark), as at most `n` points for the HUD's input trace:
+-- {t = {s from the start}, thr = {0..1}, brk = {0..1}, hb = {0..1}, st = {-1..1, + left} or nil, marks = {{t, label}},
+-- span = s}. st is the steering input turned round so left is + (si is + right), there when the samples carry it
+-- (si, since 2026-10-29). `marks` come in as sim
+-- times ({t, label}) and go out relative. Each point is the first sample in its slice of the run.
 function R.inputTrace(rec, n, marks)
   local from = rec and rec.runStartT
   local samples = {}
@@ -74,15 +76,18 @@ function R.inputTrace(rec, n, marks)
   end
   if #samples < 2 then return nil end
   local t0, t1 = samples[1].t, samples[#samples].t
-  local out = {t = {}, thr = {}, brk = {}, marks = {}, span = t1 - t0}
+  local out = {t = {}, thr = {}, brk = {}, hb = {}, st = samples[1].si and {} or nil, marks = {}, span = t1 - t0}
+  local function r2(v) return math.floor((v or 0) * 100 + 0.5) / 100 end
   local slot, step = -1, (t1 - t0) / math.max(1, (n or 160) - 1)
   for _, s in ipairs(samples) do
     local k = step > 0 and math.floor((s.t - t0) / step) or 0
     if k ~= slot then
       slot = k
-      out.t[#out.t + 1] = math.floor((s.t - t0) * 100 + 0.5) / 100
-      out.thr[#out.thr + 1] = math.floor((s.ti or s.thr or 0) * 100 + 0.5) / 100
-      out.brk[#out.brk + 1] = math.floor((s.bi or s.brk or 0) * 100 + 0.5) / 100
+      out.t[#out.t + 1] = r2(s.t - t0)
+      out.thr[#out.thr + 1] = r2(s.ti or s.thr)
+      out.brk[#out.brk + 1] = r2(s.bi or s.brk)
+      out.hb[#out.hb + 1] = r2(s.hb)
+      if out.st then out.st[#out.st + 1] = -r2(s.si) end
     end
   end
   for _, m in ipairs(marks or {}) do

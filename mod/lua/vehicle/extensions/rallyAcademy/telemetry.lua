@@ -29,10 +29,11 @@ local function send()
     if wheels.wheelRotators[i].isTireDeflated then flat = flat + 1 end
   end
   buf:putf('local m=extensions[%q] if m and m.onTelemetry then m.onTelemetry({id=%d,t=%.4f,x=%.2f,y=%.2f,z=%.2f,'
-    .. 'thr=%.3f,brk=%.3f,ti=%.3f,bi=%.3f,hb=%.3f,steer=%.3f,clutch=%.3f,gear=%d,rpm=%.0f,eng=%d,ws=%.3f,air=%.3f,abs=%d,'
+    .. 'thr=%.3f,brk=%.3f,ti=%.3f,bi=%.3f,hb=%.3f,steer=%.3f,si=%.3f,clutch=%.3f,gear=%d,rpm=%.0f,eng=%d,ws=%.3f,air=%.3f,abs=%d,'
     .. 'hx=%.3f,hy=%.3f,vx=%.2f,vy=%.2f,uz=%.3f,dmg=%.0f,flat=%d,w={',
     target, obj:getId(), obj:getSimTime(), x, y, z, e.throttle or 0, e.brake or 0,
-    e.throttle_input or e.throttle or 0, e.brake_input or e.brake or 0, e.parkingbrake or 0, e.steering or 0, e.clutch or 0,
+    e.throttle_input or e.throttle or 0, e.brake_input or e.brake or 0, e.parkingbrake or 0, e.steering or 0,
+    e.steering_input or 0, e.clutch or 0,
     e.gearIndex or 0, e.rpm or 0, (e.engineRunning or 0) > 0 and 1 or 0, e.wheelspeed or 0, e.airspeed or 0,
     (e.absActive or 0) > 0 and 1 or 0,
     h.x, h.y, v.x, v.y, u.z, beamstate and beamstate.damage or 0, flat)

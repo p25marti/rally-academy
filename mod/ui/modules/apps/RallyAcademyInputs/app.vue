@@ -1,12 +1,14 @@
 <template>
-  <!-- Rally Academy input trace (ADR 0012): throttle (green) and brake (red) over time, like a sim's input telemetry.
-       Live from the car's own input stream; once a run is graded, its whole trace with its gates marked until the next
-       one starts. Fills whatever size the layout gives it. -->
+  <!-- Rally Academy input trace (ADR 0012): throttle (green), brake (red) and handbrake (blue) over time, like a sim's
+       input telemetry, and the steering in a lane under them (left up). Live from the car's own input stream; once a
+       run is graded, its whole trace with its gates marked until the next one starts. Fills whatever size the layout
+       gives it. -->
   <div class="ra-inputs">
     <canvas ref="canvas"></canvas>
-    <span class="ra-key">
-      <i class="thr"></i>throttle <i class="brk"></i>brake<span class="ra-mode">{{ showingRun ? " · last run" : " · live" }}</span>
-    </span>
+    <div class="ra-key">
+      <i class="thr"></i>throttle <i class="brk"></i>brake <i class="hb"></i>handbrake <i class="st"></i>steering
+      <span class="ra-mode">{{ showingRun ? " · last run" : " · live" }}</span>
+    </div>
   </div>
 </template>
 
@@ -28,22 +30,24 @@ watch([runTrace, showingRun], () => nextTick(() => showingRun.value && drawRun(c
 
 <style scoped lang="scss">
 .ra-inputs {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   box-sizing: border-box;
-  padding: 0.3rem;
+  padding: 0.3rem 0.3rem 0.15rem;
   background-color: rgba(var(--bng-off-black-rgb), 0.75);
   border-radius: var(--bng-corners-2);
   canvas {
     display: block;
     width: 100%;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
   }
   .ra-key {
-    position: absolute;
-    right: 0.5rem;
-    bottom: 0.3rem;
+    flex: none;
+    text-align: right;
     font-size: 0.7rem;
+    line-height: 1.2rem;
     color: var(--bng-cool-gray-100);
     i {
       display: inline-block;
@@ -53,6 +57,8 @@ watch([runTrace, showingRun], () => nextTick(() => showingRun.value && drawRun(c
       vertical-align: middle;
       &.thr { background: rgb(80, 200, 110); }
       &.brk { background: rgb(235, 75, 75); }
+      &.hb { background: rgb(90, 160, 255); }
+      &.st { background: rgb(235, 235, 235); }
     }
   }
 }

@@ -21,7 +21,8 @@ public class RaWinShot {
   [DllImport("user32.dll")] public static extern bool ClientToScreen(IntPtr h, ref POINT p);
 }
 '@
-$p = Get-Process | Where-Object { $_.MainWindowTitle -like 'BeamNG*' } | Select-Object -First 1
+# the game's own window ("BeamNG.drive - 0.40..."), not the launcher's ("BeamNG v0.40 Launcher")
+$p = Get-Process | Where-Object { $_.MainWindowTitle -like 'BeamNG.drive - *' } | Select-Object -First 1
 if (-not $p) { Write-Error 'no BeamNG window'; exit 1 }
 $r = New-Object RaWinShot+RECT; [RaWinShot]::GetClientRect($p.MainWindowHandle, [ref]$r) | Out-Null
 $o = New-Object RaWinShot+POINT; [RaWinShot]::ClientToScreen($p.MainWindowHandle, [ref]$o) | Out-Null

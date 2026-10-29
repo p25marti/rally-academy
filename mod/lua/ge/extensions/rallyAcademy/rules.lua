@@ -6,7 +6,8 @@
 -- bi/ti (0..1, the driver's own brake and throttle input, before ABS and traction control; since 2026-10-21),
 -- gear (gearIndex: 0 neutral, -1 reverse), rpm, eng (1 = engine running), hb (handbrake),
 -- hx, hy (heading), vx, vy (velocity, m/s), uz (up vector z: 1 upright), dmg (beamstate damage),
--- steer (steering wheel angle in degrees, electrics.steering: about +80 mid-corner in the Covet),
+-- steer (steering wheel angle in degrees, electrics.steering: + left, about +80 mid-corner in the Covet), si (the
+-- driver's steering input, -1..1, + to the RIGHT: the opposite sign to steer; since 2026-10-29),
 -- flat (deflated tyres),
 -- x, y, z (m), w = {{n = 'FR', s = wheel speed m/s, m = surface id, f = downforce}, ...}
 -- ctx: {zone = marked stop zone {pos, dir}, gates = marked gates (gates.lua), in order}
