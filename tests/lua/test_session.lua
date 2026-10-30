@@ -8,11 +8,11 @@ local markStartAndFinish = H.markStartAndFinish
 local has = H.has
 local T = {}
 
-function T.loads_all_41_drills()
+function T.loads_all_43_drills()
   local h = setup()
   local s = h.lastState()
   eq(s.phase, 'idle', 'initial phase')
-  eq(#s.lessons, 41 + #stubs.testDrills(), 'lesson count: 41 shipped (ADRs 0006 and 0014 cut seven, D09 added) + the test drills')
+  eq(#s.lessons, 43 + #stubs.testDrills(), 'lesson count: 43 shipped (ADRs 0006 and 0014 cut seven; D09, C09, D10 added) + the test drills')
   eq(s.lessons[1].id, 'A01', 'first lesson')
 end
 

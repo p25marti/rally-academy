@@ -357,6 +357,7 @@ local function placeCourse()
   Props.place(course.markers, function(x, y) return groundZ(x, y, z0) end)
   for _, g in ipairs(course.gates) do g.pos.z = groundZ(g.pos.x, g.pos.y, z0) + CAR_HEIGHT end
   for _, c in ipairs(course.cones) do c.z = groundZ(c.x, c.y, z0) + CAR_HEIGHT end
+  for _, b in ipairs(course.bales) do b.z = groundZ(b.x, b.y, z0) + CAR_HEIGHT end
   for _, key in ipairs({'box', 'zone', 'line', 'circle'}) do -- the targets (TARGETS below)
     local item = course[key]
     local at = item and (item.pos or item)
@@ -876,6 +877,7 @@ local function drawCourse()
     line = course and course.line, lineCones = course and course.lineCones,
     lineZones = course and course.line and medalsFor(targetNamed('line')),
     circle = course and course.circle, corridors = course and course.circle and medalsFor(targetNamed('circle')),
+    bales = course and course.bales,
     footprint = footprint, physical = Props.active(),
     racingLine = prefs.showLine == true and racingLine() or nil,
   })
@@ -915,7 +917,7 @@ local function trackCourse(veh, vpos)
   local h = veh:getDirectionVector()
   if not cur.clipped and not Props.active() then
     for _, m in ipairs(course.markers) do
-      if Layout.distanceToCar(car, vpos.x, vpos.y, h.x, h.y, m.x, m.y) < Layout.MARKER_RADIUS then
+      if Layout.markerClearance(car, vpos.x, vpos.y, h.x, h.y, m) < 0 then
         cur.clipped, lastReason, cur.uiAccum = m.name, 'Clipped ' .. m.name .. '.', 1
         logf('I', '%s: clipped %s', selected, m.name)
         break

@@ -35,6 +35,12 @@ function G.crossing(gate, a, b)
   return {f = f, offset = offset, inside = math.abs(offset) <= gate.width / 2}
 end
 
+-- Two gates on the same line (C09: the donut starts and ends at one): the second needs a crossing of its own.
+local function sameLine(g, h)
+  return g and h and math.abs(g.pos.x - h.pos.x) < 0.01 and math.abs(g.pos.y - h.pos.y) < 0.01
+    and math.abs(g.dir.x - h.dir.x) < 1e-3 and math.abs(g.dir.y - h.dir.y) < 1e-3
+end
+
 -- Walk a run's samples and pass the gates in order.
 -- Returns one entry per gate: {reached = false} or {reached = true, inside, offset, t, kmh}.
 function G.passes(gates, samples)
@@ -42,7 +48,9 @@ function G.passes(gates, samples)
   for i = 1, #gates do out[i] = {reached = false} end
   for i = 2, #samples do
     local a, b = samples[i - 1], samples[i]
+    local first = idx
     while idx <= #gates and a.x and b.x do
+      if idx > first and sameLine(gates[idx], gates[idx - 1]) then break end
       local c = G.crossing(gates[idx], a, b)
       if not c then break end
       local air = (a.air or 0) + c.f * ((b.air or 0) - (a.air or 0))

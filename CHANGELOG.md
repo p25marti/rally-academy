@@ -6,6 +6,11 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **C09 Donut round a bale**: a full 360 round a real hay bale on the dirt strip, the handbrake swinging the rear out
+  and the throttle holding the rotation, close to the bale without touching it. Graded on the turn, the slide and how
+  tight you stay (medals for tighter and more sideways).
+- **D10 Hay-bale chicane**: three walls of real hay bales on the test road's straight, like the chicanes organisers put
+  before spectator areas. Arrive fast, brake hard, weave through without touching a bale; medals for time.
 - **The input graph shows the handbrake and your steering**: the Inputs app draws the handbrake (blue) with the
   throttle and brake, and the steering in a lane under them, centred, left up, so you can see a flick, a handbrake pull
   or a correction next to your pedals. The panel's small trace adds the handbrake. Telemetry records the steering input.

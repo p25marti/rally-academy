@@ -80,9 +80,12 @@ def course_errors(course) -> list[str]:
     if not isinstance(course, dict):
         return ["assessment.course must be an object"]
     errors = []
-    unknown = set(course) - {"gates", "cones", "box", "line", "zone", "circle", "predict"}
+    unknown = set(course) - {"gates", "cones", "box", "line", "zone", "circle", "predict", "bales"}
     if unknown:
         errors.append(f"assessment.course: unknown keys {sorted(unknown)}")
+    for i, b in enumerate(course.get("bales", []) if isinstance(course.get("bales", []), list) else [None]):
+        if not (isinstance(b, dict) and _num(b.get("y")) and _num(b.get("x", 0)) and _num(b.get("headingDeg", 0))):
+            errors.append(f"assessment.course.bales[{i}] needs numeric y (and x, headingDeg)")
     for kind in ("gates", "cones"):
         items = course.get(kind, [])
         if not isinstance(items, list):

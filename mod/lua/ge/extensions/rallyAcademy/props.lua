@@ -5,7 +5,8 @@
 -- Engine calls only; with no engine (unit tests) it places nothing and grading measures instead.
 local P = {}
 
-P.MODELS = {post = {'delineator', 'vehicles/delineator/pole.pc'}, cone = {'cones', 'vehicles/cones/large.pc'}}
+P.MODELS = {post = {'delineator', 'vehicles/delineator/pole.pc'}, cone = {'cones', 'vehicles/cones/large.pc'},
+            bale = {'haybale', 'vehicles/haybale/square.pc'}} -- a square bale, 480 kg: it stops a car
 -- Our props' object names start with this, so a reloaded extension can find and remove the last one's.
 local PREFIX = 'ra_prop_'
 
@@ -40,7 +41,8 @@ local function signatureOf(markers)
   return table.concat(parts, ';')
 end
 
--- Stand a prop at each marker ({x, y, name, kind = 'post' | 'cone'}); `groundZ(x, y)` gives the ground height.
+-- Stand a prop at each marker ({x, y, name, kind = 'post' | 'cone' | 'bale', dir}); a bale lies with its long side
+-- along `dir`. `groundZ(x, y)` gives the ground height.
 -- Leaves the props alone when the same course is laid out again. Returns how many stand.
 function P.place(markers, groundZ)
   if not engine() then return 0 end
@@ -51,7 +53,8 @@ function P.place(markers, groundZ)
     local model = P.MODELS[m.kind]
     if model then
       local opt = sanitizeVehicleSpawnOptions(model[1], {config = model[2], pos = vec3(m.x, m.y, groundZ(m.x, m.y)),
-                                                        rot = quat(0, 0, 0, 1), vehicleName = PREFIX .. i})
+                                                        rot = m.dir and quatFromDir(vec3(m.dir.x, m.dir.y, 0), vec3(0, 0, 1))
+                                                          or quat(0, 0, 0, 1), vehicleName = PREFIX .. i})
       opt.autoEnterVehicle = false
       local v = core_vehicles.spawnNewVehicle(model[1], opt)
       if v then

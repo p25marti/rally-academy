@@ -616,13 +616,13 @@ function E.markers_clear(rule, samples, ctx)
   if ctx.hits and ctx.hits[1] then
     return false, string.format('Clipped %s at %.0f km/h', ctx.hits[1].name, ctx.hits[1].kmh or 0)
   end
-  local car, need = carOf(ctx), Layout.MARKER_RADIUS + (rule.clearanceM or 0)
+  local car, need = carOf(ctx), rule.clearanceM or 0
   local closest, closestName, hit = math.huge, nil, nil
   for _, s in ipairs(samples) do
     local hx, hy = heading(s)
     if hx and s.x then
       for _, m in ipairs(course.markers) do
-        local d = Layout.distanceToCar(car, s.x, s.y, hx, hy, m.x, m.y)
+        local d = Layout.markerClearance(car, s.x, s.y, hx, hy, m)
         if d < closest then closest, closestName = d, m.name end
         if d < need and not hit then hit = {name = m.name, air = s.air or 0} end
       end
@@ -630,8 +630,7 @@ function E.markers_clear(rule, samples, ctx)
   end
   if hit and not ctx.hits then return false, string.format('Clipped %s at %.0f km/h', hit.name, hit.air * KMH) end
   if not closestName then return true, 'Cleared every marker' end
-  return true, string.format('Cleared every marker (closest: %s, %.1f m)', closestName,
-    math.max(0, closest - Layout.MARKER_RADIUS))
+  return true, string.format('Cleared every marker (closest: %s, %.1f m)', closestName, math.max(0, closest))
 end
 
 -- At rest with the whole car inside the course's parking box, shrunk by `insetM` on every
@@ -787,15 +786,21 @@ function E.circle_laps(rule, samples, ctx)
 end
 
 -- Holds the circle's line: the car stays within `widthM` / 2 of it, allowing a moment outside
--- (`maxSeconds`). The text gives the furthest it ran off the line.
--- rule: {type = 'circle_corridor', widthM = 6, maxSeconds = 0.3}
+-- (`maxSeconds`). The text gives the furthest it ran off the line. With `fromGate` (and `toGate`, default the last),
+-- only between those gates.
+-- rule: {type = 'circle_corridor', widthM = 6, maxSeconds = 0.3, fromGate = nil, toGate = -1}
 function E.circle_corridor(rule, samples, ctx)
   local course = courseOf(ctx, 'circle')
   if not course then return false, 'This drill has no circle laid out' end
   local circle, half, allow = course.circle, rule.widthM / 2, rule.maxSeconds or 0.3
+  local t0, t1 = -math.huge, math.huge
+  if rule.fromGate then -- only between two gates (C09: the donut itself, not the run-up and the drive out)
+    t0, t1 = R.gateWindow(ctx, samples, rule.fromGate, rule.toGate or -1)
+    if not t0 then return false, t1 end
+  end
   local worst, worstOff, n, outT, outMax, longest, prev = 0, 0, 0, 0, 0, 0, nil
   for _, s in ipairs(samples) do
-    if s.x then
+    if s.x and s.t >= t0 and s.t <= t1 then
       local off = Layout.circleOffset(circle, s.x, s.y)
       n = n + 1
       if math.abs(off) > math.abs(worstOff) then worstOff = off end
@@ -901,6 +906,30 @@ function E.rear_slide(rule, samples, ctx)
   if worst >= need then return true, string.format('Rear stepped out %.1f° (target %g°+)', worst, need) end
   return false, string.format('The rear only stepped out %.1f° (target %g°): %s', worst, need,
     rule.hint or 'lift or brake harder as you turn in')
+end
+
+-- How far the car turned between two gates (default the first and the last): its heading's total change, + the
+-- drill's `turn` way (C09: a full turn round the bale). A slide or a spin counts as turning; only the heading matters.
+-- rule: {type = 'turned', minDeg = 330, turn = 'left', fromGate = 1, toGate = -1}
+function E.turned(rule, samples, ctx)
+  local t0, t1 = gateWindow(ctx, samples, rule.fromGate or 1, rule.toGate or -1)
+  if not t0 then return false, t1 end
+  local total, prev = 0, nil
+  for _, s in ipairs(samples) do
+    local hx, hy = heading(s)
+    if hx and s.t >= t0 and s.t <= t1 then
+      local a = math.atan2(hy, hx) -- world x east, y north: anticlockwise (left) is +
+      if prev then
+        local d = a - prev
+        if d > math.pi then d = d - 2 * math.pi elseif d < -math.pi then d = d + 2 * math.pi end
+        total = total + d
+      end
+      prev = a
+    end
+  end
+  local deg, need = math.deg(total) * (rule.turn == 'right' and -1 or 1), rule.minDeg or 330
+  if deg >= need then return true, string.format('Turned %.0f° round (target %g°)', deg, need) end
+  return false, string.format('Turned only %.0f° of the %g°: keep it rotating all the way round', math.max(0, deg), need)
 end
 
 -- Settled by a gate (B07: the end of the exit lane): there the slide is over (slip angle within
@@ -1231,12 +1260,13 @@ R.TYPES = {
   predicted_stop = {},
   limp_speed = {'maxKmh'},
   back_on_line_by_gate = {},
+  turned = {'minDeg'},
 }
 
 -- Rule types that need marked gates (assessment.gates, or gates in assessment.course).
 R.GATE_RULES = {'gates_passed', 'speed_at_gates', 'no_brake_between_gates', 'steady_exit', 'trail_braked',
   'brake_off_by_gate', 'rear_slide', 'settled_by_gate', 'ran_wide', 'back_on_line_by_gate', 'flick',
-  'throttle_on_between'}
+  'throttle_on_between', 'turned'}
 -- Rule types that need an authored course (assessment.course).
 R.COURSE_RULES = {'cones_passed', 'markers_clear', 'park_in_box', 'circle_laps', 'circle_corridor', 'ran_wide',
   'back_on_line_by_gate'}

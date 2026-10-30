@@ -7,13 +7,13 @@ self-assessed Pass/Miss. This expands the Telemetry and Scoring parts of
 [PRIOR_ART](PRIOR_ART.md); car choices are in [VEHICLES](VEHICLES.md).
 
 **Status:** the telemetry sampler, run records and the rule engine exist.
-34 of the 41 drills are graded automatically, all with medals: A01–A05, A07, A08, B01–B07, C01, C02, C04,
-C07, C08, D01–D09, E02, E05–E08 and F06 ([DRILLS](DRILLS.md) lists them). The other seven, A06, F07 and the parked
+36 of the 43 drills are graded automatically, all with medals: A01–A05, A07, A08, B01–B07, C01, C02, C04,
+C07–C09, D01–D10, E02, E05–E08 and F06 ([DRILLS](DRILLS.md) lists them). The other seven, A06, F07 and the parked
 C03, C05, C06, E03 and E04, are `selfAssessment` with an empty `rules` list. Engine data sources not listed as
 verified in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md) remain **unverified**.
 
 Sections 1–7 below are the capabilities; [Drill coverage](#drill-coverage)
-maps each of the 41 drills to the ones it needs (E01 and B08 were cut: [ADR 0014](decisions/0014-curriculum-tidy-up.md)).
+maps each of the 43 drills to the ones it needs (E01 and B08 were cut: [ADR 0014](decisions/0014-curriculum-tidy-up.md)).
 
 ## 1. Telemetry sampler
 
@@ -136,7 +136,7 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `no_puncture` | none | No tyre goes flat during the run |
 | `cones_passed` | none | Every course cone is passed on its `keep` side (the car crosses the line through the cone, square to the course, with the cone on that side) |
 | `no_damage` hint | optional `hint` on `no_damage` | Where damage comes from the ground itself (E07's bumps), the text reads "Damaged the car at 58 km/h (damage +56): <hint>" instead of "Hit something" |
-| `markers_clear` | none (optional `clearanceM` 0) | The car never touches a course's cones or gate posts. With the real props standing (ADR 0011), what the car's collisions touched decides; otherwise (no props, an old recording) its body coming within 0.15 m (+ `clearanceM`) of a marker, the body being the footprint measured from the car's nodes when the run starts |
+| `markers_clear` | none (optional `clearanceM` 0) | The car never touches a course's cones, gate posts or hay bales. With the real props standing (ADR 0011), what the car's collisions touched decides; otherwise (no props, an old recording) its body coming within 0.15 m (+ `clearanceM`) of a marker (a bale: within 0.6 m of three points along its long side), the body being the footprint measured from the car's nodes when the run starts |
 | `park_in_box` | none (optional `insetM` 0, `label`) | At rest with all four corners of the body inside the course's box, shrunk by `insetM` on every side |
 | `no_reverse` | none (optional `maxM` 0.3) | The car travels no more than `maxM` backwards (against the way it points) |
 | `max_time` | `maxSeconds` | The run time is at most `maxSeconds` (medal time targets) |
@@ -144,7 +144,8 @@ record, ctx)` looks only at samples from the run's start mark and returns
 | `brake_off_by_gate` | none (optional `gate` 2, `maxBrake` 0.05) | The brake is at most `maxBrake` from crossing the gate (the apex) to the end of the run while moving; says how long before the gate it came off |
 | `steady_exit` | none (optional `fromGate` −2, `toGate` −1, `maxCorrections` 1, `minSwingDeg` 10, `after`: where the window starts, in the text) | Between the two gates the steering doesn't swing back and forth: unwinding once is fine, each reversal of more than `minSwingDeg` degrees of steering wheel is a correction (`steer` is the wheel angle in degrees) |
 | `circle_laps` | none (optional `laps`, default the circle's) | The car goes round the course circle (`assessment.course.circle`) that many times the way it is meant to be driven; going round the wrong way says so |
-| `circle_corridor` | `widthM` (optional `maxSeconds` 0.3) | The car's position stays within `widthM` / 2 of the circle's line, allowing up to `maxSeconds` outside at a time; says the furthest it ran off |
+| `circle_corridor` | `widthM` (optional `maxSeconds` 0.3, `fromGate` and `toGate` to grade only between two gates) | The car's position stays within `widthM` / 2 of the circle's line, allowing up to `maxSeconds` outside at a time; says the furthest it ran off |
+| `turned` | `minDeg` (optional `turn` 'left', `fromGate` 1, `toGate` −1) | Between the two gates the car's heading turns at least `minDeg` the `turn` way, in total (C09: a full turn round the bale); turning the other way counts against |
 | `throttle_held` | none (optional `maxGapSeconds` 0.3, `minThrottle` 0.05, `fromKmh` 0) | From the first moment on the throttle at `fromKmh` (pulling away and changing up before then is free) to the end, the throttle never drops under `minThrottle` for longer than `maxGapSeconds` |
 | `rear_slide` | none (optional `minSlipDeg` 8, `turn` 'left', `fromGate` 1, `toGate` −1, `hint`: the coaching on a miss) | Between the two gates the rear steps out at least `minSlipDeg`: the slip angle with the car pointing further into the `turn` than it travels (`R.signedSlipDeg`). The front pushing wide doesn't count |
 | `settled_by_gate` | none (optional `gate` −1, `maxSlipDeg` 4, `maxSteerDeg` 45) | Where the car crosses the gate, the slide is over (slip within `maxSlipDeg`) and the countersteer unwound (steering wheel within `maxSteerDeg` of straight); the gate's `label` names it in the text |
@@ -343,6 +344,25 @@ from 66 km/h (half lock away, then full lock in with full brake) gave 12.7-14.4�
 and a gentler flick with 0.8 brake 3-7°. The flick swings the car out, so the approach line sits nearer the
 middle than C02's.
 
+C09 donut round a bale (2026-10-30, 0.40.4, the dirt strip): an Entry gate, a real square hay bale 6 m left of the
+line, a timing line beside it with no posts (the donut starts when the car crosses it and ends when it crosses it again,
+coming round: two gates on one line, `posts: false`), then an Exit gate. Between the two crossings: a turn of 330
+degrees or more to the left (`turned`), the rear sliding 15 degrees, within 5 m either side of the 6 m circle round the
+bale (`circle_corridor` with `fromGate`, so the run-up and the drive out don't count); no bale or post touched, no
+reversing. Silver: 4.5 m and 18 degrees; gold: 4 m and 20 degrees. Scripted with a controller in the car's own Lua (a
+slide is too quick to balance through MCP round trips): 30 km/h in, a 0.6 s handbrake swing, then 22 km/h held with a
+0.3 s handbrake tap every second and the steering keeping 5 m from the bale: about 340 degrees, 17-23 degrees of slide,
+4.2-6 m off the circle; the best runs pass (bronze), and no scripted run has reached silver or gold yet (a driver steers
+a slide better than the script). A 4.5 m circle was tried first: the sliding car's nose swept into the bale. Driving
+round on the lock without the handbrake slides 0-6 degrees and misses. Fixtures `c09_pass`, `c09_noslide`.
+
+D10 hay-bale chicane (2026-10-30, 0.40.4, the test road's straight): a Brake gate 45 m from the start, three walls of two
+real square bales 15 m apart (left, right, left), each wall's outer bale half on the verge so a 4 m gap stays on the
+7 m road, and a Finish gate. 50 km/h or more at the Brake gate, no bale or post touched, no more than one wheel off the
+gravel, no spin; silver at the Finish in 10.2 s from the start, gold 9.6 s. Scripted (arcade, the line straight through
+each gap): braked to 30 km/h 10.0 s (silver), 34 km/h 9.5 s (gold); 36 km/h and more clips the middle wall. With 3 m
+gaps (the walls fully on the road) even 25 km/h clipped. Fixtures `d10_medal`, `d10_clip`, `d10_slow`.
+
 B07 targets (the proving ground's dirt arc; first set on the BMP dirt circle; Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
 then a 7 m exit lane 18 m long. Bronze: the rear steps out 8°+ between the Turn in gate and the lane end,
 through both lane gates without spinning, at most three steering corrections in the lane, and at the
@@ -503,6 +523,7 @@ and B08, [ADR 0014](decisions/0014-curriculum-tidy-up.md).)
 | C06 | Controlled slip angle | Slip angle held through arc, spin, corridor | Automatic |
 | C07 | Lateral weight transfer | Gate sequence, cone contact, spin, abrupt stop | Automatic |
 | C08 | Scandinavian flicks | Flick steering, rear slide, no handbrake, spin, posts, exit speed | Automatic |
+| C09 | Donut round a bale (added 2026-10-30) | A full turn round the bale, rear slide, corridor round it, bale and posts, reversing | Automatic |
 | D01 | Slaloms and transitions | Cones on the correct side, cone contact, spin, exit speed ≥ 25 km/h, time | Automatic |
 | D02 | Linked-corner sequencing | Apex gates and posts, on the road, exit speed (built 2026-10-21) | Automatic |
 | D03 | Decreasing-radius corners | Gates, posts, wheels off the gravel, contact, spin, exit speed | Automatic |
@@ -512,6 +533,7 @@ and B08, [ADR 0014](decisions/0014-curriculum-tidy-up.md).)
 | D07 | Road camber | Apex gates and posts, speed through the banked apexes, on the road, spin (built 2026-10-21) | Automatic |
 | D08 | Mixed-surface transitions | Gates, posts, stop zone, lockup, spin | Automatic |
 | D09 | Uphill hairpins (added 2026-10-20) | Gates and posts at each hairpin, on the road, spin, reversing, time | Automatic |
+| D10 | Hay-bale chicane (added 2026-10-30) | Entry speed, bales and posts, on the road, spin, time | Automatic |
 | E02 | FWD technique | Rear slide before the apex, throttle after it, no handbrake, spin, posts, exit speed | Automatic |
 | E03 | RWD technique | Spin, corridor, wheelspin | Automatic |
 | E04 | AWD technique | Understeer, corridor, exit speed | Automatic |

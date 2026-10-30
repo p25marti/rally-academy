@@ -21,6 +21,11 @@ local function drawGate(g, state, physical)
   local z0, z1 = physical and g.pos.z + POST_TOP or g.pos.z - 0.6, g.pos.z + 1.4
   local left = {x = g.pos.x - rx * half, y = g.pos.y - ry * half}
   local right = {x = g.pos.x + rx * half, y = g.pos.y + ry * half}
+  if g.virtual then -- a timing line with no posts: a line on the ground
+    local z = g.pos.z - 0.35
+    debugDrawer:drawCylinder(vec3(left.x, left.y, z), vec3(right.x, right.y, z), 0.05, c)
+    return
+  end
   debugDrawer:drawCylinder(vec3(left.x, left.y, z0), vec3(left.x, left.y, z1), 0.12, c)
   debugDrawer:drawCylinder(vec3(right.x, right.y, z0), vec3(right.x, right.y, z1), 0.12, c)
   debugDrawer:drawCylinder(vec3(left.x, left.y, z1), vec3(right.x, right.y, z1), 0.05, c)
@@ -145,6 +150,15 @@ local function drawCircle(circle, corridors, fit)
   end
 end
 
+-- A hay bale's outline on the ground (1.96 x 1.17 m, its long side along `dir`) where no real bale stands.
+local function drawBale(b)
+  local fx, fy = b.dir.x, b.dir.y
+  local rx, ry = fy, -fx
+  local function at(a, s) return {x = b.x + fx * a + rx * s, y = b.y + fy * a + ry * s} end
+  drawRect({at(0.98, -0.585), at(0.98, 0.585), at(-0.98, 0.585), at(-0.98, -0.585)}, b.z - GROUND + 0.05, 0.05,
+    colour('hint'))
+end
+
 -- The racing line ("Show line", racingLine.lua): a flat ribbon on the ground, red where to brake, yellow where the
 -- corner's limit holds the speed, green where to accelerate.
 local PHASE = {[-1] = 'brake', [0] = 'hold', [1] = 'accelerate'}
@@ -169,6 +183,7 @@ end
 --   zoneTiers = {{name, lengthM, widthM}}: a course stop zone's medal sizes (drawn nested)
 --   circle = {x, y, z, radiusM}, corridors = {{name, widthM}}: a circle to lap and its medal corridors
 --   physical = real cones and posts stand at the markers (props.lua): don't draw over them
+--   bales = {{x, y, z, dir}}: hay bales (outlined only where no real ones stand)
 --   racingLine = {{x, y, z, kmh, phase}} to draw on the ground, or nil
 -- }
 function C.draw(course)
@@ -186,6 +201,9 @@ function C.draw(course)
     for _, c in ipairs(course.lineCones or {}) do drawCone(c, nil, course.physical) end
   end
   if course.circle then drawCircle(course.circle, course.corridors, course.fit) end
+  if not course.physical then
+    for _, b in ipairs(course.bales or {}) do drawBale(b) end
+  end
   if course.box then
     drawBox(course.box, course.boxes or {{name = 'bronze', inset = 0}}, course.fit)
     if course.footprint then

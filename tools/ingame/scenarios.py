@@ -1152,6 +1152,145 @@ def hairpins():
     return p
 
 
+def _chicane_run(chicane_kmh=34, off=1.6, flat=2, brake_at=45, brake=0.75, out_at=92):
+    """D10: flat out to the Brake gate, brake to `chicane_kmh`, weave through the three gaps (`off` m either side of the
+    centre, straight for `flat` m through each), then flat out again from `out_at` m."""
+    path = [(0, 0), (0, 40), (off, 60 - flat - 4), (off, 60 + flat), (-off, 75 - flat), (-off, 75 + flat),
+            (off, 90 - flat), (off, 90 + flat), (0, 103), (0, 125)]
+
+    def pedals(v, trav):
+        if trav < brake_at:
+            return (1.0, 0.0)
+        if trav < brake_at + 30 and v > chicane_kmh + 2:
+            return (0.0, brake)
+        return _hold(v, chicane_kmh) if trav < out_at else (1.0, 0.0)
+    return A.course_run("D10", path, pedals=pedals, kmh=90, max_throttle=1.0, decel=3.0, timeout=60, stop_within=0.5)
+
+
+@scenario
+def chicane():
+    """D10 through the hay-bale chicane on the test road (Covet Gravel Rally, arcade): flat out to the Brake gate,
+    braking to 34 km/h and weaving through the gaps earns a medal; 38 km/h clips a bale; braking before the Brake gate
+    is too slow into it. RA_SAVE=1 saves the runs as fixtures (d10_*)."""
+    import os
+    p, save = [], os.environ.get("RA_SAVE")
+    A.drill_session("D10")
+    for _ in range(3):  # the path follower's line varies by a few tens of centimetres
+        s = _chicane_run()
+        if s.get("passed"):
+            break
+    expect(p, "braking hard and weaving through earns a medal", s.get("passed") is True and s.get("tier") is not None,
+           f"{s.get('tier')}: {s.get('reason')}")
+    save and A.save_fixture("d10_medal")
+    s = _chicane_run(chicane_kmh=40, flat=2.5, off=1.8)
+    expect(p, "too fast through the chicane clips a bale", s.get("passed") is False
+           and any("bale" in c for c in A.failed_checks()), A.failed_checks())
+    save and A.save_fixture("d10_clip")
+    s = _chicane_run(brake_at=20, chicane_kmh=30)
+    expect(p, "braking before the Brake gate misses", s.get("passed") is False
+           and any("Gate 1" in c for c in A.failed_checks()), A.failed_checks())
+    save and A.save_fixture("d10_slow")
+    A.end_session("D10")
+    return p
+
+
+# C09's donut, driven by a controller inside the car's own Lua (every frame, no MCP round trips: a slide is too quick
+# to balance from outside): hold the line in, then full lock with the handbrake, then steer to keep `r` m from the bale
+# with `hold` km/h and a handbrake tap every `tapEvery` s, until the heading has turned `turn` degrees, then out north.
+_DONUT_LUA = r"""
+package.loaded['raDonut'] = nil
+package.preload['raDonut'] = function()
+  local M = {}
+  local P = %s
+  local st, t, turned, prevA = 'approach', 0, 0, nil
+  local function ev(n, v) input.event(n, v, 2) end
+  local function clamp(v, a, b) return math.max(a, math.min(b, v)) end
+  function M.updateGFX(dt)
+    local p, d = obj:getPosition(), obj:getDirectionVector()
+    local v, a = obj:getVelocity():length(), math.atan2(d.y, d.x)
+    t = t + dt
+    if st == 'approach' or st == 'exit' then
+      -- back on the line: steering input is + right, so right of it (or heading right) steers left
+      local side = (p.x - P.lx) * P.rx + (p.y - P.ly) * P.ry
+      local head = d.x * P.rx + d.y * P.ry
+      ev('steering', clamp(-(side * 0.25 + head * 1.5), -1, 1)); ev('parkingbrake', 0); ev('brake', 0)
+      if st == 'approach' then
+        ev('throttle', clamp(0.3 + (P.kmh / 3.6 - v) * 0.3, 0, 1))
+        if (p.x - P.bx) * P.fwx + (p.y - P.by) * P.fwy >= P.pullAt then st, t, prevA = 'pull', 0, a end
+      else
+        ev('throttle', 0.5)
+      end
+    else
+      local dA = a - prevA
+      if dA > math.pi then dA = dA - 2 * math.pi elseif dA < -math.pi then dA = dA + 2 * math.pi end
+      turned, prevA = turned + math.deg(dA), a
+      local dist = math.sqrt((p.x - P.bx) ^ 2 + (p.y - P.by) ^ 2)
+      ev('steering', clamp(-P.lock + P.gain * (P.r - dist), -1, 0.5))
+      if st == 'pull' then
+        ev('parkingbrake', 1); ev('throttle', 0)
+        if t >= P.pullS then st, t = 'donut', 0 end
+      else
+        local tap = (P.tapEvery > 0 and (t %% P.tapEvery) < P.tapS) and 1 or 0
+        ev('parkingbrake', tap)
+        ev('throttle', tap == 1 and 0 or clamp(0.25 + (P.hold / 3.6 - v) * 0.3, 0, P.maxThr))
+      end
+      if turned >= P.turn then st = 'exit' end
+    end
+  end
+  return M
+end
+extensions.unload('raDonut')
+extensions.load('raDonut')
+return 1
+"""
+
+
+def _donut_run(kmh=30, hold=22, lock=0.9, gain=1.0, r=5.0, pull_s=0.6, tap_every=1.0, tap_s=0.3, max_thr=0.6, turn=320):
+    """C09 by the in-car controller above; returns the graded state."""
+    drill = A.drill("C09")
+    sp, course = drill["environment"]["spawn"], drill["assessment"]["course"]
+    n = math.hypot(sp["dir"]["x"], sp["dir"]["y"])
+    fx, fy = sp["dir"]["x"] / n, sp["dir"]["y"] / n
+    rx, ry = fy, -fx
+    bale = course["bales"][0]
+    bx, by = sp["pos"]["x"] + rx * bale["x"] + fx * bale["y"], sp["pos"]["y"] + ry * bale["x"] + fy * bale["y"]
+    params = dict(lx=sp["pos"]["x"], ly=sp["pos"]["y"], rx=rx, ry=ry, fwx=fx, fwy=fy, bx=bx, by=by,
+                  pullAt=-1.0, kmh=kmh, hold=hold, lock=lock, gain=gain, r=r, pullS=pull_s, tapEvery=tap_every,
+                  tapS=tap_s, maxThr=max_thr, turn=turn)
+    zero = "for _, k in ipairs({'throttle', 'brake', 'steering'}) do input.event(k, 0, 2) end"
+    vlua(f"extensions.unload('raDonut') {zero} return 1")
+    A.click("Retry")
+    time.sleep(1.5)
+    A.arcade()
+    vlua(_DONUT_LUA % ("{" + ", ".join(f"{k} = {v}" for k, v in params.items()) + "}"))
+    s = A.wait_graded(timeout=40)
+    vlua(f"extensions.unload('raDonut') {zero} input.event('parkingbrake', 1, 2) return 1")
+    return s or A.debug_state()
+
+
+@scenario
+def donut():
+    """C09, a donut round the hay bale on the dirt strip (Covet Gravel Rally, arcade), driven by a controller in the
+    car's Lua: a handbrake swing then the throttle held round the bale, sliding about 18 degrees, passes (up to three
+    tries: slides vary); driving round on lock without the handbrake, the rear hardly slides, and misses. RA_SAVE=1
+    saves the runs as fixtures (c09_*)."""
+    import os
+    p, save = [], os.environ.get("RA_SAVE")
+    A.drill_session("C09")
+    for _ in range(3):
+        s = _donut_run()
+        if s.get("passed"):
+            break
+    expect(p, "a handbrake donut round the bale passes", s.get("passed") is True, f"{s.get('tier')}: {A.failed_checks()}")
+    save and A.save_fixture("c09_pass")
+    s = _donut_run(kmh=25, hold=18, tap_every=0, pull_s=0.01, gain=0.5, r=6.0)
+    expect(p, "driving round without sliding misses", s.get("passed") is False
+           and any("rear only stepped out" in c for c in A.failed_checks()), A.failed_checks())
+    save and A.save_fixture("c09_noslide")
+    A.end_session("C09")
+    return p
+
+
 def _lane_run(drill, n0, n1, a, b, kmh, then_kmh=None, then_at=1e9, throttle_at=None, throttle_max=0.45, ramp=0.005):
     """A run along gravel lane DR825 or its proving-ground copy (nodes n0 to n1, metres a to b) in 2nd (sequential): hold `kmh` (a gentle launch),
     then `then_kmh` from `then_at` metres, or a throttle ramp from 0.25 up to `throttle_max` from `throttle_at`."""

@@ -658,6 +658,25 @@ function T.recorded_clean_runs_raise_no_events()
   end
 end
 
+-- D10 recorded in the hay-bale chicane (scenario chicane, 2026-10-30, 0.40.4, arcade, real bales): d10_medal = flat out to
+-- the Brake gate, braked to 34 km/h and weaved straight through each gap (gold, 9.5 s); d10_clip = 40 km/h through the
+-- chicane, the car hit a bale (the game's collision report); d10_slow = braked from 20 m, 31 km/h at the Brake gate.
+function T.d10_chicane_rules_and_medals_agree_with_the_in_game_verdicts()
+  agree('D10', {d10_medal = 'gold', d10_clip = false, d10_slow = false})
+  has(check(gradeCourse('d10_clip', 'D10'), 'markers_clear').text, 'Clipped bale')
+  has(check(gradeCourse('d10_slow', 'D10'), 'speed_at_gates').text, 'gate 1 too slow')
+end
+
+-- C09 recorded round the bale (scenario donut, 2026-10-30, 0.40.4, arcade, a controller in the car's Lua): c09_pass = 30
+-- km/h in, a 0.6 s handbrake swing, then 22 km/h held with a handbrake tap every second, steering to keep 5 m from the
+-- bale (bronze: about 18 degrees of slide, 4-5 m off the circle); c09_noslide = round on the lock at 18 km/h, no
+-- handbrake.
+function T.c09_donut_rules_agree_with_the_in_game_verdicts()
+  agree('C09', {c09_pass = 'bronze', c09_noslide = false})
+  has(check(gradeCourse('c09_pass', 'C09'), 'turned').text, 'round (target 330°)')
+  has(check(gradeCourse('c09_noslide', 'C09'), 'rear_slide').text, 'rear only stepped out')
+end
+
 -- F06 recorded on the test road (scenario puncture): the mod deflates a tyre at the Puncture gate. 50 km/h to it, then a
 -- 30 km/h limp (gold, 33 at most on the flat); the miss limped at 38 (40 on the flat).
 function T.f06_recorded_limps_grade_the_pace_on_the_flat()

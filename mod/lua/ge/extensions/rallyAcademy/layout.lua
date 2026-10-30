@@ -6,8 +6,9 @@
 -- Course coordinates are metres from the start: x to the right, y ahead (the way the car
 -- faces at the start). A placed course is in world x, y; the extension fills in heights.
 -- Any item may carry a `label`, which the HUD's checklist shows ("40 km/h", "Stop box"). Gates
--- may carry `headingDeg`: the way the road goes there, degrees right of ahead (negative = left), and `event`:
--- what happens to the car as it crosses ('puncture' deflates a random tyre, F06).
+-- may carry `headingDeg`: the way the road goes there, degrees right of ahead (negative = left), `event`:
+-- what happens to the car as it crosses ('puncture' deflates a random tyre, F06), and `posts = false`: a timing line
+-- with no posts to touch.
 local Gates = require('ge/extensions/rallyAcademy/gates')
 local L = {}
 
@@ -15,6 +16,9 @@ local L = {}
 L.MARKER_RADIUS = 0.15 -- m
 -- Crossing a cone's line further than this from it doesn't count (elsewhere on the course).
 local CONE_REACH = 10 -- m
+-- A square hay bale (the game's haybale/square, 1.96 m long, 1.17 m wide, measured on 0.40.4), as three circles along
+-- its long side for measuring how close the car came: each this radius, the outer two this far from its centre.
+L.BALE_RADIUS, L.BALE_REACH = 0.6, 0.4 -- m
 
 local function unit(x, y)
   local n = math.sqrt(x * x + y * y)
@@ -42,29 +46,40 @@ end
 
 -- Lay a course definition out from a start pose. Returns
 -- {gates = {...} (gates.lua format), cones = {{x, y, dir, keep}}, box = {x, y, dir, lengthM, widthM},
---  markers = {{x, y, name, kind = 'post' | 'cone'}} (each a physical prop, props.lua), zone, line,
---  circle = {x, y, radiusM, turn, laps}} with world x, y;
+--  markers = {{x, y, name, kind = 'post' | 'cone' | 'bale', dir (bales)}} (each a physical prop, props.lua), zone, line,
+--  circle = {x, y, radiusM, turn, laps}, bales = {{x, y, dir}}} with world x, y;
 -- heights are left to the caller.
 function L.place(def, start)
   local f = L.frame(start)
   local dir = {x = f.fx, y = f.fy}
-  local out = {gates = {}, cones = {}, markers = {}}
+  local out = {gates = {}, cones = {}, markers = {}, bales = {}}
   for i, g in ipairs(def.gates or {}) do
     local x, y = L.toWorld(f, g.x or 0, g.y)
     local gdir = L.turned(f, g.headingDeg)
     local gate = Gates.new({pos = {x = x, y = y, z = start.pos.z}, dir = gdir}, g.widthM)
     gate.label = g.label
     gate.event = g.event -- something the drill does to the car as it crosses ('puncture': F06)
+    gate.virtual = g.posts == false or nil -- a timing line with no posts (C09's donut starts and ends on one)
     out.gates[i] = gate
-    local half, rx, ry = gate.width / 2, gate.dir.y, -gate.dir.x
-    local label = #(def.gates) > 1 and (' of gate ' .. i) or ' of the gate'
-    out.markers[#out.markers + 1] = {x = x - rx * half, y = y - ry * half, name = 'the left post' .. label, kind = 'post'}
-    out.markers[#out.markers + 1] = {x = x + rx * half, y = y + ry * half, name = 'the right post' .. label, kind = 'post'}
+    if not gate.virtual then
+      local half, rx, ry = gate.width / 2, gate.dir.y, -gate.dir.x
+      local label = #(def.gates) > 1 and (' of gate ' .. i) or ' of the gate'
+      out.markers[#out.markers + 1] = {x = x - rx * half, y = y - ry * half, name = 'the left post' .. label, kind = 'post'}
+      out.markers[#out.markers + 1] = {x = x + rx * half, y = y + ry * half, name = 'the right post' .. label, kind = 'post'}
+    end
   end
   for i, c in ipairs(def.cones or {}) do
     local x, y = L.toWorld(f, c.x or 0, c.y)
     out.cones[i] = {x = x, y = y, z = start.pos.z, dir = dir, keep = c.keep or 'left', label = c.label}
     out.markers[#out.markers + 1] = {x = x, y = y, name = #(def.cones) > 1 and ('cone ' .. i) or 'the cone', kind = 'cone'}
+  end
+  for i, b in ipairs(def.bales or {}) do
+    -- a square hay bale, its long side along `headingDeg` (right of ahead): a chicane's walls, a donut's pivot
+    local x, y = L.toWorld(f, b.x or 0, b.y)
+    local bdir = L.turned(f, b.headingDeg)
+    out.bales[i] = {x = x, y = y, z = start.pos.z, dir = bdir, label = b.label}
+    out.markers[#out.markers + 1] = {x = x, y = y, dir = bdir, kind = 'bale',
+                                     name = b.label or (#(def.bales) > 1 and ('bale ' .. i) or 'the bale')}
   end
   if def.box then
     local x, y = L.toWorld(f, def.box.x or 0, def.box.y)
@@ -157,6 +172,18 @@ function L.distanceToCar(car, x, y, hx, hy, px, py)
   local da = math.max(0, a - car.front, -car.rear - a)
   local ds = math.max(0, s - car.right, -car.left - s)
   return math.sqrt(da * da + ds * ds)
+end
+
+-- Metres between the car's footprint and a marker's edge (0 or less: touching): a post or cone as a point of
+-- MARKER_RADIUS, a bale as its three circles.
+function L.markerClearance(car, x, y, hx, hy, m)
+  if m.kind ~= 'bale' then return L.distanceToCar(car, x, y, hx, hy, m.x, m.y) - L.MARKER_RADIUS end
+  local dx, dy = unit(m.dir and m.dir.x or 0, m.dir and m.dir.y or 1)
+  local best = math.huge
+  for _, k in ipairs({-L.BALE_REACH, 0, L.BALE_REACH}) do
+    best = math.min(best, L.distanceToCar(car, x, y, hx, hy, m.x + dx * k, m.y + dy * k) - L.BALE_RADIUS)
+  end
+  return best
 end
 
 -- Where the car is relative to a box: each corner's margin inside the box (negative =

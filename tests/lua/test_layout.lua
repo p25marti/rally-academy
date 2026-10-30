@@ -111,4 +111,24 @@ function T.a_course_line_gets_a_cone_at_each_end_as_markers()
   eq(c.markers[2].name, 'the right cone of the line', 'cones are markers')
 end
 
+function T.bales_are_markers_that_lie_along_their_heading()
+  local c = L.place({bales = {{x = -2, y = 30, headingDeg = 90, label = 'the left bale'}, {x = 2, y = 45}}}, NORTH)
+  eq(#c.bales, 2, 'two bales')
+  near(c.bales[1].x, -2, 1e-9, 'laid out from the start')
+  near(c.bales[1].dir.x, 1, 1e-9, 'turned 90 degrees right: across the course')
+  eq(c.markers[1].kind, 'bale', 'a bale marker (props.lua spawns a hay bale)')
+  eq(c.markers[1].name, 'the left bale', 'named by its label')
+  eq(c.markers[2].name, 'bale 2', 'or its number')
+end
+
+function T.a_bale_is_measured_along_its_length_not_as_a_point()
+  local bale = {x = 0, y = 0, kind = 'bale', dir = {x = 0, y = 1}} -- long side north-south
+  -- the Covet heading north, its right side 1.5 m east of the bale's centre line, level with the bale's end
+  local x = 1.5 + 0.585 + COVET.left -- left side of the car 1.5 m from the bale's long side... approximately
+  near(L.markerClearance(COVET, x, 0.9, 0, 1, bale), 1.5 + 0.585 - L.BALE_RADIUS, 0.05, 'beside the bale')
+  eq(L.markerClearance(COVET, 0.5, 0, 0, 1, bale) < 0, true, 'over it: touching')
+  local post = {x = 3, y = 0, kind = 'post'}
+  near(L.markerClearance(COVET, 0, 0, 0, 1, post), 3 - COVET.right - L.MARKER_RADIUS, 1e-9, 'a post is still a point')
+end
+
 return T

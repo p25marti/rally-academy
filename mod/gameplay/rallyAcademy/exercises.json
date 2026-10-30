@@ -3075,6 +3075,165 @@
       ]
     },
     {
+      "id": "C09",
+      "module": "03  ROTATION & SLIDES",
+      "title": "Donut round a bale",
+      "difficulty": "Advanced",
+      "vehicle": {
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
+      },
+      "environment": {
+        "venue": "pg-dirt-donut",
+        "areaHint": "Proving ground dirt strip: an Entry gate 14 m up the open dirt, a hay bale 6 m to the left of the line beyond it to circle (the donut starts and ends where the line passes the bale, a timing line on the ground), and an Exit gate past it.",
+        "venueNeeds": {
+          "kind": "open",
+          "lengthM": 60,
+          "widthM": 25,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        }
+      },
+      "surface": "Dirt",
+      "instructions": "Drive through the Entry gate at about 30 km/h with the bale ahead on your left. Turn in hard left round it, pull the handbrake to swing the rear out, then keep the throttle on and the wheel turned to hold the car rotating round the bale, all the way round: a full 360 with the bale always on your left, close to it without touching. Unwind as you come round and drive out north through the Exit gate.",
+      "resetInstructions": "Go to drill puts you 14 m before the Entry gate, with the bale and gates laid out. Move course here re-lays them from where you are.",
+      "props": "A real hay bale and gate posts stand on the course.",
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      },
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Through the Entry gate, then from the timing line beside the bale a full turn round it to the left (330 degrees or more) and back over the line, staying within 5 m either side of the 6 m circle round the bale (a moment outside is fine), the rear sliding at least 15 degrees, then out through the Exit gate, without touching the bale or a post or reversing. Silver: within 4.5 m and 18 degrees. Gold: within 4 m and 20 degrees.",
+        "metricToRecord": "Clean donuts / 10",
+        "mode": "automatic",
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 14,
+              "widthM": 6,
+              "label": "Entry"
+            },
+            {
+              "x": 0,
+              "y": 32,
+              "widthM": 8,
+              "posts": false,
+              "label": "Donut"
+            },
+            {
+              "x": 0,
+              "y": 32,
+              "widthM": 8,
+              "posts": false,
+              "label": "Round"
+            },
+            {
+              "x": 0,
+              "y": 48,
+              "widthM": 6,
+              "label": "Exit"
+            }
+          ],
+          "bales": [
+            {
+              "x": -6,
+              "y": 32,
+              "headingDeg": 0,
+              "label": "the bale"
+            }
+          ],
+          "circle": {
+            "x": -6,
+            "y": 32,
+            "radiusM": 6,
+            "turn": "left",
+            "laps": 1
+          }
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "turned",
+            "minDeg": 330,
+            "turn": "left",
+            "fromGate": 2,
+            "toGate": 3
+          },
+          {
+            "type": "circle_corridor",
+            "widthM": 10,
+            "maxSeconds": 0.5,
+            "fromGate": 2,
+            "toGate": 3
+          },
+          {
+            "type": "rear_slide",
+            "minSlipDeg": 15,
+            "hint": "pull the handbrake as you turn in and keep the throttle on to swing the rear round",
+            "fromGate": 2,
+            "toGate": 3
+          },
+          {
+            "type": "no_reverse"
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "circle_corridor",
+                "widthM": 9,
+                "maxSeconds": 0.5,
+                "fromGate": 2,
+                "toGate": 3
+              },
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 18,
+                "hint": "pull the handbrake as you turn in and keep the throttle on to swing the rear round",
+                "fromGate": 2,
+                "toGate": 3
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "circle_corridor",
+                "widthM": 8,
+                "maxSeconds": 0.5,
+                "fromGate": 2,
+                "toGate": 3
+              },
+              {
+                "type": "rear_slide",
+                "minSlipDeg": 20,
+                "hint": "pull the handbrake as you turn in and keep the throttle on to swing the rear round",
+                "fromGate": 2,
+                "toGate": 3
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "D01",
       "module": "04  COMPLEX CORNERING",
       "title": "Slaloms and rapid transitions",
@@ -4317,6 +4476,140 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      }
+    },
+    {
+      "id": "D10",
+      "module": "04  COMPLEX CORNERING",
+      "title": "Hay-bale chicane",
+      "difficulty": "Core",
+      "vehicle": {
+        "displayName": "Ibishu Covet Gravel Rally (6-speed manual), FWD",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/rally_gravel.pc"
+      },
+      "environment": {
+        "venue": "pg-test-road-straight",
+        "areaHint": "Proving ground test road's straight (gravel, 7 m wide): a Brake gate 45 m down it, then three walls of hay bales 15 m apart, each blocking the left, the right, then the left half of the road with its outer bale on the verge, leaving a 4 m gap, and a Finish gate.",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 105,
+          "widthM": 7,
+          "surfaces": [
+            "GRAVEL",
+            "DIRT",
+            "DIRT_DUSTY",
+            "SANDY_ROAD"
+          ]
+        }
+      },
+      "instructions": "Rally organisers put hay-bale chicanes on fast straights to slow the cars. Arrive at the Brake gate at 50 km/h or more, brake hard in a straight line, then weave through the gaps (right, left, right) as quickly as you can without touching a bale, keeping all four wheels on the gravel, and accelerate out through the Finish gate.",
+      "resetInstructions": "Go to drill puts you 45 m before the Brake gate, with the bales laid out. Move course here re-lays them from where you are.",
+      "props": "Real hay bales (480 kg each) and gate posts stand on the road.",
+      "references": {
+        "map": "https://documentation.beamng.com/official_content/levels/",
+        "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
+      },
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Into the Brake gate at 50 km/h or more, through the chicane without touching a bale or a post, no more than one wheel off the gravel, no spin, and through the Finish gate. Silver: at the Finish in 10.2 s from the start. Gold: 9.6 s.",
+        "metricToRecord": "Clean chicanes / 10",
+        "mode": "automatic",
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 45,
+              "widthM": 7,
+              "label": "Brake"
+            },
+            {
+              "x": 0,
+              "y": 103,
+              "widthM": 7,
+              "label": "Finish"
+            }
+          ],
+          "bales": [
+            {
+              "x": -3.48,
+              "y": 60,
+              "headingDeg": 90
+            },
+            {
+              "x": -1.52,
+              "y": 60,
+              "headingDeg": 90
+            },
+            {
+              "x": 1.52,
+              "y": 75,
+              "headingDeg": 90
+            },
+            {
+              "x": 3.48,
+              "y": 75,
+              "headingDeg": 90
+            },
+            {
+              "x": -3.48,
+              "y": 90,
+              "headingDeg": 90
+            },
+            {
+              "x": -1.52,
+              "y": 90,
+              "headingDeg": 90
+            }
+          ]
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
+          },
+          {
+            "type": "markers_clear"
+          },
+          {
+            "type": "speed_at_gates",
+            "minKmh": 50,
+            "maxKmh": 150,
+            "gate": 1
+          },
+          {
+            "type": "on_surface",
+            "surfaces": [
+              "GRAVEL"
+            ],
+            "maxWheelsOff": 1,
+            "maxSeconds": 0.5
+          },
+          {
+            "type": "no_spin"
+          }
+        ],
+        "tiers": [
+          {
+            "name": "silver",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 10.2
+              }
+            ]
+          },
+          {
+            "name": "gold",
+            "rules": [
+              {
+                "type": "max_time",
+                "maxSeconds": 9.6
+              }
+            ]
+          }
+        ]
       }
     },
     {

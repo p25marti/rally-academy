@@ -78,10 +78,12 @@ traffic cone stands at each, reset on Retry, and touching one is a clip ([ADR 00
 "course": {
   "gates": [{"x": 0, "y": 8, "widthM": 3}],          // gates to drive through, in order;
                                                      // "headingDeg": -93 turns a gate to face a corner's road
-  // a gate may carry "event": "puncture" (a random tyre goes flat as the car crosses it: F06)
+  // a gate may carry "event": "puncture" (a random tyre goes flat as the car crosses it: F06), and "posts": false
+  // (a timing line with no posts; two gates on one line need two crossings: C09's donut starts and ends on one)
   "predict": {"gate": 1, "minM": 10, "maxM": 45, "stepM": 1, "defaultM": 25}, // B03: the driver sets a mark this far
                                                      // past the gate on the HUD; it becomes the course's line
   "cones": [{"x": 0, "y": 20, "keep": "left"}],      // keep the cone on your left (pass it on its right)
+  "bales": [{"x": -2, "y": 60, "headingDeg": 90}],  // real square hay bales (1.96 x 1.17 m), long side along headingDeg
   "box": {"x": -1.5, "y": 33, "lengthM": 6, "widthM": 3.2}, // parking box, square to the course
   "line": {"x": 0, "y": 60, "widthM": 8},           // a stop line, a cone at each end (A05)
   "zone": {"x": 0, "y": 150},                       // a stop zone's centre; its size comes from the stop_zone rule (B01)

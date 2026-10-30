@@ -98,6 +98,30 @@
       "notes": "25 m before pg-dirt-ring's start, facing east along the ring's tangent, like bmp-dirt-arc (B06, B07)."
     },
     {
+      "id": "pg-dirt-donut",
+      "mapsId": "P2",
+      "name": "Proving ground: dirt strip, donut bale",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 375.0,
+          "y": -290.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The dirt strip 180 m from its south end, facing north up dead-level open dirt (60 m of it either side): room for a run-up, a bale to circle and an exit, clear of the strip drills (which end 30 m south) and the ring and arc (80 m north)."
+    },
+    {
       "id": "pg-gravel-strip",
       "mapsId": "P2",
       "name": "Proving ground: gravel strip",
@@ -336,6 +360,30 @@
         }
       },
       "notes": "The gravel test road 487 m from its start, just out of the fast left, facing east down a 65 m straight into the closing right: about 60 m radius for 40 m, then 29 m for the last 25, 100 degrees in all, flat."
+    },
+    {
+      "id": "pg-test-road-straight",
+      "mapsId": "P7",
+      "name": "Proving ground: test road, straight",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -119.36,
+          "y": 560.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The gravel test road 224 m from its start, just out of the linked S, facing east down its 105 m straight (7 m wide, flat) before the fast right."
     },
     {
       "id": "pg-circuit-start",

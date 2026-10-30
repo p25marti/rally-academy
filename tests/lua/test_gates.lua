@@ -205,4 +205,20 @@ function T.brake_must_be_off_by_the_apex_gate()
   has(late.text, 'Still braking at the apex (35%)')
 end
 
+function T.two_gates_on_one_line_need_two_crossings()
+  -- C09: the donut starts and ends on the same timing line; one pass over it is only the first
+  local line = {pos = {x = 0, y = 10, z = 0}, dir = {x = 0, y = 1, z = 0}, width = 5}
+  local gates = {line, {pos = line.pos, dir = line.dir, width = 5}}
+  local once = {{t = 0, x = 0, y = 9}, {t = 1, x = 0, y = 11}, {t = 2, x = 0, y = 14}}
+  local p = G.passes(gates, once)
+  eq(p[1].reached, true, 'the first')
+  eq(p[2].reached, false, 'not the second on the same crossing')
+  local round = {{t = 0, x = 0, y = 9}, {t = 1, x = 0, y = 11}, {t = 2, x = -4, y = 14}, {t = 3, x = -8, y = 10},
+                 {t = 4, x = -4, y = 6}, {t = 5, x = 0, y = 8}, {t = 6, x = 0, y = 12}}
+  p = G.passes(gates, round)
+  eq(p[2].reached, true, 'the second after coming round')
+  near(p[2].t, 5.5, 1e-9, 'on the later crossing')
+end
+
 return T
+

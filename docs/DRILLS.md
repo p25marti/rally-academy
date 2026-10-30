@@ -2,7 +2,7 @@
 
 <!-- Generated from mod/gameplay/rallyAcademy/exercises.json by `python tools/dev.py drills`: don't edit by hand. -->
 
-**41 drills** in 6 modules, all on the mod's own map, the proving ground. **34** are graded automatically from telemetry (all with bronze, silver and gold medals); the other 7 are self-assessed with Pass and Miss, 5 of them waiting for a RWD or AWD car. 38 surface variants (the same drill on another surface, with its own progress and medals) make 79 drills to play in all. How each one is graded: [GRADING](GRADING.md); the data: [DRILL_DATA](DRILL_DATA.md).
+**43 drills** in 6 modules, all on the mod's own map, the proving ground. **36** are graded automatically from telemetry (all with bronze, silver and gold medals); the other 7 are self-assessed with Pass and Miss, 5 of them waiting for a RWD or AWD car. 38 surface variants (the same drill on another surface, with its own progress and medals) make 81 drills to play in all. How each one is graded: [GRADING](GRADING.md); the data: [DRILL_DATA](DRILL_DATA.md).
 
 ## A · Foundation & precision
 
@@ -41,6 +41,7 @@
 | **C06** Maintaining a controlled slip angle | Initiate moderate slide before apex; balance throttle/countersteer through a marked 20 m arc. | dirt ring | single surface | Self-assessed (parked: Needs RWD or AWD (FWD can't hold a slide on throttle)) |
 | **C07** Lateral weight transfer | Drive up to the crossing between the cones, go clockwise round the right-hand cone, back through the crossing, anticlockwise round the left-hand cone and back through the crossing. | dirt strip | single surface | Automatic, medals |
 | **C08** Scandinavian flicks | Arrive at about 60 km/h. | gravel corner (left) | Gravel, Asphalt, Snow | Automatic, medals |
+| **C09** Donut round a bale | Drive through the Entry gate at about 30 km/h with the bale ahead on your left. | dirt strip, donut bale | Dirt | Automatic, medals |
 
 ## D · Complex cornering
 
@@ -55,6 +56,7 @@
 | **D07** Road camber | Drive the four corners, all the same 35 m radius: a banked left, an off-camber right, a banked right, an off-camber left. | camber corners | single surface | Automatic, medals |
 | **D08** Mixed-surface transitions | Arrive at the Tarmac gate at about 60 km/h and brake on the tarmac. | surface-change straight | single surface | Automatic, medals |
 | **D09** Uphill hairpins | Climb the switchback. | uphill hairpins (gravel) | Gravel, Asphalt, Snow | Automatic, medals, Watch AI |
+| **D10** Hay-bale chicane | Rally organisers put hay-bale chicanes on fast straights to slow the cars. | test road, straight | single surface | Automatic, medals |
 
 ## E · Terrain & drivetrains
 

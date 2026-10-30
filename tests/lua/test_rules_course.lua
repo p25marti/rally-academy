@@ -237,4 +237,50 @@ function T.stop_before_a_course_line_uses_the_front_bumper()
   has(gold.text, 'Stopped 0.80 m before the line (target 0-0.5 m before it)')
 end
 
+-- turned (C09): north through a gate at 10 m, round a circle of radius 4.5 to the left (`degrees` of it, heading
+-- with the path), then, after a full turn, north again through a gate at 40 m. Samples every 0.05 s.
+local function donut(degrees)
+  local course = L.place({gates = {{y = 10, widthM = 6}, {y = 40, widthM = 6}}}, START)
+  local samples, t = {}, 0
+  local function add(x, y, a) -- a: heading, radians anticlockwise from east
+    samples[#samples + 1] = {t = t, x = x, y = y, air = 8, hx = math.cos(a), hy = math.sin(a), w = {}}
+    t = t + 0.05
+  end
+  for y = 0, 20, 0.5 do add(0, y, math.pi / 2) end
+  local steps = math.floor(degrees / 5)
+  for k = 1, steps do -- round the centre (-4.5, 20), starting at its east side heading north
+    local th = math.rad(k * 5)
+    add(-4.5 + 4.5 * math.cos(th), 20 + 4.5 * math.sin(th), math.pi / 2 + th)
+  end
+  if degrees >= 360 then -- back where it started, heading north: out through the second gate
+    for y = 20.5, 45, 0.5 do add(0, y, math.pi / 2) end
+  end
+  return {samples = samples, runStartT = 0}, {course = course, gates = course.gates}
+end
+
+function T.turned_counts_the_heading_all_the_way_round()
+  local rule = {type = 'turned', minDeg = 330, turn = 'left'}
+  local full = R.evaluate({rule}, donut(360)).checks[1]
+  eq(full.ok, true, 'a full turn round')
+  has(full.text, 'Turned 360° round')
+  local half = R.evaluate({rule}, donut(180)).checks[1]
+  eq(half.ok, false, 'half way')
+  has(half.text, 'Turned only 180° of the 330°')
+  eq(R.evaluate({{type = 'turned', minDeg = 330, turn = 'right'}}, donut(360)).checks[1].ok, false,
+    'the wrong way round counts against')
+end
+
+function T.a_bale_counts_as_a_marker_for_markers_clear()
+  local course = L.place({bales = {{x = -1, y = 20}}}, START) -- across the path's left side
+  local samples = {}
+  for i = 0, 80 do samples[#samples + 1] = {t = i * 0.05, x = 0, y = i * 0.5, air = 10, hx = 0, hy = 1, w = {}} end
+  local c = R.evaluate({{type = 'markers_clear'}}, {samples = samples, runStartT = 0}, {course = course, car = COVET})
+  eq(c.checks[1].ok, false, 'drove into it')
+  has(c.checks[1].text, 'Clipped the bale')
+  local wide = L.place({bales = {{x = -4, y = 20}}}, START)
+  has(R.evaluate({{type = 'markers_clear'}}, {samples = samples, runStartT = 0}, {course = wide, car = COVET}).checks[1].text,
+    'Cleared every marker (closest: the bale, 2.2 m)') -- 4 m off, less the car's 1.23 m left side and 0.6
+end
+
 return T
+
