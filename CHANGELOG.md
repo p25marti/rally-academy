@@ -8,7 +8,8 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ### Added
 - **C09 Donut round a bale**: a full 360 round a real hay bale on the dirt strip, the handbrake swinging the rear out
   and the throttle holding the rotation, close to the bale without touching it. Graded on the turn, the slide and how
-  tight you stay (medals for tighter and more sideways).
+  tight you stay (medals for tighter and more sideways). On dirt, gravel, asphalt and snow (pick the Surface); asphalt
+  and snow ask for a little less slide.
 - **D10 Hay-bale chicane**: three walls of real hay bales on the test road's straight, like the chicanes organisers put
   before spectator areas. Arrive fast, brake hard, weave through without touching a bale; medals for time.
 - **The input graph shows the handbrake and your steering**: the Inputs app draws the handbrake (blue) with the

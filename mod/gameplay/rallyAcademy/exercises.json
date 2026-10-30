@@ -3231,7 +3231,99 @@
             ]
           }
         ]
-      }
+      },
+      "variants": [
+        {
+          "id": "gravel",
+          "name": "Gravel",
+          "venue": "pg-gravel-donut",
+          "areaHint": "Proving ground gravel strip: the dirt donut's twin (same bale and gates) on gravel."
+        },
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-asphalt-donut",
+          "areaHint": "Proving ground asphalt strip: the dirt donut's twin (same bale and gates) on asphalt.",
+          "rules": [
+            {
+              "type": "rear_slide",
+              "minSlipDeg": 12,
+              "hint": "tarmac grips: come in faster and hold the handbrake longer to swing the rear round",
+              "fromGate": 2,
+              "toGate": 3
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "rear_slide",
+                  "minSlipDeg": 14,
+                  "hint": "tarmac grips: come in faster and hold the handbrake longer to swing the rear round",
+                  "fromGate": 2,
+                  "toGate": 3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "rear_slide",
+                  "minSlipDeg": 16,
+                  "hint": "tarmac grips: come in faster and hold the handbrake longer to swing the rear round",
+                  "fromGate": 2,
+                  "toGate": 3
+                }
+              ]
+            }
+          ],
+          "successDefinition": "Through the Entry gate, then from the timing line beside the bale a full turn round it to the left (330 degrees or more) and back over the line, staying within 5 m either side of the 6 m circle round the bale (a moment outside is fine), the rear sliding at least 12 degrees, then out through the Exit gate, without touching the bale or a post or reversing. Silver: within 4.5 m and 14 degrees. Gold: within 4 m and 16 degrees."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-snow-donut",
+          "areaHint": "Proving ground snow strip: the dirt donut's twin (same bale and gates) on snow.",
+          "rules": [
+            {
+              "type": "rear_slide",
+              "minSlipDeg": 12,
+              "hint": "on snow the car drifts wide: less throttle, keep it rotating with short handbrake taps",
+              "fromGate": 2,
+              "toGate": 3
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "rear_slide",
+                  "minSlipDeg": 14,
+                  "hint": "on snow the car drifts wide: less throttle, keep it rotating with short handbrake taps",
+                  "fromGate": 2,
+                  "toGate": 3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "rear_slide",
+                  "minSlipDeg": 16,
+                  "hint": "on snow the car drifts wide: less throttle, keep it rotating with short handbrake taps",
+                  "fromGate": 2,
+                  "toGate": 3
+                }
+              ]
+            }
+          ],
+          "successDefinition": "Through the Entry gate, then from the timing line beside the bale a full turn round it to the left (330 degrees or more) and back over the line, staying within 5 m either side of the 6 m circle round the bale (a moment outside is fine), the rear sliding at least 12 degrees, then out through the Exit gate, without touching the bale or a post or reversing. Silver: within 4.5 m and 14 degrees. Gold: within 4 m and 16 degrees."
+        }
+      ]
     },
     {
       "id": "D01",

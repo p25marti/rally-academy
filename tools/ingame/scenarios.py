@@ -1245,9 +1245,10 @@ return 1
 """
 
 
-def _donut_run(kmh=30, hold=22, lock=0.9, gain=1.0, r=5.0, pull_s=0.6, tap_every=1.0, tap_s=0.3, max_thr=0.6, turn=320):
-    """C09 by the in-car controller above; returns the graded state."""
-    drill = A.drill("C09")
+def _donut_run(kmh=30, hold=22, lock=0.9, gain=1.0, r=5.0, pull_s=0.6, tap_every=1.0, tap_s=0.3, max_thr=0.6, turn=320,
+               drill_id="C09"):
+    """C09 (or a surface variant) by the in-car controller above; returns the graded state."""
+    drill = A.drill(drill_id)
     sp, course = drill["environment"]["spawn"], drill["assessment"]["course"]
     n = math.hypot(sp["dir"]["x"], sp["dir"]["y"])
     fx, fy = sp["dir"]["x"] / n, sp["dir"]["y"] / n
@@ -1268,20 +1269,32 @@ def _donut_run(kmh=30, hold=22, lock=0.9, gain=1.0, r=5.0, pull_s=0.6, tap_every
     return s or A.debug_state()
 
 
+# C09's technique per surface, as a driver adapts it: asphalt grips (faster in, longer handbrake swings), snow drifts
+# wide (less speed and throttle, a firmer pull towards the bale).
+DONUT_ADAPT = {
+    "asphalt": dict(kmh=35, pull_s=0.8, tap_s=0.4, tap_every=0.8, hold=24, r=5.5),
+    "snow": dict(kmh=27, hold=19, max_thr=0.45, pull_s=0.8, r=5.5, gain=1.4),
+}
+
+
 @scenario
 def donut():
-    """C09, a donut round the hay bale on the dirt strip (Covet Gravel Rally, arcade), driven by a controller in the
-    car's Lua: a handbrake swing then the throttle held round the bale, sliding about 18 degrees, passes (up to three
-    tries: slides vary); driving round on lock without the handbrake, the rear hardly slides, and misses. RA_SAVE=1
-    saves the runs as fixtures (c09_*)."""
+    """C09, a donut round the hay bale on the dirt strip and its gravel, asphalt and snow twins (Covet Gravel Rally,
+    arcade), driven by a controller in the car's Lua: a handbrake swing then the throttle held round the bale passes on
+    each surface with its technique (DONUT_ADAPT; up to three tries: slides vary); on dirt, driving round on lock
+    without the handbrake, the rear hardly slides, and misses. RA_SAVE=1 saves the dirt runs as fixtures (c09_*)."""
     import os
     p, save = [], os.environ.get("RA_SAVE")
-    A.drill_session("C09")
-    for _ in range(3):
-        s = _donut_run()
-        if s.get("passed"):
-            break
-    expect(p, "a handbrake donut round the bale passes", s.get("passed") is True, f"{s.get('tier')}: {A.failed_checks()}")
+    for d in ("C09-gravel", "C09-asphalt", "C09-snow", "C09"):
+        A.drill_session(d)
+        for _ in range(3):
+            s = _donut_run(drill_id=d, **DONUT_ADAPT.get(d.split("-")[1] if "-" in d else "dirt", {}))
+            if s.get("passed"):
+                break
+        expect(p, f"{d}: a handbrake donut round the bale passes", s.get("passed") is True,
+               f"{s.get('tier')}: {A.failed_checks()}")
+        if d != "C09":
+            A.end_session(d)
     save and A.save_fixture("c09_pass")
     s = _donut_run(kmh=25, hold=18, tap_every=0, pull_s=0.01, gain=0.5, r=6.0)
     expect(p, "driving round without sliding misses", s.get("passed") is False

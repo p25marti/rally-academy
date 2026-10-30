@@ -355,6 +355,11 @@ slide is too quick to balance through MCP round trips): 30 km/h in, a 0.6 s hand
 4.2-6 m off the circle; the best runs pass (bronze), and no scripted run has reached silver or gold yet (a driver steers
 a slide better than the script). A 4.5 m circle was tried first: the sliding car's nose swept into the bale. Driving
 round on the lock without the handbrake slides 0-6 degrees and misses. Fixtures `c09_pass`, `c09_noslide`.
+On the other strips (the `donut` scenario, adapted per surface): gravel passes with the dirt technique (bronze and
+silver seen). Asphalt grips and snow drifts wide, so their clean donuts top out at 12-13 degrees of slide (harder ones
+slide more but run wide or touch the bale): they slide 12 / 14 / 16 degrees for bronze, silver, gold (dirt and gravel
+15 / 18 / 20), the corridor the same. Asphalt: 35 km/h in, a 0.8 s pull, 0.4 s taps every 0.8 s, 24 km/h held (12-13
+degrees, 3 m off); snow: 27 km/h in, 19 km/h held on less throttle (11.5-13 degrees: about one run in three passes).
 
 D10 hay-bale chicane (2026-10-30, 0.40.4, the test road's straight): a Brake gate 45 m from the start, three walls of two
 real square bales 15 m apart (left, right, left), each wall's outer bale half on the verge so a 4 m gap stays on the

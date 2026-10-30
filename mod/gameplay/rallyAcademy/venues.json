@@ -122,6 +122,78 @@
       "notes": "The dirt strip 180 m from its south end, facing north up dead-level open dirt (60 m of it either side): room for a run-up, a bale to circle and an exit, clear of the strip drills (which end 30 m south) and the ring and arc (80 m north)."
     },
     {
+      "id": "pg-gravel-donut",
+      "mapsId": "P2",
+      "name": "Proving ground: gravel strip, donut bale",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -375.0,
+          "y": -290.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The gravel strip at the same spot as the dirt strip's donut venue (180 m from its south end, facing north): C09's bale on gravel."
+    },
+    {
+      "id": "pg-asphalt-donut",
+      "mapsId": "P2",
+      "name": "Proving ground: asphalt strip, donut bale",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -125.0,
+          "y": -290.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The asphalt strip at the same spot as the dirt strip's donut venue (180 m from its south end, facing north): C09's bale on asphalt."
+    },
+    {
+      "id": "pg-snow-donut",
+      "mapsId": "P2",
+      "name": "Proving ground: snow strip, donut bale",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": 125.0,
+          "y": -290.0,
+          "z": 110.0
+        },
+        "dir": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The snow strip at the same spot as the dirt strip's donut venue (180 m from its south end, facing north): C09's bale on snow."
+    },
+    {
       "id": "pg-gravel-strip",
       "mapsId": "P2",
       "name": "Proving ground: gravel strip",
