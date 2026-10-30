@@ -2,7 +2,7 @@
 
 <!-- Generated from mod/gameplay/rallyAcademy/exercises.json by `python tools/dev.py drills`: don't edit by hand. -->
 
-**43 drills** in 6 modules, all on the mod's own map, the proving ground. **36** are graded automatically from telemetry (all with bronze, silver and gold medals); the other 7 are self-assessed with Pass and Miss, 5 of them waiting for a RWD or AWD car. 41 surface variants (the same drill on another surface, with its own progress and medals) make 84 drills to play in all. How each one is graded: [GRADING](GRADING.md); the data: [DRILL_DATA](DRILL_DATA.md).
+**43 drills** in 6 modules, all on the mod's own map, the proving ground. **36** are graded automatically from telemetry (all with bronze, silver and gold medals); the other 7 are self-assessed with Pass and Miss, 5 of them waiting for a RWD or AWD car. 45 surface variants (the same drill on another surface, with its own progress and medals) make 88 drills to play in all. How each one is graded: [GRADING](GRADING.md); the data: [DRILL_DATA](DRILL_DATA.md).
 
 ## A · Foundation & precision
 
@@ -24,7 +24,7 @@
 | **B01** Threshold braking | Reach 70 km/h on the run-up, then brake progressively at the grip limit and stop with the car's centre in the stop zone. | dirt strip | Dirt, Gravel, Asphalt, Snow | Automatic, medals |
 | **B02** Wheel lockup recognition and correction | Reach 55 km/h, brake hard enough to lock the wheels, release quickly to get them rolling again, and stop inside the stop area without spinning. | dirt strip | single surface | Automatic, medals |
 | **B03** Stopping-distance estimation | Before each run, guess where the car will stop and set Your mark on the HUD (metres past the Brake line). | dirt strip | Dirt, Gravel, Asphalt, Snow | Automatic, medals |
-| **B04** Trail braking | Brake on the approach from the Brake marker, then keep easing the brake off in one smooth motion as you steer into the corner and it tightens, fully off by the apex gate at its tightest; then squeeze the throttle on and keep it on out through the exit. | test road, tightening right | single surface | Automatic, medals |
+| **B04** Trail braking | Brake on the approach from the Brake marker, then keep easing the brake off in one smooth motion as you steer into the corner and it tightens, fully off by the apex gate at its tightest; then squeeze the throttle on and keep it on out through the exit. | test road, tightening right | Gravel, Asphalt, Snow | Automatic, medals |
 | **B05** Left-foot braking | Drive two laps of the ring anticlockwise. | dirt ring | single surface | Automatic, medals |
 | **B06** Understeer recognition and correction | Arrive at the Turn in gate too fast for the 15 m ring, so the front pushes wide of the line. | dirt arc | single surface | Automatic, medals |
 | **B07** Oversteer recognition and correction | Arrive at the Turn in gate at about 45 km/h. | dirt arc | single surface | Automatic, medals |
@@ -56,7 +56,7 @@
 | **D07** Road camber | Drive the four corners, all the same 35 m radius: a banked left, an off-camber right, a banked right, an off-camber left. | camber corners | single surface | Automatic, medals |
 | **D08** Mixed-surface transitions | Arrive at the Tarmac gate at about 60 km/h and brake on the tarmac. | surface-change straight | single surface | Automatic, medals |
 | **D09** Uphill hairpins | Climb the switchback. | uphill hairpins (gravel) | Gravel, Asphalt, Snow | Automatic, medals, Watch AI |
-| **D10** Hay-bale chicane | Rally organisers put hay-bale chicanes on fast straights to slow the cars. | test road, straight | single surface | Automatic, medals |
+| **D10** Hay-bale chicane | Rally organisers put hay-bale chicanes on fast straights to slow the cars. | test road, straight | Gravel, Asphalt, Snow | Automatic, medals |
 
 ## E · Terrain & drivetrains
 

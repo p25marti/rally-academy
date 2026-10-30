@@ -241,8 +241,10 @@ Rally): brake from the marker 50 m down the straight and keep braking while turn
 exit, silver 42 km/h with all four wheels on the gravel, gold 50 km/h: the corner targets held unchanged. Scripted
 from 65 km/h, the line 1.2 m inside round the apex: brake 0.25 easing to zero before the apex with 0.1 throttle
 under it, the throttle fed to 0.6 over 12 m: gold; feeding it to 0.8 is silver (48.9 km/h out), full throttle runs
-wide into the exit gate's outside post. Gravel only: the test road has no asphalt or snow twin, so B04's surface
-variants went with the move.
+wide into the exit gate's outside post. Asphalt and snow (since 2026-10-30) on the test road's twins: the gravel
+technique earns gold on asphalt; on snow the closing corner holds about 36 km/h, so the exit targets are 25 / 38 / 45
+km/h there (the `trail` scenario: 60 km/h in, brake 0.25 with 0.15 throttle under it, the throttle fed to 0.3 out:
+45 km/h, gold).
 
 B05 targets (the proving ground's dirt ring, venue `pg-dirt-ring`; first set on the BMP dirt circle; Covet Gravel Rally): two anticlockwise laps of a 15 m ring, its centre on
 the circle's centre; bronze inside a 6 m corridor (0.5 s outside allowed), throttle never off for more
@@ -366,7 +368,10 @@ real square bales 15 m apart (left, right, left), each wall's outer bale half on
 7 m road, and a Finish gate. 50 km/h or more at the Brake gate, no bale or post touched, no more than one wheel off the
 gravel, no spin; silver at the Finish in 10.2 s from the start, gold 9.6 s. Scripted (arcade, the line straight through
 each gap): braked to 30 km/h 10.0 s (silver), 34 km/h 9.5 s (gold); 36 km/h and more clips the middle wall. With 3 m
-gaps (the walls fully on the road) even 25 km/h clipped. Fixtures `d10_medal`, `d10_clip`, `d10_slow`.
+gaps (the walls fully on the road) even 25 km/h clipped. Fixtures `d10_medal`, `d10_clip`, `d10_slow`. On the
+asphalt test road the gravel targets hold (34 km/h: 9.2 s, gold; 30 km/h: silver). On snow the car slides into the
+middle wall at the gravel pace: brake from 42 m and weave at 22 km/h (12.8 s; about one run in three clean, the
+others touch the middle wall), so snow's medals are 13.0 s and 12.4 s; the entry still needs 50 km/h (snow reaches 52).
 
 B07 targets (the proving ground's dirt arc; first set on the BMP dirt circle; Covet Gravel Rally): 22 m to a Turn in gate, a left quarter of a 15 m ring,
 then a 7 m exit lane 18 m long. Bronze: the rear steps out 8°+ between the Turn in gate and the lane end,

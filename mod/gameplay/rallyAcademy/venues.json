@@ -434,6 +434,54 @@
       "notes": "The gravel test road 487 m from its start, just out of the fast left, facing east down a 65 m straight into the closing right: about 60 m radius for 40 m, then 29 m for the last 25, 100 degrees in all, flat."
     },
     {
+      "id": "pg-test-road-east-asphalt",
+      "mapsId": "P14",
+      "name": "Proving ground: asphalt test road, tightening right",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -539.56,
+          "y": 97.01,
+          "z": 110.0
+        },
+        "dir": {
+          "x": -0.0049,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The asphalt twin of pg-test-road-east (the test road from 192 m on, turned to head north, at x -640): the same spot on the same shape. The gravel test road 487 m from its start, just out of the fast left, facing east down a 65 m straight into the closing right: about 60 m radius for 40 m, then 29 m for the last 25, 100 degrees in all, flat."
+    },
+    {
+      "id": "pg-test-road-east-snow",
+      "mapsId": "P14",
+      "name": "Proving ground: snow test road, tightening right",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -539.56,
+          "y": 512.01,
+          "z": 110.0
+        },
+        "dir": {
+          "x": -0.0049,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The snow twin of pg-test-road-east (the test road from 192 m on, turned to head north, at x -640): the same spot on the same shape. The gravel test road 487 m from its start, just out of the fast left, facing east down a 65 m straight into the closing right: about 60 m radius for 40 m, then 29 m for the last 25, 100 degrees in all, flat."
+    },
+    {
       "id": "pg-test-road-straight",
       "mapsId": "P7",
       "name": "Proving ground: test road, straight",
@@ -456,6 +504,54 @@
         }
       },
       "notes": "The gravel test road 224 m from its start, just out of the linked S, facing east down its 105 m straight (7 m wide, flat) before the fast right."
+    },
+    {
+      "id": "pg-test-road-straight-asphalt",
+      "mapsId": "P14",
+      "name": "Proving ground: asphalt test road, straight",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -632.14,
+          "y": -119.93,
+          "z": 110.0
+        },
+        "dir": {
+          "x": -0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The asphalt twin of pg-test-road-straight (the test road from 192 m on, turned to head north, at x -640): the same spot on the same shape. The gravel test road 224 m from its start, just out of the linked S, facing east down its 105 m straight (7 m wide, flat) before the fast right."
+    },
+    {
+      "id": "pg-test-road-straight-snow",
+      "mapsId": "P14",
+      "name": "Proving ground: snow test road, straight",
+      "levelId": "ra_proving_ground",
+      "spawn": {
+        "pos": {
+          "x": -632.14,
+          "y": 295.07,
+          "z": 110.0
+        },
+        "dir": {
+          "x": -0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "up": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      },
+      "notes": "The snow twin of pg-test-road-straight (the test road from 192 m on, turned to head north, at x -640): the same spot on the same shape. The gravel test road 224 m from its start, just out of the linked S, facing east down its 105 m straight (7 m wide, flat) before the fast right."
     },
     {
       "id": "pg-circuit-start",

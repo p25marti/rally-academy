@@ -24,8 +24,8 @@ The owner agreed to every suggestion (2026-10-21).
   explain the weight transfer B08 was about: a neutral entry first, then what the lift or the brake pulse adds.
 - **B04 trail braking moves to the test road's closing right** (venue `pg-test-road-east`): a corner that tightens
   from 60 m radius to 29 m is where easing the brake off as you turn in matters most, and the apex gate sits at its
-  tightest. The targets held unchanged (scripted gold). It is gravel only now: the test road has no asphalt or snow
-  twin, so B04's surface variants went.
+  tightest. The targets held unchanged (scripted gold). It was gravel only at first (the test road had no twins); the
+  asphalt and snow test roads (2026-10-30, half the road from its straight on) brought its surface variants back.
 - **C08 (the flick) stays on the corner.** It was meant for a hairpin, but neither hairpin worked: driven up, the
   weight stays on the back and a scripted flick rotated the FWD Covet 4-5°; driven down (from the leg above the
   second hairpin), 1-4°, and harder flicks ran wide of the apex gate. The 8° target can't be set honestly there, and
@@ -35,6 +35,6 @@ The owner agreed to every suggestion (2026-10-21).
 ## Consequences
 
 - 41 drills; six on the shared corner (A07, A08, C01, C02, C08, E02), down from nine.
-- Progress players have on E01 or B08 stays in their file, unused, and so does B04's on asphalt and snow.
+- Progress players have on E01 or B08 stays in their file, unused.
 - The asphalt and snow corners stay: the remaining corner drills' variants use them.
 - Fixtures and the `surfacecorner` scenario for E01 are gone; the Watch AI scenario uses D03 and D09.

@@ -360,8 +360,13 @@ def _road_ahead(drill, road_id, length, inside=None):
 B04_APEX, B04_MARKER = 125.0, 50.0  # metres from the start along the test road to the apex gate and the brake marker
 
 
-def _b04_line():
-    return _road_ahead("B04", "test-road", 200, inside=(100, 130, 1.2))  # the apex gate is 1 m inside
+def _test_road(drill):
+    """The test road a drill runs on: gravel, or its asphalt or snow twin for a surface variant."""
+    return "test-road" + ("-" + drill.split("-")[1] if "-" in drill else "")
+
+
+def _b04_line(drill="B04"):
+    return _road_ahead(drill, _test_road(drill), 200, inside=(100, 130, 1.2))  # the apex gate is 1 m inside
 
 
 def _trail_run(drill="B04", kmh=65, brake=0.25, throttle=0.1, exit_throttle=0.6, ramp_m=12, wobble=0.0):
@@ -381,7 +386,7 @@ def _trail_run(drill="B04", kmh=65, brake=0.25, throttle=0.1, exit_throttle=0.6,
         lo = max(0.1, throttle)  # from the throttle held under the brake: dropping it first would be a lift
         fed = exit_throttle if not ramp_m else min(exit_throttle, lo + (exit_throttle - lo) * (trav - apex + 3) / ramp_m)
         return (fed, 0.0)
-    return A.course_run(drill, _b04_line(), pedals=trail_pedals, kmh=kmh, decel=2.5, max_throttle=1.0, stop_within=0.5)
+    return A.course_run(drill, _b04_line(drill), pedals=trail_pedals, kmh=kmh, decel=2.5, max_throttle=1.0, stop_within=0.5)
 
 
 @scenario
@@ -417,6 +422,12 @@ def trail():
            and any("Throttle stabbed" in c for c in A.failed_checks()), A.failed_checks())
     save and A.save_fixture("b04_stab_tr")
     A.end_session("B04")
+    for d, kw in (("B04-asphalt", {}), ("B04-snow", TRAIL_SNOW)):  # the asphalt and snow test roads
+        A.drill_session(d)
+        s = _trail_run(drill=d, **kw)
+        expect(p, f"{d}: trail braking into the closing corner earns a medal", s.get("passed") is True
+               and s.get("tier") is not None, f"{s.get('tier')}: {A.failed_checks()}")
+        A.end_session(d)
     return p
 
 
@@ -1152,7 +1163,7 @@ def hairpins():
     return p
 
 
-def _chicane_run(chicane_kmh=34, off=1.6, flat=2, brake_at=45, brake=0.75, out_at=92):
+def _chicane_run(chicane_kmh=34, off=1.6, flat=2, brake_at=45, brake=0.75, out_at=92, drill="D10"):
     """D10: flat out to the Brake gate, brake to `chicane_kmh`, weave through the three gaps (`off` m either side of the
     centre, straight for `flat` m through each), then flat out again from `out_at` m."""
     path = [(0, 0), (0, 40), (off, 60 - flat - 4), (off, 60 + flat), (-off, 75 - flat), (-off, 75 + flat),
@@ -1164,7 +1175,12 @@ def _chicane_run(chicane_kmh=34, off=1.6, flat=2, brake_at=45, brake=0.75, out_a
         if trav < brake_at + 30 and v > chicane_kmh + 2:
             return (0.0, brake)
         return _hold(v, chicane_kmh) if trav < out_at else (1.0, 0.0)
-    return A.course_run("D10", path, pedals=pedals, kmh=90, max_throttle=1.0, decel=3.0, timeout=60, stop_within=0.5)
+    return A.course_run(drill, path, pedals=pedals, kmh=90, max_throttle=1.0, decel=3.0, timeout=60, stop_within=0.5)
+
+
+# On snow a driver brakes earlier and gentler and weaves slower (D10), and feeds less throttle out of the corner (B04).
+CHICANE_SNOW = dict(chicane_kmh=22, brake_at=42, brake=0.6, flat=3)
+TRAIL_SNOW = dict(kmh=60, brake=0.25, throttle=0.15, exit_throttle=0.3)
 
 
 @scenario
@@ -1191,6 +1207,15 @@ def chicane():
            and any("Gate 1" in c for c in A.failed_checks()), A.failed_checks())
     save and A.save_fixture("d10_slow")
     A.end_session("D10")
+    for d, kw in (("D10-asphalt", {}), ("D10-snow", CHICANE_SNOW)):  # the asphalt and snow test roads
+        A.drill_session(d)
+        for _ in range(3 if d == "D10-snow" else 1):  # on snow the car sometimes slides into the middle wall
+            s = _chicane_run(drill=d, **kw)
+            if s.get("passed"):
+                break
+        expect(p, f"{d}: through the chicane earns a medal", s.get("passed") is True and s.get("tier") is not None,
+               f"{s.get('tier')}: {A.failed_checks()}")
+        A.end_session(d)
     return p
 
 

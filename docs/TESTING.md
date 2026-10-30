@@ -74,7 +74,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
 | `a04` | A04 on its course (the proving ground's dirt strip, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |
 | `stops` | A05 on its course (stop line 60 m ahead) and B02 on its course (40 m stop area), both on the proving ground's dirt strip, a PASS and a MISS each |
-| `trail` | B04 on the test road's closing right: trail braking into the tightening corner and feeding the throttle in earns gold; braking only before turn-in, pumping the brake, or stabbing the throttle misses. `RA_SAVE=1` saves the four runs as the `b04_*_tr` fixtures |
+| `trail` | B04 on the test road's closing right (then the asphalt and snow test roads, each earning a medal): trail braking into the tightening corner and feeding the throttle in earns gold; braking only before turn-in, pumping the brake, or stabbing the throttle misses. `RA_SAVE=1` saves the four runs as the `b04_*_tr` fixtures |
 | `tighten` | D03 on the proving ground's flat copy of gravel lane DR825: easing off into the tightening corner earns a medal; too fast runs wide |
 | `opening` | D04 on the proving ground's flat copy of gravel lane DR825: a progressive throttle earns a medal; too much spins and misses |
 | `blind` | D05 on the proving ground's hill circuit: a conservative approach to the blind crest hairpin earns a medal; 55 km/h misses |
@@ -101,7 +101,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `rough` | E07 on the rough track: the approach at pace and 50 km/h over the rough earns gold; 60 all the way damages the car on the bumps |
 | `linked` | D02 on the test road's linked S: 55 into the first bend, 50 through the rest, on the power early: gold; 60 into the first bend clips the second apex's post |
 | `camber` | D07 on the camber road: 57 km/h through the banked corners and 45 into the off-camber ones earns gold; a cautious 45 everywhere misses (too slow in the banked corners); 64 runs off |
-| `chicane` | D10 through the hay-bale chicane: flat out to the Brake gate, braking to 34 km/h and weaving straight through each gap earns a medal; 40 km/h clips a bale; braking 20 m in misses the Brake gate's 50 km/h. `RA_SAVE=1` saves `d10_*` |
+| `chicane` | D10 through the hay-bale chicane (gravel; then asphalt and snow, each earning a medal, snow up to three tries): flat out to the Brake gate, braking to 34 km/h and weaving straight through each gap earns a medal; 40 km/h clips a bale; braking 20 m in misses the Brake gate's 50 km/h. `RA_SAVE=1` saves `d10_*` |
 | `donut` | C09 round the hay bale, by a controller in the car's Lua: a handbrake swing then 22 km/h held round the bale passes (up to three tries); round on the lock without the handbrake misses on the slide. `RA_SAVE=1` saves `c09_*` |
 | `hairpins` | D09 up the mountain face's switchbacks: each surface's technique (gravel 55 / 28 km/h, asphalt 65 / 32, snow 50 / 24, slowing for the bottom and top bends) earns a medal; the asphalt pace on gravel runs off the road |
 | `corner_surfaces` | A07, A08, C01, C02, C08 and E02 on the gravel corner and its asphalt and snow twins: each drill's medal technique, adapted per surface (`CORNER_ADAPT`), passes on each (up to three tries); prints a table. About 21-63 runs, 15-25 min; `RA_SURFACES=A07,C02` runs some drills only |

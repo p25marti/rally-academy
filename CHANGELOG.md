@@ -6,6 +6,9 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Asphalt and snow test roads**, and the drills on them in all three surfaces: **D10** (the hay-bale chicane;
+  on snow you brake earlier and weave slower, with medal times to match) and **B04** trail braking (back on asphalt
+  and snow; on snow the exit speeds are lower). The new roads are the test road's second half, west of the corners.
 - **C09 Donut round a bale**: a full 360 round a real hay bale on the dirt strip, the handbrake swinging the rear out
   and the throttle holding the rotation, close to the bale without touching it. Graded on the turn, the slide and how
   tight you stay (medals for tighter and more sideways). On dirt, gravel, asphalt and snow (pick the Surface); asphalt

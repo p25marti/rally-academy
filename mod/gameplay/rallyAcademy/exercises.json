@@ -1785,7 +1785,118 @@
       "references": {
         "map": "https://documentation.beamng.com/official_content/levels/",
         "vehicle": "https://documentation.beamng.com/official_content/vehicles/hirochi/"
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-test-road-east-asphalt",
+          "areaHint": "The proving ground's asphalt test road: the gravel road's twin from its straight on (the same shape, turned to head north), the same course.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "ASPHALT"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "ASPHALT"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                }
+              ]
+            }
+          ],
+          "successDefinition": "Brake from the marker and carry it into the turn-in for at least 0.4 s while steering, easing it off in one motion (no more than 20% re-applied, never snapping off), fully off by the 4 m apex gate, then feed the throttle in without lifting or stabbing, through the exit at 30 km/h or more, no wheel locked over 0.3 s, no more than one wheel off the asphalt, no spin. Silver: 42 km/h at the exit, all four wheels on the asphalt, 10% re-applied and no change faster than 400% a second. Gold: 50 km/h, 5% and 250% a second (from nothing to full in 0.4 s or more)."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-test-road-east-snow",
+          "areaHint": "The proving ground's snow test road: the gravel road's twin from its straight on (the same shape, turned to head north), the same course.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "SNOW"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            },
+            {
+              "type": "speed_at_gates",
+              "minKmh": 25,
+              "maxKmh": 150,
+              "gate": 3
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                },
+                {
+                  "type": "speed_at_gates",
+                  "minKmh": 38,
+                  "maxKmh": 150,
+                  "gate": 3
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "on_surface",
+                  "surfaces": [
+                    "SNOW"
+                  ],
+                  "maxWheelsOff": 0,
+                  "maxSeconds": 0.3
+                },
+                {
+                  "type": "speed_at_gates",
+                  "minKmh": 45,
+                  "maxKmh": 150,
+                  "gate": 3
+                }
+              ]
+            }
+          ],
+          "successDefinition": "Brake from the marker and carry it into the turn-in for at least 0.4 s while steering, easing it off in one motion (no more than 20% re-applied, never snapping off), fully off by the 4 m apex gate, then feed the throttle in without lifting or stabbing, through the exit at 25 km/h or more, no wheel locked over 0.3 s, no more than one wheel off the snow, no spin. Silver: 38 km/h at the exit, all four wheels on the snow, 10% re-applied and no change faster than 400% a second. Gold: 45 km/h, 5% and 250% a second (from nothing to full in 0.4 s or more)."
+        }
+      ]
     },
     {
       "id": "B05",
@@ -4702,7 +4813,64 @@
             ]
           }
         ]
-      }
+      },
+      "surface": "Gravel",
+      "variants": [
+        {
+          "id": "asphalt",
+          "name": "Asphalt",
+          "venue": "pg-test-road-straight-asphalt",
+          "areaHint": "The proving ground's asphalt test road: the gravel road's twin from its straight on (the same shape, turned to head north), the same course.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "ASPHALT"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "successDefinition": "Into the Brake gate at 50 km/h or more, through the chicane without touching a bale or a post, no more than one wheel off the asphalt, no spin, and through the Finish gate. Silver: at the Finish in 10.2 s from the start. Gold: 9.6 s."
+        },
+        {
+          "id": "snow",
+          "name": "Snow",
+          "venue": "pg-test-road-straight-snow",
+          "areaHint": "The proving ground's snow test road: the gravel road's twin from its straight on (the same shape, turned to head north), the same course.",
+          "rules": [
+            {
+              "type": "on_surface",
+              "surfaces": [
+                "SNOW"
+              ],
+              "maxWheelsOff": 1,
+              "maxSeconds": 0.5
+            }
+          ],
+          "tiers": [
+            {
+              "name": "silver",
+              "rules": [
+                {
+                  "type": "max_time",
+                  "maxSeconds": 13.0
+                }
+              ]
+            },
+            {
+              "name": "gold",
+              "rules": [
+                {
+                  "type": "max_time",
+                  "maxSeconds": 12.4
+                }
+              ]
+            }
+          ],
+          "successDefinition": "Into the Brake gate at 50 km/h or more, through the chicane without touching a bale or a post, no more than one wheel off the snow, no spin, and through the Finish gate. Silver: at the Finish in 13.0 s from the start. Gold: 12.4 s (snow: brake earlier, weave slower)."
+        }
+      ]
     },
     {
       "id": "E02",
