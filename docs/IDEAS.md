@@ -17,7 +17,8 @@ parts. "Who" says whether it came from the owner or was suggested.
 | [Freeform exercise builder](#freeform-exercise-builder) | Owner | Large | Idea |
 | [Attempt replays and telemetry charts](#attempt-replays-and-telemetry-charts) | Suggested | Medium | Idea |
 | [Ghost of your best run](#ghost-of-your-best-run) | Suggested | Medium | Idea (also ROADMAP P5) |
-| [AI demonstration lap](#ai-demonstration-lap) | Suggested | Medium | Idea |
+| [AI demonstration lap](#ai-demonstration-lap) | Suggested | Medium | Built (Watch AI, five drills) |
+| [Demo cutscenes](#demo-cutscenes) | Owner | Large | Spiked 2026-10-30 |
 | [Sharing drills and scores](#sharing-drills-and-scores) | Suggested | Large | Idea |
 
 ---
@@ -156,6 +157,48 @@ through the MCP server; `ai` in vehicle Lua).
 **Hard parts.** The AI drives neatly, not like a rally driver: threshold braking, Scandinavian
 flicks and left-foot braking aren't its style. It may teach the wrong thing for half the
 drills.
+
+## Demo cutscenes
+
+**The idea.** When you open a drill, a third-person demo shows a run that passes, like a cutscene. It stops at
+the moments that matter and explains the inputs: for a Scandinavian flick, a freeze as the brake loads the front,
+another as the steering reverses and the weight swings the rear out. Owner's idea (2026-10-30).
+
+**Why.** Watch AI only works where the game's AI can drive the drill (five road drills). The techniques that most
+need showing (flicks, handbrake turns, trail braking, donuts) are exactly the ones it can't do.
+
+**What already helps.** Scripted runs that pass every drill (`tools/ingame/scenarios.py`, including in-car
+controllers for the donut); run records with every input at about 30 Hz; the input graph; the racing line.
+
+**Spike (2026-10-30, 0.40.4, C08).** Two ways to play back a run were tried:
+
+- *The game's replay system* (`core_replay`, details in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.md)). Recorded a
+  scripted C08 bronze, then played it from a copy in the mod's own `replays/` folder. Playback is exact (it's the
+  recorded physics), and it can pause, run at 1/4 speed, step to the exact frame and be filmed from any free camera.
+  Stopping gives the player their own car back. Costs and catches:
+  - Size: about 240 kB per second of driving. A trimmed 12 s demo is about 3 MB (about 1 MB zipped); 40 drills would
+    add about 40 MB to the download.
+  - The car's inputs aren't replayed (vehicle Lua doesn't run), so the input graph and the cue text must come from the
+    run record saved with the demo, lined up by time.
+  - The mod graded the replay car as a live run (it added an attempt to C08's progress, since undone). A demo phase
+    that ignores the car is required.
+  - Files name the level and the car config, and hold that car's node data: an update to the Covet or the proving ground
+    probably breaks them. They'd be re-recorded from the scenarios after updates (a `record_demos.py`).
+- *Replaying the recorded inputs* (an in-car player feeding throttle, brake, handbrake and steering every frame, the
+  way `_DONUT_LUA` drives). The inputs came back within about 0.01 of the original, but the car didn't follow: five
+  replays all drifted 12 m right on the 70 m straight and missed gate 2 by 10 m, before the flick. Small
+  differences at launch compound. Open-loop inputs alone can't make a demo; it would need the scenario's closed-loop
+  steering (pure pursuit) with the pedals replayed. That's what the scenarios already do, and they pass only some
+  of the time (C08: up to five tries), so a live demo could fail on screen.
+
+**Hard parts.** The size and update fragility of replays; the timing of cues against a replay; a camera that frames
+the car well (a fixed trackside camera works for one corner; a moving one needs a path); the demo must never touch
+progress.
+
+**Rough shape.** One drill (C08) end to end with replays: `record_demos.py` saves the `.rpl` trimmed to the run, plus
+its run record and cue times; a demo phase in the mod suspends run detection, plays at full speed from a chase
+camera, then at each cue slows to 1/4 and freezes with a card and the input graph; a key continues or skips. The
+first time a drill is opened it plays automatically; after that it's a button.
 
 ## Sharing drills and scores
 
