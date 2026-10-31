@@ -213,6 +213,26 @@ controllers for the donut); run records with every input at about 30 Hz; the inp
   asphalt, the turn-in gate on snow, where the scripted line clears the posts by under a metre. So a tape repeats
   well, not perfectly: its margin to the posts has to cover a spread of about a metre. Next would be a recorded
   line with more room, or finding the remaining run-to-run variation (inputs per physics tick, props).
+- *Where the spread comes from* (2026-10-31, C08 gravel tape replayed, paths compared frame by frame). Two causes:
+  - *Engine noise.* The Covet's engine draws `math.random` every frame for ignition noise and the idle
+    (`combustionEngine.lua` updateGFX), so identical inputs give slightly different torque. Re-seeding the
+    generator from the tape player every frame (`math.randomseed(n)`; the extensions hook runs before
+    `powertrain.updateGFX`) removes it. Seeding once at the start isn't enough: something else draws a varying
+    number of times.
+  - *Frame timing.* Normal mode runs 66 or 67 physics ticks per 30 fps frame, in a pattern that follows real time,
+    so inputs land half a millisecond earlier or later run to run. Deterministic mode (`be:setPhysicsDeterministic`)
+    makes every frame exactly 100 ticks (0.05 s).
+  - Results: deterministic mode alone: replays within 0.5-1.1 m; deterministic plus a per-frame seed: within
+    2-4 cm over the whole 18 s run (two sessions; in one, the session's first replay was 25 cm off the others).
+    Normal mode with a seed (by sim time): still 0.3-0.9 m, splitting as the throttle comes in.
+  - The catch: deterministic mode's 0.05 s per frame is fixed (speed factor and time scale don't change it), so it
+    plays at 1.5x real time at 30 fps and 3x at 60. `be:physicsStep(n)` with physics paused doesn't give fixed
+    frames either: the car keeps stepping in real time whatever `n` is.
+  - So near-exact replays exist only at a fixed 20 Hz control rate, sped up on screen. Options for a demo: run it in
+    deterministic mode with the frame rate capped at 20 fps (choppy, and touches the player's settings); simulate it
+    in deterministic mode out of sight and show it with the game's replay system; or stay in normal mode and steer
+    lightly back onto the tape's recorded path (the tape's pedals and steering, plus a small correction), which
+    tolerates a metre of drift.
 
 **Hard parts.** The size and update fragility of replays; the timing of cues against a replay; a camera that frames
 the car well (a fixed trackside camera works for one corner; a moving one needs a path); the demo must never touch
