@@ -57,6 +57,7 @@ python tools/dev.py link               # live-link mod/ into the game (junction)
 python tools/dev.py log --ours         # the mod's lines from beamng.log
 python tools/dev.py ship -F msg.txt    # check --strict, then branch, commit, fast-forward main, push
 python tools/ingame/record.py --all    # videos of the drill scenarios in recordings/ (TESTING)
+python tools/ingame/tape.py record C08 # an input tape of a drill's pass, kept if 5 replays pass (TESTING)
 python tools/ingame/audit.py --all --write  # every graded course's surfaces, grip, grade, tilt -> docs/COURSE_AUDIT.md
 python tools/mapgen/build.py           # regenerate the proving ground after editing its layout (~10 s)
 python tools/mapgen/views.py          # screenshots of it from fixed viewpoints (recordings/views/)

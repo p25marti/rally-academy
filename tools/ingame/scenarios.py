@@ -567,9 +567,9 @@ def rotation():
     return p
 
 
-def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0, offsets=None, drill="C08"):
+def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0, offsets=None, drill="C08", start=None):
     """C08: hold `kmh`, then from `at` metres lift and steer `away` (right) for `away_m`, then `into` (left)
-    with `brake` for `into_m`, then the pursuit holds 45 km/h."""
+    with `brake` for `into_m`, then the pursuit holds 45 km/h. `start`: see academy.course_run."""
     import lines as L
     on_tick = _in_gear(2)
 
@@ -586,8 +586,8 @@ def _flick_run(kmh=66, at=54, away=0.5, away_m=8, into=-1.0, into_m=8, brake=1.0
         return into if at + away_m <= trav < at + away_m + into_m else None
     # the approach nearer the middle than C02's outside line: the flick itself swings the car out
     line = L.bmp_left({**C02_LINE, "DR1181_3": 0.5, **(offsets or {})})
-    return A.course_run(drill, line, gearbox="sequential", on_tick=on_tick, pedals=pedals,
-                        steer=steer, kmh=kmh + 15, max_throttle=1.0, timeout=40, stop_within=0.5)
+    return A.course_run(drill, line, gearbox="sequential", on_tick=on_tick, pedals=pedals, steer=steer,
+                        kmh=kmh + 15, max_throttle=1.0, timeout=40, stop_within=0.5, start=start)
 
 
 @scenario
@@ -1647,3 +1647,20 @@ def surfaces():
     the drill's scripted medal technique, adapted per surface where a driver would adapt it, passes on each variant.
     Prints a table of verdicts and the numbers behind them. RA_SURFACES=B01,C04 limits it to some drills."""
     return _surface_suite(_module_a_runs())
+
+
+@scenario
+def tapes():
+    """Every saved input tape (mod/gameplay/rallyAcademy/tapes, tape.py) replayed once from its repeatable start:
+    each must still pass its drill. Run after game updates that touch the car or physics; re-record a tape that
+    fails (tape.py record)."""
+    import tape as T
+    p = []
+    for f in sorted(T.TAPES.glob("*.json")):
+        d = f.stem
+        A.drill_session(d)
+        lua("extensions.rallyAcademy.setAutoRetry(false) return 1")
+        g = T.play_one(d.split("-")[0], T.load(d))
+        expect(p, f"{d}: the tape's replay passes", g["passed"], T._verdict(g))
+        A.end_session(d)
+    return p

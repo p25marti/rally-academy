@@ -333,12 +333,17 @@ def shift_to(gear):
     return f"controller.mainController.shiftToGearIndex({gear})"
 
 
-def course_run(drill_id, local_points, gearbox="arcade", **kw):
+def course_run(drill_id, local_points, gearbox="arcade", start=None, **kw):
     """Retry the drill and drive course-frame points (see course_points); returns the graded state.
-    gearbox: 'arcade' (shifts itself) or 'sequential' (shift with on_tick returning shift_to(n))."""
-    click("Retry")
-    time.sleep(1.0)
-    sequential() if gearbox == "sequential" else arcade()
+    gearbox: 'arcade' (shifts itself) or 'sequential' (shift with on_tick returning shift_to(n)).
+    start(gearbox) replaces the Retry and sets the gearbox (tape.py: a Retry from stopped physics, for a
+    repeatable start)."""
+    if start:
+        start(gearbox)
+    else:
+        click("Retry")
+        time.sleep(1.0)
+        sequential() if gearbox == "sequential" else arcade()
     inp("parkingbrake", 0)
     follow_path(course_points(drill_id, local_points), **kw)
     return wait_graded()

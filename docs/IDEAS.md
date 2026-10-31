@@ -206,6 +206,14 @@ controllers for the donut); run records with every input at about 30 Hz; the inp
   player's own session, with the inputs on hand for the graph and cues. It still has to be re-checked after
   updates that change the car or the physics, and it plays live, so it can still fail on screen, more rarely.
 
+- *Tapes for C08* (`tools/ingame/tape.py`, 2026-10-31): recorded through the same controlled start, a tape is kept
+  when 5 replays all pass. Gravel: kept at the first passing recording (replays gold and silver, 12.9-13.1 s; 3 of 3
+  again later). Asphalt and snow: none of 8 recordings kept; the best passed 4 of 5 replays (asphalt: several 4/5;
+  snow: two 4/5). Replays of one tape cluster but still split between a pass and a post clip, at the exit gate on
+  asphalt, the turn-in gate on snow, where the scripted line clears the posts by under a metre. So a tape repeats
+  well, not perfectly: its margin to the posts has to cover a spread of about a metre. Next would be a recorded
+  line with more room, or finding the remaining run-to-run variation (inputs per physics tick, props).
+
 **Hard parts.** The size and update fragility of replays; the timing of cues against a replay; a camera that frames
 the car well (a fixed trackside camera works for one corner; a moving one needs a path); the demo must never touch
 progress.

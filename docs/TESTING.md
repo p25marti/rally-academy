@@ -136,6 +136,18 @@ It needs an ffmpeg with an H.264 encoder (`libx264`, `libopenh264` or `h264_mf`)
 looked for on PATH and in apps' folders under Program Files and AppData (the owner's machine has one in
 MOZA Pit House). `recordings/` is git-ignored.
 
+## Input tapes (demo runs)
+
+`python tools/ingame/tape.py record C08 [--surface asphalt|snow|all]` records a drill's scripted pass as an input
+tape: throttle, brake, handbrake, steering and gear for every rendered frame, in
+`mod/gameplay/rallyAcademy/tapes/<drill>.json`. A tape only repeats from a repeatable start, so recording and
+replaying both stop physics, press Retry, load the tape extension into the car and resume; the car holds still for
+80 frames and selects its gear on frame 20 before the tape runs. A recording is kept only when it passed and its
+`--checks` replays (default 5) all pass too; the file lists their verdicts. `check` replays a saved tape, `play` replays
+it once to watch. Not used by the mod yet: these are the groundwork for demo cutscenes
+([IDEAS](IDEAS.md#demo-cutscenes)). Re-run `check` after game updates that touch the car or physics, and `record`
+when one fails. Only drills with a driver in `tape.py` (`DRIVERS`) can be taped: C08 so far.
+
 ## Recording a fixture
 
 Recorded runs pin the grading rules to real physics (`tests/lua/test_fixtures.lua`):
