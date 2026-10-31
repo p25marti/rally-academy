@@ -190,12 +190,27 @@ controllers for the donut); run records with every input at about 30 Hz; the inp
   differences at launch compound. Open-loop inputs alone can't make a demo; it would need the scenario's closed-loop
   steering (pure pursuit) with the pedals replayed. That's what the scenarios already do, and they pass only some
   of the time (C08: up to five tries), so a live demo could fail on screen.
+- *Input tapes, take two: a controlled start* (same day). The drift above came from the start, not from chaos:
+  the tape began after Retry plus a real-time wait, with the gear engaging somewhere in it. Freezing physics
+  (`be:setPhysicsRunning(false)`), pressing Retry, loading the in-car player, then resuming, with the player
+  counting frames from there (hold 80 frames, select 2nd at frame 20, then play the tape by sim time),
+  made the same tape drive the original line: **6 of 6 replays passed C08 with bronze in 13.00-13.03 s** (the
+  recorded run: 12.92 s). Paths agreed within 0.2-0.4 m through the flick and corner, growing to about 1-3 m on the
+  exit, mostly a constant along-track offset of about one frame. `be:setPhysicsDeterministic(true)` (a fixed
+  0.05 s of physics per rendered frame) didn't help: within 0.8 m, worse than normal mode's 0.35 m; a tape only
+  matches the frame timing it was recorded at. Caveats: the game was in the background at a steady 30 fps;
+  the game's input layer applies inputs once per rendered frame (`input.updateGFX`), so a rig in the foreground at a
+  varying frame rate may spread more (untested). A vehicle extension's `onPhysicsStep(dt)` hook runs at the 2 kHz
+  physics rate and could step a tape by physics ticks instead (untested).
+  So a *tape demo* is viable: a few kB per drill instead of MB, immune to the replay format, playable live in the
+  player's own session, with the inputs on hand for the graph and cues. It still has to be re-checked after
+  updates that change the car or the physics, and it plays live, so it can still fail on screen, more rarely.
 
 **Hard parts.** The size and update fragility of replays; the timing of cues against a replay; a camera that frames
 the car well (a fixed trackside camera works for one corner; a moving one needs a path); the demo must never touch
 progress.
 
-**Rough shape.** One drill (C08) end to end with replays: `record_demos.py` saves the `.rpl` trimmed to the run, plus
+**Rough shape.** One drill (C08) end to end, with tapes or replays: `record_demos.py` saves the `.rpl` trimmed to the run, plus
 its run record and cue times; a demo phase in the mod suspends run detection, plays at full speed from a chase
 camera, then at each cue slows to 1/4 and freezes with a card and the input graph; a key continues or skips. The
 first time a drill is opened it plays automatically; after that it's a button.
