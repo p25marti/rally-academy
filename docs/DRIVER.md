@@ -4,7 +4,7 @@ Design for a trained driver that demonstrates the techniques the game's AI can't
 Scandinavian flick. Agreed with the owner on 2026-11-01. The wider idea and its research notes are in
 [IDEAS](IDEAS.md#versatile-driver-reinforcement-learning); this is the plan for its first slice.
 
-Status: **design**. Nothing below is built yet except where a step says so.
+Status: **design; step 1 of the build plan built**. Nothing else below is built yet.
 
 ## Goal and constraints
 
@@ -152,9 +152,14 @@ C08 gets **Watch AI**, as the five road drills have it:
 
 Each step is usable on its own and is verified before the next starts.
 
-1. **Fast-run harness** (`tools/driver/fast.py`). A context manager that turns on deterministic mode and lifts the
-   background cap in memory, and always restores both. Also a speed check that reads `obj:getSimTime()` against the
-   wall clock. Done when a run inside it reports about 5× and the settings read as saved afterwards.
+1. **Fast-run harness** (`tools/driver/fast.py`). **Built 2026-11-01.**
+   - `with fast():` turns on deterministic mode and lifts the background cap in memory.
+   - `restore()` puts both back from the values saved on disk, so it also repairs a game left in fast mode by a script
+     that died.
+   - `sim_speed()` reads `obj:getSimTime()` against the wall clock.
+   - Verified in game (0.40.4) by `python tools/driver/fast.py check`: 5.09× focused, 5.02× unfocused, 1.00× normal,
+     and settings back as saved afterwards. A script killed inside `fast()` left fast mode on; `fast.py restore` put
+     the saved cap back. Unit tests in `tests/python/test_fast.py`.
 2. **Card and skill runner.**
    - `tools/driver/cards/scandinavian_flick.json`, plus `tools/driver/runner.lua`, injected into the car the way the
      tape player is.

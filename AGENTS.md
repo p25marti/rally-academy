@@ -23,6 +23,7 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
+| `tools/driver/` | The driver model ([DRIVER](docs/DRIVER.md)): `fast.py` runs the simulation about 5× real time for training |
 | `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match. `shapes.py` builds road centre lines from straights and arcs; `markers.py` places the corner signs; `racingline.py` exports the drill roads the mod's racing lines need ([ADR 0013](docs/decisions/0013-racing-lines-from-the-map-builder.md)) |
 | `docs/` | Everything else; `docs/decisions/` = ADRs; `docs/DRILLS.md` is generated (`dev.py drills`); `docs/images/` = the README's screenshots |
 | `reference/` | Historical design input; not shipped, not authoritative |
@@ -59,6 +60,8 @@ python tools/dev.py ship -F msg.txt    # check --strict, then branch, commit, fa
 python tools/ingame/record.py --all    # videos of the drill scenarios in recordings/ (TESTING)
 python tools/ingame/tape.py record C08 # an input tape of a drill's pass, kept if 5 replays pass (TESTING)
 python tools/ingame/audit.py --all --write  # every graded course's surfaces, grip, grade, tilt -> docs/COURSE_AUDIT.md
+python tools/driver/fast.py check      # fast simulation (~5x, same physics) works and restores the settings (DRIVER)
+python tools/driver/fast.py restore    # put the game back to normal mode and its saved frame cap after a crashed run
 python tools/mapgen/build.py           # regenerate the proving ground after editing its layout (~10 s)
 python tools/mapgen/views.py          # screenshots of it from fixed viewpoints (recordings/views/)
 ```
