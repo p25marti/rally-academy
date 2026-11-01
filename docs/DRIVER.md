@@ -4,7 +4,7 @@ Design for a trained driver that demonstrates the techniques the game's AI can't
 Scandinavian flick. Agreed with the owner on 2026-11-01. The wider idea and its research notes are in
 [IDEAS](IDEAS.md#versatile-driver-reinforcement-learning); this is the plan for its first slice.
 
-Status: **design; step 1 of the build plan built**. Nothing else below is built yet.
+Status: **design; steps 1 and 2 of the build plan built**. Nothing else below is built yet.
 
 ## Goal and constraints
 
@@ -42,12 +42,26 @@ doing. Each skill here ends when a **measurement** says so instead.
 | # | Skill | The car | Ends when | Learned |
 | --- | --- | --- | --- | --- |
 | 1 | Approach | holds about 60 km/h on the line | the Flick gate is passed | no: path follower and speed hold |
-| 2 | Feint | lifts, steers away (right) | the yaw rate away from the corner peaks | dials, then a correction |
-| 3 | Load and turn-in | steers hard left with a stab of brake | the rear slip angle reaches its target (8 / 12 / 15° for bronze / silver / gold) | dials, then a correction |
+| 2 | Feint | lifts, steers away (right) | the car has turned `feintYawDeg` away from the corner | dials, then a correction |
+| 3 | Load and turn-in | steers hard left with a stab of brake | the feint's swing away has slowed to `loadUnwindDegS` | dials, then a correction |
 | 4 | Catch | counter-steers and works the throttle to hold the slide | the car points at the Exit gate, or the slide fades | dials, then a correction |
 | 5 | Exit | throttle on through Exit | the Exit gate is passed | no: path follower |
 
 Skills 2-4 last about 2 seconds, so learning is confined to a small problem.
+
+**The flick is a pendulum** (measured in step 2, C08 gravel):
+
+- The feint turns the car only about 4° right.
+- It is still turning away at about 22°/s when the turn-in has run for 0.4 s, because the wheel takes about 0.4 s to
+  get from right to full left at the human steering rate.
+- The rear only comes round (+60°/s, 23° of slide) after that, during the catch.
+
+So the first design's triggers couldn't fire, and these replaced them:
+
+| First design | Why it couldn't fire | Replaced by |
+| --- | --- | --- |
+| "the yaw rate away peaks" | with the steering held, the turn away doesn't peak within the feint | how far the car has turned |
+| "the slide reaches its target" | it happens after the load phase | the swing away slowing |
 
 ## Technique cards
 
@@ -160,14 +174,32 @@ Each step is usable on its own and is verified before the next starts.
    - Verified in game (0.40.4) by `python tools/driver/fast.py check`: 5.09× focused, 5.02× unfocused, 1.00× normal,
      and settings back as saved afterwards. A script killed inside `fast()` left fast mode on; `fast.py restore` put
      the saved cap back. Unit tests in `tests/python/test_fast.py`.
-2. **Card and skill runner.**
-   - `tools/driver/cards/scandinavian_flick.json`, plus `tools/driver/runner.lua`, injected into the car the way the
-     tape player is.
-   - Dials set by hand from today's script (gravel: 66 km/h; at the Flick gate +14 m, steer 0.5; then -1.0 with full
-     brake. Asphalt: 72 km/h, 0.7 for 10 m).
-   - Phases end on measurements; the human limits apply.
-   - `tools/driver/attempt.py` runs one attempt from a controlled start and returns the verdict and a score.
-   - Done when it passes C08 on gravel at least as often as the tape.
+2. **Card and skill runner.** **Built 2026-11-01.**
+   - **The pieces:**
+     - `tools/driver/cards/scandinavian_flick.json`, the card.
+     - `tools/driver/runner.lua`, injected into the car the way the tape player is. Its pure core is unit-tested in
+       `tests/lua/test_driver_runner.lua`, and its slip angle is checked against the grader's.
+     - `tools/driver/attempt.py`, which runs attempts from a controlled start and prints each verdict, a score, and
+       how and when each phase ended.
+   - **The dials** start from the old script: 66 km/h, the feint 14 m past the Flick gate at 0.5. Asphalt uses
+     72 km/h and 0.7.
+   - **Results.** Verified in game (0.40.4) by `attempt.py`, every attempt from the same controlled start, with every
+     phase ending on its measurement:
+
+     | Surface | Normal speed | Fast | Slide | The tape |
+     | --- | --- | --- | --- | --- |
+     | Gravel | 10 of 10 gold | 10 of 10 gold | 23° | 5 of 5 replays |
+     | Asphalt | not run | 5 of 5 gold | 16° | best 4 of 5 |
+     | Snow | not run | 5 of 5 gold | 20° | best 4 of 5 |
+
+     Fast runs from one start repeat almost exactly, so 5 of 5 there is close to one sample. Stage 1's varied starts
+     are the real test.
+   - **Learned: the reaction time.** The 150 ms reaction time on measured phase ends shifts every phase later. With
+     the first trigger values (3° and 20°/s), gravel fell to 2 of 10: the swing grew to 38° and the car clipped the
+     Apex post. The starting values (1.3° and 28°/s) fire one reaction time earlier.
+
+     Whether a planned move in a rehearsed technique should wait out a reaction time at all is a question for the
+     card review. A driver anticipates the move; reacting suits the corrections.
 3. **Stage 1** (`tools/driver/tune.py`, CMA-ES). Done at 19 of 20 on all three surfaces in fast mode, then in normal
    mode.
 4. **Stage 2** (`tools/driver/train.py`, SAC, PyTorch) plus the network in the runner. Done at stage 2's acceptance.

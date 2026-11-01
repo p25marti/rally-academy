@@ -1,0 +1,96 @@
+{
+  "id": "scandinavian_flick",
+  "title": "Scandinavian flick",
+  "teaches": ["C08"],
+  "turn": "left",
+  "about": "A feint away from the corner loads the outside of the car; turning in hard with a touch of brake then swings the rear into the corner, and the slide is caught and driven out. Drafted by Claude from general rally-driving knowledge in its own words (docs/DRIVER.md); not yet checked against coaching sources or reviewed by the owner.",
+  "sources": [],
+  "humanLimits": {
+    "reactionMs": 150,
+    "steerRatePerS": 4.0,
+    "pedalRatePerS": 8.0,
+    "decisionHz": 20
+  },
+  "phases": [
+    {
+      "id": "approach",
+      "cue": "Settle the speed and line before the Flick gate",
+      "controller": "follow_line",
+      "dials": {
+        "approachKmh": [55, 80, 66],
+        "feintAfterM": [6, 22, 14]
+      },
+      "endsWhen": "the car is feintAfterM past the Flick gate"
+    },
+    {
+      "id": "feint",
+      "cue": "Lift and flick away from the corner",
+      "controller": "steer_hold",
+      "dials": {
+        "feintSteer": [0.2, 1.0, 0.5],
+        "feintMinS": [0.1, 0.4, 0.2],
+        "feintMaxS": [0.3, 1.0, 0.7],
+        "feintYawDeg": [0.5, 15, 1.3]
+      },
+      "endsWhen": "the car has turned feintYawDeg away from the corner, after feintMinS; or feintMaxS",
+      "reward": "lateral acceleration towards the outside of the corner: the weight has moved there"
+    },
+    {
+      "id": "load_turn_in",
+      "cue": "Turn in hard with a touch of brake",
+      "controller": "steer_hold",
+      "dials": {
+        "turnSteer": [0.5, 1.0, 1.0],
+        "loadBrake": [0.0, 1.0, 1.0],
+        "loadUnwindDegS": [0, 40, 28],
+        "loadMinS": [0.05, 0.3, 0.1],
+        "loadMaxS": [0.3, 1.2, 0.8]
+      },
+      "endsWhen": "the feint's swing away has slowed to loadUnwindDegS (yaw rate), after loadMinS; or loadMaxS. The rear comes round into the corner after this, during the catch",
+      "reward": "rear slip angle into the corner beyond the medal target (8 / 12 / 15 degrees)"
+    },
+    {
+      "id": "catch",
+      "cue": "Catch the slide, eyes on the exit",
+      "controller": "follow_line_countersteer",
+      "dials": {
+        "catchGain": [0.0, 1.5, 0.0],
+        "catchKmh": [30, 60, 45],
+        "settleSlipDeg": [2, 10, 5],
+        "catchMaxS": [0.8, 3.0, 2.5]
+      },
+      "endsWhen": "the slip angle is below settleSlipDeg after 0.3 s, or catchMaxS",
+      "reward": "clearance to the posts; no spin"
+    },
+    {
+      "id": "exit",
+      "cue": "Throttle on, out through the Exit gate",
+      "controller": "follow_line",
+      "dials": {
+        "exitKmh": [30, 70, 45]
+      },
+      "endsWhen": "12 m past the Exit gate, then a stop",
+      "reward": "speed at the Exit gate (25 / 40 / 45 km/h)"
+    }
+  ],
+  "surfaces": {
+    "asphalt": {
+      "approachKmh": 72,
+      "feintSteer": 0.7
+    }
+  },
+  "faults": [
+    {
+      "if": "rear slip below 5 degrees after load_turn_in",
+      "cue": "Commit harder: more brake as you turn in"
+    },
+    {
+      "if": "spin",
+      "cue": "Catch it sooner: counter-steer as soon as the rear goes"
+    },
+    {
+      "if": "turned in more than 1.5 s after the feint",
+      "cue": "Make it one movement: away, then straight back in"
+    }
+  ]
+}
