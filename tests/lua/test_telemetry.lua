@@ -91,6 +91,42 @@ function T.miss_mid_run_closes_the_record_as_abandoned()
   eq(run.score.passed, false, 'miss recorded')
 end
 
+local function keptRuns(h)
+  local paths = {}
+  for path in pairs(h.files) do
+    if path:find('^settings/rallyAcademy/runs/') then paths[#paths + 1] = path end
+  end
+  table.sort(paths)
+  return paths
+end
+
+function T.scored_attempts_are_kept_on_disk_only_when_the_player_keeps_runs()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'T02')
+  M.retry()
+  driveWithTelemetry(h, M, 8.0, {x = 0, y = 20, z = 0})
+  M.recordAttempt(true)
+  eq(#keptRuns(h), 0, 'off by default: nothing kept')
+  eq(h.lastState().keepRuns, false, 'the HUD state says off')
+  M.setKeepRuns(true)
+  eq(jsonReadFile('settings/rallyAcademy/prefs.json').keepRuns, true, 'preference saved')
+  M.retry()
+  driveWithTelemetry(h, M, 8.0, {x = 0, y = 20, z = 0})
+  M.recordAttempt(true)
+  local paths = keptRuns(h)
+  eq(#paths, 1, 'one attempt kept')
+  assert(paths[1]:find('^settings/rallyAcademy/runs/T02/%d+%-%d+%.json$'), 'kept by drill and time: ' .. paths[1])
+  local kept = jsonReadFile(paths[1])
+  eq(kept.meta.drill, 'T02', 'its drill')
+  assert(kept.meta.recordedAt, 'when it was driven')
+  eq(kept.score.passed, true, 'its score')
+  eq(#kept.samples, #M.getLastRun().samples, 'all its samples')
+  local M2 = H.reloadExtension()
+  M2.select('T02')
+  eq(h.lastState().keepRuns, true, 'remembered after a reload')
+  eq(M2.getMenuData().info.keepRuns, true, 'and shown on the About page')
+end
+
 function T.save_last_run_writes_json()
   local h, M = setup()
   eq(M.saveLastRun(), nil, 'nothing to save yet')

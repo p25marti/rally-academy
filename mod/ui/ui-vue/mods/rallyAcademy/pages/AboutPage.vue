@@ -60,6 +60,20 @@
     </section>
 
     <section class="ra-panel">
+      <div class="ra-panel-title">Your runs</div>
+      <p>
+        Keep a copy of every attempt you score: your inputs and the car's motion, about 60 times a second, with the
+        grade. They're saved in your BeamNG user folder under <code>settings/rallyAcademy/runs</code>, about 1 MB a
+        minute of driving, for analysing your driving or training a driver later.
+      </p>
+      <div class="ra-hud-buttons">
+        <BngButton :accent="keepRuns ? ACCENTS.main : ACCENTS.secondary" @click="toggleKeepRuns">
+          Keep my runs: {{ keepRuns ? "on" : "off" }}
+        </BngButton>
+      </div>
+    </section>
+
+    <section class="ra-panel">
       <div class="ra-panel-title">Version</div>
       <p>Rally Academy {{ info.version || "(unknown)" }}, alpha. Built and tested on BeamNG.drive 0.39.</p>
       <p class="ra-muted">Source and issue tracker: github.com/p25marti/rally-academy</p>
@@ -84,6 +98,14 @@ function toggle() {
   academy("setHudLayout", hudLayout.value)
 }
 function useNow() { academy("useHudLayout") }
+
+// Every scored attempt's run record saved to disk; off unless the player turns it on.
+const keepRuns = ref(props.info.keepRuns === true)
+watch(() => props.info.keepRuns, v => (keepRuns.value = v === true))
+function toggleKeepRuns() {
+  keepRuns.value = !keepRuns.value
+  academy("setKeepRuns", keepRuns.value)
+}
 </script>
 
 <style scoped lang="scss">

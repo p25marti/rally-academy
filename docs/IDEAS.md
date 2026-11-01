@@ -19,6 +19,7 @@ parts. "Who" says whether it came from the owner or was suggested.
 | [Ghost of your best run](#ghost-of-your-best-run) | Suggested | Medium | Idea (also ROADMAP P5) |
 | [AI demonstration lap](#ai-demonstration-lap) | Suggested | Medium | Built (Watch AI, five drills) |
 | [Demo cutscenes](#demo-cutscenes) | Owner | Large | Spiked 2026-10-30 |
+| [Versatile driver (reinforcement learning)](#versatile-driver-reinforcement-learning) | Owner | Very large | Idea; data collection built |
 | [Sharing drills and scores](#sharing-drills-and-scores) | Suggested | Large | Idea |
 
 ---
@@ -242,6 +243,71 @@ progress.
 its run record and cue times; a demo phase in the mod suspends run detection, plays at full speed from a chase
 camera, then at each cue slows to 1/4 and freezes with a card and the input graph; a key continues or skips. The
 first time a drill is opened it plays automatically; after that it's a button.
+
+## Versatile driver (reinforcement learning)
+
+**The idea.** A trained driver that can do the drills, including the techniques the game's AI can't (flicks,
+handbrake turns, trail braking, donuts), and ideally new drills it hasn't seen, on any surface. It drives the demos
+(and corrects drift live, so a demo needn't repeat exactly), and could one day drive a "how a coach would do it" ghost
+or compare your inputs with its own. Owner's idea (2026-11-01), after the [demo cutscenes](#demo-cutscenes) spike.
+
+**Why.** Scripted drivers pass, but each is written by hand for one drill, and replayed inputs drift (a tape repeats
+to about a metre in normal mode). A learned closed-loop driver adapts: it can recover from drift, a different surface
+or a new course.
+
+**What already helps.**
+- Drills, gates, stop zones, rules and racing lines are data, and the rules return a verdict with reasons: most of a
+  reward is already written.
+- The map builder generates courses from data, so training courses can come from the same templates as the drills.
+- Run records: every input and the car's motion at the frame rate (60 Hz focused, 30 unfocused). Since 2026-11-01 they
+  carry what a learner needs: yaw, roll and pitch rates (`yr`, `rr`, `pr`), attitude (`roll`, `pitch`), acceleration
+  (`gx`, `gy`, `gz`) and vertical speed (`vz`), alongside per-wheel speeds, the velocity (`vx, vy`, so slip) and the
+  heading.
+- **Keep my runs** (About page) saves every scored attempt, with its grade, to `settings/rallyAcademy/runs/<drill>/`
+  (about 1 MB a minute). The owner's rig attempts become demonstrations.
+- Controlled starts, deterministic mode and the per-frame seed from the tape spike, for repeatable experiments.
+
+**How it would learn.**
+- *Learning from demonstrations* (imitation learning). *Behaviour cloning* trains a network to output the
+  driver's inputs given the car's state. From a few attempts alone it drifts off what it saw and errors compound,
+  but as a start for reinforcement learning the owner's runs are worth a lot: they show the flick (brake, handbrake,
+  counter-steer together), which a learner would otherwise take very long to stumble on. Best data: the rig (analogue
+  inputs), the drill's car, 5-20 attempts per technique, clean and messy, failures kept.
+- *Reinforcement learning* then improves on it by trial and error against the drill's reward (gates, the line, the
+  rules). *RL from demonstrations* is the combination.
+- Videos of real drivers don't work the same way: they have no inputs (steering, pedals, handbrake), none of the
+  car's state (slip, wheel speeds, grip), and a different car. Useful for people and for drill design, not as training
+  data.
+- Alternatives: tuning the scripted techniques by optimisation (CMA-ES or Bayesian, a few hundred runs: the cheap way
+  to reliable demos, not a versatile driver); model-based control (predict the car's motion, pick inputs that keep it
+  on a planned line; the classic approach to autonomous drifting, needing a model of the car, which can be learned from
+  logged runs). Hybrids of the two are common.
+
+**Generalising to new drills.** Not automatic; it depends on the training:
+- What the model sees must be relative to the car (speed, yaw rate, slip; the next gates, line and grip measured from
+  the car), not map positions, or it memorises courses.
+- The goal is an input (pass these gates, stop in this box, no brake), so one model does many drills.
+- Train on many generated variations (corner angles, spacing, speeds, grip), holding real drills out as the test.
+- Then: a new layout of a known kind, likely no new training; a new surface, none if grip varied in training; a new
+  combination of known goals, often none; a new technique or car, a top-up that keeps the car control learned so far.
+- A two-layer design suits this: car control (follow a path and speed, slide on purpose; the expensive part, which
+  transfers) and a plan per drill (where to brake, where to start the slide), from the drill data and the racing line.
+
+**Hard parts.**
+- Simulation speed: about 3x real time from one game instance (deterministic mode at 60 fps); a flick from scratch
+  might take 10^6-10^7 control steps (hours to days). Several instances are heavy.
+- The policy must run inside the car's Lua (a small network is feasible in LuaJIT); a round trip through the MCP server
+  per tick is far too slow. Training happens in Python, with the data batched out.
+- Reward design and exploration (the flick is hard to discover). The research API (BeamNG.tech) needs a licence, so
+  we'd build on our own MCP and in-car tools.
+- No guarantee it learns the techniques; weeks of work.
+
+**Rough shape.**
+1. Collect: the owner turns on Keep my runs and drives a few drills on the rig (built).
+2. Behaviour-clone one drill (C08) from those runs and see how far copying alone gets, driven by a small network in
+   the car.
+3. Reinforcement learning on top, on generated variants of C08, compared against the scripted driver.
+4. Only then: the car-control layer across drills and surfaces.
 
 ## Sharing drills and scores
 

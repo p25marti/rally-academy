@@ -28,15 +28,21 @@ local function send()
   for i = 0, wheels.wheelRotatorCount - 1 do
     if wheels.wheelRotators[i].isTireDeflated then flat = flat + 1 end
   end
+  -- the car's motion for training a driver (docs/IDEAS.md, Versatile driver): rotation rates, attitude, acceleration
+  local rr, pr, yr = obj:getRollPitchYawAngularVelocity()
+  local roll, pitch = obj:getRollPitchYawRad()
   buf:putf('local m=extensions[%q] if m and m.onTelemetry then m.onTelemetry({id=%d,t=%.4f,x=%.2f,y=%.2f,z=%.2f,'
     .. 'thr=%.3f,brk=%.3f,ti=%.3f,bi=%.3f,hb=%.3f,steer=%.3f,si=%.3f,clutch=%.3f,gear=%d,rpm=%.0f,eng=%d,ws=%.3f,air=%.3f,abs=%d,'
-    .. 'hx=%.3f,hy=%.3f,vx=%.2f,vy=%.2f,uz=%.3f,dmg=%.0f,flat=%d,w={',
+    .. 'hx=%.3f,hy=%.3f,vx=%.2f,vy=%.2f,vz=%.2f,uz=%.3f,rr=%.3f,pr=%.3f,yr=%.3f,roll=%.3f,pitch=%.3f,'
+    .. 'gx=%.2f,gy=%.2f,gz=%.2f,dmg=%.0f,flat=%d,w={',
     target, obj:getId(), obj:getSimTime(), x, y, z, e.throttle or 0, e.brake or 0,
     e.throttle_input or e.throttle or 0, e.brake_input or e.brake or 0, e.parkingbrake or 0, e.steering or 0,
     e.steering_input or 0, e.clutch or 0,
     e.gearIndex or 0, e.rpm or 0, (e.engineRunning or 0) > 0 and 1 or 0, e.wheelspeed or 0, e.airspeed or 0,
     (e.absActive or 0) > 0 and 1 or 0,
-    h.x, h.y, v.x, v.y, u.z, beamstate and beamstate.damage or 0, flat)
+    h.x, h.y, v.x, v.y, v.z, u.z, rr or 0, pr or 0, yr or 0, roll or 0, pitch or 0,
+    sensors and sensors.gx or 0, sensors and sensors.gy or 0, sensors and sensors.gz or 0,
+    beamstate and beamstate.damage or 0, flat)
   for i = 0, wheels.wheelRotatorCount - 1 do
     local wd = wheels.wheelRotators[i]
     buf:putf('{n=%q,s=%.3f,m=%d,f=%.0f},', wd.name, wd.wheelSpeed or 0, wd.contactMaterialID1 or -1, wd.downForceRaw or 0)

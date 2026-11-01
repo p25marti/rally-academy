@@ -56,8 +56,19 @@ function S.saveSpots(spots)
   jsonWriteFile(S.SPOTS_FILE, spots, true)
 end
 
--- prefs = {schemaVersion = 1, autoRetry = bool, hudLayout = bool, showLine = bool} (the player's choices in the HUD;
--- showLine, the racing line, is off unless set)
+-- Kept attempts: every scored attempt's run record, when the player keeps runs (prefs.keepRuns), for analysis and
+-- training data (docs/IDEAS.md, Versatile driver). About 1 MB of JSON a minute of driving.
+S.RUNS_DIR = 'settings/rallyAcademy/runs'
+
+-- stamp: a sortable date and time, e.g. '20261101-142530'; returns the path written
+function S.saveRun(drillId, stamp, rec)
+  local path = string.format('%s/%s/%s.json', S.RUNS_DIR, tostring(drillId):gsub('[^%w%-_]', '_'), stamp)
+  jsonWriteFile(path, rec, false)
+  return path
+end
+
+-- prefs = {schemaVersion = 1, autoRetry = bool, hudLayout = bool, showLine = bool, keepRuns = bool} (the player's
+-- choices; showLine, the racing line, and keepRuns are off unless set)
 S.PREFS_FILE = 'settings/rallyAcademy/prefs.json'
 
 function S.loadPrefs()

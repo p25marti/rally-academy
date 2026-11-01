@@ -1448,6 +1448,15 @@ def pause():
         click_text("[class*=rail] button, [class*=rail-button]", label)
         n = A.wait_for(lambda: ui(f"return document.querySelectorAll('.ra-pause-page {marker}').length > 0"), True)
         expect(p, f"{label} page renders", n is True, n)
+    click_text("[class*=rail] button, [class*=rail-button]", "About")
+    kept = "return tostring(extensions.rallyAcademy.debugState().keepRuns)"
+    before = lua(kept)
+    click_text(".ra-pause-page button", "Keep my runs")
+    turned = lua(kept)
+    click_text(".ra-pause-page button", "Keep my runs")
+    expect(p, "About: Keep my runs turns on and off", (before, turned, lua(kept)) == ("false", "true", "false"),
+           (before, turned, lua(kept)))
+    lua("extensions.rallyAcademy.setKeepRuns(false) return 1")
     lua("ui_router.navigate('play') return 1")
     time.sleep(2)
     lua("ui_router.navigate('pause') return 1")

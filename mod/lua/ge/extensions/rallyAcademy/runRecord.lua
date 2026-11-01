@@ -2,7 +2,9 @@
 -- globals), so grading rules can be unit-tested against recorded runs.
 --
 -- A sample is what lua/vehicle/extensions/rallyAcademy/telemetry.lua sends:
---   {id, t, x, y, z, thr, brk, hb, steer, clutch, gear, rpm, ws, air, abs, w = {{n, s, m, f}, ...}}
+--   {id, t, x, y, z, thr, brk, ti, bi, hb, steer, si, clutch, gear, rpm, eng, ws, air, abs, hx, hy, vx, vy, vz, uz,
+--    rr, pr, yr, roll, pitch, gx, gy, gz, dmg, flat, w = {{n, s, m, f}, ...}}
+-- (rr, pr, yr: roll, pitch and yaw rates, rad/s; roll, pitch: rad; gx, gy, gz: acceleration, m/s^2; since 2026-11-01)
 -- t is the car's sim time (obj:getSimTime), so it stops while physics is paused.
 local R = {}
 
