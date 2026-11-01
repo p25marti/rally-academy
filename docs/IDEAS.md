@@ -19,7 +19,7 @@ parts. "Who" says whether it came from the owner or was suggested.
 | [Ghost of your best run](#ghost-of-your-best-run) | Suggested | Medium | Idea (also ROADMAP P5) |
 | [AI demonstration lap](#ai-demonstration-lap) | Suggested | Medium | Built (Watch AI, five drills) |
 | [Demo cutscenes](#demo-cutscenes) | Owner | Large | Spiked 2026-10-30 |
-| [Versatile driver (reinforcement learning)](#versatile-driver-reinforcement-learning) | Owner | Very large | Idea; data collection built |
+| [Versatile driver (reinforcement learning)](#versatile-driver-reinforcement-learning) | Owner | Very large | Designed for C08 ([DRIVER](DRIVER.md)); data collection built |
 | [Sharing drills and scores](#sharing-drills-and-scores) | Suggested | Large | Idea |
 
 ---
@@ -250,6 +250,16 @@ first time a drill is opened it plays automatically; after that it's a button.
 handbrake turns, trail braking, donuts), and ideally new drills it hasn't seen, on any surface. It drives the demos
 (and corrects drift live, so a demo needn't repeat exactly), and could one day drive a "how a coach would do it" ghost
 or compare your inputs with its own. Owner's idea (2026-11-01), after the [demo cutscenes](#demo-cutscenes) spike.
+The first slice (demos of C08's flick: skills from technique cards, tuned dials, then a learned correction, trained in
+fast deterministic mode) is designed in [DRIVER](DRIVER.md).
+
+**Other uses, once it exists** (brainstorm, 2026-11-01): show how to recover from the player's own mistake (freeze the
+car's state where their run went wrong and let the driver go on from there); a shared-controls mode (it steers, you
+work the pedals, its share fading over attempts); a pass-probability predictor trained on kept runs, for "your run was
+lost here" debriefs and when the coach speaks (no reinforcement learning needed); one closed-loop test driver instead
+of per-drill scripts; medal thresholds per surface variant; a drivability check after map rebuilds and game updates;
+finding loopholes in the rules (reward hacking, on purpose); checking that players' own drills can be passed. It must
+drive within human limits (reaction time, input rates) or its demos and cues can't be copied.
 
 **Why.** Scripted drivers pass, but each is written by hand for one drill, and replayed inputs drift (a tape repeats
 to about a metre in normal mode). A learned closed-loop driver adapts: it can recover from drift, a different surface
