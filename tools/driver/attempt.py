@@ -106,7 +106,7 @@ def runner_code(cfg):
             "return 1")
 
 
-_ZERO = ("extensions.unload('raDriver') for _, n in ipairs({'throttle', 'brake', 'steering', 'parkingbrake'}) do "
+_ZERO = ("if extensions.raDriver then extensions.raDriver.stop() end extensions.unload('raDriver') for _, n in ipairs({'throttle', 'brake', 'steering', 'parkingbrake'}) do "
          "input.event(n, 0, 2) end return 1")
 
 

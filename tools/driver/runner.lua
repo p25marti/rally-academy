@@ -195,6 +195,13 @@ function M.updateGFX(dt)
   end
 end
 
+-- Off for good: no more inputs until the next configure. (extensions.unload doesn't remove an extension injected
+-- through package.preload, seen 0.40.4, so this is how a run is switched off.)
+function M.stop()
+  if d and not done then apply({throttle = 0, brake = 0, handbrake = 0, steering = 0}) end
+  d, done = nil, true
+end
+
 function M.state()
   if not d then return 'none' end
   return (done and 'done' or d.phase) .. ' ' .. frames
