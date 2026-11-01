@@ -1454,9 +1454,10 @@ def pause():
     click_text(".ra-pause-page button", "Keep my runs")
     turned = lua(kept)
     click_text(".ra-pause-page button", "Keep my runs")
-    expect(p, "About: Keep my runs turns on and off", (before, turned, lua(kept)) == ("false", "true", "false"),
-           (before, turned, lua(kept)))
-    lua("extensions.rallyAcademy.setKeepRuns(false) return 1")
+    back = lua(kept)
+    expect(p, "About: Keep my runs switches and switches back", {before, turned} == {"true", "false"} and back == before,
+           (before, turned, back))
+    lua(f"extensions.rallyAcademy.setKeepRuns({'false' if before == 'false' else 'true'}) return 1")  # the player's choice
     lua("ui_router.navigate('play') return 1")
     time.sleep(2)
     lua("ui_router.navigate('pause') return 1")

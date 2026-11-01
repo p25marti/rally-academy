@@ -263,8 +263,9 @@ or a new course.
   carry what a learner needs: yaw, roll and pitch rates (`yr`, `rr`, `pr`), attitude (`roll`, `pitch`), acceleration
   (`gx`, `gy`, `gz`) and vertical speed (`vz`), alongside per-wheel speeds, the velocity (`vx, vy`, so slip) and the
   heading.
-- **Keep my runs** (About page) saves every scored attempt, with its grade, to `settings/rallyAcademy/runs/<drill>/`
-  (about 1 MB a minute). The owner's rig attempts become demonstrations.
+- Every scored attempt is kept by default, with its grade, in `settings/rallyAcademy/runs/<drill>/` (about 1 MB a
+  minute, the newest 500; **Keep my runs** on the About page turns it off; scripted test runs aren't kept). The
+  owner's rig attempts become demonstrations, and so would any player's, if they chose to share them (below).
 - Controlled starts, deterministic mode and the per-frame seed from the tape spike, for repeatable experiments.
 
 **How it would learn.**
@@ -303,11 +304,23 @@ or a new course.
 - No guarantee it learns the techniques; weeks of work.
 
 **Rough shape.**
-1. Collect: the owner turns on Keep my runs and drives a few drills on the rig (built).
+1. Collect: the owner drives a few drills on the rig; runs are kept by default (built).
 2. Behaviour-clone one drill (C08) from those runs and see how far copying alone gets, driven by a small network in
    the car.
 3. Reinforcement learning on top, on generated variants of C08, compared against the scripted driver.
 4. Only then: the car-control layer across drills and surfaces.
+
+**Learning from players' runs** (owner, 2026-11-01: every player's runs kept by default, training "our model").
+Keeping runs locally is built. Using them is two separate steps, each needing an owner decision:
+- *Sharing runs with us* means the mod uploading them (or players sending files): explicit opt-in consent, a
+  server or storage to receive them, a privacy notice, and deletion on request. It reverses "Keep integrations
+  simple" (no network in the mod), and BeamNG's mod repository may have rules on mods that go online (unchecked).
+  A lighter first step: an **Export my runs** button that zips them for the player to send by hand.
+- *Training on players' machines* while they're away: reinforcement learning needs the game running, so it can't
+  happen "offline"; copying from saved runs could, but needs a Python and machine-learning install the mod can't
+  ship. Training stays on our side; players contribute data, then get the trained driver in a mod update.
+- Data from many players is mixed in skill, cars, inputs (keyboard, pad, wheel) and settings (gearbox, assists);
+  the record would need those in its metadata, and the grade picks the good runs.
 
 ## Sharing drills and scores
 

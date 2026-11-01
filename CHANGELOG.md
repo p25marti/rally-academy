@@ -6,9 +6,10 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
-- **Keep my runs** (Academy screen, About): saves every attempt you score, with its grade, in your user folder
-  (`settings/rallyAcademy/runs`, about 1 MB a minute of driving), for analysing your driving or training a driver
-  later. Off unless you turn it on. Run records now also carry the car's rotation rates, attitude and acceleration.
+- **Your runs are kept**: every attempt you score is saved with its grade on your own computer, in your user folder
+  (`settings/rallyAcademy/runs`, about 1 MB a minute of driving, the newest 500 attempts), for analysing your
+  driving or training a driver later. Nothing is sent anywhere; **Keep my runs** on the About page turns it off.
+  Run records now also carry the car's rotation rates, attitude and acceleration.
 - **Asphalt and snow test roads**, and the drills on them in all three surfaces: **D10** (the hay-bale chicane;
   on snow you brake earlier and weave slower, with medal times to match) and **B04** trail braking (back on asphalt
   and snow; on snow the exit speeds are lower). The new roads are the test road's second half, west of the corners.

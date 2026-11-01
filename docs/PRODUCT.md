@@ -39,6 +39,7 @@ gearbox. It must also work on a keyboard or gamepad, but the rig is the referenc
 | Medals | Graded drills can award **bronze / silver / gold**: a pass is bronze; silver and gold tighten the targets (a smaller box, a time). Block targets (8/10) still count passes ([GRADING](GRADING.md#medal-tiers)) | 2026-10-16 |
 | Auto-retry on by default | After an auto-graded run the next attempt starts after 3 s; driving off cancels it, it waits while a zone or gates still need marking, and a HUD toggle turns it off (remembered) | 2026-10-16 |
 | Keep integrations simple | External controls (Stream Deck, button boxes) go through game input actions and default keys (F13–F24). A local HTTP command server was built and rolled back the same day: more moving parts than it was worth ([STREAM_DECK](STREAM_DECK.md)) | 2026-10-16 |
+| Runs are kept by default | Every scored attempt's run record (inputs, the car's motion, the grade) is saved on the player's own computer (`settings/rallyAcademy/runs`, the newest 500), as data for analysis and a trained driver ([IDEAS](IDEAS.md#versatile-driver-reinforcement-learning)); About's **Keep my runs** turns it off. Nothing leaves the computer; scripted test runs aren't kept | 2026-11-01 |
 | Grading explains itself | Every check returns a readable reason with numbers; that reason is the coaching ([GRADING](GRADING.md)) | 2026-10-15 |
 
 ## Where it's going

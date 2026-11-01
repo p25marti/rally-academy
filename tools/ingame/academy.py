@@ -370,7 +370,8 @@ def drill_session(drill_id, level=None):
         reload_mod(ui_too=False)
         fresh_sampler()
         choose(drill_id)
-    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) return 1")
+    lua("extensions.rallyAcademy.useVenueStart() extensions.rallyAcademy.setAutoRetry(false) "
+        "extensions.rallyAcademy.devKeepRunsPaused(true) return 1")  # scripted runs aren't the player's driving
     want = drill(drill_id)["vehicle"]["configPath"]
     if want not in current_config():
         # The config reads as the new car the moment the swap is asked for; wait until the mod has
@@ -386,8 +387,8 @@ def drill_session(drill_id, level=None):
 
 def end_session(*drill_ids):
     """Undo what a drill scenario changed: auto-retry back on, the realistic gearbox, and the drills' progress
-    back as it was before the scenarios ran."""
-    lua("extensions.rallyAcademy.setAutoRetry(true) return 1")
+    back as it was before the scenarios ran; the player's runs are kept again."""
+    lua("extensions.rallyAcademy.setAutoRetry(true) extensions.rallyAcademy.devKeepRunsPaused(false) return 1")
     realistic()
     clear_progress(*drill_ids)
 

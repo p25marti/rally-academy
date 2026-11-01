@@ -56,9 +56,11 @@ function S.saveSpots(spots)
   jsonWriteFile(S.SPOTS_FILE, spots, true)
 end
 
--- Kept attempts: every scored attempt's run record, when the player keeps runs (prefs.keepRuns), for analysis and
--- training data (docs/IDEAS.md, Versatile driver). About 1 MB of JSON a minute of driving.
+-- Kept attempts: every scored attempt's run record, unless the player turns keeping runs off (prefs.keepRuns), for
+-- analysis and training data (docs/IDEAS.md, Versatile driver). About 1 MB of JSON a minute of driving; the newest
+-- MAX_RUNS are kept.
 S.RUNS_DIR = 'settings/rallyAcademy/runs'
+S.MAX_RUNS = 500
 
 -- stamp: a sortable date and time, e.g. '20261101-142530'; returns the path written
 function S.saveRun(drillId, stamp, rec)
@@ -67,14 +69,30 @@ function S.saveRun(drillId, stamp, rec)
   return path
 end
 
+-- Removes the oldest kept runs (by their time stamp, across drills) beyond `max`; returns how many went.
+function S.pruneRuns(max)
+  if not (FS and FS.findFiles) then return 0 end
+  local files = {}
+  for _, f in ipairs(FS:findFiles('/' .. S.RUNS_DIR .. '/', '*.json', -1, true, false) or {}) do
+    local stamp = f:match('(%d+%-%d+)%.json$')
+    if stamp then files[#files + 1] = {path = f, stamp = stamp} end
+  end
+  local over = #files - (max or S.MAX_RUNS)
+  if over <= 0 then return 0 end
+  table.sort(files, function(a, b) return a.stamp < b.stamp end)
+  for i = 1, over do FS:removeFile(files[i].path) end
+  return over
+end
+
 -- prefs = {schemaVersion = 1, autoRetry = bool, hudLayout = bool, showLine = bool, keepRuns = bool} (the player's
--- choices; showLine, the racing line, and keepRuns are off unless set)
+-- choices; showLine, the racing line, is off unless set)
 S.PREFS_FILE = 'settings/rallyAcademy/prefs.json'
 
 function S.loadPrefs()
   local t = read(S.PREFS_FILE, function(p) return type(p) == 'table' end, {schemaVersion = 1})
   if t.autoRetry == nil then t.autoRetry = true end -- on by default (owner decision, PRODUCT.md)
   if t.hudLayout == nil then t.hudLayout = true end -- the Rally Academy HUD layout on the proving ground (ADR 0012)
+  if t.keepRuns == nil then t.keepRuns = true end -- on by default (owner decision, PRODUCT.md)
   return t
 end
 

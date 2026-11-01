@@ -100,19 +100,17 @@ local function keptRuns(h)
   return paths
 end
 
-function T.scored_attempts_are_kept_on_disk_only_when_the_player_keeps_runs()
+local function scoreARun(h, M)
+  M.retry()
+  driveWithTelemetry(h, M, 8.0, {x = 0, y = 20, z = 0})
+  M.recordAttempt(true)
+end
+
+function T.scored_attempts_are_kept_on_disk_unless_the_player_turns_it_off()
   local h, M = setup()
   markStartAndFinish(h, M, 'T02')
-  M.retry()
-  driveWithTelemetry(h, M, 8.0, {x = 0, y = 20, z = 0})
-  M.recordAttempt(true)
-  eq(#keptRuns(h), 0, 'off by default: nothing kept')
-  eq(h.lastState().keepRuns, false, 'the HUD state says off')
-  M.setKeepRuns(true)
-  eq(jsonReadFile('settings/rallyAcademy/prefs.json').keepRuns, true, 'preference saved')
-  M.retry()
-  driveWithTelemetry(h, M, 8.0, {x = 0, y = 20, z = 0})
-  M.recordAttempt(true)
+  eq(h.lastState().keepRuns, true, 'on by default')
+  scoreARun(h, M)
   local paths = keptRuns(h)
   eq(#paths, 1, 'one attempt kept')
   assert(paths[1]:find('^settings/rallyAcademy/runs/T02/%d+%-%d+%.json$'), 'kept by drill and time: ' .. paths[1])
@@ -121,10 +119,54 @@ function T.scored_attempts_are_kept_on_disk_only_when_the_player_keeps_runs()
   assert(kept.meta.recordedAt, 'when it was driven')
   eq(kept.score.passed, true, 'its score')
   eq(#kept.samples, #M.getLastRun().samples, 'all its samples')
+  M.setKeepRuns(false)
+  eq(jsonReadFile('settings/rallyAcademy/prefs.json').keepRuns, false, 'preference saved')
+  for path in pairs(h.files) do if path:find('^settings/rallyAcademy/runs/') then h.files[path] = nil end end
+  scoreARun(h, M)
+  eq(#keptRuns(h), 0, 'turned off: nothing kept')
   local M2 = H.reloadExtension()
   M2.select('T02')
-  eq(h.lastState().keepRuns, true, 'remembered after a reload')
-  eq(M2.getMenuData().info.keepRuns, true, 'and shown on the About page')
+  eq(h.lastState().keepRuns, false, 'remembered after a reload')
+  eq(M2.getMenuData().info.keepRuns, false, 'and shown on the About page')
+end
+
+function T.scripted_runs_are_not_kept_while_paused()
+  local h, M = setup()
+  markStartAndFinish(h, M, 'T02')
+  M.devKeepRunsPaused(true)
+  scoreARun(h, M)
+  eq(#keptRuns(h), 0, 'paused: nothing kept')
+  M.devKeepRunsPaused(false)
+  scoreARun(h, M)
+  eq(#keptRuns(h), 1, 'kept again')
+end
+
+function T.only_the_newest_runs_are_kept()
+  local h = setup()
+  local Store = require('ge/extensions/rallyAcademy/store')
+  for _, stamp in ipairs({'20261101-100000', '20261101-090000', '20261102-080000'}) do
+    h.files['settings/rallyAcademy/runs/C08/' .. stamp .. '.json'] = '{}'
+  end
+  h.files['settings/rallyAcademy/runs/B01/20261101-120000.json'] = '{}'
+  local removed = {}
+  _G.FS = {
+    findFiles = function(_, dir, pattern)
+      eq(dir, '/settings/rallyAcademy/runs/', 'searches the runs folder')
+      eq(pattern, '*.json', 'for run files')
+      local out = {}
+      for path in pairs(h.files) do
+        if path:find('^settings/rallyAcademy/runs/') then out[#out + 1] = '/' .. path end
+      end
+      return out
+    end,
+    removeFile = function(_, path) removed[#removed + 1] = path; h.files[path:sub(2)] = nil end,
+  }
+  eq(Store.pruneRuns(10), 0, 'under the limit: nothing removed')
+  eq(Store.pruneRuns(2), 2, 'two over')
+  table.sort(removed)
+  eq(removed[1], '/settings/rallyAcademy/runs/C08/20261101-090000.json', 'the oldest went')
+  eq(removed[2], '/settings/rallyAcademy/runs/C08/20261101-100000.json', 'then the next oldest, across drills')
+  _G.FS = nil
 end
 
 function T.save_last_run_writes_json()

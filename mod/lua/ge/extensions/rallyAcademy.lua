@@ -43,7 +43,8 @@ local course, usingVenueStart = nil, false
 -- The car's footprint (layout.lua), measured from its nodes once per car: {vid, config, car}.
 local carSize = nil
 -- Player preferences (store.lua): auto-retry after a graded run, our HUD layout, the racing line.
-local prefs = {autoRetry = true, hudLayout = true, showLine = false, keepRuns = false}
+local prefs = {autoRetry = true, hudLayout = true, showLine = false, keepRuns = true}
+local keepRunsPaused = false -- scripted test runs aren't kept (devKeepRunsPaused); not saved
 -- The map's drill roads (built with the map: tools/mapgen/racingline.py) and the selected drill's racing line
 -- (racingLine.lua), worked out again when the map, the start or the gates change.
 local ROADS_FILE = 'levels/%s/rallyAcademy/roads.json'
@@ -238,7 +239,7 @@ local function output(includeCatalog)
     hudParts = {inputs = hudParts.inputs == true, coach = hudParts.coach == true},
     hudLayout = prefs.hudLayout ~= false,
     showLine = prefs.showLine == true,
-    keepRuns = prefs.keepRuns == true,
+    keepRuns = prefs.keepRuns ~= false,
     hasLine = racingLine() ~= nil, -- this drill's start is on one of the map's racing lines
     canDemo = canDemo(), -- Watch AI: a line, and the AI has been seen to pass this drill (assessment.aiDemo)
     demo = cur.demo == true, -- the AI is driving this run (Watch AI)
@@ -555,7 +556,7 @@ function M.setShowLine(on)
   output()
 end
 
--- Keep every scored attempt's run record on disk (Store.RUNS_DIR): the player's own driving as data.
+-- Keep every scored attempt's run record on disk (Store.RUNS_DIR): the player's own driving as data. On by default.
 function M.setKeepRuns(on)
   prefs.keepRuns = on == true
   Store.savePrefs(prefs)
@@ -728,9 +729,11 @@ function M.recordAttempt(passed)
   end
   progress.lessons[selected] = entry
   saveProgress()
-  if prefs.keepRuns == true and run and #run.samples > 0 then
+  if prefs.keepRuns ~= false and not keepRunsPaused and run and #run.samples > 0 then
     run.meta.recordedAt = os.date('!%Y-%m-%dT%H:%M:%SZ')
     logf('I', '%s: kept the run as %s', selected, Store.saveRun(selected, os.date('%Y%m%d-%H%M%S'), run))
+    local pruned = Store.pruneRuns()
+    if pruned > 0 then logf('I', 'removed the %d oldest kept runs (keeping %d)', pruned, Store.MAX_RUNS) end
   end
   logf('I', '%s: %s, time %s, session %d/%d', selected, passed and 'PASS' or 'MISS',
     cur.lastTime and string.format('%.2f s', cur.lastTime) or '-', successes, attempts)
@@ -1292,7 +1295,7 @@ function M.getMenuData()
   for id, l in pairs(byId) do if l.variantOf then variants[id] = l end end
   return {lessons = lessons, variants = variants, progress = progress.lessons, selected = selected,
           info = {version = app.version, author = app.author, hudLayout = prefs.hudLayout ~= false,
-                  keepRuns = prefs.keepRuns == true}}
+                  keepRuns = prefs.keepRuns ~= false}}
 end
 
 -- Opening the screen inside a map pauses physics (unless already paused); leaving it
@@ -1430,6 +1433,9 @@ end
 
 -- Developer hooks (tools/ingame scenarios) -----------------------------------------
 
+-- Scripted test runs (tools/ingame) aren't the player's driving: don't keep them while paused. Not remembered.
+function M.devKeepRunsPaused(on) keepRunsPaused = on == true end
+
 -- A snapshot of the session for test scripts, instead of reading Lua internals.
 function M.debugState()
   return {phase = phase, selected = selected, level = levelId(), elapsed = cur.elapsed, lastTime = cur.lastTime,
@@ -1438,7 +1444,7 @@ function M.debugState()
           menuOpen = menuOpen, passed = cur.grade and cur.grade.passed, -- false = graded MISS, nil = not graded
           tier = cur.grade and cur.grade.tier, nextTier = cur.grade and cur.grade.nextTier and cur.grade.nextTier.text,
           hasCourse = course ~= nil, usingVenueStart = usingVenueStart, autoRetry = prefs.autoRetry ~= false,
-          keepRuns = prefs.keepRuns == true,
+          keepRuns = prefs.keepRuns ~= false, keepRunsPaused = keepRunsPaused,
           autoRetryIn = cur.autoRetryIn, clipped = cur.clipped, fit = cur.fit, aid = cur.aid,
           car = carSize and carSize.car, props = Props.active(), hits = cur.hits,
           demo = cur.demo, demoAi = demoVehId ~= nil, hasLine = racingLine() ~= nil, canDemo = canDemo()}
