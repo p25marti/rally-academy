@@ -16,8 +16,9 @@ read_globals = {
   "sanitizeVehicleSpawnOptions", "RESET_PHYSICS",
 }
 
--- Vehicle Lua (runs inside each car's own VM), verified 0.39.4.
-files["mod/lua/vehicle/**"] = { read_globals = { "electrics", "wheels", "obj", "beamstate", "sensors" } }
+-- Vehicle Lua (runs inside each car's own VM), verified 0.39.4; input and controller (the skill runner) 0.40.4.
+files["mod/lua/vehicle/**"] = { read_globals = { "electrics", "wheels", "obj", "beamstate", "sensors", "input",
+                                                 "controller" } }
 
 -- modScript.lua calls BeamNG's global `load(extName)`, which shadows Lua's builtin.
 files["mod/scripts/**"] = { read_globals = { "load", "setExtensionUnloadMode" } }

@@ -105,6 +105,12 @@ mod/                                            exactly the shipped zip root
   when the drill has one (`hasLine`). **Watch AI** (`M.demo`) is Retry, then `ai.driveUsingPath{script = line}` in the
   car; `cur.demo` makes finishRun grade the run without recording it, and the AI is switched off on any reset of the
   run or once the car stops after the grade.
+- **Technique demos** ([ADR 0015](decisions/0015-technique-demos.md)): a drill with `assessment.technique` gets Watch
+  AI from our skill runner instead. `technique.lua` (pure) makes the card in `gameplay/rallyAcademy/techniques/` and the
+  surface's tuned dials into the runner's configuration (the card's line for the drill laid out from the start, the
+  gates' distances along it); `M.demo` does Retry, then loads the vehicle extension `rallyAcademy/driver` and
+  configures it. The runner reports each phase (`M.onDriverPhase`): the HUD shows its cue, and finishRun adds the
+  phases to the trace's marks (kind `phase`). Prefs `demoSlowMo` runs any demo in slow motion.
 - **HUD ↔ Lua sync:** when Lua publishes the catalogue with no drill selected (game
   start, extension reload), the HUD selects the drill it shows (or the first).
 

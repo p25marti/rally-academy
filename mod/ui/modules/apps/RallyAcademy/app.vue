@@ -108,7 +108,13 @@
         Line {{ vm.showLine ? "on" : "off" }}
       </button>
       <button v-if="vm.canDemo" class="ra-btn" :class="{ on: vm.demo }" @click="cmd('demo')">▶ Watch AI</button>
+      <button v-if="vm.canDemo" class="ra-btn" :class="{ on: vm.demoSlowMo }" @click="cmd('setDemoSlowMo', !vm.demoSlowMo)">
+        ½ speed {{ vm.demoSlowMo ? "on" : "off" }}
+      </button>
     </div>
+    <p v-if="vm.demoNote && !driving" class="ra-note">{{ vm.demoNote }}</p>
+    <!-- A technique's Watch AI: the step it's doing, here unless the Coach app shows it (ADR 0015). -->
+    <p v-if="vm.demo && vm.demoCue && !coachUp" class="ra-cue">AI: {{ vm.demoCue }}</p>
 
     <p v-if="!vm.autoRetryIn" class="ra-reason">{{ vm.reason }}</p>
   </div>
@@ -213,8 +219,8 @@ const bestText = computed(() => {
 })
 
 const COMMANDS = { goToDrill: 1, markStart: 1, markFinish: 1, addGate: 1, clearGates: 1, retry: 1, recordAttempt: 1,
-                   useVenueStart: 1, setAutoRetry: 1, setShowLine: 1, nudgePrediction: 1, demo: 1 }
-const BOOL_ARG = { recordAttempt: 1, setAutoRetry: 1, setShowLine: 1 }
+                   useVenueStart: 1, setAutoRetry: 1, setShowLine: 1, nudgePrediction: 1, demo: 1, setDemoSlowMo: 1 }
+const BOOL_ARG = { recordAttempt: 1, setAutoRetry: 1, setShowLine: 1, setDemoSlowMo: 1 }
 const NUM_ARG = { nudgePrediction: 1 }
 function cmd(name, arg) {
   if (!COMMANDS[name]) return
@@ -544,5 +550,15 @@ function onData(data) {
 .ra-reason {
   margin: 0.4rem 0 0;
   color: var(--bng-cool-gray-100);
+}
+.ra-note {
+  margin: 0.3rem 0 0;
+  font-size: 0.75rem;
+  color: var(--bng-cool-gray-100);
+}
+.ra-cue {
+  margin: 0.4rem 0 0;
+  font-weight: 700;
+  color: rgb(255, 200, 90);
 }
 </style>

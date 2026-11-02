@@ -4,7 +4,8 @@
 local M = {}
 -- Re-read our pure modules whenever the extension (re)loads: extensions.reload re-runs
 -- this file but `require` would keep the old modules (seen on 0.39.4).
-for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots', 'variants', 'props'}) do
+for _, name in ipairs({'runRecord', 'rules', 'gates', 'layout', 'store', 'course', 'spots', 'variants', 'props',
+                       'technique'}) do
   package.loaded['ge/extensions/rallyAcademy/' .. name] = nil
 end
 local RunRecord = require('ge/extensions/rallyAcademy/runRecord')
@@ -17,6 +18,7 @@ local Spots = require('ge/extensions/rallyAcademy/spots')
 local Variants = require('ge/extensions/rallyAcademy/variants')
 local Props = require('ge/extensions/rallyAcademy/props')
 local RacingLine = require('ge/extensions/rallyAcademy/racingLine')
+local Technique = require('ge/extensions/rallyAcademy/technique')
 local LESSONS_FILE = 'gameplay/rallyAcademy/exercises.json'
 -- Named venues drills refer to (environment.venue); the loader fills in each drill's map,
 -- display name and spawn from it, so the rest of the mod reads them from the drill.
@@ -43,7 +45,7 @@ local course, usingVenueStart = nil, false
 -- The car's footprint (layout.lua), measured from its nodes once per car: {vid, config, car}.
 local carSize = nil
 -- Player preferences (store.lua): auto-retry after a graded run, our HUD layout, the racing line.
-local prefs = {autoRetry = true, hudLayout = true, showLine = false, keepRuns = true}
+local prefs = {autoRetry = true, hudLayout = true, showLine = false, keepRuns = true, demoSlowMo = false}
 local keepRunsPaused = false -- scripted test runs aren't kept (devKeepRunsPaused); not saved
 -- The map's drill roads (built with the map: tools/mapgen/racingline.py) and the selected drill's racing line
 -- (racingLine.lua), worked out again when the map, the start or the gates change.
@@ -80,15 +82,24 @@ local GRADE_DELAY = 0.3 -- s of sim time
 --   hits               the physical markers (props.lua) the car touched, in order: {{name, kmh}}
 --   aid                parking aid text near the box; autoRetryIn = countdown after a graded run
 --   swept              radians driven round a course circle (endWhen 'laps'), the right way positive
--- AI demonstration (Watch AI): the game's AI drives the player's car along the drill's racing line. The car it
--- drives, while it does; any reset of the run hands the car back, and so does the car stopping after a graded demo.
-local demoVehId = nil
+-- AI demonstration (Watch AI): the game's AI drives the player's car along the drill's racing line, or, on a
+-- technique drill, our skill runner drives the technique (ADR 0015). The car it drives, while it does, and which
+-- ('ai' | 'driver'); any reset of the run hands the car back, and so does the car stopping after a graded demo. The
+-- game's speed from before a slow-motion demo, put back with the car.
+local demoVehId, demoKind, demoSpeedBefore = nil, nil, nil
 local DEMO_DONE_SPEED = 0.5 -- m/s
+local DEMO_SLOW_MO = 0.5 -- of real time
 local function stopDemoAi()
+  if demoSpeedBefore and simTimeAuthority then simTimeAuthority.set(demoSpeedBefore) end
+  demoSpeedBefore = nil
   if not demoVehId then return end
   local veh = getObjectByID and getObjectByID(demoVehId)
-  if veh then veh:queueLuaCommand("ai.setMode('disabled')") end
-  demoVehId = nil
+  if veh and demoKind == 'driver' then
+    veh:queueLuaCommand("if extensions.rallyAcademy_driver then extensions.rallyAcademy_driver.stop() end")
+  elseif veh then
+    veh:queueLuaCommand("ai.setMode('disabled')")
+  end
+  demoVehId, demoKind = nil, nil
 end
 
 local cur
@@ -97,7 +108,7 @@ local function resetRun()
   cur = {elapsed = 0, lastTime = nil, grade = nil, settleT = 0, originPos = nil, stillT = 0,
          gateIdx = 1, gateResults = {}, prevPos = nil, endingIn = nil, endTime = nil, uiAccum = 0,
          coneIdx = 1, coneResults = {}, clipped = nil, fit = nil, aid = nil, autoRetryIn = nil, swept = 0,
-         hits = {}, trace = nil, demo = false}
+         hits = {}, trace = nil, demo = false, demoPhase = nil, phaseMarks = {}}
 end
 resetRun()
 local SETTLE_SPEED, SETTLE_FOR = 0.5, 0.2 -- m/s, s
@@ -204,11 +215,66 @@ local function racingLine()
   return racing.pts
 end
 
+-- A technique drill's card and tuned dials (assessment.technique, ADR 0015): {name, card, tuned, surface}, read once
+-- per card and surface. nil for other drills, or when the card can't be read.
+local techniques = {}
+local function technique()
+  local lesson = selected and byId[selected]
+  local name = lesson and lesson.assessment.technique
+  if type(name) ~= 'string' then return nil end
+  local surface = Technique.surfaceOf(lesson)
+  local key = name .. '|' .. surface
+  if techniques[key] == nil then
+    local card = jsonReadFile(Technique.cardPath(name))
+    if not card then logf('E', 'could not read technique card %s', Technique.cardPath(name)) end
+    local tunedFile = Technique.tunedPath(name, surface)
+    local tuned = (not FS or FS:fileExists('/' .. tunedFile)) and jsonReadFile(tunedFile) or nil
+    techniques[key] = card and {name = name, card = card, tuned = tuned, surface = surface} or false
+  end
+  return techniques[key] or nil
+end
+
+-- The technique was tuned in the drill's own car: its demo needs that car.
+local function inDrillCar()
+  local lesson = selected and byId[selected]
+  local want, veh = lesson and lesson.vehicle, currentVehicle()
+  return want ~= nil and veh ~= nil and veh.JBeam == want.modelId and veh.partConfig == want.configPath
+end
+
+-- The drill a variant came from ('C08-snow' -> 'C08'): technique cards keep one line per drill.
+local function baseId(lesson) return lesson.variantOf or lesson.id end
+
 -- Watch AI is offered where the drill has a racing line and opts in (assessment.aiDemo): drills whose AI run has been
--- seen to pass. Technique drills (a brake pulse, a flick) and speed bands are beyond what the AI shows.
+-- seen to pass. Technique drills (a brake pulse, a flick) and speed bands are beyond what the game's AI shows; a
+-- technique drill with a card (assessment.technique) gets our skill runner instead, in the drill's car, on its course.
 local function canDemo()
   local lesson = selected and byId[selected]
-  return lesson ~= nil and lesson.assessment.aiDemo == true and racingLine() ~= nil
+  if not lesson then return false end
+  local tech = technique()
+  if tech then
+    return startState ~= nil and course ~= nil and inDrillCar() and (tech.card.lines or {})[baseId(lesson)] ~= nil
+  end
+  return lesson.assessment.aiDemo == true and racingLine() ~= nil
+end
+
+-- A technique demo's phases in order, {{id, cue}}, for the Coach panel's steps; nil outside one.
+local function demoSteps()
+  local tech = cur.demo and demoKind == 'driver' and technique()
+  if not tech then return nil end
+  local out = {}
+  for _, step in ipairs(tech.card.phases or {}) do out[#out + 1] = {id = step.id, cue = step.cue} end
+  return out
+end
+
+-- Why a technique drill has no Watch AI right now (nil when it has one, or isn't a technique drill).
+local function demoNote()
+  local lesson = selected and byId[selected]
+  if not (lesson and technique()) or canDemo() then return nil end
+  if not inDrillCar() then
+    return 'Watch AI drives the drill\'s car (' .. tostring(lesson.vehicle and lesson.vehicle.displayName)
+      .. '): Go to drill swaps it.'
+  end
+  return 'Watch AI needs the drill\'s course: Go to drill lays it out.'
 end
 
 local function output(includeCatalog)
@@ -241,8 +307,13 @@ local function output(includeCatalog)
     showLine = prefs.showLine == true,
     keepRuns = prefs.keepRuns ~= false,
     hasLine = racingLine() ~= nil, -- this drill's start is on one of the map's racing lines
-    canDemo = canDemo(), -- Watch AI: a line, and the AI has been seen to pass this drill (assessment.aiDemo)
+    canDemo = canDemo(), -- Watch AI: a line the AI has been seen to pass on (assessment.aiDemo), or a technique card
+    demoNote = demoNote() or false, -- why a technique drill's Watch AI isn't offered here
     demo = cur.demo == true, -- the AI is driving this run (Watch AI)
+    demoCue = cur.demoPhase and cur.demoPhase.cue or false, -- the cue of the technique phase the runner is in
+    demoPhase = cur.demoPhase and cur.demoPhase.id or false, -- that phase ('stop', 'done' once it's through)
+    demoSteps = demoSteps() or false, -- the technique's phases in order, {{id, cue}}, while its Watch AI runs
+    demoSlowMo = prefs.demoSlowMo == true, -- Watch AI at half speed
   })
 end
 
@@ -550,6 +621,13 @@ function M.setAutoRetry(on)
   output()
 end
 
+-- Watch AI at half speed (the game's slow motion: the same physics, seen slower).
+function M.setDemoSlowMo(on)
+  prefs.demoSlowMo = on == true
+  Store.savePrefs(prefs)
+  output()
+end
+
 function M.setShowLine(on)
   prefs.showLine = on == true
   Store.savePrefs(prefs)
@@ -664,7 +742,52 @@ end
 -- run is graded like the player's but not recorded.
 local DEMO_AGGRESSION = 0.8 -- ai.lua: 0.3 is everyday driving, 1 the limit of grip
 local DEMO_PATH_WIDTH = 0.5 -- m: how far the AI may stray from the line (its default, the car's width, misses gates)
+local function slowMoForDemo()
+  if prefs.demoSlowMo and simTimeAuthority then
+    demoSpeedBefore = simTimeAuthority.get()
+    simTimeAuthority.set(DEMO_SLOW_MO)
+  end
+end
+
+-- Watch AI on a technique drill (ADR 0015): back to the start, then the skill runner (vehicle extension
+-- rallyAcademy/driver) drives the card's phases from the tuned dials, reporting each phase (M.onDriverPhase).
+local function techniqueDemo(tech)
+  local lesson = byId[selected]
+  local cfg = Technique.config(tech.card, baseId(lesson), Technique.dials(tech.card, tech.surface, tech.tuned),
+                               startState, lesson.assessment.course.gates)
+  M.retry()
+  local veh = currentVehicle()
+  if phase ~= 'ready' or not veh or not cfg then return end
+  veh:queueLuaCommand("extensions.unload('rallyAcademy_driver') extensions.load('rallyAcademy/driver') "
+    .. 'extensions.rallyAcademy_driver.configure(' .. Technique.literal(cfg) .. ')')
+  cur.demo, demoVehId, demoKind = true, veh:getID(), 'driver'
+  if run then run.meta.demo = true end
+  slowMoForDemo()
+  logf('I', '%s: technique demo (%s, %s dials%s)', selected, tech.name, tech.tuned and 'tuned' or 'card',
+    prefs.demoSlowMo and ', half speed' or '')
+  lastReason = 'The AI is driving the ' .. tostring(tech.card.title or 'technique'):lower()
+    .. ': watch each step in the Coach panel. Retry takes the car back.'
+  output()
+end
+
+-- The runner began a phase (from the car, with the car's sim time): the Coach panel's cue, and a mark on the input
+-- trace. Ignored unless the runner is driving Watch AI (tools/driver runs it without a demo).
+function M.onDriverPhase(id, simT)
+  local tech = demoKind == 'driver' and cur.demo and technique()
+  if not tech then return end
+  local ph = Technique.phase(tech.card, id)
+  cur.demoPhase = {id = id, cue = ph and ph.cue} -- no cue for 'stop' and 'done': the technique is through
+  if ph and ph.mark and simT then cur.phaseMarks[#cur.phaseMarks + 1] = {t = simT, label = ph.mark, kind = 'phase'} end
+  output()
+end
+
 function M.demo(force) -- force: try it on a drill that doesn't opt in (developer surveys, not the HUD)
+  local tech = technique()
+  if tech then
+    if canDemo() then techniqueDemo(tech) return end
+    lastReason = demoNote() or 'No AI demo for this drill here.'
+    output(); return
+  end
   if not (canDemo() or (force == true and racingLine())) then
     lastReason = racingLine() and 'No AI demo for this drill yet: the AI drives the line, not the technique.'
       or 'No racing line for this drill here, so there is no AI demo.'
@@ -678,8 +801,9 @@ function M.demo(force) -- force: try it on a drill that doesn't opt in (develope
   for _, p in ipairs(line) do nodes[#nodes + 1] = string.format('{x=%.2f,y=%.2f,z=%.2f,r=%.1f}', p.x, p.y, p.z, DEMO_PATH_WIDTH) end
   veh:queueLuaCommand(string.format("ai.driveUsingPath({script = {%s}, aggression = %.2f, avoidCars = 'off'})",
     table.concat(nodes, ','), DEMO_AGGRESSION))
-  cur.demo, demoVehId = true, veh:getID()
+  cur.demo, demoVehId, demoKind = true, veh:getID(), 'ai'
   if run then run.meta.demo = true end
+  slowMoForDemo()
   logf('I', '%s: AI demo along the racing line (%d points)', selected, #line)
   lastReason = 'The AI is driving the racing line: watch where it brakes and turns in. Retry takes the car back.'
   output()
@@ -1014,6 +1138,7 @@ local function finishRun(how, atTime)
     for i, p in ipairs(#gates > 0 and Gates.passes(gates, run.samples) or {}) do
       if p.reached then marks[#marks + 1] = {t = p.t, label = gates[i].label or ('G' .. i)} end
     end
+    for _, m in ipairs(cur.phaseMarks) do marks[#marks + 1] = m end -- a technique demo's phases
     cur.trace = RunRecord.inputTrace(run, 160, marks)
   end
   local a = assessment()
@@ -1447,7 +1572,9 @@ function M.debugState()
           keepRuns = prefs.keepRuns ~= false, keepRunsPaused = keepRunsPaused,
           autoRetryIn = cur.autoRetryIn, clipped = cur.clipped, fit = cur.fit, aid = cur.aid,
           car = carSize and carSize.car, props = Props.active(), hits = cur.hits,
-          demo = cur.demo, demoAi = demoVehId ~= nil, hasLine = racingLine() ~= nil, canDemo = canDemo()}
+          demo = cur.demo, demoAi = demoVehId ~= nil, demoKind = demoKind,
+          demoPhase = cur.demoPhase and cur.demoPhase.id, phaseMarks = cur.phaseMarks,
+          hasLine = racingLine() ~= nil, canDemo = canDemo()}
 end
 
 -- Record the car's telemetry outside any drill (venue fit tests, tools/ingame/fit.py): no

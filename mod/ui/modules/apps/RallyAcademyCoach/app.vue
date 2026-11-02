@@ -1,6 +1,7 @@
 <template>
   <!-- Rally Academy coach (ADR 0012): what to do before a run (the drill's instructions), and how it went after it
-       (the medal, what the next one needs, and every check of the grade: the reasons are the coaching). Lua is
+       (the medal, what the next one needs, and every check of the grade: the reasons are the coaching); during a
+       technique's Watch AI, the step it is doing (ADR 0015). Lua is
        authoritative; this only shows "rallyAcademyState". -->
   <div class="ra-coach">
     <template v-if="lesson">
@@ -13,6 +14,15 @@
           <span v-if="vm.grade.nextTier" class="ra-next">{{ vm.grade.nextTier.name }}: {{ vm.grade.nextTier.text }}</span>
         </div>
         <div v-for="(c, i) in checks" :key="i" class="ra-check" :class="c.ok ? 'ok' : 'fail'">{{ c.ok ? "✓" : "✗" }} {{ c.text }}</div>
+      </div>
+
+      <!-- Watch AI on a technique drill (ADR 0015): the technique's steps in the card's words, the one the AI is
+           doing now highlighted. A list, not one line: the middle steps take under half a second each. -->
+      <div v-else-if="vm.demo && steps.length" class="ra-steps">
+        <div class="ra-steps-head"><span class="ra-cue-tag">AI</span>Watch each step</div>
+        <div v-for="(st, i) in steps" :key="st.id" class="ra-step" :class="{ now: i === stepNow, done: i < stepNow }">
+          {{ i < stepNow ? "✓" : i === stepNow ? "▸" : "·" }} {{ st.cue }}
+        </div>
       </div>
 
       <template v-else>
@@ -31,6 +41,12 @@ import { useAcademyState } from "../RallyAcademy/hud.js"
 const { state: vm } = useAcademyState("coach")
 
 const lesson = computed(() => vm.lesson || null)
+// A technique's Watch AI: its steps, and which one the AI is on (past the last once it stops; -1 before it starts).
+const steps = computed(() => (Array.isArray(vm.demoSteps) ? vm.demoSteps : []))
+const stepNow = computed(() => {
+  const i = steps.value.findIndex(s => s.id === vm.demoPhase)
+  return i >= 0 ? i : vm.demoPhase ? steps.value.length : -1
+})
 // Failed checks first, then the passed ones (an empty Lua list arrives as {}).
 const checks = computed(() => {
   const all = vm.grade && Array.isArray(vm.grade.checks) ? vm.grade.checks : []
@@ -65,6 +81,30 @@ const success = computed(() => {
 }
 .ra-instructions {
   margin: 0 0 0.4rem;
+}
+.ra-steps {
+  .ra-steps-head {
+    margin-bottom: 0.25rem;
+    color: var(--bng-cool-gray-100);
+  }
+  .ra-cue-tag {
+    margin-right: 0.45rem;
+    padding: 0 0.35rem;
+    border-radius: var(--bng-corners-1);
+    background: rgba(255, 190, 70, 0.85);
+    color: #111;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .ra-step {
+    color: var(--bng-cool-gray-100);
+    &.done { color: rgb(150, 220, 160); }
+    &.now {
+      color: rgb(255, 200, 90);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+  }
 }
 .ra-success {
   margin: 0;

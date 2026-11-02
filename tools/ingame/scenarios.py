@@ -1418,6 +1418,48 @@ def demo():
 
 
 @scenario
+def flick_demo():
+    """Watch AI on C08 (ADR 0015) on gravel, asphalt and snow: the skill runner drives the technique card from the
+    tuned dials, each step reaches the Coach panel in order, the run earns a medal but isn't counted, and the car is
+    handed back with the player's gearbox (arcade here); on gravel a second run at half speed, the game's speed put
+    back after it."""
+    p = []
+    want = ["approach", "feint", "load_turn_in", "catch", "exit"]
+    for drill, slow in (("C08", False), ("C08", True), ("C08-asphalt", False), ("C08-snow", False)):
+        tag = drill + (" at half speed" if slow else "")
+        A.drill_session(drill)
+        before = A.debug_state().get("attempts")
+        vlua('controller.mainController.setGearboxMode("arcade") return 1')
+        lua(f"extensions.rallyAcademy.setDemoSlowMo({'true' if slow else 'false'}) return 1")
+        expect(p, f"{tag}: the Watch AI button", A.click("Watch AI") != "NOT FOUND")
+        seen, speed, t0 = [], None, time.time()
+        while time.time() - t0 < (90 if slow else 45):
+            s = A.debug_state()
+            if s.get("demoPhase") and s["demoPhase"] not in seen:
+                seen.append(s["demoPhase"])
+            if speed is None and s.get("demoKind"):
+                speed = lua("return tostring(simTimeAuthority.get())")
+            if s.get("phase") == "scored" and not s.get("demoKind"):
+                break
+            time.sleep(0.05)
+        s = A.debug_state()
+        expect(p, f"{tag}: the runner drove it", s.get("demo") is True, s.get("reason"))
+        expect(p, f"{tag}: every step, in order", [x for x in seen if x in want] == want, seen)
+        expect(p, f"{tag}: a medal", s.get("tier") is not None, f"{s.get('tier')}: {s.get('reason')}")
+        expect(p, f"{tag}: not counted", s.get("attempts") == before and "Not counted" in str(s.get("reason")),
+               f"attempts {before} -> {s.get('attempts')}")
+        expect(p, f"{tag}: the trace marks the phases", len(s.get("phaseMarks") or []) == 4, s.get("phaseMarks"))
+        expect(p, f"{tag}: {'half' if slow else 'full'} speed while it drove", speed == ("0.5" if slow else "1"), speed)
+        expect(p, f"{tag}: the speed put back", lua("return tostring(simTimeAuthority.get())") == "1")
+        time.sleep(1)
+        box = vlua("return controller.mainController.gearboxBehavior")
+        expect(p, f"{tag}: the player's gearbox back", box == "arcade", box)
+        lua("extensions.rallyAcademy.setDemoSlowMo(false) return 1")
+        A.end_session(drill)
+    return p
+
+
+@scenario
 def pause():
     """Esc menu: the Rally Academy tab and its four pages render, and the menu still works after."""
     p = []

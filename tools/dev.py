@@ -38,6 +38,7 @@ MOD_NAME = "rally_academy"  # zip / unpacked folder name; keep stable across rel
 APP_JSON = Path("ui/modules/apps/RallyAcademy/app.json")
 EXERCISES_JSON = Path("gameplay/rallyAcademy/exercises.json")
 VENUES_JSON = Path("gameplay/rallyAcademy/venues.json")
+TECHNIQUES_DIR = Path("gameplay/rallyAcademy/techniques")  # technique cards and tuned dials (ADR 0015)
 ACTIONS_JSON = Path("lua/ge/extensions/core/input/actions/rallyAcademy_actions.json")
 BINDINGS_JSON = Path("settings/inputmaps/keyboard_rallyAcademy.json")
 ALLOWED_TOP_LEVEL = {"gameplay", "lua", "ui", "art", "levels", "vehicles", "settings", "scripts"}
@@ -229,6 +230,33 @@ def expanded(exercises: list) -> list:
 VARIANT_KEYS = {"id", "name", "venue", "areaHint", "vehicle", "rules", "tiers", "successDefinition", "aiDemo"}
 
 
+def technique_errors(ex: dict) -> list[str]:
+    """A technique drill (assessment.technique, ADR 0015): its card exists, its line for the drill (if it has one:
+    without, the drill has no Watch AI) is a list of points, the drill has course gates for the runner, and the
+    drill's surface has tuned dials."""
+    name = ex["assessment"]["technique"]
+    if not isinstance(name, str) or not re.fullmatch(r"[a-z_]+", name):
+        return ["assessment.technique must be a technique card's name (lower case, underscores)"]
+    path = MOD_DIR / TECHNIQUES_DIR / f"{name}.json"
+    if not path.exists():
+        return [f"assessment.technique: no card {path.relative_to(ROOT).as_posix()}"]
+    try:
+        card = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        return [f"{path.name}: invalid JSON: {e}"]
+    errors = []
+    line = (card.get("lines") or {}).get(ex.get("variantOf") or ex["id"])
+    if line is not None and not (isinstance(line, list) and len(line) >= 2
+                                 and all(isinstance(p, list) and len(p) == 2 for p in line)):
+        errors.append(f"{name}.json: lines.{ex.get('variantOf') or ex['id']} must be [[x, y], ...] (course frame)")
+    if len(((ex["assessment"].get("course") or {}).get("gates")) or []) < 2:
+        errors.append("a technique drill needs at least two course gates (the runner's flick and exit)")
+    surface = (ex.get("surface") or "gravel").lower()
+    if not (MOD_DIR / TECHNIQUES_DIR / f"{name}-{surface}.json").exists():
+        errors.append(f"no tuned dials {name}-{surface}.json (tools/driver/tune.py writes them)")
+    return errors
+
+
 def variant_errors(ex: dict) -> list[str]:
     """A drill's `variants` (ADR 0009) are well formed: a lowercase id, a name, a venue."""
     errors: list[str] = []
@@ -317,6 +345,8 @@ def validate_exercises(data: dict) -> list[str]:
                 errors.append(f"{where}: assessment.{key} must be a positive integer")
         if "aiDemo" in a and not isinstance(a["aiDemo"], bool):
             errors.append(f"{where}: assessment.aiDemo must be true or false")  # a variant's, once merged
+        if "technique" in a:
+            errors += [f"{where}: {e}" for e in technique_errors(ex)]
         if "racingLine" in a and a["racingLine"] is not False:
             errors.append(f"{where}: assessment.racingLine can only be false (no racing line for this drill)")
         if isinstance(a.get("attempts"), int) and isinstance(a.get("requiredPasses"), int) \
@@ -444,7 +474,7 @@ def drills_markdown() -> str:
                 grading = "Self-assessed (parked: " + d["parked"].rstrip(".") + ")"
             elif a.get("mode") == "automatic":
                 grading = "Automatic, medals" if a.get("tiers") else "Automatic"
-                if a.get("aiDemo"):
+                if a.get("aiDemo") or a.get("technique"):
                     grading += ", Watch AI"
             else:
                 grading = "Self-assessed"

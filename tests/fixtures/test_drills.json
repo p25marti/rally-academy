@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "_comment": "Test-only drills, added to the catalogue by tests/lua/beamng_stubs.lua so engine tests never depend on how a shipped drill is graded: T01/T02 self-assessed (finish circle, Pass/Miss), T03 marked gates (+ Gate), T04 a marked stop zone (Mark stop zone). Validated by dev.py validate like shipped drills.",
+  "_comment": "Test-only drills, added to the catalogue by tests/lua/beamng_stubs.lua so engine tests never depend on how a shipped drill is graded: T01/T02 self-assessed (finish circle, Pass/Miss), T03 marked gates (+ Gate), T04 a marked stop zone (Mark stop zone), T05 a technique drill (Watch AI drives its card: tests swap in a card with a line for it). Validated by dev.py validate like shipped drills.",
   "exercises": [
     {
       "id": "T01",
@@ -149,6 +149,58 @@
           {
             "type": "no_sustained_lockup",
             "maxSeconds": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "T05",
+      "module": "99  TESTS",
+      "title": "Test: technique demo (Watch AI drives a card)",
+      "difficulty": "Test",
+      "vehicle": {
+        "displayName": "Ibishu Covet Student Driver",
+        "modelId": "covet",
+        "configPath": "vehicles/covet/student_driver.pc"
+      },
+      "environment": {
+        "venue": "bmp-gravel-track",
+        "areaHint": "Test drill (tests only).",
+        "venueNeeds": {
+          "kind": "straight",
+          "lengthM": 100
+        }
+      },
+      "instructions": "Test drill.",
+      "resetInstructions": "Go to drill, or Mark start: the course is laid out from it.",
+      "props": "None.",
+      "assessment": {
+        "attempts": 10,
+        "requiredPasses": 8,
+        "successDefinition": "Test.",
+        "metricToRecord": "Test.",
+        "mode": "automatic",
+        "technique": "scandinavian_flick",
+        "endWhen": "gates",
+        "course": {
+          "gates": [
+            {
+              "x": 0,
+              "y": 40,
+              "widthM": 10,
+              "label": "Flick"
+            },
+            {
+              "x": 0,
+              "y": 100,
+              "widthM": 10,
+              "label": "Exit"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "type": "gates_passed"
           }
         ]
       }

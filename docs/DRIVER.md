@@ -4,8 +4,8 @@ Design for a trained driver that demonstrates the techniques the game's AI can't
 Scandinavian flick. Agreed with the owner on 2026-11-01. The wider idea and its research notes are in
 [IDEAS](IDEAS.md#versatile-driver-reinforcement-learning); this is the plan for its first slice.
 
-Status: **steps 1-3 of the build plan built**: stage 1 drives C08 to gold from varied starts on all three surfaces.
-Stage 2 and the in-game demo aren't built yet.
+Status: **steps 1-3 and 5 of the build plan built**: stage 1 drives C08 to gold from varied starts on all three
+surfaces, and C08 has Watch AI in the game ([ADR 0015](decisions/0015-technique-demos.md)). Stage 2 isn't built yet.
 
 ## Goal and constraints
 
@@ -66,8 +66,9 @@ So the first design's triggers couldn't fire, and these replaced them:
 
 ## Technique cards
 
-Coaching knowledge enters as a **technique card**: one JSON file per technique under `tools/driver/cards/`. Claude
-drafts each card from coaching material in its own words, citing the sources, and the owner reviews it. A card holds:
+Coaching knowledge enters as a **technique card**: one JSON file per technique in
+`mod/gameplay/rallyAcademy/techniques/`, shipped with the mod since Watch AI reads it (ADR 0015). Claude drafts each
+card from coaching material in its own words, citing the sources, and the owner reviews it. A card holds:
 
 - the phases (skills), in order, each with its controller and the **dials** it uses, given as `[min, max, start]`
 - `endsWhen` for each phase, as a measurement
@@ -75,15 +76,16 @@ drafts each card from coaching material in its own words, citing the sources, an
 - **reward terms** from the coaching text (for example, the weight moves to the outside during the feint)
 - **human limits**: reaction time, and how fast the steering and pedals can move
 - **faults**: what a missed phase looks like and its coaching cue
-- a plain-language **cue** for each phase
+- a plain-language **cue** for each phase (Watch AI shows it), and a one-word **mark** for the input trace
+- per drill, the **line** the runner follows, in the course frame: the line the dials were tuned on
 
-The cards stay training-only under `tools/` for now. When the coach or a demo in the mod reads them, they move into
-`mod/`, with an ADR.
+The tuned dials sit next to the card, one file per surface (`<card>-<surface>.json`), written by `tune.py`.
 
 ## Where it runs
 
-- **The skill runner runs in the car's Lua** as a vehicle extension, like the tape player. It switches skills on the
-  card's measurements, applies the human limits and evaluates the network.
+- **The skill runner runs in the car's Lua** as the mod's vehicle extension `rallyAcademy/driver`
+  (`mod/lua/vehicle/extensions/rallyAcademy/driver.lua`): Watch AI and the training tools load the same file. It
+  switches skills on the card's measurements, applies the human limits and evaluates the network.
 - **It decides on a fixed 20 Hz clock of simulation time.** That's the 0.05 s step of deterministic mode, so a driver
   trained fast behaves the same at normal speed.
 - **A round trip through the MCP server per tick (as `academy.follow_path` does) can't keep up.** It's too slow, it's
@@ -128,8 +130,21 @@ per rendered frame:
 - At 30 fps (unfocused, or a slow PC), they land every one or two frames, a wobble of up to 33 ms that deterministic
   mode never shows.
 
-So training adds a random 0-1 frame delay to each decision, and acceptance includes normal mode at 30 fps and
-uncapped.
+**Measured with Watch AI (2026-11-02): the frame rate changes the result.** The first stage 1 dials passed every
+fast-mode and 30 fps run, but at a focused game's frame rates (the background cap lifted in memory) gravel missed 3 of
+3 and asphalt managed a bronze and a miss; at half speed both missed every run. Snow passed everywhere. The phases
+ended 0.05-0.1 s earlier than in training, and the car clipped the Apex post or the slide came out smaller. Two
+things that didn't help: deciding on exact 0.05 s steps whatever the frame time (normal speed got worse), and the
+physics speed factor, which isn't a way to set deterministic mode's step (`be:getPhysicsSpeedFactor()` reads 0 by
+default; another value pins deterministic mode to about real time).
+
+What did help: other candidates from the same tuning runs are robust. Re-testing the best of the second half of each
+run at a focused frame rate found several that pass there; the shipped gravel and asphalt dials are the ones that also
+passed at half speed, at 30 fps and from 20 varied starts in fast mode (step 5 below). The robust gravel dials catch
+the slide more gently (`catchGain` 0.30 against 1.04).
+
+So acceptance includes normal mode at 30 fps and uncapped, and half speed. Future tuning should check its winner the
+same way before writing it, or vary the decision timing while it tunes.
 
 ## Training
 
@@ -150,22 +165,29 @@ uncapped.
 
 - **Stage 1:** at least 19 of 20 varied attempts pass on each of gravel, asphalt and snow.
 - **Stage 2:** the same with wider starts (±10 km/h, ±2 m), mostly silver or better.
-- **Both:** they pass in fast mode, and in normal mode at 30 fps and uncapped (scenario `flick_ai`).
+- **Both:** they pass in fast mode, and in normal mode at 30 fps, uncapped and at half speed (scenario
+  `flick_demo` for Watch AI).
 
 ## In the game
 
-C08 gets **Watch AI**, as the five road drills have it:
+C08 has **Watch AI**, as the road drills do (built in step 5, ADR 0015):
 
-- The skill runner drives live at normal speed in the player's session.
-- Each phase's cue from the card appears as the phase starts, with an optional slow-motion beat at the phase changes
-  (`simTimeAuthority` slow motion).
-- A demo that misses says so honestly.
+- **Watch AI** takes the car back to the start and the skill runner drives the flick live in the player's session,
+  in the drill's own car (in another car the panel says Go to drill swaps it).
+- The Coach panel lists the card's five steps and highlights the one the AI is doing; without the Coach app, the panel
+  shows the current cue.
+- The run is graded like the player's (a demo that misses says so) and never counted. Afterwards the input trace marks
+  each phase (feint, load, catch, drive) next to the gates.
+- **Half speed** (the button next to Watch AI, remembered) runs any Watch AI in the game's slow motion; the speed is
+  put back with the car.
+- Retry, Miss, or the car stopping after the run hands the car back, in the player's gearbox mode.
 
 ## Testing
 
 - **Unit tests (LuaJIT):** the skill runner's phase switching and human limits, and the Lua network against the Python
   reference on recorded inputs.
-- **In game:** scenario `flick_ai` (the acceptance runs above). Its runs become fixtures.
+- **In game:** scenario `flick_demo` (Watch AI on the three surfaces and at half speed); `attempt.py` for the
+  acceptance runs.
 
 ## Build plan
 
@@ -181,9 +203,10 @@ Each step is usable on its own and is verified before the next starts.
      the saved cap back. Unit tests in `tests/python/test_fast.py`.
 2. **Card and skill runner.** **Built 2026-11-01.**
    - **The pieces:**
-     - `tools/driver/cards/scandinavian_flick.json`, the card.
-     - `tools/driver/runner.lua`, injected into the car the way the tape player is. Its pure core is unit-tested in
-       `tests/lua/test_driver_runner.lua`, and its slip angle is checked against the grader's.
+     - The card (then `tools/driver/cards/`, in `mod/` since step 5).
+     - The skill runner (then `tools/driver/runner.lua`, injected the way the tape player is; the mod's vehicle
+       extension since step 5). Its pure core is unit-tested in `tests/lua/test_driver_runner.lua`, and its slip angle
+       is checked against the grader's.
      - `tools/driver/attempt.py`, which runs attempts from a controlled start and prints each verdict, a score, and
        how and when each phase ended.
    - **The dials** start from the old script: 66 km/h, the feint 14 m past the Flick gate at 0.5. Asphalt uses
@@ -220,7 +243,8 @@ Each step is usable on its own and is verified before the next starts.
        `spawn.safeTeleport` while physics is stopped, as Retry does.
      - `attempt.py restore`, which repairs a game after an interrupted run: normal mode, the runner off, and drill
        progress and session settings put back from `logs/session-<drill>.json`.
-     - The tuned dials, in `tools/driver/dials/<card>-<surface>.json`.
+     - The tuned dials, in `<card>-<surface>.json` (then `tools/driver/dials/`, next to the card in `mod/` since step
+       5).
    - **Baseline:** the card's own dials, from 20 varied starts (seed 100). Speed is what breaks them; the sideways
      offset hardly matters.
 
@@ -246,7 +270,8 @@ Each step is usable on its own and is verified before the next starts.
      - **Snow:** keeps the counter-steer off and a softer turn-in (0.81).
 
      All three now exit at 50 km/h or more, against the 45 needed for gold. Those differences are a candidate for the
-     card's per-surface notes once the owner has reviewed them.
+     card's per-surface notes once the owner has reviewed them. (Step 5 replaced the gravel and asphalt dials with
+     candidates that also pass at other frame rates; see "Frame timing" above.)
    - **Learned: choose by fresh starts, not by the best score.** The best single fitness of the first gravel run (3
      starts, generation 4) passed only 15 of 20 fresh starts, worse than the card. Later candidates passed 20 of 20.
      So `tune.py` now ends with a selection: the top 5 candidates of the second half, plus the optimiser's final mean,
@@ -274,8 +299,31 @@ Each step is usable on its own and is verified before the next starts.
      cleanup, leaving C08's progress counting 89 tuning attempts. It was put back by hand from the log, which is why
      sessions now save the progress first.
 4. **Stage 2** (`tools/driver/train.py`, SAC, PyTorch) plus the network in the runner. Done at stage 2's acceptance.
-5. **Watch AI for C08 in the mod.** The runner and cards move into `mod/`, with an ADR, plus the `flick_ai` scenario,
-   CHANGELOG and docs.
+5. **Watch AI for C08 in the mod** ([ADR 0015](decisions/0015-technique-demos.md)). **Built 2026-11-02.**
+   - **The pieces:**
+     - The runner as the vehicle extension `rallyAcademy/driver`. It now reports each phase to the GE extension
+       (`onDriverPhase`, with the car's sim time), drives in the realistic gearbox mode and puts the player's mode back,
+       and lets go of the controls on `stop()`. `attempt.py` loads the same file.
+     - The card, its line for C08 (`lines.C08`, the line the dials were tuned on; `attempt.py line C08` works it out
+       again) and the tuned dials, in `mod/gameplay/rallyAcademy/techniques/`. C08 opts in with
+       `assessment.technique`.
+     - `technique.lua` (pure): the dials for a surface, the line laid out from the start, the gates' distances along
+       it. The demo holds the car 40 frames after Retry, not training's 80.
+     - The HUD: the Coach panel's steps, the panel's cue, half speed, and the phase marks on the input trace (a label
+       that would overlap the one before goes up a row).
+   - **Line:** the tuned line ships, not the mod's minimum-curvature racing line (owner's choice, 2026-11-02).
+   - **Results.** Verified in game (0.40.4) through the real Watch AI path, after re-choosing the gravel and asphalt
+     dials (Frame timing above). The game ran unfocused, so "30 fps" is the background cap and "focused frames" the
+     cap lifted in memory:
+
+     | Surface | Focused frames | Half speed | 30 fps | Fast, 20 varied starts |
+     | --- | --- | --- | --- | --- |
+     | Gravel | 3 of 3 gold | 2 of 2 gold | 2 of 2 gold | 20 of 20 gold |
+     | Asphalt | 3 of 3 gold | 2 of 2 gold | 2 of 2 gold | 20 of 20 gold |
+     | Snow | 3 of 3 gold | 2 of 2 gold | 2 of 2 gold | 20 of 20 gold (step 3) |
+
+     None counted as an attempt, and the car came back in the arcade gearbox it was in. The `flick_demo` scenario
+     repeats the check. Not yet seen: the owner watching it, or a game window actually focused.
 
 Python dependencies are for `tools/driver/` only; the mod ships none of them. Stage 1 needed none: `es.py` is a small
 CMA-ES (the diagonal variant) in plain Python, unit-tested on standard test functions. Stage 2 will need PyTorch.

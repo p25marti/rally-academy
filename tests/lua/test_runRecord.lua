@@ -114,6 +114,9 @@ function T.input_trace_downsamples_the_run_and_marks_its_gates()
   eq(tr.st[#tr.st] < -0.95, true, 'steered right by the end (si +1): the trace has left +')
   eq(#tr.marks, 1, 'marks inside the run only')
   eq(tr.marks[1].t, 2.5, 'relative to the start')
+  eq(tr.marks[1].kind, nil, 'a gate has no kind')
+  eq(R.inputTrace(rec, 50, {{t = 13, label = 'feint', kind = 'phase'}}).marks[1].kind, 'phase',
+    "a technique demo's phase keeps its kind")
   eq(R.inputTrace(R.new({}), 50, {}), nil, 'nothing to draw')
 end
 

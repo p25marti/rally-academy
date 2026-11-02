@@ -102,9 +102,12 @@ function S.install()
   }
   -- verified 0.39.4: the Freeroam menu's way in (enters freeroam mode, then startLevel)
   h.paused = false
-  _G.simTimeAuthority = { -- verified 0.39.4 (photomode uses the same calls)
+  h.simSpeed = 1
+  _G.simTimeAuthority = { -- verified 0.39.4 (photomode uses the same calls); get/set (slow motion) listed in 0.40.4
     pause = function(p) h.paused = p end,
     getPause = function() return h.paused end,
+    get = function() return h.simSpeed end,
+    set = function(v) h.simSpeed = v end,
   }
   -- Venue bookmarks (verified 0.39.4): static ray casts, the AI road map, on-screen messages.
   h.rayDistance, h.messages = 40, {}
@@ -156,7 +159,7 @@ function S.install()
     local text = f:read('*a'); f:close()
     local data = json.decode(text)
     if path == S.EXERCISES then
-      -- Test-only drills (T01-T04) go after the shipped ones, so engine tests don't depend on how
+      -- Test-only drills (T01-T05) go after the shipped ones, so engine tests don't depend on how
       -- any shipped drill is graded (tests/fixtures/test_drills.json).
       for _, e in ipairs(S.testDrills()) do table.insert(data.exercises, e) end
     elseif path == S.VENUES then
@@ -247,7 +250,7 @@ function S.installProps(h)
   _G.map.objects = {[h.vehicle.id] = {objectCollisions = h.collisions}}
 end
 
--- Ids of the shipped drills only (the catalogue the stubs serve also holds T01-T04).
+-- Ids of the shipped drills only (the catalogue the stubs serve also holds T01-T05).
 function S.isTestDrill(id) return tostring(id):match('^T%d%d$') ~= nil end
 
 -- Loads a fresh copy of a GE extension module (bypasses require's cache).

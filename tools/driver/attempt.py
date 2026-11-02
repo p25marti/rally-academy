@@ -2,13 +2,16 @@
 
     python tools/driver/attempt.py C08 [--surface gravel|asphalt|snow|all] [-n 10] [--fast] [--vary] [--card-dials]
     python tools/driver/attempt.py restore   # after a crashed or interrupted run (also tune.py's)
+    python tools/driver/attempt.py line C08  # the line the card ships for the drill, worked out again (lines.py)
 
-The runner (runner.lua) drives the technique card's phases inside the car; this sets up each attempt the way tape.py
-does (physics stopped, Retry, runner loaded, physics resumed), waits for the grade and prints it with the runner's
-report. Attempts count as the drill's attempts; the drill's progress is put back afterwards, as in the scenarios.
+The runner (the mod's vehicle extension rallyAcademy/driver, which Watch AI also uses: ADR 0015) drives the technique
+card's phases inside the car; this sets up each attempt the way tape.py does (physics stopped, Retry, runner loaded,
+physics resumed), waits for the grade and prints it with the runner's report. Attempts count as the drill's attempts;
+the drill's progress is put back afterwards, as in the scenarios. The game needs the mod linked (dev.py link).
 
-The dials are the card's starting values, replaced by the tuned ones in dials/<card>-<surface>.json when tune.py has
-written them (--card-dials ignores those). --vary starts each attempt differently: the approach speed within 5 km/h
+The card, its line and the tuned dials ship with the mod (mod/gameplay/rallyAcademy/techniques/). The dials are the
+card's starting values, replaced by the tuned ones in <card>-<surface>.json when tune.py has written them
+(--card-dials ignores those). --vary starts each attempt differently: the approach speed within 5 km/h
 of its dial and the car up to 1 m to either side of the venue start (VARY), as stage 1 tunes and is accepted.
 """
 import argparse
@@ -25,14 +28,13 @@ sys.path.insert(0, str(HERE.parent / "ingame"))
 sys.path.insert(0, str(HERE))
 sys.stdout.reconfigure(encoding="utf-8")
 
-CARDS = HERE / "cards"
-DIALS = HERE / "dials"
+TECHNIQUES = HERE.parent.parent / "mod" / "gameplay" / "rallyAcademy" / "techniques"
+CARDS = DIALS = TECHNIQUES
 VARY = {"kmh": 5.0, "side": 1.0}  # the spread of varied starts (docs/DRIVER.md, Training)
-RUNNER = HERE / "runner.lua"
 TIERS = {"bronze": 1, "silver": 2, "gold": 3}
 SURFACES = ("gravel", "asphalt", "snow")
 
-# The drills the runner can drive: the technique card, and the line it follows (course frame).
+# The drills the runner can drive, and their technique card (which holds the line it follows, in the course frame).
 DRILLS = {"C08": "scandinavian_flick"}
 
 
@@ -113,12 +115,21 @@ def along(path, point):
     return sum(math.dist(a, b) for a, b in zip(path[:i], path[1:i + 1]))
 
 
-def course(drill_id):
-    """World path for the runner, and the distances along it of the Flick and Exit gates."""
-    import academy as A  # noqa: PLC0415
+def tuned_line(base):
+    """The line the dials were tuned on, worked out from the scenarios' corner line (as scenarios._flick_run): what
+    the card ships as lines.<drill>."""
     import lines as L  # noqa: PLC0415
     import scenarios as S  # noqa: PLC0415
-    local = L.bmp_left({**S.C02_LINE, "DR1181_3": 0.5})  # as scenarios._flick_run
+    assert base == "C08", base
+    return [[round(x, 2), round(y, 2)] for x, y in L.bmp_left({**S.C02_LINE, "DR1181_3": 0.5})]
+
+
+def course(drill_id):
+    """World path for the runner (the card's line for the drill), and the distances along it of the Flick and Exit
+    gates. The mod lays it out the same way (technique.lua's config)."""
+    import academy as A  # noqa: PLC0415
+    base = drill_id.split("-")[0]
+    local = card(DRILLS[base])["lines"][base]
     path = resample(A.course_points(drill_id, local))
     gates = A.drill(drill_id)["assessment"]["course"]["gates"]
     flick, exit_ = A.course_points(drill_id, [(gates[0]["x"], gates[0]["y"]), (gates[-1]["x"], gates[-1]["y"])])
@@ -126,16 +137,13 @@ def course(drill_id):
 
 
 def runner_code(cfg):
-    src = RUNNER.read_text(encoding="utf-8")
-    return ("package.loaded['raDriver'] = nil\n"
-            f"package.preload['raDriver'] = function()\n{src}\nend\n"
-            "extensions.unload('raDriver') extensions.load('raDriver')\n"
-            f"extensions.raDriver.configure({lua_literal(cfg)})\n"
-            "return 1")
+    """Load the mod's runner afresh (unloading first picks up edits) and configure it."""
+    return ("extensions.unload('rallyAcademy_driver') extensions.load('rallyAcademy/driver') "
+            f"extensions.rallyAcademy_driver.configure({lua_literal(cfg)})")
 
 
-# Switch the runner off and let go of the controls (extensions.unload alone leaves it in the car: BEAMNG_API_NOTES).
-_STOP = ("if extensions.raDriver then extensions.raDriver.stop() end extensions.unload('raDriver') "
+# Switch the runner off and let go of the controls.
+_STOP = ("if extensions.rallyAcademy_driver then extensions.rallyAcademy_driver.stop() end "
          "for _, n in ipairs({'throttle', 'brake', 'steering', 'parkingbrake'}) do input.event(n, 0, 2) end")
 
 
@@ -172,7 +180,6 @@ def attempt(drill_id, cfg, start=None, timeout=60):
         if start and start.get("side"):
             lua(_SIDESTEP % start["side"])
             time.sleep(0.3)
-        car('controller.mainController.setGearboxMode("sequential")')
         if start and start.get("kmh"):
             cfg = {**cfg, "dials": {**cfg["dials"], "approachKmh": cfg["dials"]["approachKmh"] + start["kmh"]}}
         car(runner_code(cfg))
@@ -281,6 +288,9 @@ def run(base, surfaces, n, fast_mode=False, overrides=None, vary=False, tuned=Tr
 def main():
     if sys.argv[1:] == ["restore"]:
         restore()
+        return
+    if sys.argv[1:2] == ["line"]:
+        print(json.dumps(tuned_line(sys.argv[2])))
         return
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("drill", choices=sorted(DRILLS))

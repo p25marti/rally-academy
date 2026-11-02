@@ -22,3 +22,4 @@ Template: **Context** (what forced a choice) · **Decision** · **Consequences**
 | [0010](0010-every-drill-on-the-proving-ground.md) | Every drill on the proving ground; terrain features (hills, camber, jump, rough, water) in their own areas | Accepted |
 | [0014](0014-curriculum-tidy-up.md) | Curriculum tidy-up: E01 and B08 cut, B04 to the test road, A07 without a line | Accepted |
 | [0013](0013-racing-lines-from-the-map-builder.md) | Racing lines from the map's roads through each drill's gates (minimum curvature, a speed model), shown on request; the AI can drive them | Accepted |
+| [0015](0015-technique-demos.md) | Technique demos: our skill runner drives the player's car for Watch AI, from shipped technique cards and tuned dials | Accepted |

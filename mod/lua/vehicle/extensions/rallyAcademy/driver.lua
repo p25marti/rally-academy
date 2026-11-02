@@ -1,10 +1,11 @@
--- Skill runner (vehicle Lua), docs/DRIVER.md: drives a technique card's phases in the car. Decides on a fixed clock
--- of simulation time (decisionHz, 20 = deterministic mode's 0.05 s frame), switches phases on measurements, and keeps
--- its outputs within the card's human limits. Not shipped yet: attempt.py injects it the way tape.py injects the tape
--- player, then calls configure(cfg) with the card's dials and the course (path and gates in world metres).
+-- Skill runner (vehicle Lua, extension rallyAcademy_driver), docs/DRIVER.md: drives a technique card's phases in the
+-- car. Decides on a fixed clock of simulation time (decisionHz, 20 = deterministic mode's 0.05 s frame), switches
+-- phases on measurements, and keeps its outputs within the card's human limits. Watch AI loads it for a technique drill
+-- (ADR 0015) and tools/driver/attempt.py for training; either then calls configure(cfg) with the card's dials and the
+-- course (path and gates in world metres).
 --
--- The core (M.new, M.decide and the helpers) is pure, for tests/lua/test_driver_runner.lua; M.updateGFX is the only
--- part that touches the engine (obj, input, controller).
+-- The core (M.new, M.decide and the helpers) is pure, for tests/lua/test_driver_runner.lua; the engine side (obj,
+-- input, controller) is at the end.
 local M = {}
 
 local function clamp(v, lo, hi) return math.max(lo, math.min(hi, v)) end
@@ -170,6 +171,7 @@ end
 
 local HOLD, SHIFT_AT, GEAR = 80, 20, 2 -- frames: as tape.py's controlled start
 local d, frames, acc, done = nil, 0, 0, false
+local savedGearbox = nil -- the player's gearbox mode, put back when the run ends ('arcade' would shift on its own)
 
 local function apply(o)
   input.event('throttle', o.throttle, 2)
@@ -178,9 +180,24 @@ local function apply(o)
   input.event('steering', o.steering, 2)
 end
 
+local function restoreGearbox()
+  if savedGearbox and savedGearbox ~= 'realistic' then controller.mainController.setGearboxMode(savedGearbox) end
+  savedGearbox = nil
+end
+
+-- Tell the GE extension about each phase as it begins (the HUD's cue, the trace's marks), with the car's sim time.
+local function notify(phase)
+  obj:queueGameEngineLua(string.format(
+    'if extensions.rallyAcademy then extensions.rallyAcademy.onDriverPhase(%q, %.3f) end', phase, obj:getSimTime()))
+end
+
 function M.configure(cfg)
   d, frames, acc, done = M.new(cfg), 0, 0, false
   HOLD, SHIFT_AT, GEAR = cfg.hold or HOLD, cfg.shiftAt or SHIFT_AT, cfg.gear or GEAR
+  local mc = controller.mainController
+  if savedGearbox == nil then savedGearbox = mc.gearboxBehavior end
+  if mc.gearboxBehavior ~= 'realistic' then mc.setGearboxMode('realistic') end -- the runner picks its gear itself
+  notify(d.phase)
 end
 
 function M.updateGFX(dt)
@@ -197,21 +214,27 @@ function M.updateGFX(dt)
   if acc + 1e-6 < step then return end
   local h, vel = obj:getDirectionVector(), obj:getVelocity()
   local x, y = obj:getPositionXYZ()
+  local before = d.phase
   apply(M.decide(d, {x = x, y = y, hx = h.x, hy = h.y, vx = vel.x, vy = vel.y}, acc))
   acc = 0
+  if d.phase ~= before then notify(d.phase) end
   if d.phase == 'stop' and vel:length() < 0.3 then
     done = true
     apply({throttle = 0, brake = 0, handbrake = 1, steering = 0})
+    restoreGearbox()
     obj:queueGameEngineLua('raDriverReport = ' .. string.format('%q', M.report())) -- attempt.py waits for this
+    notify('done')
   end
 end
 
--- Off for good: no more inputs until the next configure. (extensions.unload doesn't remove an extension injected
--- through package.preload, seen 0.40.4, so this is how a run is switched off.)
+-- Off for good: the controls let go and the player's gearbox back, no more inputs until the next configure.
 function M.stop()
-  if d and not done then apply({throttle = 0, brake = 0, handbrake = 0, steering = 0}) end
+  if d then apply({throttle = 0, brake = 0, handbrake = 0, steering = 0}) end
+  restoreGearbox()
   d, done = nil, true
 end
+
+M.onExtensionUnloaded = M.stop
 
 function M.state()
   if not d then return 'none' end

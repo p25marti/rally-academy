@@ -79,6 +79,11 @@ class StartsTest(unittest.TestCase):
             self.assertLessEqual(abs(s["side"]), AT.VARY["side"])
 
 
+class ShippedLineTest(unittest.TestCase):
+    def test_the_card_ships_the_line_the_dials_were_tuned_on(self):
+        self.assertEqual(CARD["lines"]["C08"], AT.tuned_line("C08"))
+
+
 class LuaLiteralTest(unittest.TestCase):
     def test_values(self):
         self.assertEqual(AT.lua_literal({"a": [1, 2.5, True], "b": "x"}), '{["a"]={1,2.5,true},["b"]="x"}')

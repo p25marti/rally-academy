@@ -3062,6 +3062,7 @@
         "successDefinition": "Between the Flick and Apex gates, steer at least 60 degrees away from the corner and then 60 degrees into it within 1.5 s, and the rear steps out at least 8 degrees; through all four gates without touching a post, no handbrake, no spin, out of the Exit at 25 km/h or more. Silver: 12 degrees and 40 km/h. Gold: 15 degrees and 45 km/h.",
         "metricToRecord": "Clean flicks / 10",
         "mode": "automatic",
+        "technique": "scandinavian_flick",
         "rules": [
           {
             "type": "gates_passed"

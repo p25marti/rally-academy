@@ -40,7 +40,7 @@
 | **C05** Countersteering and recovery | Deliberately create mild rear-wheel slide, steer into slide, then unwind to straight exit. | dirt strip | single surface | Self-assessed (parked: Needs RWD or AWD (power-on rear slide to catch)) |
 | **C06** Maintaining a controlled slip angle | Initiate moderate slide before apex; balance throttle/countersteer through a marked 20 m arc. | dirt ring | single surface | Self-assessed (parked: Needs RWD or AWD (FWD can't hold a slide on throttle)) |
 | **C07** Lateral weight transfer | Drive up to the crossing between the cones, go clockwise round the right-hand cone, back through the crossing, anticlockwise round the left-hand cone and back through the crossing. | dirt strip | single surface | Automatic, medals |
-| **C08** Scandinavian flicks | Arrive at about 60 km/h. | gravel corner (left) | Gravel, Asphalt, Snow | Automatic, medals |
+| **C08** Scandinavian flicks | Arrive at about 60 km/h. | gravel corner (left) | Gravel, Asphalt, Snow | Automatic, medals, Watch AI |
 | **C09** Donut round a bale | Drive through the Entry gate at about 30 km/h with the bale ahead on your left. | dirt strip, donut bale | Dirt, Gravel, Asphalt, Snow | Automatic, medals |
 
 ## D · Complex cornering

@@ -15,15 +15,16 @@ then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), then the doc for your task.
 | `mod/gameplay/rallyAcademy/exercises.json` | The drills: source of truth ([DRILL_DATA](docs/DRILL_DATA.md), [ADR 0002](docs/decisions/0002-drill-data-source-of-truth.md)) |
 | `mod/gameplay/rallyAcademy/venues.json` | Named venues (map, spawn) that drills refer to by id ([ADR 0007](docs/decisions/0007-venues-as-data.md)) |
 | `mod/lua/ge/extensions/rallyAcademy.lua` | GE extension: session state machine, timing, grading flow, engine hooks |
-| `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `layout.lua` (authored courses, car footprint), `racingLine.lua` (a drill's racing line), `runRecord.lua`, `variants.lua` (surface variants, [ADR 0009](docs/decisions/0009-surface-variants.md)) (pure); `store.lua` (files), `course.lua` (drawing), `props.lua` (real cones and posts, [ADR 0011](docs/decisions/0011-physical-course-markers.md)) |
-| `mod/lua/vehicle/extensions/rallyAcademy/telemetry.lua` | Sampler inside the car's Lua VM ([ADR 0004](docs/decisions/0004-telemetry-transport.md)) |
+| `mod/lua/ge/extensions/rallyAcademy/` | `rules.lua`, `gates.lua`, `layout.lua` (authored courses, car footprint), `racingLine.lua` (a drill's racing line), `runRecord.lua`, `variants.lua` (surface variants, [ADR 0009](docs/decisions/0009-surface-variants.md)), `technique.lua` (a technique demo's configuration) (pure); `store.lua` (files), `course.lua` (drawing), `props.lua` (real cones and posts, [ADR 0011](docs/decisions/0011-physical-course-markers.md)) |
+| `mod/lua/vehicle/extensions/rallyAcademy/telemetry.lua` | Sampler inside the car's Lua VM ([ADR 0004](docs/decisions/0004-telemetry-transport.md)); `driver.lua` is the skill runner that drives a technique (Watch AI, training) |
+| `mod/gameplay/rallyAcademy/techniques/` | Technique cards (phases, cues, dials, the line per drill) and their tuned dials per surface ([DRIVER](docs/DRIVER.md), [ADR 0015](docs/decisions/0015-technique-demos.md)) |
 | `mod/ui/modules/apps/RallyAcademy/app.vue` | In-drive HUD panel (Vue HUD app); `RallyAcademyCoach/`, `RallyAcademyInputs/` and `mod/settings/ui_apps/originalLayouts/` = the Rally Academy HUD layout ([ADR 0012](docs/decisions/0012-own-hud-layout.md)) |
 | `mod/ui/ui-vue/mods/rallyAcademy/` | Academy screen: main menu, pause tab ([ADR 0005](docs/decisions/0005-main-menu-via-vue-ui-mods.md)) |
 | `tests/lua/` | Unit tests under LuaJIT with engine stubs; `tests/fixtures/` = recorded in-game runs |
 | `mod/lua/ge/extensions/core/input/actions/` + `mod/settings/inputmaps/` | Input actions and their default keys (F13–F24, never Alt: [STREAM_DECK](docs/STREAM_DECK.md)) |
 | `tools/dev.py` | validate, lint, test, build, link, log, ingame |
 | `tools/ingame/` | Scripted checks and venue surveys through the game's MCP server |
-| `tools/driver/` | The driver model ([DRIVER](docs/DRIVER.md)): `fast.py` runs the simulation about 5× real time for training; `runner.lua` drives a technique card's phases in the car, `attempt.py` runs it; `tune.py` + `es.py` tune the dials (`cards/`, `dials/`) |
+| `tools/driver/` | The driver model ([DRIVER](docs/DRIVER.md)): `fast.py` runs the simulation about 5× real time for training; `attempt.py` has the mod's skill runner drive a technique card from a controlled start; `tune.py` + `es.py` tune the dials (into the mod's `techniques/`) |
 | `tools/mapgen/` + `mod/levels/` | Our own map, the proving ground: `build.py` generates `mod/levels/ra_proving_ground/` from `proving_ground.json` ([ADR 0008](docs/decisions/0008-proving-ground-map.md)); commit both, `validate` checks they match. `shapes.py` builds road centre lines from straights and arcs; `markers.py` places the corner signs; `racingline.py` exports the drill roads the mod's racing lines need ([ADR 0013](docs/decisions/0013-racing-lines-from-the-map-builder.md)) |
 | `docs/` | Everything else; `docs/decisions/` = ADRs; `docs/DRILLS.md` is generated (`dev.py drills`); `docs/images/` = the README's screenshots |
 | `reference/` | Historical design input; not shipped, not authoritative |
@@ -64,7 +65,7 @@ python tools/driver/fast.py check      # fast simulation (~5x, same physics) wor
 python tools/driver/fast.py restore    # put the game back to normal mode and its saved frame cap after a crashed run
 python tools/driver/attempt.py C08 -n 20 --fast --vary [--surface all] [--dial NAME=VALUE]  # the skill runner drives the flick
 python tools/driver/attempt.py restore # after an interrupted attempt or tuning run: normal mode, progress put back
-python tools/driver/tune.py C08 --surface snow  # stage 1: tune the card's dials (~1 h, fast mode) -> tools/driver/dials/
+python tools/driver/tune.py C08 --surface snow  # stage 1: tune the card's dials (~1 h, fast mode) -> mod/.../techniques/
 python tools/mapgen/build.py           # regenerate the proving ground after editing its layout (~10 s)
 python tools/mapgen/views.py          # screenshots of it from fixed viewpoints (recordings/views/)
 ```
@@ -122,8 +123,8 @@ Learned the hard way (0.39.4):
 
 ## Recipes
 
-**Engine tests use test-only drills** (T01-T04, `tests/fixtures/test_drills.json`, added to the catalogue by
-the stubs): T01/T02 self-assessed (Student Driver / Gravel Rally), T03 marked gates, T04 a marked stop zone.
+**Engine tests use test-only drills** (T01-T05, `tests/fixtures/test_drills.json`, added to the catalogue by
+the stubs): T01/T02 self-assessed (Student Driver / Gravel Rally), T03 marked gates, T04 a marked stop zone, T05 a technique drill (Watch AI).
 Don't build engine tests on shipped drills: converting a drill would break them.
 
 **Make a drill auto-graded:**

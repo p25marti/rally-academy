@@ -1,6 +1,6 @@
--- The driver's skill runner (tools/driver/runner.lua, docs/DRIVER.md): its pure core, on synthetic runs.
+-- The driver's skill runner (mod vehicle extension rallyAcademy/driver, docs/DRIVER.md): its pure core, on synthetic runs.
 local root = (arg and arg[1]) or '.'
-local Run = dofile(root .. '/tools/driver/runner.lua')
+local Run = dofile(root .. '/mod/lua/vehicle/extensions/rallyAcademy/driver.lua')
 local R = require('ge.extensions.rallyAcademy.rules')
 
 local T = {}

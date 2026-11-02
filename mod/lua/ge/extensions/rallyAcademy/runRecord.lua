@@ -68,8 +68,8 @@ end
 -- The driver's inputs over the run (from its start mark), as at most `n` points for the HUD's input trace:
 -- {t = {s from the start}, thr = {0..1}, brk = {0..1}, hb = {0..1}, st = {-1..1, + left} or nil, marks = {{t, label}},
 -- span = s}. st is the steering input turned round so left is + (si is + right), there when the samples carry it
--- (si, since 2026-10-29). `marks` come in as sim
--- times ({t, label}) and go out relative. Each point is the first sample in its slice of the run.
+-- (si, since 2026-10-29). `marks` come in as sim times ({t, label, kind}) and go out relative; kind 'phase' marks a
+-- technique demo's phase (ADR 0015), no kind a gate. Each point is the first sample in its slice of the run.
 function R.inputTrace(rec, n, marks)
   local from = rec and rec.runStartT
   local samples = {}
@@ -93,7 +93,9 @@ function R.inputTrace(rec, n, marks)
     end
   end
   for _, m in ipairs(marks or {}) do
-    if m.t and m.t >= t0 and m.t <= t1 then out.marks[#out.marks + 1] = {t = m.t - t0, label = m.label} end
+    if m.t and m.t >= t0 and m.t <= t1 then
+      out.marks[#out.marks + 1] = {t = m.t - t0, label = m.label, kind = m.kind}
+    end
   end
   return out
 end

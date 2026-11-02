@@ -6,6 +6,13 @@ versioning: [SemVer](https://semver.org/). Release process: docs/RELEASING.md.
 ## [Unreleased]
 
 ### Added
+- **Watch AI on C08 Scandinavian flicks**: the AI now drives the flick itself, on gravel, asphalt and snow, in the
+  drill's Covet. The Coach panel lists the five steps (settle the speed, flick away, turn in with a touch of brake,
+  catch the slide, throttle out) and highlights the one the AI is doing, and afterwards the input graph marks each
+  step next to the gates. The AI's run is graded, gold on all three surfaces, and never counted. The game's AI only
+  drives racing lines, so this is our own driver, trained on the drill.
+- **½ speed** next to Watch AI plays any AI demo in slow motion, so a quick move like the flick is easier to follow;
+  the game goes back to full speed afterwards. Remembered.
 - **Your runs are kept**: every attempt you score is saved with its grade on your own computer, in your user folder
   (`settings/rallyAcademy/runs`, about 1 MB a minute of driving, the newest 500 attempts), for analysing your
   driving or training a driver later. Nothing is sent anywhere; **Keep my runs** on the About page turns it off.

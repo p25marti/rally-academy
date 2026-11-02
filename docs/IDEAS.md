@@ -19,7 +19,7 @@ parts. "Who" says whether it came from the owner or was suggested.
 | [Ghost of your best run](#ghost-of-your-best-run) | Suggested | Medium | Idea (also ROADMAP P5) |
 | [AI demonstration lap](#ai-demonstration-lap) | Suggested | Medium | Built (Watch AI, five drills) |
 | [Demo cutscenes](#demo-cutscenes) | Owner | Large | Spiked 2026-10-30 |
-| [Versatile driver (reinforcement learning)](#versatile-driver-reinforcement-learning) | Owner | Very large | Designed for C08 ([DRIVER](DRIVER.md)); data collection built |
+| [Versatile driver (reinforcement learning)](#versatile-driver-reinforcement-learning) | Owner | Very large | C08 built: tuned skills drive the flick, shipped as its Watch AI ([DRIVER](DRIVER.md), [ADR 0015](decisions/0015-technique-demos.md)); data collection built |
 | [Sharing drills and scores](#sharing-drills-and-scores) | Suggested | Large | Idea |
 
 ---

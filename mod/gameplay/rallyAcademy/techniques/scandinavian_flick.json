@@ -3,8 +3,12 @@
   "title": "Scandinavian flick",
   "teaches": ["C08"],
   "turn": "left",
-  "about": "A feint away from the corner loads the outside of the car; turning in hard with a touch of brake then swings the rear into the corner, and the slide is caught and driven out. Drafted by Claude from general rally-driving knowledge in its own words (docs/DRIVER.md); not yet checked against coaching sources or reviewed by the owner.",
+  "about": "A feint away from the corner loads the outside of the car; turning in hard with a touch of brake then swings the rear into the corner, and the slide is caught and driven out. Drafted by Claude from general rally-driving knowledge in its own words (docs/DRIVER.md); not yet checked against coaching sources or reviewed by the owner. Each phase's cue is shown while Watch AI drives it, and its mark labels it on the input trace (ADR 0015).",
   "sources": [],
+  "lines": {
+    "about": "The line the runner follows, per drill, in the course frame (x right, y ahead of the venue start, metres): what the dials were tuned on. tools/driver/attempt.py line C08 prints it again from tools/ingame/lines.py.",
+    "C08": [[0.0, 0.0], [1.5, 40.0], [-1.85, 67.11], [-8.87, 84.85], [-16.37, 91.4], [-26.01, 93.75], [-34.89, 95.81], [-44.07, 96.15], [-51.91, 96.04], [-60.46, 95.41], [-69.85, 93.42], [-77.69, 86.73], [-82.99, 79.51], [-87.49, 70.74], [-98.89, 48.49]]
+  },
   "humanLimits": {
     "reactionMs": 150,
     "reactionAppliesTo": "corrections only (the catch's counter-steer, stage 2's correction): rehearsed phase changes fire at once (owner, 2026-11-01)",
@@ -25,6 +29,7 @@
     },
     {
       "id": "feint",
+      "mark": "feint",
       "cue": "Lift and flick away from the corner",
       "controller": "steer_hold",
       "dials": {
@@ -38,6 +43,7 @@
     },
     {
       "id": "load_turn_in",
+      "mark": "load",
       "cue": "Turn in hard with a touch of brake",
       "controller": "steer_hold",
       "dials": {
@@ -52,6 +58,7 @@
     },
     {
       "id": "catch",
+      "mark": "catch",
       "cue": "Catch the slide, eyes on the exit",
       "controller": "follow_line_countersteer",
       "dials": {
@@ -65,6 +72,7 @@
     },
     {
       "id": "exit",
+      "mark": "drive",
       "cue": "Throttle on, out through the Exit gate",
       "controller": "follow_line",
       "dials": {

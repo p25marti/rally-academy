@@ -1,0 +1,43 @@
+{
+  "card": "scandinavian_flick",
+  "surface": "asphalt",
+  "date": "2026-11-02",
+  "attempts": 456,
+  "from": "generation 7, candidate 5 of the tuning run, re-chosen for Watch AI (ADR 0015)",
+  "selection": {
+    "why": "The dials chosen first passed in fast mode and at 30 fps but missed at the frame rates of a focused game and at half speed; this candidate of the same run passes in every condition tried, from the demo's start (docs/DRIVER.md, Watch AI).",
+    "focusedFrames": "gold 2/2 (before: bronze 2/2)",
+    "halfSpeed": "gold 2/2 (before: miss 2/2)",
+    "unfocused30fps": "gold 2/2, slide 37-39 degrees",
+    "fastVariedStarts": "gold 20/20 (seed 300, 5 km/h and 1 m)"
+  },
+  "previous": {
+    "from": "generation 12, candidate 2",
+    "dials": {
+      "approachKmh": 76.093,
+      "feintAfterM": 9.9,
+      "feintSteer": 0.335,
+      "feintYawDeg": 3.369,
+      "turnSteer": 1.0,
+      "loadBrake": 0.814,
+      "loadUnwindDegS": 9.809,
+      "catchGain": 0.321,
+      "catchKmh": 53.106,
+      "settleSlipDeg": 8.327,
+      "exitKmh": 51.3
+    }
+  },
+  "dials": {
+    "approachKmh": 80.0,
+    "feintAfterM": 10.581,
+    "feintSteer": 0.593,
+    "feintYawDeg": 4.408,
+    "turnSteer": 0.818,
+    "loadBrake": 0.901,
+    "loadUnwindDegS": 12.441,
+    "catchGain": 0.665,
+    "catchKmh": 54.477,
+    "settleSlipDeg": 5.029,
+    "exitKmh": 50.505
+  }
+}

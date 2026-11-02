@@ -43,6 +43,7 @@ and `python tools/dev.py validate`, which also fails while DRILLS.md is out of d
         "rules": [],                       // typed rules; empty = no machine grading
         "tiers": [...],                    // optional: silver and gold medals (below)
         "aiDemo": true,                    // optional: offer Watch AI (ADR 0013); only where the AI's run passes
+        "technique": "scandinavian_flick", // optional: Watch AI drives this technique card instead (ADR 0015)
         "racingLine": false                // optional: no Show line or Watch AI (A07: choosing the line is the drill)
       },
       "parked": "Needs RWD or AWD ...",   // optional: why the drill is set aside for now (HUD shows it)

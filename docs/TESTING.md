@@ -35,9 +35,9 @@ exactly as CI does.
   published `rallyAcademyState` and on vehicle side effects.
 - Assert with the helpers (`H.eq`, `H.has`, `H.near`), which raise on failure. A bare
   boolean expression asserts nothing.
-- Engine tests use the **test drills** T01-T04 from `tests/fixtures/test_drills.json`, which the stubs
+- Engine tests use the **test drills** T01-T05 from `tests/fixtures/test_drills.json`, which the stubs
   add after the shipped catalogue: T01/T02 self-assessed (Student Driver / Gravel Rally), T03 marked
-  gates, T04 a marked stop zone. Shipped drills keep changing as they get courses and medals, so tests
+  gates, T04 a marked stop zone, T05 a technique drill (Watch AI drives its card). Shipped drills keep changing as they get courses and medals, so tests
   about the engine shouldn't depend on them; tests about a drill (its fixtures, its course) use it by
   name. `dev.py validate` checks the test drills like shipped ones.
 
@@ -70,6 +70,7 @@ python tools/dev.py ingame smoke b01 a04   # run some; exit code 1 if any check 
 | `smoke` | UI reload leaves one HUD panel; the drill drop-down opens on a click and picks; a drill without rules renders; menu opens/closes with physics paused/resumed |
 | `a01` | The course is laid out on the proving ground's dirt strip with no marking; a centred run passes with a medal; the wrong side of the cone and a clipped gate post miss; auto-retry resets the car (the car steers by script: `academy.follow_path`) |
 | `demo` | Watch AI on D03 and D09: the button shows where the drill has a racing line, the AI drives it from the start, the run is graded (a medal) but not counted, and the car is handed back once it stops at the line's end; Retry during a demo hands it back too |
+| `flick_demo` | Watch AI on C08 (ADR 0015) on gravel, asphalt and snow, and on gravel at half speed: the skill runner drives the technique card, every step reaches the HUD in order, the run earns a medal but isn't counted, the trace gets its four phase marks, and the car comes back in the player's gearbox mode (arcade) with the game's speed put back |
 | `pause` | Esc menu: the Rally Academy tab, each rail page (list → details, Analysis, About, Credits), About's Keep my runs toggle (switched, then back to the player's choice), and the game's own tabs after reopening |
 | `b01` | B01 on its course (the proving ground's dirt strip, stop zone 150 m ahead): threshold braking earns a medal; braking too hard overshoots and misses; full brake misses (lockup) |
 | `a04` | A04 on its course (the proving ground's dirt strip, three gates): a steady 30 km/h earns a medal; 40 km/h at gate 3 misses |

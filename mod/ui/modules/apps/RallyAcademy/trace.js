@@ -9,6 +9,8 @@ const BRK = "rgba(235, 75, 75, 0.95)"
 const HB = "rgba(90, 160, 255, 0.95)"
 const STEER = "rgba(235, 235, 235, 0.9)"
 const STEER_LANE = 0.32 // of the height, under the pedals, when steering is drawn
+const PHASE_LINE = "rgba(255, 190, 70, 0.7)" // a technique demo's phase marks (ADR 0015)
+const PHASE_TEXT = "rgba(255, 200, 90, 0.95)"
 
 const num = v => Number(v) || 0
 
@@ -102,12 +104,25 @@ function drawTrace(canvas, t0, span, pedals, steering, marks, style) {
     g.fillText("L", 2, ph + fontPx)
     g.fillText("R", 2, h - 2)
   }
+  // A technique demo's phases (kind "phase"): amber, dashed, labelled from the pedals' foot upwards. They come a few
+  // tenths of a second apart, so a label that would run into the one before goes a row higher.
+  let row = 0, rowEnd = -Infinity
   for (const m of marks) {
     const mx = Math.round(x(m.t)) + 0.5
-    g.strokeStyle = "rgba(255,255,255,0.45)"
+    const phase = m.kind === "phase"
+    g.strokeStyle = phase ? PHASE_LINE : "rgba(255,255,255,0.45)"
     g.lineWidth = 1
+    g.setLineDash(phase ? [3, 3] : [])
     g.beginPath(); g.moveTo(mx, 0); g.lineTo(mx, h); g.stroke()
-    g.fillStyle = "rgba(255,255,255,0.8)"
-    g.fillText(m.label, Math.min(mx + 3, w - 34), fontPx + 1)
+    g.setLineDash([])
+    g.fillStyle = phase ? PHASE_TEXT : "rgba(255,255,255,0.8)"
+    const lx = Math.min(mx + 3, w - 34)
+    if (phase) {
+      row = lx < rowEnd + 2 ? Math.min(row + 1, 3) : 0
+      rowEnd = lx + g.measureText(m.label).width
+      g.fillText(m.label, lx, ph - pad - 1 - row * (fontPx + 1))
+    } else {
+      g.fillText(m.label, lx, fontPx + 1)
+    }
   }
 }
