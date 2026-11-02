@@ -1,0 +1,25 @@
+{
+  "card": "scandinavian_flick",
+  "surface": "gravel",
+  "date": "2026-11-02",
+  "attempts": 596,
+  "from": "generation 12, candidate 5 (chosen by hand before tune.py's selection step existed)",
+  "selection": {
+    "passes": 40,
+    "starts": 40,
+    "note": "gold on 20 starts of seed 100 and 20 of seed 200, slide 19-26 degrees"
+  },
+  "dials": {
+    "approachKmh": 70.004,
+    "feintAfterM": 12.602,
+    "feintSteer": 0.737,
+    "feintYawDeg": 0.5,
+    "turnSteer": 0.839,
+    "loadBrake": 0.825,
+    "loadUnwindDegS": 15.073,
+    "catchGain": 1.041,
+    "catchKmh": 44.529,
+    "settleSlipDeg": 5.252,
+    "exitKmh": 51.616
+  }
+}

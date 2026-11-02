@@ -4,7 +4,8 @@ Design for a trained driver that demonstrates the techniques the game's AI can't
 Scandinavian flick. Agreed with the owner on 2026-11-01. The wider idea and its research notes are in
 [IDEAS](IDEAS.md#versatile-driver-reinforcement-learning); this is the plan for its first slice.
 
-Status: **design; steps 1 and 2 of the build plan built**. Nothing else below is built yet.
+Status: **steps 1-3 of the build plan built**: stage 1 drives C08 to gold from varied starts on all three surfaces.
+Stage 2 and the in-game demo aren't built yet.
 
 ## Goal and constraints
 
@@ -110,6 +111,10 @@ Measured on 0.40.4 (2026-11-01, details in [BEAMNG_API_NOTES](BEAMNG_API_NOTES.m
   run-to-run spread.
 - **Graphics don't matter much.** At 5.5×, physics takes 5.6 ms of a 9 ms frame and rendering about 3 ms. Even with no
   rendering at all, the ceiling is about 8×. Graphics settings are left alone.
+- **The harness's own overhead matters as much.** At first an attempt took 20 s wall time for about 2.5 s of driving:
+  every `game.vlua` call waits 1.2 s to read the car's reply, and the attempt polled the car for its result. Car
+  commands now go one way (`queueLuaCommand`), and the runner hands its report to GE Lua itself
+  (`obj:queueGameEngineLua`). An attempt now takes about 5 s, and a 396-attempt tuning run about 52 minutes.
 - **Train unfocused, cap lifted.** Focus and frame rate change only the speed, never the result.
 - **Untested:** each car's physics runs on its own thread, so three Covets on the gravel, asphalt and snow corners
   might train all three surfaces in parallel.
@@ -194,16 +199,67 @@ Each step is usable on its own and is verified before the next starts.
 
      Fast runs from one start repeat almost exactly, so 5 of 5 there is close to one sample. Stage 1's varied starts
      are the real test.
-   - **Learned: the reaction time.** The 150 ms reaction time on measured phase ends shifts every phase later. With
-     the first trigger values (3° and 20°/s), gravel fell to 2 of 10: the swing grew to 38° and the car clipped the
-     Apex post. The starting values (1.3° and 28°/s) fire one reaction time earlier.
+   - **Learned: the reaction time.** At first, a 150 ms reaction time delayed every measured phase end. With the
+     trigger values 3° and 20°/s, gravel fell to 2 of 10: the swing grew to 38° and the car clipped the Apex post.
+   - **Owner decision (2026-11-01): human limits, not human hesitation.**
+     - A rehearsed move doesn't wait out a reaction time, so phases end as soon as their measurement fires.
+     - The reaction time applies only to *corrections*: the catch's counter-steer responds to the slide as it was
+       150 ms ago, and the same will hold for stage 2's correction.
+     - What must never happen is an input a person couldn't make. The rate limits guard that: lock to lock in half a
+       second (`steerRatePerS` 4), which the owner confirmed is humanly possible, and pedals in an eighth of a
+       second.
 
-     Whether a planned move in a rehearsed technique should wait out a reaction time at all is a question for the
-     card review. A driver anticipates the move; reacting suits the corrections.
-3. **Stage 1** (`tools/driver/tune.py`, CMA-ES). Done at 19 of 20 on all three surfaces in fast mode, then in normal
-   mode.
+     Without the delay, 3° and 20°/s are the card's starting values again. They passed every run in the table above
+     (rerun after the change) with a 26° slide.
+3. **Stage 1** (`tools/driver/tune.py`, CMA-ES). **Built and accepted 2026-11-02.**
+   - **The pieces:**
+     - `es.py`, the optimiser.
+     - `tune.py`, which tunes 11 dials per surface: 12 generations of 11 candidates, each driving 3 varied starts. That
+       is 396 attempts, about 52 minutes in fast mode, then a selection on 10 fresh starts.
+     - `attempt.py --vary`, which starts attempts ±5 km/h and ±1 m to the side. The sideways offset uses
+       `spawn.safeTeleport` while physics is stopped, as Retry does.
+     - `attempt.py restore`, which repairs a game after an interrupted run: normal mode, the runner off, and drill
+       progress and session settings put back from `logs/session-<drill>.json`.
+     - The tuned dials, in `tools/driver/dials/<card>-<surface>.json`.
+   - **Baseline:** the card's own dials, from 20 varied starts (seed 100). Speed is what breaks them; the sideways
+     offset hardly matters.
+
+     | Surface | Passes | How the misses happened |
+     | --- | --- | --- |
+     | Gravel | 17 of 20 | 3–4 km/h fast: the slide grew to 34–35° and the car clipped the Apex post |
+     | Asphalt | 16 of 20 | 3.5–5 km/h slow: the slide stayed at 7–8°, short of the 8° needed |
+     | Snow | 19 of 20 | one slow start, offset sideways: clipped the Turn-in gate |
+
+   - **Acceptance.** Verified in game (0.40.4) by `attempt.py --vary --seed 300`, starts the tuning never saw. Normal
+     speed ran unfocused at the 30 fps cap, so it also covers the frame-timing wobble.
+
+     | Surface | Fast | Normal speed | Slide | Exit speed |
+     | --- | --- | --- | --- | --- |
+     | Gravel | 20 of 20 gold | 20 of 20 gold | 19–26° | 53 km/h |
+     | Asphalt | 20 of 20 gold | 20 of 20 gold | 19–28° | 52–53 km/h |
+     | Snow | 20 of 20 gold | 20 of 20 gold | 18–25° | 50 km/h |
+
+   - **What the tuning found.** It differs by surface:
+     - **Gravel:** switches the catch's counter-steer on (`catchGain` 1.04 against the card's 0). The feint comes
+       sooner (12.6 m past the Flick gate) and harder (0.74).
+     - **Asphalt:** arrives faster (76 km/h) with a gentle feint (0.34), and turns in at full lock.
+     - **Snow:** keeps the counter-steer off and a softer turn-in (0.81).
+
+     All three now exit at 50 km/h or more, against the 45 needed for gold. Those differences are a candidate for the
+     card's per-surface notes once the owner has reviewed them.
+   - **Learned: choose by fresh starts, not by the best score.** The best single fitness of the first gravel run (3
+     starts, generation 4) passed only 15 of 20 fresh starts, worse than the card. Later candidates passed 20 of 20.
+     So `tune.py` now ends with a selection: the top 5 candidates of the second half, plus the optimiser's final mean,
+     drive the same 10 fresh starts, and the one with the most passes, then the best mean score, is kept.
+
+     Gravel's dials predate that step. They were picked by hand the same way: the most consistent of four candidates
+     that passed all 40 starts of seeds 100 and 200.
+   - **Learned: an interrupted run leaves the drill's state behind.** Stopping the first tuning run skipped its
+     cleanup, leaving C08's progress counting 89 tuning attempts. It was put back by hand from the log, which is why
+     sessions now save the progress first.
 4. **Stage 2** (`tools/driver/train.py`, SAC, PyTorch) plus the network in the runner. Done at stage 2's acceptance.
 5. **Watch AI for C08 in the mod.** The runner and cards move into `mod/`, with an ADR, plus the `flick_ai` scenario,
    CHANGELOG and docs.
 
-Python dependencies (`numpy`, `cma`, `torch`) are for `tools/driver/` only; the mod ships none of them.
+Python dependencies are for `tools/driver/` only; the mod ships none of them. Stage 1 needed none: `es.py` is a small
+CMA-ES (the diagonal variant) in plain Python, unit-tested on standard test functions. Stage 2 will need PyTorch.

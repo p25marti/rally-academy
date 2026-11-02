@@ -1,0 +1,37 @@
+{
+  "card": "scandinavian_flick",
+  "surface": "snow",
+  "date": "2026-11-02",
+  "attempts": 456,
+  "from": "generation 9, candidate 2",
+  "selection": {
+    "passes": 10,
+    "starts": 10,
+    "meanScore": 3.898,
+    "verdicts": [
+      "gold",
+      "gold",
+      "gold",
+      "gold",
+      "gold",
+      "gold",
+      "gold",
+      "gold",
+      "gold",
+      "gold"
+    ]
+  },
+  "dials": {
+    "approachKmh": 65.548,
+    "feintAfterM": 14.921,
+    "feintSteer": 0.413,
+    "feintYawDeg": 3.45,
+    "turnSteer": 0.805,
+    "loadBrake": 0.917,
+    "loadUnwindDegS": 13.981,
+    "catchGain": 0.0,
+    "catchKmh": 44.877,
+    "settleSlipDeg": 5.967,
+    "exitKmh": 48.626
+  }
+}

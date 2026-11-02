@@ -1,15 +1,21 @@
 """One attempt at a drill by the skill runner (docs/DRIVER.md, build plan step 2), from a controlled start.
 
-    python tools/driver/attempt.py C08 [--surface gravel|asphalt|snow|all] [-n 10] [--fast]
+    python tools/driver/attempt.py C08 [--surface gravel|asphalt|snow|all] [-n 10] [--fast] [--vary] [--card-dials]
+    python tools/driver/attempt.py restore   # after a crashed or interrupted run (also tune.py's)
 
 The runner (runner.lua) drives the technique card's phases inside the car; this sets up each attempt the way tape.py
 does (physics stopped, Retry, runner loaded, physics resumed), waits for the grade and prints it with the runner's
 report. Attempts count as the drill's attempts; the drill's progress is put back afterwards, as in the scenarios.
+
+The dials are the card's starting values, replaced by the tuned ones in dials/<card>-<surface>.json when tune.py has
+written them (--card-dials ignores those). --vary starts each attempt differently: the approach speed within 5 km/h
+of its dial and the car up to 1 m to either side of the venue start (VARY), as stage 1 tunes and is accepted.
 """
 import argparse
 import contextlib
 import json
 import math
+import random
 import sys
 import time
 from pathlib import Path
@@ -20,6 +26,8 @@ sys.path.insert(0, str(HERE))
 sys.stdout.reconfigure(encoding="utf-8")
 
 CARDS = HERE / "cards"
+DIALS = HERE / "dials"
+VARY = {"kmh": 5.0, "side": 1.0}  # the spread of varied starts (docs/DRIVER.md, Training)
 RUNNER = HERE / "runner.lua"
 TIERS = {"bronze": 1, "silver": 2, "gold": 3}
 SURFACES = ("gravel", "asphalt", "snow")
@@ -32,21 +40,41 @@ def card(name):
     return json.loads((CARDS / f"{name}.json").read_text(encoding="utf-8"))
 
 
-def dials(c, surface="gravel", overrides=None):
-    """The card's starting dial values, with the surface's adjustments and then `overrides`."""
-    out = {name: spec[2] for phase in c["phases"] for name, spec in phase.get("dials", {}).items()}
+def dial_specs(c):
+    """{name: [min, max, start]} for every dial on the card."""
+    return {name: spec for phase in c["phases"] for name, spec in phase.get("dials", {}).items()}
+
+
+def tuned_path(c, surface):
+    return DIALS / f"{c['id']}-{surface}.json"
+
+
+def dials(c, surface="gravel", overrides=None, tuned=True, from_file=None):
+    """The card's starting dial values, with the surface's adjustments, then the tuned values (if any, or those in
+    `from_file`), then `overrides`."""
+    out = {name: spec[2] for name, spec in dial_specs(c).items()}
     out.update(c.get("surfaces", {}).get(surface, {}))
+    path = Path(from_file) if from_file else tuned_path(c, surface)
+    if (tuned or from_file) and path.exists():
+        out.update(json.loads(path.read_text(encoding="utf-8"))["dials"])
     out.update(overrides or {})
     return out
 
 
+def varied_start(rng, spread=VARY):
+    """A start offset: approach speed (km/h) and sideways (m, + to the right)."""
+    return {"kmh": round(rng.uniform(-spread["kmh"], spread["kmh"]), 2),
+            "side": round(rng.uniform(-spread["side"], spread["side"]), 2)}
+
+
 def score(graded, report):
-    """One number for the optimiser: the medal (0 for a miss, 1-3), plus margins in [0, 1) each: how far the rear
-    slide got towards 20 degrees, and the exit speed towards 50 km/h. A spin costs a point."""
+    """One number for the optimiser: the medal (0 for a miss, 1-3), plus two margins worth up to 0.45 each, so they
+    never add up to a medal: how far the rear slide got towards 20 degrees, and the exit speed towards 50 km/h. A spin
+    costs a point."""
     medal = TIERS.get(graded.get("tier"), 1) if graded.get("passed") else 0
     slip = max(0.0, min(report.get("maxSlip") or 0.0, 20.0)) / 20.0
     exit_kmh = max(0.0, min(report.get("exitKmh") or 0.0, 50.0)) / 50.0
-    return round(medal + 0.5 * slip + 0.5 * exit_kmh - (1.0 if report.get("spun") else 0.0), 3)
+    return round(medal + 0.45 * slip + 0.45 * exit_kmh - (1.0 if report.get("spun") else 0.0), 3)
 
 
 def phase_times(report):
@@ -106,85 +134,167 @@ def runner_code(cfg):
             "return 1")
 
 
-_ZERO = ("if extensions.raDriver then extensions.raDriver.stop() end extensions.unload('raDriver') for _, n in ipairs({'throttle', 'brake', 'steering', 'parkingbrake'}) do "
-         "input.event(n, 0, 2) end return 1")
+# Switch the runner off and let go of the controls (extensions.unload alone leaves it in the car: BEAMNG_API_NOTES).
+_STOP = ("if extensions.raDriver then extensions.raDriver.stop() end extensions.unload('raDriver') "
+         "for _, n in ipairs({'throttle', 'brake', 'steering', 'parkingbrake'}) do input.event(n, 0, 2) end")
 
 
 def drill_id_for(base, surface):
     return base if surface == "gravel" else f"{base}-{surface}"
 
 
-def attempt(drill_id, cfg, timeout=60):
-    """One graded attempt with the runner configured by `cfg`. Returns (graded, report)."""
+def car(code):
+    """Queue Lua in the player's car: one round trip and no reply (game.vlua waits 1.2 s to read one). Commands run on
+    the car's next frames in the order sent, also while physics is stopped."""
+    from game import lua  # noqa: PLC0415
+    assert "]==]" not in code
+    lua(f"be:getPlayerVehicle(0):queueLuaCommand([==[{code}]==]) return 1")
+
+
+# Move the car `side` m to its right, keeping its heading, the way Retry places it (spawn.safeTeleport, with a repair).
+_SIDESTEP = ("local v = be:getPlayerVehicle(0) local p = v:getPosition() "
+             "local f = vec3(v:getDirectionVector()):normalized() local u = vec3(v:getDirectionVectorUp()):normalized() "
+             "spawn.safeTeleport(v, p + f:cross(u) * %.3f, quatFromDir(f, u), nil, nil, nil, nil, true) return 1")
+
+
+def attempt(drill_id, cfg, start=None, timeout=60):
+    """One graded attempt with the runner configured by `cfg`, from the venue start offset by `start` (see
+    varied_start). Returns (graded, report). The runner hands its report to GE Lua (raDriverReport) when it has
+    stopped the car, so nothing waits on the car's slow replies."""
     import academy as A  # noqa: PLC0415
-    from game import lua, vlua  # noqa: PLC0415
+    from game import lua  # noqa: PLC0415
 
-    def vget(code):
-        vlua(code)
-        time.sleep(0.4)
-        return vlua(code)
-
-    vlua(_ZERO)
-    lua("be:setPhysicsRunning(false) return 1")
+    car(_STOP)
+    lua("raDriverReport = nil be:setPhysicsRunning(false) return 1")
     try:
         A.click("Retry")
-        time.sleep(1.5)
-        A.sequential()
-        vlua(runner_code(cfg))
-        time.sleep(0.3)
+        time.sleep(0.8)
+        if start and start.get("side"):
+            lua(_SIDESTEP % start["side"])
+            time.sleep(0.3)
+        car('controller.mainController.setGearboxMode("sequential")')
+        if start and start.get("kmh"):
+            cfg = {**cfg, "dials": {**cfg["dials"], "approachKmh": cfg["dials"]["approachKmh"] + start["kmh"]}}
+        car(runner_code(cfg))
+        time.sleep(0.2)
     finally:
         lua("be:setPhysicsRunning(true) return 1")
-    t0 = time.time()
+    t0, report = time.time(), None
     while time.time() - t0 < timeout:
-        time.sleep(0.5)
-        if str(vget("return extensions.raDriver and extensions.raDriver.state() or 'none'")).startswith("done"):
+        time.sleep(0.25)
+        out = lua("return raDriverReport or ''")
+        if out:
+            report = json.loads(out)
             break
-    graded = A.wait_graded()
-    report = json.loads(vget("return extensions.raDriver.report()") or "{}")
-    vlua(_ZERO)
+    graded = A.debug_state()
+    t1 = time.time()
+    while graded.get("phase") not in ("scored", "review") and time.time() - t1 < 5:
+        time.sleep(0.2)
+        graded = A.debug_state()
+    car(_STOP)
+    if report is None:
+        report = {"timedOut": True}
     return ({"passed": graded.get("passed") is True, "tier": graded.get("tier"), "reason": graded.get("reason"),
              "time": round(graded.get("lastTime") or 0, 2)}, report)
 
 
-def run(base, surfaces, n, fast_mode=False, overrides=None):
+# A drill session saves the drill's progress first, so `attempt.py restore` can put it back after a crashed run.
+SESSIONS = HERE / "logs"
+
+
+@contextlib.contextmanager
+def session(drill_id):
+    """academy.drill_session ... end_session, with the progress from before kept in logs/session-<drill>.json until
+    the session ends cleanly."""
+    import academy as A  # noqa: PLC0415
+    A.drill_session(drill_id)
+    SESSIONS.mkdir(exist_ok=True)
+    saved = SESSIONS / f"session-{drill_id}.json"
+    if not saved.exists():  # an earlier crashed session's file holds the older, true progress: keep it
+        saved.write_text(json.dumps({"drill": drill_id, "progress": (A._FOUND or {}).get(drill_id)}), encoding="utf-8")
+    try:
+        yield
+    finally:
+        A.end_session(drill_id)
+        saved.unlink(missing_ok=True)
+
+
+def restore():
+    """After a crashed run: normal mode, the runner off, and every unfinished session's drill progress and settings
+    put back."""
     import academy as A  # noqa: PLC0415
     import fast  # noqa: PLC0415
+    from game import lua  # noqa: PLC0415
+    fast.restore()
+    lua("be:setPhysicsRunning(true) return 1")
+    car(_STOP)
+    for saved in sorted(SESSIONS.glob("session-*.json")):
+        s = json.loads(saved.read_text(encoding="utf-8"))
+        lua(f"return tostring(extensions.rallyAcademy.devSetProgress({json.dumps(s['drill'])}, "
+            f"{A.lua_value(s['progress'])}))")
+        print(f"put back {s['drill']}'s progress")
+        saved.unlink()
+    lua("extensions.rallyAcademy.setAutoRetry(true) extensions.rallyAcademy.devKeepRunsPaused(false) return 1")
+    A.realistic()
+    print("restored: normal mode, runner off, session settings and progress put back")
+
+
+def config(c, drill_id, surface, overrides=None, tuned=True, from_file=None):
+    """The runner's configuration for one drill and surface (needs the drill selected: course() reads the game)."""
+    path, flick_s, exit_s = course(drill_id)
+    return {"dials": dials(c, surface, overrides, tuned, from_file), "limits": c["humanLimits"], "path": path,
+            "flickS": round(flick_s, 2), "exitS": round(exit_s, 2)}
+
+
+def line(drill_id, i, n, graded, report, start=None):
+    verdict = graded["tier"] or ("pass" if graded["passed"] else "MISS")
+    at = f" start {start['kmh']:+.1f} km/h {start['side']:+.2f} m" if start else ""
+    return (f"  {drill_id} {i}/{n}:{at} {verdict:6s} score {score(graded, report):5.2f}  slip {report.get('maxSlip')} "
+            f"exit {report.get('exitKmh')} km/h  {phase_times(report)}  {'' if graded['passed'] else graded['reason']}")
+
+
+def run(base, surfaces, n, fast_mode=False, overrides=None, vary=False, tuned=True, seed=None, from_file=None):
+    import fast  # noqa: PLC0415
     c = card(DRILLS[base])
+    rng = random.Random(seed)
     results = {}
     for surface in surfaces:
         drill_id = drill_id_for(base, surface)
-        A.drill_session(drill_id)
-        try:
-            path, flick_s, exit_s = course(drill_id)
-            cfg = {"dials": dials(c, surface, overrides), "limits": c["humanLimits"], "path": path,
-                   "flickS": round(flick_s, 2), "exitS": round(exit_s, 2)}
+        with session(drill_id):
+            cfg = config(c, drill_id, surface, overrides, tuned, from_file)
+            source = from_file or ("tuned" if tuned and tuned_path(c, surface).exists() else "card")
+            print(f"{drill_id}: {source} dials", flush=True)
             passes = 0
             with fast.fast() if fast_mode else contextlib.nullcontext():
                 for i in range(n):
-                    graded, report = attempt(drill_id, cfg)
+                    start = varied_start(rng) if vary else None
+                    graded, report = attempt(drill_id, cfg, start)
                     passes += graded["passed"]
-                    verdict = graded["tier"] or ("pass" if graded["passed"] else "MISS")
-                    print(f"  {drill_id} {i + 1}/{n}: {verdict:6s} score {score(graded, report):5.2f}  "
-                          f"slip {report.get('maxSlip')} exit {report.get('exitKmh')} km/h  {phase_times(report)}  "
-                          f"{'' if graded['passed'] else graded['reason']}", flush=True)
+                    print(line(drill_id, i + 1, n, graded, report, start), flush=True)
             results[drill_id] = passes
-            print(f"{drill_id}: {passes}/{n} passed{' (fast)' if fast_mode else ''}", flush=True)
-        finally:
-            A.end_session(drill_id)
+            print(f"{drill_id}: {passes}/{n} passed{' (fast)' if fast_mode else ''}{' (varied starts)' if vary else ''}",
+                  flush=True)
     return results
 
 
 def main():
+    if sys.argv[1:] == ["restore"]:
+        restore()
+        return
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("drill", choices=sorted(DRILLS))
     ap.add_argument("--surface", default="gravel", choices=[*SURFACES, "all"])
     ap.add_argument("-n", type=int, default=5, help="attempts per surface")
     ap.add_argument("--fast", action="store_true", help="deterministic mode at ~5x (fast.py)")
     ap.add_argument("--dial", action="append", default=[], metavar="NAME=VALUE", help="override a dial")
+    ap.add_argument("--vary", action="store_true", help="varied starts (5 km/h and 1 m sideways either way)")
+    ap.add_argument("--card-dials", action="store_true", help="the card's starting dials, not the tuned ones")
+    ap.add_argument("--seed", type=int, default=None, help="for --vary: the same seed gives the same starts")
+    ap.add_argument("--dials", metavar="FILE", help="dials from a JSON file ({\"dials\": {...}}), e.g. to compare")
     args = ap.parse_args()
     overrides = {k: float(v) for k, v in (d.split("=", 1) for d in args.dial)}
     surfaces = SURFACES if args.surface == "all" else (args.surface,)
-    run(args.drill, surfaces, args.n, args.fast, overrides)
+    run(args.drill, surfaces, args.n, args.fast, overrides, args.vary, not args.card_dials, args.seed, args.dials)
 
 
 if __name__ == "__main__":

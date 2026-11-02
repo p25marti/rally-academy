@@ -7,6 +7,7 @@
   "sources": [],
   "humanLimits": {
     "reactionMs": 150,
+    "reactionAppliesTo": "corrections only (the catch's counter-steer, stage 2's correction): rehearsed phase changes fire at once (owner, 2026-11-01)",
     "steerRatePerS": 4.0,
     "pedalRatePerS": 8.0,
     "decisionHz": 20
@@ -30,7 +31,7 @@
         "feintSteer": [0.2, 1.0, 0.5],
         "feintMinS": [0.1, 0.4, 0.2],
         "feintMaxS": [0.3, 1.0, 0.7],
-        "feintYawDeg": [0.5, 15, 1.3]
+        "feintYawDeg": [0.5, 15, 3]
       },
       "endsWhen": "the car has turned feintYawDeg away from the corner, after feintMinS; or feintMaxS",
       "reward": "lateral acceleration towards the outside of the corner: the weight has moved there"
@@ -42,7 +43,7 @@
       "dials": {
         "turnSteer": [0.5, 1.0, 1.0],
         "loadBrake": [0.0, 1.0, 1.0],
-        "loadUnwindDegS": [0, 40, 28],
+        "loadUnwindDegS": [0, 40, 20],
         "loadMinS": [0.05, 0.3, 0.1],
         "loadMaxS": [0.3, 1.2, 0.8]
       },

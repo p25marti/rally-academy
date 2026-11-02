@@ -69,9 +69,9 @@ function M.new(cfg)
   return {
     dials = cfg.dials, limits = cfg.limits, path = cfg.path, along = along, idx = 1,
     flickS = cfg.flickS, exitS = cfg.exitS,
-    phase = 'approach', phaseT = 0, pending = nil,
+    phase = 'approach', phaseT = 0,
     out = {throttle = 0, brake = 0, handbrake = 0, steering = 0},
-    lastYaw = nil, t = 0,
+    lastYaw = nil, t = 0, slipHist = {},
     report = {phases = {}, maxSlip = 0, exitKmh = nil, spun = false},
   }
 end
@@ -79,19 +79,27 @@ end
 local ORDER = {approach = 'feint', feint = 'load_turn_in', load_turn_in = 'catch', catch = 'exit', exit = 'stop'}
 
 local function enter(d, phase)
-  d.phase, d.phaseT, d.pending = phase, 0, nil
+  d.phase, d.phaseT = phase, 0
   table.insert(d.report.phases, {phase, d.t, d.slip or 0, d.yawRate or 0, d.turned or 0})
   d.heading0 = d.lastYaw
 end
 
--- A measured end waits out the reaction time before the phase changes; a timeout or a position changes it at once.
-local function finish(d, measured, dt)
-  if not measured then
-    enter(d, ORDER[d.phase])
-    return
+-- A phase ends as soon as its measurement says so: a rehearsed move is anticipated, not reacted to (owner,
+-- 2026-11-01). The reaction time applies to corrections only (see `felt`).
+local function finish(d)
+  enter(d, ORDER[d.phase])
+end
+
+-- What the driver can react to now: the slip angle as it was reactionMs ago (corrections, such as the catch's
+-- counter-steer, respond to the car with a human delay).
+local function felt(d)
+  local lag = (d.limits.reactionMs or 0) / 1000
+  local h, value = d.slipHist, 0
+  for i = #h, 1, -1 do
+    if past(d.t - lag, h[i][1]) then value = h[i][2] break end
   end
-  d.pending = (d.pending or 0) + dt
-  if past(d.pending, (d.limits.reactionMs or 0) / 1000) then enter(d, ORDER[d.phase]) end
+  while #h > 1 and h[2][1] < d.t - lag - 0.5 do table.remove(h, 1) end
+  return value
 end
 
 -- One decision. obs: {x, y, hx, hy, vx, vy} (world, m and m/s). Returns the outputs (throttle, brake, handbrake,
@@ -111,6 +119,7 @@ function M.decide(d, obs, dt)
   d.lastYaw = yaw
   local slip = M.signedSlipDeg(obs.hx, obs.hy, obs.vx, obs.vy) or 0
   d.slip, d.yawRate = slip, math.deg(yawRate)
+  table.insert(d.slipHist, {d.t, slip})
   if d.heading0 then
     local dh = yaw - d.heading0
     if dh > math.pi then dh = dh - 2 * math.pi elseif dh < -math.pi then dh = dh + 2 * math.pi end
@@ -128,18 +137,19 @@ function M.decide(d, obs, dt)
     if s >= d.flickS + k.feintAfterM then enter(d, 'feint') end
   elseif p == 'feint' then
     want.steering = k.feintSteer
-    if past(d.phaseT, k.feintMaxS) then finish(d, false, dt)
-    elseif past(d.phaseT, k.feintMinS) and -(d.turned or 0) >= k.feintYawDeg then finish(d, true, dt) end
+    if past(d.phaseT, k.feintMaxS) or (past(d.phaseT, k.feintMinS) and -(d.turned or 0) >= k.feintYawDeg) then
+      finish(d)
+    end
   elseif p == 'load_turn_in' then
     want.steering, want.brake = -k.turnSteer, k.loadBrake
     -- the pendulum: the feint's swing away has to stop before the rear comes round into the corner
-    if past(d.phaseT, k.loadMaxS) then finish(d, false, dt)
-    elseif past(d.phaseT, k.loadMinS) and math.deg(yawRate) >= -k.loadUnwindDegS then finish(d, true, dt) end
+    if past(d.phaseT, k.loadMaxS) or (past(d.phaseT, k.loadMinS) and math.deg(yawRate) >= -k.loadUnwindDegS) then
+      finish(d)
+    end
   elseif p == 'catch' then
-    want.steering = clamp(line + k.catchGain * slip / 30, -1, 1)
+    want.steering = clamp(line + k.catchGain * felt(d) / 30, -1, 1)
     want.throttle, want.brake = hold(kmh, k.catchKmh)
-    if past(d.phaseT, k.catchMaxS) then finish(d, false, dt)
-    elseif past(d.phaseT, 0.3) and math.abs(slip) < k.settleSlipDeg then finish(d, true, dt) end
+    if past(d.phaseT, k.catchMaxS) or (past(d.phaseT, 0.3) and math.abs(slip) < k.settleSlipDeg) then finish(d) end
   elseif p == 'exit' then
     want.throttle, want.brake = hold(kmh, k.exitKmh)
     if s >= d.exitS + 12 then enter(d, 'stop') end
@@ -192,6 +202,7 @@ function M.updateGFX(dt)
   if d.phase == 'stop' and vel:length() < 0.3 then
     done = true
     apply({throttle = 0, brake = 0, handbrake = 1, steering = 0})
+    obj:queueGameEngineLua('raDriverReport = ' .. string.format('%q', M.report())) -- attempt.py waits for this
   end
 end
 

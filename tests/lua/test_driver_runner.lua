@@ -63,19 +63,19 @@ function T.approach_follows_the_line_and_holds_speed_until_past_the_flick_gate()
   eq(d.phase, 'feint')
 end
 
-function T.feint_steers_away_and_ends_once_turned_far_enough_plus_the_reaction_time()
+function T.feint_steers_away_and_ends_as_soon_as_turned_far_enough()
   local d = driver()
   Run.decide(d, obs(54.5, 66), 0.05)
   eq(d.phase, 'feint')
   -- turning right (away from the left turn) 1 degree per decision: 3 degrees after the 3rd decision, but feintMinS
-  -- (0.2 s) holds until the 4th; then the 150 ms reaction time holds the phase for 3 decisions
+  -- (0.2 s) holds until the 4th. A rehearsed move doesn't wait out a reaction time
   local seen
   for i = 1, 12 do
     local o = Run.decide(d, obs(55 + i, 66, -i), 0.05)
     if i == 1 then assert(o.steering > 0, 'steers right, away from the corner') end
     if d.phase ~= 'feint' and not seen then seen = i end
   end
-  eq(seen, 6, 'the decision the feint ended')
+  eq(seen, 4, 'the decision the feint ended')
 end
 
 function T.feint_ends_at_its_time_limit_if_the_car_doesnt_turn()
@@ -104,10 +104,24 @@ function T.load_turns_in_with_brake_until_the_swing_away_stops()
   step(-35)
   step(-30) -- still swinging away faster than loadUnwindDegS
   eq(d.phase, 'load_turn_in')
-  step(-15) step(-10) -- slowed below 20 degrees/s: the reaction time runs
-  eq(d.phase, 'load_turn_in', 'waiting out the reaction time (150 ms: the 3rd decision)')
-  step(-5)
+  step(-15) -- slowed below 20 degrees/s
   eq(d.phase, 'catch')
+end
+
+function T.the_catch_counter_steers_against_the_slide_as_it_was_a_reaction_time_ago()
+  -- the rear steps out 20 degrees at once (pointing along the line, travelling 20 degrees right of it), compared with
+  -- the counter-steer off
+  local function run(gain)
+    local d = driver({catchGain = gain})
+    d.phase = 'catch'
+    Run.decide(d, obs(80, 45, 0, 0), 0.05)
+    local steer = {}
+    for i = 1, 5 do steer[i] = Run.decide(d, obs(80 + i, 45, 0, -20), 0.05).steering end
+    return steer
+  end
+  local with, without = run(1.0), run(0.0)
+  for i = 1, 3 do eq(with[i], without[i], 'not yet felt at decision ' .. i) end
+  assert(with[4] > without[4], 'counter-steers (right) once felt, 150 ms after the slide began at decision 1')
 end
 
 function T.report_records_the_slip_between_the_gates_and_the_exit_speed()

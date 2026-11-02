@@ -27,3 +27,6 @@ venue-reports/
 # Scenario videos (tools/ingame/record.py): local output, large
 recordings/
 
+
+# Driver tuning logs (tools/driver/tune.py): local output
+tools/driver/logs/
