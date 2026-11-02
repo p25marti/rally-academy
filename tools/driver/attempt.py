@@ -253,7 +253,8 @@ def line(drill_id, i, n, graded, report, start=None):
             f"exit {report.get('exitKmh')} km/h  {phase_times(report)}  {'' if graded['passed'] else graded['reason']}")
 
 
-def run(base, surfaces, n, fast_mode=False, overrides=None, vary=False, tuned=True, seed=None, from_file=None):
+def run(base, surfaces, n, fast_mode=False, overrides=None, vary=False, tuned=True, seed=None, from_file=None,
+        spread=VARY):
     import fast  # noqa: PLC0415
     c = card(DRILLS[base])
     rng = random.Random(seed)
@@ -267,7 +268,7 @@ def run(base, surfaces, n, fast_mode=False, overrides=None, vary=False, tuned=Tr
             passes = 0
             with fast.fast() if fast_mode else contextlib.nullcontext():
                 for i in range(n):
-                    start = varied_start(rng) if vary else None
+                    start = varied_start(rng, spread) if vary else None
                     graded, report = attempt(drill_id, cfg, start)
                     passes += graded["passed"]
                     print(line(drill_id, i + 1, n, graded, report, start), flush=True)
@@ -290,11 +291,15 @@ def main():
     ap.add_argument("--vary", action="store_true", help="varied starts (5 km/h and 1 m sideways either way)")
     ap.add_argument("--card-dials", action="store_true", help="the card's starting dials, not the tuned ones")
     ap.add_argument("--seed", type=int, default=None, help="for --vary: the same seed gives the same starts")
+    ap.add_argument("--spread", default=f"{VARY['kmh']:g},{VARY['side']:g}", metavar="KMH,M",
+                    help="for --vary: the most the start varies (default %(default)s)")
     ap.add_argument("--dials", metavar="FILE", help="dials from a JSON file ({\"dials\": {...}}), e.g. to compare")
     args = ap.parse_args()
     overrides = {k: float(v) for k, v in (d.split("=", 1) for d in args.dial)}
     surfaces = SURFACES if args.surface == "all" else (args.surface,)
-    run(args.drill, surfaces, args.n, args.fast, overrides, args.vary, not args.card_dials, args.seed, args.dials)
+    kmh, side = (float(v) for v in args.spread.split(","))
+    run(args.drill, surfaces, args.n, args.fast, overrides, args.vary, not args.card_dials, args.seed, args.dials,
+        {"kmh": kmh, "side": side})
 
 
 if __name__ == "__main__":

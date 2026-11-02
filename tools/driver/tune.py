@@ -79,7 +79,7 @@ def drive(drill_id, cfg, dials, starts, log, tag):
     return scores, verdicts
 
 
-def tune(base, surface, generations, n_starts, n_select, seed, fast_mode=True, sigma=0.15):
+def tune(base, surface, generations, n_starts, n_select, seed, fast_mode=True, sigma=0.15, spread=AT.VARY):
     import fast  # noqa: PLC0415
     c = AT.card(AT.DRILLS[base])
     drill_id = AT.drill_id_for(base, surface)
@@ -94,10 +94,10 @@ def tune(base, surface, generations, n_starts, n_select, seed, fast_mode=True, s
         t0, candidates = time.time(), []
         print(f"tuning {len(names)} dials of {c['id']} on {surface}: {opt.lam} candidates x {n_starts} starts "
               f"x {generations} generations = {opt.lam * n_starts * generations} attempts, then a selection on "
-              f"{n_select} fresh starts", flush=True)
+              f"{n_select} fresh starts; starts vary up to {spread['kmh']:g} km/h and {spread['side']:g} m", flush=True)
         with fast.fast() if fast_mode else contextlib.nullcontext(), log_path.open("a", encoding="utf-8") as log:
             for gen in range(generations):
-                starts = [AT.varied_start(rng) for _ in range(n_starts)]
+                starts = [AT.varied_start(rng, spread) for _ in range(n_starts)]
                 xs = opt.ask()
                 fits = []
                 for k, x in enumerate(xs):
@@ -116,7 +116,7 @@ def tune(base, surface, generations, n_starts, n_select, seed, fast_mode=True, s
             pool = shortlist(candidates, generations)
             pool.append({"gen": generations, "k": "mean", "fitness": None,
                          "dials": {**start_dials, **from_unit(c, names, opt.m)}})
-            starts = [AT.varied_start(select_rng) for _ in range(n_select)]
+            starts = [AT.varied_start(select_rng, spread) for _ in range(n_select)]
             results = []
             for cand in pool:
                 scores, verdicts = drive(drill_id, cfg, cand["dials"], starts, log,
@@ -155,8 +155,12 @@ def main():
     ap.add_argument("--select", type=int, default=10, help="fresh starts for choosing the winner")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--normal", action="store_true", help="normal speed instead of fast mode")
+    ap.add_argument("--spread", default=f"{AT.VARY['kmh']:g},{AT.VARY['side']:g}", metavar="KMH,M",
+                    help="the most a start varies (default %(default)s)")
     args = ap.parse_args()
-    tune(args.drill, args.surface, args.generations, args.starts, args.select, args.seed, not args.normal)
+    kmh, side = (float(v) for v in args.spread.split(","))
+    tune(args.drill, args.surface, args.generations, args.starts, args.select, args.seed, not args.normal,
+         spread={"kmh": kmh, "side": side})
 
 
 if __name__ == "__main__":

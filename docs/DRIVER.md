@@ -254,6 +254,22 @@ Each step is usable on its own and is verified before the next starts.
 
      Gravel's dials predate that step. They were picked by hand the same way: the most consistent of four candidates
      that passed all 40 starts of seeds 100 and 200.
+   - **Wider starts (stage 2's bar, ±10 km/h and ±2 m).** Checked with the stage 1 dials (`--spread 10,2`, seed 400,
+     fast mode):
+
+     | Surface | Passes | Medals |
+     | --- | --- | --- |
+     | Gravel | 20 of 20 | 18 gold; silver and bronze from the two starts 8–9 km/h slow |
+     | Asphalt | 20 of 20 | all gold |
+     | Snow | **12 of 20** | 6 of the 8 misses started 1.4–2 m to the side, and most missed the Turn-in gate on its right |
+
+     Retuning snow on the wide starts (`tune.py --spread 10,2`) didn't help: 13 of 20 wide and 19 of 20 narrow,
+     against the old dials' 12 and 20, so the old dials stay. The cause is upstream of the flick's dials. On snow,
+     the approach (the line follower, which isn't tuned) doesn't bring a car 2 m off-line back before the feint
+     swings it right again, so no setting of the flick fixes it.
+
+     That makes it the first job for stage 2's correction, or for making the approach part of the tuning: its look
+     ahead and its line, which keeps nearer the middle so the feint has room.
    - **Learned: an interrupted run leaves the drill's state behind.** Stopping the first tuning run skipped its
      cleanup, leaving C08's progress counting 89 tuning attempts. It was put back by hand from the log, which is why
      sessions now save the progress first.
